@@ -112,7 +112,7 @@ void testJacobian(
 TEST_CASE("Constant") {
     ParametricExpression<1, 1> expression = ParametricExpression<1, 1>::constant(3.0);
     REQUIRE(expression.implementation()->isConstantExpression());
-    REQUIRE((expression.evaluate(0.0).value() - 3) == Zero());
+    REQUIRE((expression.evaluate(0.0) - 3.0) == Zero());
 }
 
 TEST_CASE("Arithmetic") {
@@ -120,21 +120,21 @@ TEST_CASE("Arithmetic") {
     Parameter2d v = Parameter2d(1);
     ParametricExpression<1, 2> expression = 2.0 + u * 1.0 - 1.0 * v;
     
-    REQUIRE((expression.evaluate(0, 0).value() - 2) == Zero());
-    REQUIRE((expression.evaluate(1, 0).value() - 3) == Zero());
-    REQUIRE((expression.evaluate(1, 1).value() - 2) == Zero());
-    REQUIRE((expression.evaluate(0, 1).value() - 1) == Zero());
-    REQUIRE((expression.derivative(u).evaluate(0, 0).value() - 1) == Zero());
-    REQUIRE((expression.derivative(v).evaluate(0, 0).value() + 1) == Zero());
+    REQUIRE((expression.evaluate(0, 0) - 2.0) == Zero());
+    REQUIRE((expression.evaluate(1, 0) - 3.0) == Zero());
+    REQUIRE((expression.evaluate(1, 1) - 2.0) == Zero());
+    REQUIRE((expression.evaluate(0, 1) - 1.0) == Zero());
+    REQUIRE((expression.derivative(u).evaluate(0, 0) - 1.0) == Zero());
+    REQUIRE((expression.derivative(v).evaluate(0, 0) + 1.0) == Zero());
     
     ParametricExpression<1, 2> negated = -expression;
     
-    REQUIRE((negated.evaluate(0, 0).value() + 2) == Zero());
-    REQUIRE((negated.evaluate(1, 0).value() + 3) == Zero());
-    REQUIRE((negated.evaluate(1, 1).value() + 2) == Zero());
-    REQUIRE((negated.evaluate(0, 1).value() + 1) == Zero());
-    REQUIRE((negated.derivative(u).evaluate(0, 0).value() + 1) == Zero());
-    REQUIRE((negated.derivative(v).evaluate(0, 0).value() - 1) == Zero());
+    REQUIRE((negated.evaluate(0, 0) + 2.0) == Zero());
+    REQUIRE((negated.evaluate(1, 0) + 3.0) == Zero());
+    REQUIRE((negated.evaluate(1, 1) + 2.0) == Zero());
+    REQUIRE((negated.evaluate(0, 1) + 1.0) == Zero());
+    REQUIRE((negated.derivative(u).evaluate(0, 0) + 1.0) == Zero());
+    REQUIRE((negated.derivative(v).evaluate(0, 0) - 1.0) == Zero());
 }
 
 TEST_CASE("Multiplication") {
@@ -142,35 +142,35 @@ TEST_CASE("Multiplication") {
     Parameter2d v = Parameter2d(1);
     ParametricExpression<1, 2> expression = 1.0 + u / 1.0 * v / 1.0;
 
-    REQUIRE((expression.evaluate(0, 0).value() - 1) == Zero());
-    REQUIRE((expression.evaluate(1, 0).value() - 1) == Zero());
-    REQUIRE((expression.evaluate(1, 1).value() - 2) == Zero());
-    REQUIRE((expression.evaluate(0, 1).value() - 1) == Zero());
+    REQUIRE((expression.evaluate(0, 0) - 1.0) == Zero());
+    REQUIRE((expression.evaluate(1, 0) - 1.0) == Zero());
+    REQUIRE((expression.evaluate(1, 1) - 2.0) == Zero());
+    REQUIRE((expression.evaluate(0, 1) - 1.0) == Zero());
 
     ParametricExpression<1, 2> uDerivative = expression.derivative(u);
     
-    REQUIRE(uDerivative.evaluate(0, 0).value() == Zero());
-    REQUIRE(uDerivative.evaluate(1, 0).value() == Zero());
-    REQUIRE((uDerivative.evaluate(1, 1).value() - 1) == Zero());
-    REQUIRE((uDerivative.evaluate(0, 1).value() - 1) == Zero());
+    REQUIRE(uDerivative.evaluate(0, 0) == Zero());
+    REQUIRE(uDerivative.evaluate(1, 0) == Zero());
+    REQUIRE((uDerivative.evaluate(1, 1) - 1.0) == Zero());
+    REQUIRE((uDerivative.evaluate(0, 1) - 1.0) == Zero());
 
     ParametricExpression<1, 2> vDerivative = expression.derivative(v);
     
-    REQUIRE(vDerivative.evaluate(0, 0).value() == Zero());
-    REQUIRE((vDerivative.evaluate(1, 0).value() - 1) == Zero());
-    REQUIRE((vDerivative.evaluate(1, 1).value() - 1) == Zero());
-    REQUIRE(vDerivative.evaluate(0, 1).value() == Zero());
+    REQUIRE(vDerivative.evaluate(0, 0) == Zero());
+    REQUIRE((vDerivative.evaluate(1, 0) - 1.0) == Zero());
+    REQUIRE((vDerivative.evaluate(1, 1) - 1.0) == Zero());
+    REQUIRE(vDerivative.evaluate(0, 1) == Zero());
 }
 
 TEST_CASE("Square") {
     Parameter2d u = Parameter2d(0);
     Parameter2d v = Parameter2d(1);
     ParametricExpression<1, 2> expression = u.squared() * 1.0 + v.squared() * 1.0;
-    REQUIRE((expression.evaluate(1, 2).value() - 5) == Zero());
+    REQUIRE((expression.evaluate(1, 2) - 5.0) == Zero());
     ParametricExpression<1, 2> uDerivative = expression.derivative(u);
-    REQUIRE((uDerivative.evaluate(3, 4).value() - 6) == Zero());
+    REQUIRE((uDerivative.evaluate(3, 4) - 6.0) == Zero());
     ParametricExpression<1, 2> vSecondDerivative = expression.derivative(v).derivative(v);
-    REQUIRE((vSecondDerivative.evaluate(5, 6).value() - 2) == Zero());
+    REQUIRE((vSecondDerivative.evaluate(5, 6) - 2.0) == Zero());
 }
 
 TEST_CASE("Norm") {
@@ -187,7 +187,7 @@ TEST_CASE("Conversion") {
     Parameter2d v = Parameter2d(1);
     {
         ParametricExpression<1, 2> expression = u * v;
-        REQUIRE((expression.evaluate(2, 3).value() - 6) == Zero());
+        REQUIRE((expression.evaluate(2, 3) - 6.0) == Zero());
     }
     {
         ParametricExpression<1, 1> expression = ParametricExpression<1, 1>::constant(2.0);
@@ -207,10 +207,10 @@ TEST_CASE("Sine") {
     parameterValues[2] = M_PI;
     parameterValues[3] = 3 * M_PI / 2;
     std::vector<Matrix1d> resultValues = expression.evaluate(parameterValues);
-    REQUIRE(resultValues[0].value() == Zero());
-    REQUIRE((resultValues[1].value() - 1) == Zero());
-    REQUIRE(resultValues[2].value() == Zero());
-    REQUIRE((resultValues[3].value() + 1) == Zero());
+    REQUIRE(resultValues[0] == Zero());
+    REQUIRE((resultValues[1] - 1.0) == Zero());
+    REQUIRE(resultValues[2] == Zero());
+    REQUIRE((resultValues[3] + 1.0) == Zero());
 
     std::vector<Interval> parameterBounds(4);
     parameterBounds[0] = Interval(0, M_PI / 2);
@@ -238,10 +238,10 @@ TEST_CASE("Cosine") {
     parameterValues[2] = M_PI;
     parameterValues[3] = 3 * M_PI / 2;
     std::vector<Matrix1d> resultValues = expression.evaluate(parameterValues);
-    REQUIRE((resultValues[0].value() - 1) == Zero());
-    REQUIRE(resultValues[1].value() == Zero());
-    REQUIRE((resultValues[2].value() + 1) == Zero());
-    REQUIRE(resultValues[3].value() == Zero());
+    REQUIRE((resultValues[0] - 1.0) == Zero());
+    REQUIRE(resultValues[1] == Zero());
+    REQUIRE((resultValues[2] + 1.0) == Zero());
+    REQUIRE(resultValues[3] == Zero());
 
     std::vector<Interval> parameterBounds(4);
     parameterBounds[0] = Interval(0, M_PI / 2);
@@ -277,7 +277,7 @@ TEST_CASE("Component") {
     REQUIRE((results(1) - 3.0) == Zero());
     REQUIRE((results(2) - 4.0) == Zero());
 
-    double value = expression.z().evaluate(0.5).value();
+    double value = expression.z().evaluate(0.5);
     REQUIRE((value - 4.5) == Zero());
 }
 
@@ -329,13 +329,13 @@ TEST_CASE("Arccosine") {
     Parameter1d t;
     ParametricExpression<1, 1> expression = acos(t);
     Interval bounds;
-    bounds = expression.evaluate(Interval(-1, 0)).value();
+    bounds = expression.evaluate(Interval(-1, 0));
     REQUIRE((bounds.lowerBound() - M_PI / 2) == Zero());
     REQUIRE((bounds.upperBound() - M_PI) == Zero());
-    bounds = expression.evaluate(Interval(0.5, 1.5)).value();
+    bounds = expression.evaluate(Interval(0.5, 1.5));
     REQUIRE(bounds.lowerBound() == Zero());
     REQUIRE((bounds.upperBound() - M_PI / 3) == Zero());
-    bounds = expression.evaluate(Interval(1 + 1e-14, 1 + 1e-10)).value();
+    bounds = expression.evaluate(Interval(1 + 1e-14, 1 + 1e-10));
     REQUIRE(bounds.lowerBound() == Zero());
     REQUIRE(bounds.upperBound() == Zero());
 
@@ -357,13 +357,13 @@ TEST_CASE("Arcsine") {
     Parameter1d t;
     ParametricExpression<1,1 > expression = asin(t);
     Interval bounds;
-    bounds = expression.evaluate(Interval(-1, 0)).value();
+    bounds = expression.evaluate(Interval(-1, 0));
     REQUIRE((bounds.lowerBound() + M_PI / 2) == Zero());
     REQUIRE(bounds.upperBound() == Zero());
-    bounds = expression.evaluate(Interval(0.5, 1.5)).value();
+    bounds = expression.evaluate(Interval(0.5, 1.5));
     REQUIRE((bounds.lowerBound() - M_PI / 6) == Zero());
     REQUIRE((bounds.upperBound() - M_PI / 2) == Zero());
-    bounds = expression.evaluate(Interval(1 + 1e-14, 1 + 1e-10)).value();
+    bounds = expression.evaluate(Interval(1 + 1e-14, 1 + 1e-10));
     REQUIRE((bounds.lowerBound() - M_PI / 2) == Zero());
     REQUIRE((bounds.upperBound() - M_PI / 2) == Zero());
 }
@@ -556,8 +556,8 @@ TEST_CASE("Dot product with constant") {
     Parameter1d t;
     ParametricExpression<3, 1> line = ColumnMatrix3d::ones() + ColumnMatrix3d::ones() * t;
     ParametricExpression<1, 1> dotProduct = line.dot(ColumnMatrix3d(0, 1, 0));
-    REQUIRE((dotProduct.evaluate(0.0).value() - 1.0) == Zero());
-    REQUIRE((dotProduct.evaluate(1.0).value() - 2.0) == Zero());
+    REQUIRE((dotProduct.evaluate(0.0) - 1.0) == Zero());
+    REQUIRE((dotProduct.evaluate(1.0) - 2.0) == Zero());
 }
 
 TEST_CASE("Cross product with constant") {

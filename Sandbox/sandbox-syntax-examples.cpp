@@ -225,13 +225,13 @@ void parametricExpressionExamples() {
     std::vector<Matrix1d> sineDerivativeValues = sineDerivative.evaluate(parameterValues);
     std::vector<Matrix1d> cosineValues = cosineExpression.evaluate(parameterValues);
     for (unsigned i = 0; i < parameterValues.size(); ++i) {
-        assert(sineDerivativeValues[i].value() - cosineValues[i].value() == Zero());
+        assert(sineDerivativeValues[i] - cosineValues[i] == Zero());
     }
 
     ParametricExpression<1, 1> shouldBeZero = sin(2 * t) - 2 * sin(t) * cos(t);
     std::vector<Matrix1d> zeroValues = shouldBeZero.evaluate(parameterValues);
     for (unsigned i = 0; i < parameterValues.size(); ++i) {
-        assert(zeroValues[i].value() == Zero());
+        assert(zeroValues[i] == Zero());
     }
 }
 

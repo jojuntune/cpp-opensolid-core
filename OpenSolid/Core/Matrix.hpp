@@ -99,15 +99,6 @@ namespace opensolid
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
     Matrix<TScalar, iNumRows, iNumColumns>::Matrix(
-        TScalar firstComponent
-    ) {
-        static_assert(iNumRows * iNumColumns == 1, "Incorrect matrix size");
-        _data[0] = firstComponent;
-    }
-    
-    template <class TScalar, int iNumRows, int iNumColumns>
-    inline
-    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(
         TScalar firstComponent, 
         TScalar secondComponent
     ) {
@@ -339,6 +330,130 @@ namespace opensolid
     const Matrix<TScalar, iNumRows, iNumColumns>
     Matrix<TScalar, iNumRows, iNumColumns>::random() {
         Matrix<TScalar, iNumRows, iNumColumns> result(false);
+        result.setRandom();
+        return result;
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 1, 1>::Matrix() :
+        _value() {
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 1, 1>::Matrix(const std::pair<int, int>& dimensions) :
+        _value() {
+    
+        assert(dimensions.first == 1);
+        assert(dimensions.second == 1);
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 1, 1>::Matrix(TScalar value) :
+        _value(value) {
+    }
+   
+    template <class TScalar> template <class TOtherDerived>
+    inline
+    Matrix<TScalar, 1, 1>::Matrix(const detail::MatrixInterface<TOtherDerived>& other) {
+        this->assign(other);
+    }
+
+    template <class TScalar>
+    inline
+    const TScalar*
+    Matrix<TScalar, 1, 1>::data() const {
+        return &_value;
+    }
+
+    template <class TScalar>
+    inline
+    TScalar*
+    Matrix<TScalar, 1, 1>::data() {
+        return &_value;
+    }
+
+    template <class TScalar>
+    inline
+    int
+    Matrix<TScalar, 1, 1>::numRows() const {
+        return 1;
+    }
+
+    template <class TScalar>
+    inline
+    int
+    Matrix<TScalar, 1, 1>::numColumns() const {
+        return 1;
+    }
+
+    template <class TScalar>
+    inline
+    int
+    Matrix<TScalar, 1, 1>::numComponents() const {
+        return 1;
+    }
+
+    template <class TScalar>
+    inline
+    int
+    Matrix<TScalar, 1, 1>::columnStride() const {
+        return 1;
+    }
+
+    template <class TScalar> template <class TOtherDerived>
+    void
+    Matrix<TScalar, 1, 1>::operator=(const detail::MatrixInterface<TOtherDerived>& other) {
+        this->assign(other);
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 1, 1>::operator TScalar() const {
+        return _value;
+    }
+
+    template <class TScalar>
+    inline
+    const Matrix<TScalar, 1, 1>
+    Matrix<TScalar, 1, 1>::constant(TScalar value) {
+        Matrix<TScalar, 1, 1> result;
+        result.setConstant(value);
+        return result;
+    }
+
+    template <class TScalar>
+    inline
+    const Matrix<TScalar, 1, 1>
+    Matrix<TScalar, 1, 1>::zero() {
+        return Matrix<TScalar, 1, 1>();
+    }
+
+    template <class TScalar>
+    inline
+    const Matrix<TScalar, 1, 1>
+    Matrix<TScalar, 1, 1>::ones() {
+        Matrix<TScalar, 1, 1> result;
+        result.setOnes();
+        return result;
+    }
+
+    template <class TScalar>
+    inline
+    const Matrix<TScalar, 1, 1>
+    Matrix<TScalar, 1, 1>::identity() {
+        Matrix<TScalar, 1, 1> result;
+        result.setIdentity();
+        return result;
+    }
+
+    template <class TScalar>
+    inline
+    const Matrix<TScalar, 1, 1>
+    Matrix<TScalar, 1, 1>::random() {
+        Matrix<TScalar, 1, 1> result;
         result.setRandom();
         return result;
     }

@@ -120,7 +120,7 @@ TEST_CASE("Curve operations") {
     ParametricCurve3d parabola(expression, Interval(-2, 2));
 
     Vector3d tangentVector(parabola.tangentVector().evaluate(1.0));
-    double curvature = parabola.curvature().evaluate(1.0).value();
+    double curvature = parabola.curvature().evaluate(1.0);
     Vector3d normalVector(parabola.normalVector().evaluate(1.0));
     Vector3d binormalVector(parabola.binormalVector().evaluate(1.0));
 

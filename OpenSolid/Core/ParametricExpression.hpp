@@ -213,25 +213,18 @@ namespace opensolid
     inline
     const Matrix<double, iNumDimensions, 1>
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(double u) const {
-        static_assert(iNumParameters == 1, "Incorrect number of parameters");
+        static_assert(iNumParameters == 1, "Wrong number of parameters");
 
-        Matrix1d parameterValue;
-        parameterValue.value() = u;
-
-        return evaluate(parameterValue);
+        return evaluate(Matrix1d(u));
     }
 
     template <int iNumDimensions, int iNumParameters>
     inline
     const Matrix<double, iNumDimensions, 1>
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(double u, double v) const {
-        static_assert(iNumParameters == 2, "Incorrect number of parameters");
+        static_assert(iNumParameters == 2, "Wrong number of parameters");
 
-        ColumnMatrix2d parameterValues;
-        parameterValues(0) = u;
-        parameterValues(1) = v;
-
-        return evaluate(parameterValues);
+        return evaluate(ColumnMatrix2d(u, v));
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -242,39 +235,27 @@ namespace opensolid
         double v,
         double w
     ) const {
-        static_assert(iNumParameters == 3, "Incorrect number of parameters");
+        static_assert(iNumParameters == 3, "Wrong number of parameters");
 
-        ColumnMatrix3d parameterValues;
-        parameterValues(0) = u;
-        parameterValues(1) = v;
-        parameterValues(2) = w;
-
-        return evaluate(parameterValues);
+        return evaluate(ColumnMatrix3d(u, v, w));
     }
 
     template <int iNumDimensions, int iNumParameters>
     inline
     const Matrix<Interval, iNumDimensions, 1>
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(Interval u) const {
-        static_assert(iNumParameters == 1, "Incorrect number of parameters");
+        static_assert(iNumParameters == 1, "Wrong number of parameters");
 
-        IntervalMatrix1d parameterValue;
-        parameterValue.value() = u;
-
-        return evaluate(parameterValue);
+        return evaluate(IntervalMatrix1d(u));
     }
 
     template <int iNumDimensions, int iNumParameters>
     inline
     const Matrix<Interval, iNumDimensions, 1>
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(Interval u, Interval v) const {
-        static_assert(iNumParameters == 2, "Incorrect number of parameters");
+        static_assert(iNumParameters == 2, "Wrong number of parameters");
 
-        IntervalColumnMatrix2d parameterValues;
-        parameterValues(0) = u;
-        parameterValues(1) = v;
-
-        return evaluate(parameterValues);
+        return evaluate(IntervalColumnMatrix2d(u, v));
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -285,14 +266,9 @@ namespace opensolid
         Interval v,
         Interval w
     ) const {
-        static_assert(iNumParameters == 3, "Incorrect number of parameters");
+        static_assert(iNumParameters == 3, "Wrong number of parameters");
 
-        IntervalColumnMatrix3d parameterValues;
-        parameterValues(0) = u;
-        parameterValues(1) = v;
-        parameterValues(2) = w;
-
-        return evaluate(parameterValues);
+        return evaluate(IntervalColumnMatrix3d(u, v, w));
     }
     
     template <int iNumDimensions, int iNumParameters> template <int iNumColumns>
@@ -403,10 +379,7 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(double u) const {
         static_assert(iNumParameters == 1, "Wrong number of parameters");
 
-        Matrix1d parameterValue;
-        parameterValue.value() = u;
-
-        return jacobian(parameterValue);
+        return jacobian(Matrix1d(u));
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -415,11 +388,7 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(double u, double v) const {
         static_assert(iNumParameters == 2, "Wrong number of parameters");
 
-        ColumnMatrix2d parameterValues;
-        parameterValues(0) = u;
-        parameterValues(1) = v;
-
-        return jacobian(parameterValues);
+        return jacobian(ColumnMatrix2d(u, v));
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -432,12 +401,7 @@ namespace opensolid
     ) const {
         static_assert(iNumParameters == 3, "Wrong number of parameters");
 
-        ColumnMatrix3d parameterValues;
-        parameterValues(0) = u;
-        parameterValues(1) = v;
-        parameterValues(2) = w;
-
-        return jacobian(parameterValues);
+        return jacobian(ColumnMatrix3d(u, v, w));
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -446,10 +410,7 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(Interval u) const {
         static_assert(iNumParameters == 1, "Wrong number of parameters");
 
-        IntervalMatrix1d parameterValue;
-        parameterValue.value() = u;
-
-        return jacobian(parameterValue);
+        return jacobian(IntervalMatrix1d(u));
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -458,11 +419,7 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(Interval u, Interval v) const {
         static_assert(iNumParameters == 2, "Wrong number of parameters");
 
-        IntervalColumnMatrix2d parameterValues;
-        parameterValues(0) = u;
-        parameterValues(1) = v;
-
-        return jacobian(parameterValues);
+        return jacobian(IntervalColumnMatrix2d(u, v));
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -475,12 +432,7 @@ namespace opensolid
     ) const {
         static_assert(iNumParameters == 3, "Wrong number of parameters");
 
-        IntervalColumnMatrix3d parameterValues;
-        parameterValues(0) = u;
-        parameterValues(1) = v;
-        parameterValues(2) = w;
-
-        return jacobian(parameterValues);
+        return jacobian(IntervalColumnMatrix3d(u, v, w));
     }
 
     template <int iNumDimensions, int iNumParameters>

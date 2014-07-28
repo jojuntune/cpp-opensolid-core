@@ -42,18 +42,16 @@ namespace opensolid
 
             if (matrix.numRows() != 1 || matrix.numColumns() != 1) {
                 assert(false);
-                return Matrix<ScalarType, 1, 1>::zero();
+                return Matrix<ScalarType, 1, 1>();
             }
 
             ScalarType value = matrix.value();
             if (value == Zero()) {
                 assert(false);
-                return Matrix<ScalarType, 1, 1>::zero();
+                return Matrix<ScalarType, 1, 1>();
             }
 
-            Matrix<ScalarType, 1, 1> result;
-            result.value() = 1.0 / value;
-            return result;
+            return Matrix<ScalarType, 1, 1>(1.0 / value);
         }
 
         template <class TDerived>
