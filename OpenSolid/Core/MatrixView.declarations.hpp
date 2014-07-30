@@ -26,6 +26,6 @@
 
 namespace opensolid
 {
-    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStrideInBytes>
     class MatrixView;
 }

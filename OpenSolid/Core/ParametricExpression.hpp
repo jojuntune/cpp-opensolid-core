@@ -56,13 +56,13 @@ namespace opensolid
         inline
         ConstMatrixViewXd
         constView(const double& value) {
-            return ConstMatrixViewXd(&value, 1, 1, 1);
+            return ConstMatrixViewXd(&value, 1, 1, sizeof(double));
         }
 
         inline
         ConstIntervalMatrixViewXd
         constView(const Interval& value) {
-            return ConstIntervalMatrixViewXd(&value, 1, 1, 1);
+            return ConstIntervalMatrixViewXd(&value, 1, 1, sizeof(Interval));
         }
 
         template <int iNumRows, int iNumColumns>
@@ -82,13 +82,23 @@ namespace opensolid
         inline
         ConstMatrixViewXd
         constView(const std::vector<double>& values) {
-            return ConstMatrixViewXd(&values.front(), 1, int(values.size()), 1);
+            return ConstMatrixViewXd(
+                &values.front(),
+                1,
+                int(values.size()),
+                sizeof(double)
+            );
         }
 
         inline
         ConstIntervalMatrixViewXd
         constView(const std::vector<Interval>& values) {
-            return ConstIntervalMatrixViewXd(&values.front(), 1, int(values.size()), 1);
+            return ConstIntervalMatrixViewXd(
+                &values.front(),
+                1,
+                int(values.size()),
+                sizeof(Interval)
+            );
         }
 
         template <int iNumRows>
@@ -132,20 +142,25 @@ namespace opensolid
         inline
         MatrixViewXd
         mutableView(std::vector<double>& values) {
-            return MatrixViewXd(&values.front(), 1, int(values.size()), 1);
+            return MatrixViewXd(&values.front(), 1, int(values.size()), sizeof(double));
         }
 
         inline
         IntervalMatrixViewXd
         mutableView(std::vector<Interval>& values) {
-            return IntervalMatrixViewXd(&values.front(), 1, int(values.size()), 1);
+            return IntervalMatrixViewXd(&values.front(), 1, int(values.size()), sizeof(Interval));
         }
 
         template <int iNumRows>
         inline
         MatrixViewXd
         mutableView(std::vector<Matrix<double, iNumRows, 1>>& matrices) {
-            return MatrixViewXd(matrices.front().data(), iNumRows, int(matrices.size()), iNumRows);
+            return MatrixViewXd(
+                matrices.front().data(),
+                iNumRows,
+                int(matrices.size()),
+                iNumRows * sizeof(double)
+            );
         }
 
         template <int iNumRows>
@@ -156,7 +171,7 @@ namespace opensolid
                 matrices.front().data(),
                 iNumRows,
                 int(matrices.size()),
-                iNumRows
+                iNumRows * sizeof(Interval)
             );
         }
     }

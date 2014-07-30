@@ -278,8 +278,8 @@ namespace opensolid
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
     int
-    Matrix<TScalar, iNumRows, iNumColumns>::columnStride() const {
-        return iNumRows;
+    Matrix<TScalar, iNumRows, iNumColumns>::columnStrideInBytes() const {
+        return iNumRows * sizeof(TScalar);
     }
 
     template <class TScalar, int iNumRows, int iNumColumns> template <class TOtherDerived>
@@ -399,8 +399,8 @@ namespace opensolid
     template <class TScalar>
     inline
     int
-    Matrix<TScalar, 1, 1>::columnStride() const {
-        return 1;
+    Matrix<TScalar, 1, 1>::columnStrideInBytes() const {
+        return sizeof(TScalar);
     }
 
     template <class TScalar> template <class TOtherDerived>
@@ -553,8 +553,8 @@ namespace opensolid
     template <class TScalar, int iNumColumns>
     inline
     int
-    Matrix<TScalar, -1, iNumColumns>::columnStride() const {
-        return _numRows;
+    Matrix<TScalar, -1, iNumColumns>::columnStrideInBytes() const {
+        return numRows() * sizeof(TScalar);
     }
 
     template <class TScalar, int iNumColumns> template <class TOtherDerived>
@@ -703,8 +703,8 @@ namespace opensolid
     template <class TScalar, int iNumRows>
     inline
     int
-    Matrix<TScalar, iNumRows, -1>::columnStride() const {
-        return iNumRows;
+    Matrix<TScalar, iNumRows, -1>::columnStrideInBytes() const {
+        return iNumRows * sizeof(TScalar);
     }
 
     template <class TScalar, int iNumRows> template <class TOtherDerived>
@@ -866,8 +866,8 @@ namespace opensolid
     template <class TScalar>
     inline
     int
-    Matrix<TScalar, -1, -1>::columnStride() const {
-        return _numRows;
+    Matrix<TScalar, -1, -1>::columnStrideInBytes() const {
+        return numRows() * sizeof(TScalar);
     }
 
     template <class TScalar> template <class TOtherDerived>

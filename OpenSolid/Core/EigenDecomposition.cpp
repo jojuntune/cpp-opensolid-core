@@ -41,8 +41,8 @@ namespace opensolid
         if (eigenSolver.info() == Eigen::Success) {
             Eigen::Matrix2d eigenvectors = eigenSolver.eigenvectors();
             Eigen::Vector2d eigenvalues = eigenSolver.eigenvalues();
-            _eigenvectors = MatrixView<const double, 2, 2, 2>(eigenvectors.data());
-            _eigenvalues = MatrixView<const double, 2, 1, 2>(eigenvalues.data());
+            _eigenvectors = MatrixView<const double, 2, 2, 2 * sizeof(double)>(eigenvectors.data());
+            _eigenvalues = MatrixView<const double, 2, 1, 2 * sizeof(double)>(eigenvalues.data());
             _exists = true;
         }
     }
@@ -55,8 +55,8 @@ namespace opensolid
         if (eigenSolver.info() == Eigen::Success) {
             Eigen::Matrix3d eigenvectors = eigenSolver.eigenvectors();
             Eigen::Vector3d eigenvalues = eigenSolver.eigenvalues();
-            _eigenvectors = MatrixView<const double, 3, 3, 3>(eigenvectors.data());
-            _eigenvalues = MatrixView<const double, 3, 1, 3>(eigenvalues.data());
+            _eigenvectors = MatrixView<const double, 3, 3, 3 * sizeof(double)>(eigenvectors.data());
+            _eigenvalues = MatrixView<const double, 3, 1, 3 * sizeof(double)>(eigenvalues.data());
             _exists = true;
         }
     }

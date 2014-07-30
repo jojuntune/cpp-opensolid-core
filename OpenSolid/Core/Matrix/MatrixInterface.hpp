@@ -56,6 +56,24 @@ namespace opensolid
             return static_cast<const TDerived&>(*this);
         }
 
+        template <class TDerived>
+        inline
+        char*
+        MatrixInterface<TDerived>::rawPointer(
+            typename MatrixTraits<TDerived>::PlainScalar* scalarPtr
+        ) {
+            return reinterpret_cast<char*>(scalarPtr);
+        }
+
+        template <class TDerived>
+        inline
+        const char*
+        MatrixInterface<TDerived>::rawPointer(
+            typename MatrixTraits<TDerived>::ConstScalar* scalarPtr
+        ) const {
+            return reinterpret_cast<const char*>(scalarPtr);
+        }
+
         template <class TDerived> template <class TOtherDerived>
         inline
         void
@@ -71,7 +89,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const typename MatrixTraits<TDerived>::Scalar*
+        typename MatrixTraits<TDerived>::ConstScalar*
         MatrixInterface<TDerived>::data() const {
             return derived().data();
         }
@@ -114,8 +132,8 @@ namespace opensolid
         template <class TDerived>
         inline
         int
-        MatrixInterface<TDerived>::columnStride() const {
-            return derived().columnStride();
+        MatrixInterface<TDerived>::columnStrideInBytes() const {
+            return derived().columnStrideInBytes();
         }
 
         template <class TDerived>
@@ -143,7 +161,9 @@ namespace opensolid
             assert(rowIndex >= 0 && rowIndex < numRows());
             assert(columnIndex >= 0 && columnIndex < numColumns());
 
-            return *(data() + rowIndex + columnIndex * columnStride());
+            return *reinterpret_cast<ConstScalar*>(
+                rawPointer(data()) + rowIndex * sizeof(Scalar) + columnIndex * columnStrideInBytes()
+            );
         }
 
         template <class TDerived>
@@ -153,7 +173,9 @@ namespace opensolid
             assert(rowIndex >= 0 && rowIndex < numRows());
             assert(columnIndex >= 0 && columnIndex < numColumns());
 
-            return *(data() + rowIndex + columnIndex * columnStride());
+            return *reinterpret_cast<Scalar*>(
+                rawPointer(data()) + rowIndex * sizeof(Scalar) + columnIndex * columnStrideInBytes()
+            );
         }
 
         template <class TDerived>
@@ -207,21 +229,19 @@ namespace opensolid
         template <class TDerived>
         inline
         const MatrixView<
-            const typename MatrixTraits<TDerived>::PlainScalar,
+            typename MatrixTraits<TDerived>::ConstScalar,
             1,
             MatrixTraits<TDerived>::NumColumns,
-            MatrixTraits<TDerived>::ColumnStride
+            MatrixTraits<TDerived>::ColumnStrideInBytes
         >
         MatrixInterface<TDerived>::row(int rowIndex) const {
-            typedef const typename MatrixTraits<TDerived>::PlainScalar ConstScalarType;
-
             assert(rowIndex >= 0 && rowIndex < numRows());
 
-            return MatrixView<ConstScalarType, 1, NumColumns, ColumnStride>(
+            return MatrixView<ConstScalar, 1, NumColumns, ColumnStrideInBytes>(
                 data() + rowIndex,
                 1,
                 numColumns(),
-                columnStride()
+                columnStrideInBytes()
             );
         }
 
@@ -231,42 +251,37 @@ namespace opensolid
             typename MatrixTraits<TDerived>::Scalar,
             1,
             MatrixTraits<TDerived>::NumColumns,
-            MatrixTraits<TDerived>::ColumnStride
+            MatrixTraits<TDerived>::ColumnStrideInBytes
         >
         MatrixInterface<TDerived>::row(int rowIndex) {
             assert(rowIndex >= 0 && rowIndex < numRows());
 
-            return MatrixView<
-                typename MatrixTraits<TDerived>::Scalar,
-                1,
-                NumColumns,
-                ColumnStride
-            >(
+            return MatrixView<Scalar, 1, NumColumns, ColumnStrideInBytes>(
                 data() + rowIndex,
                 1,
                 numColumns(),
-                columnStride()
+                columnStrideInBytes()
             );
         }
 
         template <class TDerived>
         inline
         const MatrixView<
-            const typename MatrixTraits<TDerived>::PlainScalar,
+            typename MatrixTraits<TDerived>::ConstScalar,
             MatrixTraits<TDerived>::NumRows,
             1,
-            MatrixTraits<TDerived>::ColumnStride
+            MatrixTraits<TDerived>::ColumnStrideInBytes
         >
         MatrixInterface<TDerived>::column(int columnIndex) const {
-            typedef const typename MatrixTraits<TDerived>::PlainScalar ConstScalarType;
-
             assert(columnIndex >= 0 && columnIndex < numColumns());
             
-            return MatrixView<ConstScalarType, NumRows, 1, ColumnStride>(
-                data() + columnIndex * columnStride(),
+            return MatrixView<ConstScalar, NumRows, 1, ColumnStrideInBytes>(
+                reinterpret_cast<ConstScalar*>(
+                    rawPointer(data()) + columnIndex * columnStrideInBytes()
+                ),
                 numRows(),
                 1,
-                columnStride()
+                columnStrideInBytes()
             );
         }
 
@@ -276,90 +291,84 @@ namespace opensolid
             typename MatrixTraits<TDerived>::Scalar,
             MatrixTraits<TDerived>::NumRows,
             1,
-            MatrixTraits<TDerived>::ColumnStride
+            MatrixTraits<TDerived>::ColumnStrideInBytes
         >
         MatrixInterface<TDerived>::column(int columnIndex) {
             assert(columnIndex >= 0 && columnIndex < numColumns());
 
-            return MatrixView<
-                typename MatrixTraits<TDerived>::Scalar,
-                NumRows,
-                1,
-                ColumnStride
-            >(
-                data() + columnIndex * columnStride(),
+            return MatrixView<Scalar, NumRows, 1, ColumnStrideInBytes>(
+                reinterpret_cast<Scalar*>(
+                    rawPointer(data()) + columnIndex * columnStrideInBytes()
+                ),
                 numRows(),
                 1,
-                columnStride()
+                columnStrideInBytes()
             );
         }
 
-        template <class TDerived> template <int iBlockRows, int iBlockCols>
+        template <class TDerived> template <int iBlockRows, int iBlockColumns>
         const MatrixView<
-            const typename MatrixTraits<TDerived>::PlainScalar,
+            typename MatrixTraits<TDerived>::ConstScalar,
             iBlockRows,
-            iBlockCols,
-            MatrixTraits<TDerived>::ColumnStride
+            iBlockColumns,
+            MatrixTraits<TDerived>::ColumnStrideInBytes
         >
-        MatrixInterface<TDerived>::block(int startRow, int startCol) const {
-            return MatrixView<
-                const typename MatrixTraits<TDerived>::PlainScalar,
+        MatrixInterface<TDerived>::block(int startRow, int startColumn) const {
+            return MatrixView<ConstScalar, iBlockRows, iBlockColumns, ColumnStrideInBytes>(
+                reinterpret_cast<ConstScalar*>(
+                    rawPointer(data()) +
+                    startRow * sizeof(Scalar) +
+                    startColumn * columnStrideInBytes()
+                ),
                 iBlockRows,
-                iBlockCols,
-                MatrixTraits<TDerived>::ColumnStride
-            >(
-                data() + startCol * columnStride() + startRow,
-                iBlockRows,
-                iBlockCols,
-                columnStride()
+                iBlockColumns,
+                columnStrideInBytes()
             );
         }
 
-        template <class TDerived> template <int iBlockRows, int iBlockCols>
+        template <class TDerived> template <int iBlockRows, int iBlockColumns>
         MatrixView<
             typename MatrixTraits<TDerived>::Scalar,
             iBlockRows,
-            iBlockCols,
-            MatrixTraits<TDerived>::ColumnStride
+            iBlockColumns,
+            MatrixTraits<TDerived>::ColumnStrideInBytes
         >
-        MatrixInterface<TDerived>::block(int startRow, int startCol) {
-            return MatrixView<
-                typename MatrixTraits<TDerived>::Scalar,
+        MatrixInterface<TDerived>::block(int startRow, int startColumn) {
+            return MatrixView<Scalar, iBlockRows, iBlockColumns, ColumnStrideInBytes>(
+                reinterpret_cast<Scalar*>(
+                    rawPointer(data()) +
+                    startRow * sizeof(Scalar) +
+                    startColumn * columnStrideInBytes()
+                ),
                 iBlockRows,
-                iBlockCols,
-                MatrixTraits<TDerived>::ColumnStride
-            >(
-                data() + startCol * columnStride() + startRow,
-                iBlockRows,
-                iBlockCols,
-                columnStride()
+                iBlockColumns,
+                columnStrideInBytes()
             );
 
         }
 
         template <class TDerived>
         const MatrixView<
-            const typename MatrixTraits<TDerived>::PlainScalar,
+            typename MatrixTraits<TDerived>::ConstScalar,
             -1,
             -1,
-            MatrixTraits<TDerived>::ColumnStride
+            MatrixTraits<TDerived>::ColumnStrideInBytes
         >
         MatrixInterface<TDerived>::block(
             int startRow,
-            int startCol,
+            int startColumn,
             int blockRows,
-            int blockCols
+            int blockColumns
         ) const {
-            return MatrixView<
-                const typename MatrixTraits<TDerived>::PlainScalar,
-                -1,
-                -1,
-                MatrixTraits<TDerived>::ColumnStride
-            >(
-                data() + startCol * columnStride() + startRow,
+            return MatrixView<ConstScalar, -1, -1, ColumnStrideInBytes>(
+                reinterpret_cast<ConstScalar*>(
+                    rawPointer(data()) +
+                    startRow * sizeof(Scalar) +
+                    startColumn * columnStrideInBytes()
+                ),
                 blockRows,
-                blockCols,
-                columnStride()
+                blockColumns,
+                columnStrideInBytes()
             );
         }
 
@@ -368,24 +377,23 @@ namespace opensolid
             typename MatrixTraits<TDerived>::Scalar,
             -1,
             -1,
-            MatrixTraits<TDerived>::ColumnStride
+            MatrixTraits<TDerived>::ColumnStrideInBytes
         >
         MatrixInterface<TDerived>::block(
             int startRow,
-            int startCol,
+            int startColumn,
             int blockRows,
-            int blockCols
+            int blockColumns
         ) {
-            return MatrixView<
-                typename MatrixTraits<TDerived>::Scalar,
-                -1,
-                -1,
-                MatrixTraits<TDerived>::ColumnStride
-            >(
-                data() + startCol * columnStride() + startRow,
+            return MatrixView<Scalar, -1, -1, ColumnStrideInBytes>(
+                reinterpret_cast<Scalar*>(
+                    rawPointer(data()) +
+                    startRow * sizeof(Scalar) +
+                    startColumn * columnStrideInBytes()
+                ),
                 blockRows,
-                blockCols,
-                columnStride()
+                blockColumns,
+                columnStrideInBytes()
             );
         }
 
@@ -395,15 +403,15 @@ namespace opensolid
             const typename MatrixTraits<TDerived>::Scalar,
             MatrixTraits<TDerived>::NumRows,
             MatrixTraits<TDerived>::NumColumns,
-            MatrixTraits<TDerived>::ColumnStride
+            MatrixTraits<TDerived>::ColumnStrideInBytes
         >
         MatrixInterface<TDerived>::view() const {
-            return MatrixView<
-                const typename MatrixTraits<TDerived>::Scalar,
-                MatrixTraits<TDerived>::NumRows,
-                MatrixTraits<TDerived>::NumColumns,
-                MatrixTraits<TDerived>::ColumnStride
-            >(data(), numRows(), numColumns(), columnStride());
+            return MatrixView<ConstScalar, NumRows, NumColumns, ColumnStrideInBytes>(
+                data(),
+                numRows(),
+                numColumns(),
+                columnStrideInBytes()
+            );
         }
 
         template <class TDerived>
@@ -412,15 +420,15 @@ namespace opensolid
             typename MatrixTraits<TDerived>::Scalar,
             MatrixTraits<TDerived>::NumRows,
             MatrixTraits<TDerived>::NumColumns,
-            MatrixTraits<TDerived>::ColumnStride
+            MatrixTraits<TDerived>::ColumnStrideInBytes
         >
         MatrixInterface<TDerived>::view() {
-            return MatrixView<
-                typename MatrixTraits<TDerived>::Scalar,
-                MatrixTraits<TDerived>::NumRows,
-                MatrixTraits<TDerived>::NumColumns,
-                MatrixTraits<TDerived>::ColumnStride
-            >(data(), numRows(), numColumns(), columnStride());
+            return MatrixView<Scalar, NumRows, NumColumns, ColumnStrideInBytes>(
+                data(),
+                numRows(),
+                numColumns(),
+                columnStrideInBytes()
+            );
         }
 
         template <class TDerived>
@@ -947,7 +955,7 @@ namespace opensolid
         const Matrix<
             typename CommonScalar<TDerived, TOtherDerived>::Type,
             CommonRows<TDerived, TOtherDerived>::Value,
-            CommonCols<TDerived, TOtherDerived>::Value
+            CommonColumns<TDerived, TOtherDerived>::Value
         >
         MatrixInterface<TDerived>::cwiseProduct(const MatrixInterface<TOtherDerived>& other) const {
             return binaryMap(
@@ -966,7 +974,7 @@ namespace opensolid
         const Matrix<
             typename CommonScalar<TDerived, TOtherDerived>::Type,
             CommonRows<TDerived, TOtherDerived>::Value,
-            CommonCols<TDerived, TOtherDerived>::Value
+            CommonColumns<TDerived, TOtherDerived>::Value
         >
         MatrixInterface<TDerived>::cwiseQuotient(
             const MatrixInterface<TOtherDerived>& other
@@ -1011,7 +1019,7 @@ namespace opensolid
         const Matrix<
             Interval,
             CommonRows<TDerived, TOtherDerived>::Value,
-            CommonCols<TDerived, TOtherDerived>::Value
+            CommonColumns<TDerived, TOtherDerived>::Value
         >
         MatrixInterface<TDerived>::cwiseHull(const MatrixInterface<TOtherDerived>& other) const {
             return binaryMap(
@@ -1066,7 +1074,7 @@ namespace opensolid
         const Matrix<
             Interval,
             CommonRows<TDerived, TOtherDerived>::Value,
-            CommonCols<TDerived, TOtherDerived>::Value
+            CommonColumns<TDerived, TOtherDerived>::Value
         >
         MatrixInterface<TDerived>::cwiseIntersection(
             const MatrixInterface<TOtherDerived>& other
@@ -1423,17 +1431,17 @@ namespace opensolid
         ) : CheckCompatibleSizes<iFirstRows, iSecondRows>(firstRows, secondRows) {
         }
 
-        template <int iFirstCols, int iSecondCols>
+        template <int iFirstColumns, int iSecondColumns>
         inline
-        CheckCompatibleColumns<iFirstCols, iSecondCols>::CheckCompatibleColumns() {
+        CheckCompatibleColumns<iFirstColumns, iSecondColumns>::CheckCompatibleColumns() {
         }
 
-        template <int iFirstCols, int iSecondCols>
+        template <int iFirstColumns, int iSecondColumns>
         inline
-        CheckCompatibleColumns<iFirstCols, iSecondCols>::CheckCompatibleColumns(
-            int firstCols,
-            int secondCols
-        ) : CheckCompatibleSizes<iFirstCols, iSecondCols>(firstCols, secondCols) {
+        CheckCompatibleColumns<iFirstColumns, iSecondColumns>::CheckCompatibleColumns(
+            int firstColumns,
+            int secondColumns
+        ) : CheckCompatibleSizes<iFirstColumns, iSecondColumns>(firstColumns, secondColumns) {
         }
 
         template <class TFirstMatrix, class TSecondMatrix>
@@ -1566,7 +1574,7 @@ namespace opensolid
         const Matrix<
             typename CommonScalar<TFirstDerived, TSecondDerived>::Type,
             CommonRows<TFirstDerived, TSecondDerived>::Value,
-            CommonCols<TFirstDerived, TSecondDerived>::Value
+            CommonColumns<TFirstDerived, TSecondDerived>::Value
         >
         operator+(
             const MatrixInterface<TFirstDerived>& firstMatrix,
@@ -1588,7 +1596,7 @@ namespace opensolid
         const Matrix<
             typename CommonScalar<TFirstDerived, TSecondDerived>::Type,
             CommonRows<TFirstDerived, TSecondDerived>::Value,
-            CommonCols<TFirstDerived, TSecondDerived>::Value
+            CommonColumns<TFirstDerived, TSecondDerived>::Value
         >
         operator-(
             const MatrixInterface<TFirstDerived>& firstMatrix,

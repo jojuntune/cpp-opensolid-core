@@ -149,7 +149,7 @@ namespace opensolid
         numComponents() const;
 
         int
-        columnStride() const;
+        columnStrideInBytes() const;
 
         template <class TOtherDerived>
         void
@@ -221,7 +221,7 @@ namespace opensolid
         numComponents() const;
 
         int
-        columnStride() const;
+        columnStrideInBytes() const;
 
         template <class TOtherDerived>
         void
@@ -289,7 +289,7 @@ namespace opensolid
         numComponents() const;
 
         int
-        columnStride() const;
+        columnStrideInBytes() const;
 
         template <class TOtherDerived>
         void
@@ -360,7 +360,7 @@ namespace opensolid
         numComponents() const;
 
         int
-        columnStride() const;
+        columnStrideInBytes() const;
 
         template <class TOtherDerived>
         void
@@ -434,7 +434,7 @@ namespace opensolid
         numComponents() const;
 
         int
-        columnStride() const;
+        columnStrideInBytes() const;
 
         template <class TOtherDerived>
         void
@@ -463,10 +463,11 @@ namespace opensolid
     struct MatrixTraits<Matrix<TScalar, iNumRows, iNumColumns>>
     {
         typedef TScalar Scalar;
-        typedef TScalar PlainScalar;
+        typedef typename std::remove_const<TScalar>::type PlainScalar;
+        typedef const PlainScalar ConstScalar;
         static const int NumRows = iNumRows;
         static const int NumColumns = iNumColumns;
-        static const int ColumnStride = iNumRows;
+        static const int ColumnStrideInBytes = iNumRows == -1 ? -1 : iNumRows * sizeof(TScalar);
     };
 
     template <class TScalar, int iNumRows, int iNumColumns>

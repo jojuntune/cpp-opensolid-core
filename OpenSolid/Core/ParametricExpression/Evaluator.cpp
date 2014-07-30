@@ -101,16 +101,16 @@ namespace opensolid
             typedef typename Types<TScalar>::Cache CacheType;
 
             if (expressionImplementation->isIdentityExpression()) {
-                // Identity expression: simply return parameter values map as-is
+                // Identity expression: simply return parameter values view as-is
                 return parameterView;
             } else if (expressionImplementation->isParameterExpression()) {
-                // Parameter expression: return view pointing to a single row of data within the given
-                // parameter values
+                // Parameter expression: return view pointing to a single row of data within the
+                // given parameter values
                 int parameterIndex =
                     expressionImplementation->cast<ParameterExpression>()->parameterIndex();
                 return parameterView.row(parameterIndex);
             } else if (expressionImplementation->isConstantExpression()) {
-                // Constant expression: build map pointing to constant data (using a stride of  zero
+                // Constant expression: build view pointing to constant data (using a stride of zero
                 // allows the single column of data within the ConstantExpression to be used to
                 // represent a matrix of arbitrary number of columns)
                 return ConstViewType(
@@ -120,7 +120,7 @@ namespace opensolid
                     0
                 );
             } else {
-                // Generic expression: return map to cached data, generating data if necessary
+                // Generic expression: return view to cached data, generating data if necessary
                 KeyType key(expressionImplementation.get(), parameterView.data());
                 auto iterator = cache.find(key);
                 if (iterator == cache.end()) {
@@ -133,29 +133,17 @@ namespace opensolid
                         std::pair<const KeyType, MatrixType>(key, std::move(newMatrix))
                     ).first;
                     MatrixType& resultMatrix = iterator->second;
+                    ViewType resultView = resultMatrix.view();
 
-                    // Construct map pointing to newly allocated results matrix
-                    ViewType resultView(
-                        resultMatrix.data(),
-                        resultMatrix.numRows(),
-                        resultMatrix.numColumns(),
-                        resultMatrix.columnStride()
-                    );
-
-                    // Evaluate expression into results matrix using map
+                    // Evaluate expression into results matrix using view
                     expressionImplementation->evaluate(parameterView, resultView, *this);
                 }
 
                 // Get reference to cached matrix
                 const MatrixType& resultMatrix = iterator->second;
 
-                // Return map pointing to cached matrix
-                return ConstViewType(
-                    resultMatrix.data(),
-                    resultMatrix.numRows(),
-                    resultMatrix.numColumns(),
-                    resultMatrix.columnStride()
-                );
+                // Return view pointing to cached matrix
+                return resultMatrix.view();
             }
         }
 
@@ -188,29 +176,17 @@ namespace opensolid
                     std::pair<const KeyType, MatrixType>(key, std::move(newMatrix))
                 ).first;
                 MatrixType& resultMatrix = iterator->second;
+                ViewType resultView = resultMatrix.view();
 
-                // Construct map pointing to newly allocated results matrix
-                ViewType resultView(
-                    resultMatrix.data(),
-                    resultMatrix.numRows(),
-                    resultMatrix.numColumns(),
-                    resultMatrix.columnStride()
-                );
-
-                // Evaluate expression into results matrix using map
+                // Evaluate expression into results matrix using view
                 expressionImplementation->evaluateJacobian(parameterView, resultView, *this);
             }
 
             // Get reference to cached matrix
             const MatrixType& resultMatrix = iterator->second;
 
-            // Return map pointing to cached matrix
-            return ConstViewType(
-                resultMatrix.data(),
-                resultMatrix.numRows(),
-                resultMatrix.numColumns(),
-                resultMatrix.columnStride()
-            );
+            // Return view pointing to cached matrix
+            return resultMatrix.view();
         }
 
         ConstMatrixViewXd

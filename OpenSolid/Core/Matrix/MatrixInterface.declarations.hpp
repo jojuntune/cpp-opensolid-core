@@ -52,7 +52,7 @@ namespace opensolid
         template <int iFirstRows, int iSecondRows>
         struct CheckCompatibleRows;
 
-        template <int iFirstCols, int iSecondCols>
+        template <int iFirstColumns, int iSecondColumns>
         struct CheckCompatibleColumns;
 
         template <class TFirstMatrix, class TSecondMatrix>
@@ -65,7 +65,7 @@ namespace opensolid
         struct CommonRows;
 
         template <class TFirstMatrix, class TSecondMatrix>
-        struct CommonCols;
+        struct CommonColumns;
 
         template <class TFirst, class TSecond>
         struct CommonScalar;
