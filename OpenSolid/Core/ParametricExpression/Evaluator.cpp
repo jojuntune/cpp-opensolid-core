@@ -125,25 +125,27 @@ namespace opensolid
                 auto iterator = cache.find(key);
                 if (iterator == cache.end()) {
                     // Cached results not found - insert new empty entry into cache
-                    MatrixType newMatrix(
-                        expressionImplementation->numDimensions(),
-                        parameterView.numColumns()
+                    std::unique_ptr<MatrixType> newMatrix(
+                        new MatrixType(
+                            expressionImplementation->numDimensions(),
+                            parameterView.numColumns()
+                        )
                     );
-                    iterator = cache.insert(
-                        std::pair<const KeyType, MatrixType>(key, std::move(newMatrix))
-                    ).first;
-                    MatrixType& resultMatrix = iterator->second;
-                    ViewType resultView = resultMatrix.view();
+                    ViewType resultView = newMatrix->view();
 
                     // Evaluate expression into results matrix using view
                     expressionImplementation->evaluate(parameterView, resultView, *this);
+
+                    iterator = cache.insert(
+                        std::pair<const KeyType, std::unique_ptr<MatrixType>>(
+                            key,
+                            std::move(newMatrix)
+                        )
+                    ).first;
                 }
 
-                // Get reference to cached matrix
-                const MatrixType& resultMatrix = iterator->second;
-
                 // Return view pointing to cached matrix
-                return resultMatrix.view();
+                return iterator->second->view();
             }
         }
 
@@ -168,25 +170,24 @@ namespace opensolid
             if (iterator == cache.end()) {
                 // Cached results not found - insert new empty entry into cache and update iterator
                 // to point to the new entry
-                MatrixType newMatrix(
-                    expressionImplementation->numDimensions(),
-                    expressionImplementation->numParameters()
+                std::unique_ptr<MatrixType> newMatrix(
+                    new MatrixType(
+                        expressionImplementation->numDimensions(),
+                        expressionImplementation->numParameters()
+                    )
                 );
-                iterator = cache.insert(
-                    std::pair<const KeyType, MatrixType>(key, std::move(newMatrix))
-                ).first;
-                MatrixType& resultMatrix = iterator->second;
-                ViewType resultView = resultMatrix.view();
+                ViewType resultView = newMatrix->view();
 
                 // Evaluate expression into results matrix using view
                 expressionImplementation->evaluateJacobian(parameterView, resultView, *this);
+
+                iterator = cache.insert(
+                    std::pair<const KeyType, std::unique_ptr<MatrixType>>(key, std::move(newMatrix))
+                ).first;
             }
 
-            // Get reference to cached matrix
-            const MatrixType& resultMatrix = iterator->second;
-
             // Return view pointing to cached matrix
-            return resultMatrix.view();
+            return iterator->second->view();
         }
 
         ConstMatrixViewXd

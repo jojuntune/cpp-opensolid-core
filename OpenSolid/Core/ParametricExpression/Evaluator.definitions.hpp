@@ -32,6 +32,7 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.definitions.hpp>
 
 #include <unordered_map>
+#include <memory>
 
 namespace opensolid
 {
@@ -52,11 +53,15 @@ namespace opensolid
                 ) const;
             };
 
-            typedef std::unordered_map<Key, MatrixXd, Evaluator::KeyHash> Cache;
+            typedef std::unordered_map<
+                Key,
+                std::unique_ptr<MatrixXd>,
+                Evaluator::KeyHash
+            > Cache;
 
             typedef std::unordered_map<
                 IntervalKey,
-                IntervalMatrixXd,
+                std::unique_ptr<IntervalMatrixXd>,
                 Evaluator::KeyHash
             > IntervalCache;
 
