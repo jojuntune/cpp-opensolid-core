@@ -1,0 +1,7 @@
+Different components of OpenSolid are licensed separately. Library components are licensed under the
+LGPLv2.1, while the OpenSolid UI is licensed under the GPLv2; if in doubt, individual source files
+also indicate which license they use.
+
+From a practical point of view, this means you may use the OpenSolid shared libraries and
+corresponding headers (those in the OpenSolid/Core, OpenSolid/Python, and OpenSolid/IO directories)
+under the terms of the LGPLv2.1 but the UI itself remains licensed using the GPLv2.
