@@ -47,26 +47,6 @@ namespace opensolid
         int _numComponents;
         int _columnStrideInBytes;
     public:
-        template <int iOtherNumRows, int iOtherNumColumns, int iOtherColumnStrideInBytes>
-        MatrixView(
-            const MatrixView<
-                TScalar,
-                iOtherNumRows,
-                iOtherNumColumns,
-                iOtherColumnStrideInBytes
-            >& other
-        );
-
-        template <int iOtherNumRows, int iOtherNumColumns, int iOtherColumnStrideInBytes>
-        MatrixView(
-            MatrixView<TScalar, iOtherNumRows, iOtherNumColumns, iOtherColumnStrideInBytes>& other
-        );
-
-        template <int iOtherNumRows, int iOtherNumColumns, int iOtherColumnStrideInBytes>
-        MatrixView(
-            MatrixView<TScalar, iOtherNumRows, iOtherNumColumns, iOtherColumnStrideInBytes>&& other
-        );
-
         MatrixView(TScalar* sourcePtr);
 
         MatrixView(TScalar* sourcePtr, int numComponents);
@@ -74,6 +54,51 @@ namespace opensolid
         MatrixView(TScalar* sourcePtr, int numRows, int numColumns);
 
         MatrixView(TScalar* sourcePtr, int numRows, int numColumns, int columnStrideInBytes);
+
+        template <
+            class TOtherScalar,
+            int iOtherNumRows,
+            int iOtherNumColumns, 
+            int iOtherColumnStrideInBytes
+        >
+        MatrixView(
+            const MatrixView<
+                TOtherScalar,
+                iOtherNumRows,
+                iOtherNumColumns,
+                iOtherColumnStrideInBytes
+            >& other
+        );
+
+        template <
+            class TOtherScalar,
+            int iOtherNumRows,
+            int iOtherNumColumns,
+            int iOtherColumnStrideInBytes
+        >
+        MatrixView(
+            MatrixView<
+                TOtherScalar,
+                iOtherNumRows,
+                iOtherNumColumns,
+                iOtherColumnStrideInBytes
+            >& other
+        );
+
+        template <
+            class TOtherScalar,
+            int iOtherNumRows,
+            int iOtherNumColumns,
+            int iOtherColumnStrideInBytes
+        >
+        MatrixView(
+            MatrixView<
+                TOtherScalar,
+                iOtherNumRows,
+                iOtherNumColumns,
+                iOtherColumnStrideInBytes
+            >&& other
+        );
 
         void
         operator=(const MatrixView<TScalar, iNumRows, iNumColumns, iColumnStrideInBytes>& other);

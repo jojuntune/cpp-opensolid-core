@@ -117,10 +117,10 @@ namespace opensolid
     }
 
     template <class TScalar, int iNumRows, int iNumColumns, int iColumnStrideInBytes>
-    template <int iOtherRows, int iOtherColumns, int iOtherColumnStrideInBytes>
+    template <class TOtherScalar, int iOtherRows, int iOtherColumns, int iOtherColumnStrideInBytes>
     inline
     MatrixView<TScalar, iNumRows, iNumColumns, iColumnStrideInBytes>::MatrixView(
-        const MatrixView<TScalar, iOtherRows, iOtherColumns, iOtherColumnStrideInBytes>& other
+        const MatrixView<TOtherScalar, iOtherRows, iOtherColumns, iOtherColumnStrideInBytes>& other
     ) : _data(other.data()),
         _numRows(other.numRows()),
         _numColumns(other.numColumns()),
@@ -133,10 +133,10 @@ namespace opensolid
     }
 
     template <class TScalar, int iNumRows, int iNumColumns, int iColumnStrideInBytes>
-    template <int iOtherRows, int iOtherColumns, int iOtherColumnStrideInBytes>
+    template <class TOtherScalar, int iOtherRows, int iOtherColumns, int iOtherColumnStrideInBytes>
     inline
     MatrixView<TScalar, iNumRows, iNumColumns, iColumnStrideInBytes>::MatrixView(
-        MatrixView<TScalar, iOtherRows, iOtherColumns, iOtherColumnStrideInBytes>& other
+        MatrixView<TOtherScalar, iOtherRows, iOtherColumns, iOtherColumnStrideInBytes>& other
     ) : _data(other.data()),
         _numRows(other.numRows()),
         _numColumns(other.numColumns()),
@@ -149,10 +149,10 @@ namespace opensolid
     }
 
     template <class TScalar, int iNumRows, int iNumColumns, int iColumnStrideInBytes>
-    template <int iOtherRows, int iOtherColumns, int iOtherColumnStrideInBytes>
+    template <class TOtherScalar, int iOtherRows, int iOtherColumns, int iOtherColumnStrideInBytes>
     inline
     MatrixView<TScalar, iNumRows, iNumColumns, iColumnStrideInBytes>::MatrixView(
-        MatrixView<TScalar, iOtherRows, iOtherColumns, iOtherColumnStrideInBytes>&& other
+        MatrixView<TOtherScalar, iOtherRows, iOtherColumns, iOtherColumnStrideInBytes>&& other
     ) : _data(other.data()),
         _numRows(other.numRows()),
         _numColumns(other.numColumns()),
