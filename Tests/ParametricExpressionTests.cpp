@@ -74,19 +74,12 @@ void testJacobian(
             expectedJacobian(i, j) = partialDerivative(i);
         }
     }
+    CAPTURE(expression);
+    CAPTURE(parameterValues);
+    CAPTURE(jacobian);
+    CAPTURE(expectedJacobian);
+    CAPTURE(jacobian - expectedJacobian);
     REQUIRE((jacobian - expectedJacobian).isZero());
-    if (!(jacobian - expectedJacobian).isZero()) {
-        std::cout << "ParametricExpression:" << std::endl;
-        std::cout << expression << std::endl;
-        std::cout << "Jacobian ";
-        std::cout << "(parameter values " << parameterValues << ")";
-        std::cout << ":" << std::endl;
-        std::cout << jacobian << std::endl;
-        std::cout << "Expected:" << std::endl;
-        std::cout << expectedJacobian << std::endl;
-        std::cout << "Difference:" << std::endl;
-        std::cout << jacobian - expectedJacobian << std::endl;
-    }
     for (int j = 0; j < iNumParameters; ++j) {
         Matrix<double, iNumParameters, 2> shiftedParameterValues;
         shiftedParameterValues.column(0) = parameterValues;
@@ -97,15 +90,10 @@ void testJacobian(
             expression.evaluate(shiftedParameterValues);
         Matrix<double, iNumDimensions, 1> numericalDerivative = shiftedValues.column(1);
         numericalDerivative = (shiftedValues.column(1) - shiftedValues.column(0)) / 1e-6;
+        CAPTURE(expression);
+        CAPTURE(numericalDerivative);
+        CAPTURE(ColumnMatrixXd(jacobian.column(j)));
         REQUIRE((numericalDerivative - jacobian.column(j)).isZero(1e-3));
-        if (!(numericalDerivative - jacobian.column(j)).isZero(1e-3)) {
-            std::cout << "ParametricExpression:" << std::endl;
-            std::cout << expression << std::endl;
-            std::cout << "Numerical derivative " << j << ": " << std::endl;
-            std::cout << numericalDerivative.transpose() << std::endl;
-            std::cout << "Jacobian derivative: " << std::endl;
-            std::cout << jacobian.column(j).transpose() << std::endl;
-        }
     }
 }
 
@@ -265,14 +253,11 @@ TEST_CASE("Component") {
     RowMatrix3d parameterValues(0.0, 0.5, 1.0);
 
     RowMatrix3d results = expression.component(1).evaluate(parameterValues);
-    std::cout << std::endl << "First: " << results << std::endl;
     REQUIRE((results(0) - 2.0) == Zero());
     REQUIRE((results(1) - 3.0) == Zero());
     REQUIRE((results(2) - 4.0) == Zero());
 
     results = expression.evaluate(parameterValues).row(1);
-    std::cout << "Temp:" << std::endl << expression.evaluate(parameterValues) << std::endl;
-    std::cout << "Second: " << results << std::endl;
     REQUIRE((results(0) - 2.0) == Zero());
     REQUIRE((results(1) - 3.0) == Zero());
     REQUIRE((results(2) - 4.0) == Zero());
