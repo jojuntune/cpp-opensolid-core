@@ -153,9 +153,15 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumResultDimensions>
     Triangle<iNumResultDimensions>
-    MorphingFunction<Triangle<iNumDimensions>, iNumResultDimensions>::operator()(
+    MorphingFunction<
+        Triangle<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >::operator()(
         const Triangle<iNumDimensions>& triangle,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        const ParametricExpression<
+            Point<iNumResultDimensions>,
+            Point<iNumDimensions>
+        >& morphingExpression
     ) const {
         return Triangle<iNumResultDimensions>(
             morphed(triangle.vertex(0), morphingExpression),

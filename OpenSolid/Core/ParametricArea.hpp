@@ -38,7 +38,7 @@
 namespace opensolid
 {
     inline
-    const ParametricExpression<2, 2>&
+    const ParametricExpression<Point<2>, Point<2>>&
     ParametricArea2d::expression() const {
         return _expression;
     }

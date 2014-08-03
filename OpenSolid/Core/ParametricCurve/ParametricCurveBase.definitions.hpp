@@ -41,7 +41,7 @@ namespace opensolid
         class ParametricCurveBase
         {
         private:
-            ParametricExpression<iNumDimensions, 1> _expression;
+            ParametricExpression<Point<iNumDimensions>, double> _expression;
             Interval _domain;
             Box<iNumDimensions> _bounds;
         protected:
@@ -52,11 +52,11 @@ namespace opensolid
             ParametricCurveBase(ParametricCurveBase<iNumDimensions>&& other);
 
             ParametricCurveBase(
-                const ParametricExpression<iNumDimensions, 1>& expression,
+                const ParametricExpression<Point<iNumDimensions>, double>& expression,
                 Interval domain
             );
         public:
-            const ParametricExpression<iNumDimensions, 1>&
+            const ParametricExpression<Point<iNumDimensions>, double>&
             expression() const;
 
             Interval

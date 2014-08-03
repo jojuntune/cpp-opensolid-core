@@ -26,6 +26,6 @@
 
 namespace opensolid
 {
-    template <int iNumParameters>
+    template <class TParameter>
     class Parameter;
 }

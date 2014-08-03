@@ -171,9 +171,9 @@ namespace opensolid
     }
 
     Tetrahedron3d
-    MorphingFunction<Tetrahedron3d, 3>::operator()(
+    MorphingFunction<Tetrahedron3d, ParametricExpression<Point3d, Point3d>>::operator()(
         const Tetrahedron3d& tetrahedron,
-        const ParametricExpression<3, 3>& morphingExpression
+        const ParametricExpression<Point3d, Point3d>& morphingExpression
     ) const {
         return Tetrahedron3d(
             morphed(tetrahedron.vertex(0), morphingExpression),

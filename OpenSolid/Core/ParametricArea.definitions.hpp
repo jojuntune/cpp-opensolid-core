@@ -50,11 +50,17 @@ namespace opensolid
         static const int Value = 2;
     };
 
+    template <>
+    struct MorphedType<ParametricArea2d, ParametricExpression<Point<2>, Point<2>>>
+    {
+        typedef ParametricArea2d Type;
+    };
+
     class ParametricArea2d :
         public Transformable<ParametricArea2d>
     {
     private:
-        ParametricExpression<2, 2> _expression;
+        ParametricExpression<Point<2>, Point<2>> _expression;
         BoundedArea2d _domain;
         Box<2> _bounds;
     public:
@@ -65,11 +71,11 @@ namespace opensolid
         ParametricArea2d(ParametricArea2d&& other);
 
         ParametricArea2d(
-            const ParametricExpression<2, 2>& expression,
+            const ParametricExpression<Point<2>, Point<2>>& expression,
             const BoundedArea2d& domain
         );
 
-        const ParametricExpression<2, 2>&
+        const ParametricExpression<Point<2>, Point<2>>&
         expression() const;
 
         const BoundedArea2d&
@@ -79,10 +85,10 @@ namespace opensolid
         bounds() const;
 
         Point<2>
-        evaluate(double u, double v) const;
+        evaluate(const Point<2>& parameterValue) const;
 
         Box<2>
-        evaluate(Interval u, Interval v) const;
+        evaluate(const Box<2>& parameterBounds) const;
     };
     
     template <>
@@ -116,12 +122,12 @@ namespace opensolid
     };
 
     template <>
-    struct MorphingFunction<ParametricArea2d, 2>
+    struct MorphingFunction<ParametricArea2d, ParametricExpression<Point<2>, Point<2>>>
     {
         ParametricArea2d
         operator()(
             const ParametricArea2d& parametricArea,
-            const ParametricExpression<2, 2>& morphingExpression
+            const ParametricExpression<Point<2>, Point<2>>& morphingExpression
         ) const;
     };
 }

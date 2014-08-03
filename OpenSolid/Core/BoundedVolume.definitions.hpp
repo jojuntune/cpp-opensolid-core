@@ -48,6 +48,12 @@ namespace opensolid
         static const int Value = 3;
     };
 
+    template <>
+    struct MorphedType<BoundedVolume3d, ParametricExpression<Point<3>, Point<3>>>
+    {
+        typedef BoundedVolume3d Type;
+    };
+
     class BoundedVolume3d :
         public Transformable<BoundedVolume3d>
     {
@@ -113,13 +119,13 @@ namespace opensolid
     };
 
     template <>
-    struct MorphingFunction<BoundedVolume3d, 3>
+    struct MorphingFunction<BoundedVolume3d, ParametricExpression<Point<3>, Point<3>>>
     {
         OPENSOLID_CORE_EXPORT
         const BoundedVolume3d
         operator()(
             const BoundedVolume3d& boundedVolume,
-            const ParametricExpression<3, 3>& morphingExpression
+            const ParametricExpression<Point<3>, Point<3>>& morphingExpression
         ) const;
     };
 }

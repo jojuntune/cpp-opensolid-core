@@ -799,14 +799,20 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
     inline
     const CoordinateSystem<iNumResultDimensions, iNumAxes>
-    MorphingFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>::operator()(
+    MorphingFunction<
+        CoordinateSystem<iNumDimensions, iNumAxes>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        const ParametricExpression<
+            Point<iNumResultDimensions>,
+            Point<iNumDimensions>
+        >& morphingExpression
     ) const {
         return CoordinateSystem<iNumResultDimensions, iNumAxes>(
-            morphed(coordinateSystem.originPoint(), morphingExpression),
+            morphingExpression.evaluate(coordinateSystem.originPoint()),
             (
-                morphingExpression.jacobian(coordinateSystem.originPoint().components()) *
+                morphingExpression.jacobian(coordinateSystem.originPoint()) *
                 coordinateSystem.basisMatrix()
             )
         );

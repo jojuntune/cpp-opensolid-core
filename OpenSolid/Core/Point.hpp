@@ -246,14 +246,4 @@ namespace opensolid
             )
         );
     }
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    inline
-    const Point<iNumResultDimensions>
-    MorphingFunction<Point<iNumDimensions>, iNumResultDimensions>::operator()(
-        const Point<iNumDimensions>& point,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-    ) const {
-        return Point<iNumResultDimensions>(morphingExpression.evaluate(point.components()));
-    }
 }

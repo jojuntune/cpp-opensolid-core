@@ -144,13 +144,11 @@ TEST_CASE("Pair conversion") {
 }
 
 TEST_CASE("Plane morphing") {
-    Parameter<3> x(0);
-    Parameter<3> y(1);
-    Parameter<3> z(2);
-    ParametricExpression<3, 3> morphingExpression = ParametricExpression<3, 3>::fromComponents(
-        x + z.squared(),
-        y,
-        z
+    Parameter3d x(0);
+    Parameter3d y(1);
+    Parameter3d z(2);
+    ParametricExpression<Point3d, Point3d> morphingExpression = (
+        ParametricExpression<Point3d, Point3d>::fromComponents(x + z.squared(), y, z)
     );
 
     SECTION("XY Plane") {

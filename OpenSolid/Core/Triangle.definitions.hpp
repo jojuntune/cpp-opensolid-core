@@ -59,7 +59,10 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<Triangle<iNumDimensions>, iNumResultDimensions>
+    struct MorphedType<
+        Triangle<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         typedef Triangle<iNumResultDimensions> Type;
     };
@@ -193,12 +196,18 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<Triangle<iNumDimensions>, iNumResultDimensions>
+    struct MorphingFunction<
+        Triangle<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         Triangle<iNumResultDimensions>
         operator()(
             const Triangle<iNumDimensions>& triangle,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+            const ParametricExpression<
+                Point<iNumResultDimensions>,
+                Point<iNumDimensions>
+            >& morphingExpression
         ) const;
     };
 }

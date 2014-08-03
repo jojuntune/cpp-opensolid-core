@@ -173,16 +173,26 @@ namespace opensolid
         );
     }
 
-    template <class TDerived> template <int iNumResultDimensions>
+    template <class TDerived> template <class TValue, class TParameter>
     inline
-    typename MorphedType<TDerived, iNumResultDimensions>::Type
+    typename MorphedType<TDerived, ParametricExpression<TValue, TParameter>>::Type
     Transformable<TDerived>::morphedBy(
-        const ParametricExpression<
-            iNumResultDimensions,
-            NumDimensions<TDerived>::Value
-        >& morphingExpression
+        const ParametricExpression<TValue, TParameter>& morphingExpression
     ) const {
-        return MorphingFunction<TDerived, iNumResultDimensions>()(derived(), morphingExpression);
+        return MorphingFunction<TDerived, ParametricExpression<TValue, TParameter>>()(
+            derived(),
+            morphingExpression
+        );
+    }
+
+    template <class TTransformable, class TResult>
+    inline
+    TResult
+    MorphingFunction<TTransformable, ParametricExpression<TResult, TTransformable>>:operator()(
+        const TTransformable& transformable,
+        const ParametricExpression<TResult, TTransformable>& morphingExpression
+    ) const {
+        return morphingExpression.evaluate(transformable);
     }
 
     template <class TTransformable>
@@ -329,17 +339,14 @@ namespace opensolid
         );
     }
 
-    template <class TTransformable, int iNumResultDimensions>
+    template <class TTransformable, class TValue, class TParameter>
     inline
-    typename MorphedType<TTransformable, iNumResultDimensions>::Type
+    typename MorphedType<TTransformable, ParametricExpression<TValue, TParameter>>::Type
     morphed(
         const TTransformable& transformable,
-        const ParametricExpression<
-            iNumResultDimensions,
-            NumDimensions<TTransformable>::Value
-        >& morphingExpression
+        const ParametricExpression<TValue, TParameter>& morphingExpression
     ) {
-        return MorphingFunction<TTransformable, iNumResultDimensions>()(
+        return MorphingFunction<TTransformable, ParametricExpression<TValue, TParameter>>()(
             transformable,
             morphingExpression
         );

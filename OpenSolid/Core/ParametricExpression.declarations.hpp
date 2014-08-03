@@ -26,6 +26,24 @@
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumParameters>
+    template <class TValue, class TParameter>
     class ParametricExpression;
+
+    template <class TValue>
+    struct DerivativeType;
+
+    template <class TValue>
+    struct NegatedType;
+
+    template <class TFirstValue, class TSecondValue>
+    struct SumType;
+
+    template <class TFirstValue, class TSecondValue>
+    struct DifferenceType;
+
+    template <class TFirstValue, class TSecondValue>
+    struct ProductType;
+
+    template <class TFirstValue, class TSecondValue>
+    struct QuotientType;
 }

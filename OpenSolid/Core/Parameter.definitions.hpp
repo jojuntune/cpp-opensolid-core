@@ -29,12 +29,13 @@
 #include <OpenSolid/Core/Parameter.declarations.hpp>
 
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
+#include <OpenSolid/Core/Point.declarations.hpp>
 
 namespace opensolid
 {
-    template <int iNumParameters>
+    template <class TParameter>
     class Parameter :
-        public ParametricExpression<1, iNumParameters>
+        public ParametricExpression<double, TParameter>
     {
     private:
         int _parameterIndex;
@@ -46,19 +47,17 @@ namespace opensolid
     };
 
     template <>
-    class Parameter<1> :
-        public ParametricExpression<1, 1>
+    class Parameter<double> :
+        public ParametricExpression<double, double>
     {
     public:
         Parameter();
-
-        Parameter(int parameterIndex);
 
         int
         parameterIndex() const;
     };
 
-    typedef Parameter<1> Parameter1d;
-    typedef Parameter<2> Parameter2d;
-    typedef Parameter<3> Parameter3d;
+    typedef Parameter<double> Parameter1d;
+    typedef Parameter<Point<2>> Parameter2d;
+    typedef Parameter<Point<3>> Parameter3d;
 }

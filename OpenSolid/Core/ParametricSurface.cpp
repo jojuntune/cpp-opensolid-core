@@ -73,7 +73,7 @@ namespace opensolid
         double scale
     ) const {
         return ParametricSurface3d(
-            originPoint.components() + scale * (surface.expression() - originPoint.components()),
+            scaled(surface.expression(), originPoint, scale),
             surface.domain()
         );
     }
@@ -83,10 +83,7 @@ namespace opensolid
         const ParametricSurface3d& surface,
         const Vector3d& vector
     ) const {
-        return ParametricSurface3d(
-            surface.expression() + vector.components(),
-            surface.domain()
-        );
+        return ParametricSurface3d(surface.expression() + vector, surface.domain());
     }
 
     ParametricSurface3d
@@ -97,17 +94,15 @@ namespace opensolid
         const Point3d& destinationPoint
     ) const {
         return ParametricSurface3d(
-            destinationPoint.components() + (
-                transformationMatrix * (surface.expression() - originPoint.components())
-            ),
+            transformed(surface.expression(), originPoint, transformationMatrix, destinationPoint),
             surface.domain()
         );
     }
 
     ParametricSurface3d
-    MorphingFunction<ParametricSurface3d, 3>::operator()(
+    MorphingFunction<ParametricSurface3d, ParametricExpression<Point3d, Point3d>>::operator()(
         const ParametricSurface3d& surface,
-        const ParametricExpression<3, 3>& morphingExpression
+        const ParametricExpression<Point3d, Point3d>& morphingExpression
     ) const {
         return ParametricSurface3d(
             morphingExpression.composed(surface.expression()),

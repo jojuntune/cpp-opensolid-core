@@ -48,6 +48,12 @@ namespace opensolid
         static const int Value = 2;
     };
 
+    template <>
+    struct MorphedType<BoundedArea2d, ParametricExpression<Point<2>, Point<2>>>
+    {
+        typedef BoundedArea2d Type;
+    };
+
     class BoundedArea2d :
         public Transformable<BoundedArea2d>
     {
@@ -113,13 +119,13 @@ namespace opensolid
     };
 
     template <>
-    struct MorphingFunction<BoundedArea2d, 2>
+    struct MorphingFunction<BoundedArea2d, ParametricExpression<Point<2>, Point<2>>>
     {
         OPENSOLID_CORE_EXPORT
         const BoundedArea2d
         operator()(
             const BoundedArea2d& boundedArea,
-            const ParametricExpression<2, 2>& morphingExpression
+            const ParametricExpression<Point<2>, Point<2>>& morphingExpression
         ) const;
     };
 }

@@ -96,14 +96,14 @@ namespace opensolid
             double numTurns
         ) {
             Parameter1d t;
-            ParametricExpression<1, 1> theta = 2 * M_PI * numTurns * t;
+            ParametricExpression<double, double> theta = 2 * M_PI * numTurns * t;
             Vector3d sidewaysVector = yVector;
             if (windingDirection == CLOCKWISE) {
                 sidewaysVector = -sidewaysVector;
             }
-            ParametricExpression<3, 1> curveExpression = centerPoint.components() +
-                cos(theta) * xVector.components() + sin(theta) * sidewaysVector.components() +
-                t * zVector.components();
+            ParametricExpression<Point3d, double> curveExpression = (
+                centerPoint + cos(theta) * xVector + sin(theta) * sidewaysVector + t * zVector
+            );
             return ParametricCurve3d(curveExpression, Interval::unit());
         }
     }
@@ -122,12 +122,17 @@ namespace opensolid
             throw Error(new PlaceholderError());
         }
         Parameter1d t;
-        ParametricExpression<1, 1> angleExpression = startAngle + (endAngle - startAngle) * t;
-        ParametricExpression<1, 1> xExpression = centerPoint.x() + radius * cos(angleExpression);
-        ParametricExpression<1, 1> yExpression = centerPoint.y() + radius * sin(angleExpression);
-        ParametricExpression<2, 1> curveExpression = ParametricExpression<2, 1>::fromComponents(
-            xExpression,
-            yExpression
+        ParametricExpression<double, double> angleExpression = (
+            startAngle + (endAngle - startAngle) * t
+        );
+        ParametricExpression<double, double> xExpression = (
+            centerPoint.x() + radius * cos(angleExpression)
+        );
+        ParametricExpression<double, double> yExpression = (
+            centerPoint.y() + radius * sin(angleExpression)
+        );
+        ParametricExpression<Point2d, double> curveExpression = (
+            ParametricExpression<2, 1>::fromComponents(xExpression, yExpression)
         );
         return ParametricCurve2d(curveExpression, Interval::unit());
     }

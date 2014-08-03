@@ -65,12 +65,6 @@ namespace opensolid
         typedef Point<iNumResultDimensions> Type;
     };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<Point<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef Point<iNumResultDimensions> Type;
-    };
-
     template <>
     class Point<1> :
         public detail::PointBase<1>,
@@ -217,16 +211,6 @@ namespace opensolid
             const Point<iNumDimensions>& originPoint,
             const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
             const Point<iNumResultDimensions>& destinationPoint
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<Point<iNumDimensions>, iNumResultDimensions>
-    {
-        const Point<iNumResultDimensions>
-        operator()(
-            const Point<iNumDimensions>& point,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
         ) const;
     };
 }

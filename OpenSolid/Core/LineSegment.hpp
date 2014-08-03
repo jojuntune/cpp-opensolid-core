@@ -305,11 +305,14 @@ namespace opensolid
     LineSegment<iNumResultDimensions>
     MorphingFunction<LineSegment<iNumDimensions>, iNumResultDimensions>::operator()(
         const LineSegment<iNumDimensions>& lineSegment,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        const ParametricExpression<
+            Point<iNumResultDimensions>,
+            Point<iNumDimensions>
+        >& morphingExpression
     ) const {
         return LineSegment<iNumResultDimensions>(
-            morphed(lineSegment.startVertex(), morphingExpression),
-            morphed(lineSegment.endVertex(), morphingExpression)
+            morphingExpression.evaluate(lineSegment.startVertex()),
+            morphingExpression.evaluate(lineSegment.endVertex())
         );
     }
 }

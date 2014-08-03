@@ -33,6 +33,7 @@
 #include <OpenSolid/Core/Cartesian/CartesianBase.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
+#include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/UnitVector.hpp>
 #include <OpenSolid/Core/Vector/DoubleVectorBase.hpp>
@@ -55,6 +56,16 @@ namespace opensolid
     inline
     Vector1d::Vector(const Matrix1d& components) :
         detail::DoubleVectorBase<1>(components) {
+    }
+
+    inline
+    const UnitVector1d
+    Vector1d::unit(int index) {
+        if (index == 0) {
+            return UnitVector1d(1.0);
+        } else {
+            throw Error(new PlaceholderError());
+        }
     }
 
     inline
@@ -92,6 +103,19 @@ namespace opensolid
             return UnitVector2d();
         } else {
             return Vector2d(-y(), x()).normalized();
+        }
+    }
+
+    inline
+    const UnitVector2d
+    Vector2d::unit(int index) {
+        switch (index) {
+            case 0:
+                return UnitVector2d(1.0, 0.0);
+            case 1:
+                return UnitVector2d(0.0, 1.0);
+            default:
+                throw Error(new PlaceholderError());
         }
     }
 
@@ -180,6 +204,21 @@ namespace opensolid
                     return Vector3d::unitZ().cross(*this).normalized();
                 }
             }
+        }
+    }
+
+    inline
+    const UnitVector3d
+    Vector3d::unit(int index) {
+        switch (index) {
+            case 0:
+                return UnitVector3d(1.0, 0.0, 0.0);
+            case 1:
+                return UnitVector3d(0.0, 1.0, 0.0);
+            case 2:
+                return UnitVector3d(0.0, 0.0, 1.0);
+            default:
+                throw Error(new PlaceholderError());
         }
     }
 

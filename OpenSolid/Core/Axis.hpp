@@ -243,13 +243,18 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumResultDimensions>
     const Axis<iNumResultDimensions>
-    MorphingFunction<Axis<iNumDimensions>, iNumResultDimensions>::operator()(
+    MorphingFunction<
+        Axis<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >::operator()(
         const Axis<iNumDimensions>& axis,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        const ParametricExpression<
+            Point<iNumResultDimensions>,
+            Point<iNumDimensions>
+        >& morphingExpression
     ) const {
         Vector<double, iNumResultDimensions> morphedDirection(
-            morphingExpression.jacobian(axis.originPoint().components()) *
-            axis.directionVector().components()
+            morphingExpression.jacobian(axis.originPoint()) * axis.directionVector().components()
         );
         double morphedNorm = morphedDirection.norm();
         if (morphedNorm == Zero()) {
@@ -257,7 +262,7 @@ namespace opensolid
         }
         morphedDirection *= (1.0 / morphedNorm);
         return Axis<iNumResultDimensions>(
-            morphed(axis.originPoint(), morphingExpression),
+            morphingExpression.evaluate(axis.originPoint()),
             UnitVector<iNumResultDimensions>(morphedDirection)
         );
     }

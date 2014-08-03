@@ -58,12 +58,16 @@ namespace opensolid
         BoundedArea2d _domain;
         Box<3> _bounds;
     public:
+        OPENSOLID_CORE_EXPORT
         ParametricSurface3d();
 
+        OPENSOLID_CORE_EXPORT
         ParametricSurface3d(const ParametricSurface3d& other);
 
+        OPENSOLID_CORE_EXPORT
         ParametricSurface3d(ParametricSurface3d&& other);
 
+        OPENSOLID_CORE_EXPORT
         ParametricSurface3d(
             const ParametricExpression<3, 2>& expression,
             const BoundedArea2d& domain
@@ -78,12 +82,15 @@ namespace opensolid
         const Box<3>&
         bounds() const;
 
+        OPENSOLID_CORE_EXPORT
         Point<3>
         evaluate(double u, double v) const;
 
+        OPENSOLID_CORE_EXPORT
         Box<3>
         evaluate(Interval u, Interval v) const;
 
+        OPENSOLID_CORE_EXPORT
         ParametricExpression<3, 2>
         normalVector() const;
     };
@@ -91,6 +98,7 @@ namespace opensolid
     template <>
     struct ScalingFunction<ParametricSurface3d>
     {
+        OPENSOLID_CORE_EXPORT
         ParametricSurface3d
         operator()(
             const ParametricSurface3d& surface,
@@ -102,6 +110,7 @@ namespace opensolid
     template <>
     struct TranslationFunction<ParametricSurface3d>
     {
+        OPENSOLID_CORE_EXPORT
         ParametricSurface3d
         operator()(const ParametricSurface3d& surface, const Vector<double, 3>& vector) const;
     };
@@ -109,6 +118,7 @@ namespace opensolid
     template <>
     struct TransformationFunction<ParametricSurface3d, 3>
     {
+        OPENSOLID_CORE_EXPORT
         ParametricSurface3d
         operator()(
             const ParametricSurface3d& surface,
@@ -119,12 +129,13 @@ namespace opensolid
     };
 
     template <>
-    struct MorphingFunction<ParametricSurface3d, 3>
+    struct MorphingFunction<ParametricSurface3d, ParametricExpression<Point<3>, Point<3>>>
     {
+        OPENSOLID_CORE_EXPORT
         ParametricSurface3d
         operator()(
             const ParametricSurface3d& surface,
-            const ParametricExpression<3, 3>& morphingExpression
+            const ParametricExpression<Point<3>, Point<3>>& morphingExpression
         ) const;
     };
 }
