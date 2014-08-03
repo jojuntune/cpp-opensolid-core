@@ -160,13 +160,13 @@ namespace opensolid
     };
 
     template <>
-    struct MorphingFunction<Plane3d, 3>
+    struct MorphingFunction<Plane3d, ParametricExpression<Point<3>, Point<3>>>
     {
         OPENSOLID_CORE_EXPORT
         Plane3d
         operator()(
             const Plane3d& plane,
-            const ParametricExpression<3, 3>& morphingExpression
+            const ParametricExpression<Point<3>, Point<3>>& morphingExpression
         ) const;
     };
 }

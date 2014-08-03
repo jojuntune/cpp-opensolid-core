@@ -63,7 +63,10 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<ParametricCurve<iNumDimensions>, iNumResultDimensions>
+    struct MorphedType<
+        ParametricCurve<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         typedef ParametricCurve<iNumResultDimensions> Type;
     };
@@ -74,7 +77,7 @@ namespace opensolid
         public Transformable<ParametricCurve<2>>
     {
     private:
-        ParametricExpression<2, 1> _expression;
+        ParametricExpression<Point<2>, double> _expression;
         Interval _domain;
         Box<2> _bounds;
     public:
@@ -195,7 +198,7 @@ namespace opensolid
         public Transformable<ParametricCurve<3>>
     {
     private:
-        ParametricExpression<3, 1> _expression;
+        ParametricExpression<Point<3>, double> _expression;
         Interval _domain;
         Box<3> _bounds;
     public:
@@ -206,7 +209,7 @@ namespace opensolid
         ParametricCurve(ParametricCurve<3>&& other);
 
         ParametricCurve(
-            const ParametricExpression<3, 1>& expression,
+            const ParametricExpression<Point<3>, double>& expression,
             Interval domain
         );
 
@@ -431,12 +434,18 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<ParametricCurve<iNumDimensions>, iNumResultDimensions>
+    struct MorphingFunction<
+        ParametricCurve<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         ParametricCurve<iNumResultDimensions>
         operator()(
             const ParametricCurve<iNumDimensions>& curve,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+            const ParametricExpression<
+                Point<iNumResultDimensions>,
+                Point<iNumDimensions>
+            >& morphingExpression
         ) const;
     };
 }

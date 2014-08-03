@@ -188,11 +188,11 @@ namespace opensolid
     }
 
     Plane3d
-    MorphingFunction<Plane3d, 3>::operator()(
+    MorphingFunction<Plane3d, ParametricExpression<Point3d, Point3d>>::operator()(
         const Plane3d& plane,
-        const ParametricExpression<3, 3>& morphingExpression
+        const ParametricExpression<Point3d, Point3d>& morphingExpression
     ) const {
-        Matrix3d jacobian =  morphingExpression.jacobian(plane.originPoint().components());
+        Matrix3d jacobian =  morphingExpression.jacobian(plane.originPoint());
         if (jacobian.determinant() == Zero()) {
             assert(false);
             return Plane3d();

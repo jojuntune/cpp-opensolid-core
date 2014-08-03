@@ -109,9 +109,9 @@ namespace opensolid
     }
 
     const BoundedArea2d
-    MorphingFunction<BoundedArea2d, 2>::operator()(
+    MorphingFunction<BoundedArea2d, ParametricExpression<Point2d, Point2d>>::operator()(
         const BoundedArea2d& boundedArea,
-        const ParametricExpression<2, 2>& morphingExpression
+        const ParametricExpression<Point2d, Point2d>& morphingExpression
     ) const {
         return BoundedArea2d(
             SpatialSet<ParametricCurve2d>(

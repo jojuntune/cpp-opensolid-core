@@ -55,40 +55,41 @@ TEST_CASE("Arc") {
     REQUIRE((arc.evaluate(1.0 / 3.0) - Point3d(1, 3, 1)).isZero());
     REQUIRE((arc.evaluate(1.0) - Point3d(1, -1, 1)).isZero());
     
-    ParametricExpression<3, 1> derivative = arc.expression().derivative();
-    REQUIRE((Vector3d(derivative.evaluate(0)) -  Vector3d(0, 3 * M_PI, 0)).isZero());
-    REQUIRE((Vector3d(derivative.evaluate(1 / 3.0)) - Vector3d(-3 * M_PI, 0, 0)).isZero());
-    REQUIRE((Vector3d(derivative.evaluate(2 / 3.0)) - Vector3d(0, -3 * M_PI, 0)).isZero());
-    REQUIRE((Vector3d(derivative.evaluate(1)) - Vector3d(3 * M_PI, 0, 0)).isZero());
+    ParametricExpression<Vector3d, double> derivative = arc.expression().derivative();
+    REQUIRE((derivative.evaluate(0) -  Vector3d(0, 3 * M_PI, 0)).isZero());
+    REQUIRE((derivative.evaluate(1 / 3.0) - Vector3d(-3 * M_PI, 0, 0)).isZero());
+    REQUIRE((derivative.evaluate(2 / 3.0) - Vector3d(0, -3 * M_PI, 0)).isZero());
+    REQUIRE((derivative.evaluate(1) - Vector3d(3 * M_PI, 0, 0)).isZero());
     
-    ParametricExpression<3, 1> tangent = arc.tangentVector();
-    REQUIRE((Vector3d(tangent.evaluate(0)) - Vector3d(0, 1, 0)).isZero());
-    REQUIRE((Vector3d(tangent.evaluate(1 / 3.0)) - Vector3d(-1, 0, 0)).isZero());
-    REQUIRE((Vector3d(tangent.evaluate(2 / 3.0)) - Vector3d(0, -1, 0)).isZero());
-    REQUIRE((Vector3d(tangent.evaluate(1)) - Vector3d(1, 0, 0)).isZero());
+    ParametricExpression<Vector3d, double> tangent = arc.tangentVector();
+    REQUIRE((tangent.evaluate(0) - Vector3d(0, 1, 0)).isZero());
+    REQUIRE((tangent.evaluate(1 / 3.0) - Vector3d(-1, 0, 0)).isZero());
+    REQUIRE((tangent.evaluate(2 / 3.0) - Vector3d(0, -1, 0)).isZero());
+    REQUIRE((tangent.evaluate(1) - Vector3d(1, 0, 0)).isZero());
     
-    ParametricExpression<3, 1> secondDerivative =
-        arc.expression().derivative().derivative();
+    ParametricExpression<Vector3d, double> secondDerivative = (
+        arc.expression().derivative().derivative()
+    );
     double secondDerivativeMagnitude = 4.5 * M_PI * M_PI;
     Vector3d expectedValue;
     
     expectedValue = Vector3d(-secondDerivativeMagnitude, 0, 0);
-    REQUIRE((Vector3d(secondDerivative.evaluate(0.0)) - expectedValue).isZero());
+    REQUIRE((secondDerivative.evaluate(0.0) - expectedValue).isZero());
     
     expectedValue = Vector3d(0, -secondDerivativeMagnitude, 0);
-    REQUIRE((Vector3d(secondDerivative.evaluate(1.0 / 3.0)) - expectedValue).isZero());
+    REQUIRE((secondDerivative.evaluate(1.0 / 3.0) - expectedValue).isZero());
     
     expectedValue = Vector3d(secondDerivativeMagnitude, 0, 0);
-    REQUIRE((Vector3d(secondDerivative.evaluate(2.0 / 3.0)) - expectedValue).isZero());
+    REQUIRE((secondDerivative.evaluate(2.0 / 3.0) - expectedValue).isZero());
     
     expectedValue = Vector3d(0, secondDerivativeMagnitude, 0);
-    REQUIRE((Vector3d(secondDerivative.evaluate(1.0)) - expectedValue).isZero());
+    REQUIRE((secondDerivative.evaluate(1.0) - expectedValue).isZero());
     
     ParametricExpression<3, 1> normal = arc.normalVector();
-    REQUIRE((Vector3d(normal.evaluate(0.0)) - Vector3d(-1, 0, 0)).isZero());
-    REQUIRE((Vector3d(normal.evaluate(1.0 / 3.0)) - Vector3d(0, -1, 0)).isZero());
-    REQUIRE((Vector3d(normal.evaluate(2.0 / 3.0)) - Vector3d(1, 0, 0)).isZero());
-    REQUIRE((Vector3d(normal.evaluate(1.0)) - Vector3d(0, 1, 0)).isZero());
+    REQUIRE((normal.evaluate(0.0) - Vector3d(-1, 0, 0)).isZero());
+    REQUIRE((normal.evaluate(1.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
+    REQUIRE((normal.evaluate(2.0 / 3.0) - Vector3d(1, 0, 0)).isZero());
+    REQUIRE((normal.evaluate(1.0) - Vector3d(0, 1, 0)).isZero());
 }
 
 TEST_CASE("Full arc") {
@@ -115,14 +116,15 @@ TEST_CASE("2D arc") {
 
 TEST_CASE("Curve operations") {
     Parameter1d t;
-    ParametricExpression<3, 1> expression =
-        ParametricExpression<3, 1>::fromComponents(t, t.squared(), 0.0);
+    ParametricExpression<Point3d, double> expression = (
+        ParametricExpression<Point3d, double>::fromComponents(t, t.squared(), 0.0)
+    );
     ParametricCurve3d parabola(expression, Interval(-2, 2));
 
-    Vector3d tangentVector(parabola.tangentVector().evaluate(1.0));
+    Vector3d tangentVector = parabola.tangentVector().evaluate(1.0);
     double curvature = parabola.curvature().evaluate(1.0);
-    Vector3d normalVector(parabola.normalVector().evaluate(1.0));
-    Vector3d binormalVector(parabola.binormalVector().evaluate(1.0));
+    Vector3d normalVector = parabola.normalVector().evaluate(1.0);
+    Vector3d binormalVector = parabola.binormalVector().evaluate(1.0);
 
     REQUIRE((tangentVector - Vector3d(1, 2, 0).normalized()).isZero());
     REQUIRE((curvature - 2 / (5 * sqrt(5.0))) == Zero());

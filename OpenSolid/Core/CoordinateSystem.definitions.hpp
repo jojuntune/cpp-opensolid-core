@@ -50,7 +50,10 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
-    struct MorphedType<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
+    struct MorphedType<
+        CoordinateSystem<iNumDimensions, iNumAxes>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         typedef CoordinateSystem<iNumResultDimensions, iNumAxes> Type;
     };
@@ -283,12 +286,18 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
-    struct MorphingFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
+    struct MorphingFunction<
+        CoordinateSystem<iNumDimensions, iNumAxes>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         const CoordinateSystem<iNumResultDimensions, iNumAxes>
         operator()(
             const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+            const ParametricExpression<
+                Point<iNumResultDimensions>,
+                Point<iNumDimensions>
+            >& morphingExpression
         ) const;
     };
 }

@@ -261,10 +261,16 @@ namespace opensolid
     template <int iNumDimensions, int iNumResultDimensions>
     inline
     const Box<iNumResultDimensions>
-    MorphingFunction<Box<iNumDimensions>, iNumResultDimensions>::operator()(
+    MorphingFunction<
+        Box<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >::operator()(
         const Box<iNumDimensions>& box,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        const ParametricExpression<
+            Point<iNumResultDimensions>,
+            Point<iNumDimensions>
+        >& morphingExpression
     ) const {
-        return Box<iNumResultDimensions>(morphingExpression.evaluate(box.components()));
+        return morphingExpression.evaluate(box);
     }
 }

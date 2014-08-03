@@ -32,33 +32,53 @@
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/Matrix/MatrixInterface.definitions.hpp>
 #include <OpenSolid/Core/Parameter.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.declarations.hpp>
+#include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/Vector.declarations.hpp>
 
 #include <typeinfo>
+#include <type_traits>
 #include <vector>
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumParameters>
+    template <class TValue, class TParameter>
+    struct NumDimensions<ParametricExpression<TValue, TParameter>>
+    {
+        static const int Value = NumDimensions<TValue>::Value;
+    };
+
+    template <class TValue, class TParameter, int iNumResultDimensions>
+    struct TransformedType<ParametricExpression<TValue, TParameter>, iNumResultDimensions>
+    {
+        typedef ParametricExpression<
+            typename TransformedType<TValue, iNumResultDimensions>::Type,
+            TParameter
+        > Type;
+    };
+
+    template <class TValue, class TParameter, class TResultValue>
+    struct MorphedType<
+        ParametricExpression<TValue, TParameter>,
+        ParametricExpression<TResultValue, TValue>
+    >
+    {
+        typedef ParametricExpression<TResultValue, TParameter> Type;
+    };
+
+    template <class TValue, class TParameter>
     class ParametricExpression :
-        public detail::ExpressionConstructors<iNumDimensions, iNumParameters>,
-        public Convertible<ParametricExpression<iNumDimensions, iNumParameters>>
+        public detail::ExpressionConstructors<TValue, TParameter>,
+        public Convertible<ParametricExpression<TValue, TParameter>>,
+        public Transformable<ParametricExpression<TValue, TParameter>>
     {
     private:
         detail::ExpressionImplementationPtr _implementationPtr;
     public:
-        static_assert(
-            iNumDimensions > 0,
-            "ParametricExpression must have positive number of dimensions"
-        );
-
-        static_assert(
-            iNumParameters > 0,
-            "ParametricExpression must have positive number of parameters"
-        );
-
         ParametricExpression();
 
         ParametricExpression(const detail::ExpressionImplementation* implementationPtr);
@@ -68,319 +88,397 @@ namespace opensolid
         const detail::ExpressionImplementationPtr&
         implementation() const;
         
-        const Matrix<double, iNumDimensions, 1>
-        evaluate(double u) const;
+        TValue
+        evaluate(const TParameter& parameterValue) const;
+        
+        typename BoundsType<TValue>::Type
+        evaluate(const typename BoundsType<TParameter>::Type& parameterBounds) const;
 
-        const Matrix<double, iNumDimensions, 1>
-        evaluate(double u, double v) const;
+        std::vector<TValue>
+        evaluate(const std::vector<TParameter>& parameterValues) const;
 
-        const Matrix<double, iNumDimensions, 1>
-        evaluate(double u, double v, double w) const;
+        std::vector<typename BoundsType<TValue>::Type>
+        evaluate(const std::vector<typename BoundsType<TParameter>::Type>& parameterBounds) const;
         
-        const Matrix<Interval, iNumDimensions, 1>
-        evaluate(Interval u) const;
+        const Matrix<double, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value>
+        jacobian(const TParameter& parameterValue) const;
         
-        const Matrix<Interval, iNumDimensions, 1>
-        evaluate(Interval u, Interval v) const;
+        const Matrix<Interval, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value>
+        jacobian(const typename BoundsType<TParameter>::Type& parameterBounds) const;
         
-        const Matrix<Interval, iNumDimensions, 1>
-        evaluate(Interval u, Interval v, Interval w) const;
-
-        template <int iNumColumns>
-        const Matrix<double, iNumDimensions, iNumColumns>
-        evaluate(const Matrix<double, iNumParameters, iNumColumns>& parameterValues) const;
-
-        template <int iNumColumns>
-        const Matrix<Interval, iNumDimensions, iNumColumns>
-        evaluate(const Matrix<Interval, iNumParameters, iNumColumns>& parameterValues) const;
-
-        std::vector<Matrix<double, iNumDimensions, 1>>
-        evaluate(const std::vector<double>& parameterValues) const;
-
-        std::vector<Matrix<Interval, iNumDimensions, 1>>
-        evaluate(const std::vector<Interval>& parameterValues) const;
-
-        std::vector<Matrix<double, iNumDimensions, 1>>
-        evaluate(
-            const std::vector<Matrix<double, iNumParameters, 1>>& parameterValues
-        ) const;
-
-        std::vector<Matrix<Interval, iNumDimensions, 1>>
-        evaluate(
-            const std::vector<Matrix<Interval, iNumParameters, 1>>& parameterValues
-        ) const;
+        template <class TInnerParameter>
+        ParametricExpression<TValue, TInnerParameter>
+        composed(const ParametricExpression<TParameter, TInnerParameter>& innerExpression) const;
         
-        const Matrix<double, iNumDimensions, iNumParameters>
-        jacobian(double u) const;
-        
-        const Matrix<double, iNumDimensions, iNumParameters>
-        jacobian(double u, double v) const;
-        
-        const Matrix<double, iNumDimensions, iNumParameters>
-        jacobian(double u, double v, double w) const;
-        
-        const Matrix<Interval, iNumDimensions, iNumParameters>
-        jacobian(Interval u) const;
-        
-        const Matrix<Interval, iNumDimensions, iNumParameters>
-        jacobian(Interval u, Interval v) const;
-        
-        const Matrix<Interval, iNumDimensions, iNumParameters>
-        jacobian(Interval u, Interval v, Interval w) const;
-        
-        const Matrix<double, iNumDimensions, iNumParameters>
-        jacobian(const Matrix<double, iNumParameters, 1>& parameterValues) const;
-        
-        const Matrix<Interval, iNumDimensions, iNumParameters>
-        jacobian(const Matrix<Interval, iNumParameters, 1>& parameterValues) const;
-        
-        template <int iNumInnerParameters>
-        ParametricExpression<iNumDimensions, iNumInnerParameters>
-        composed(
-            const ParametricExpression<iNumParameters, iNumInnerParameters>& innerExpression
-        ) const;
-        
-        ParametricExpression<iNumDimensions, iNumParameters>
+        ParametricExpression<typename DerivativeType<TValue>::Type, TParameter>
         derivative() const;
 
-        ParametricExpression<iNumDimensions, iNumParameters>
+        ParametricExpression<typename DerivativeType<TValue>::Type, TParameter>
         derivative(int parameterIndex) const;
 
-        ParametricExpression<iNumDimensions, iNumParameters>
-        derivative(const Parameter<iNumParameters>& parameter) const;
+        ParametricExpression<typename DerivativeType<TValue>::Type, TParameter>
+        derivative(const Parameter<TParameter>& parameter) const;
         
-        ParametricExpression<1, iNumParameters>
+        ParametricExpression<double, TParameter>
         norm() const;
         
-        ParametricExpression<iNumDimensions, iNumParameters>
+        ParametricExpression<TValue, TParameter>
         normalized() const;
         
-        ParametricExpression<1, iNumParameters>
+        ParametricExpression<double, TParameter>
         squaredNorm() const;
 
-        ParametricExpression<1, iNumParameters>
+        ParametricExpression<double, TParameter>
         squared() const;
         
-        ParametricExpression<1, iNumParameters>
+        ParametricExpression<double, TParameter>
         x() const;
         
-        ParametricExpression<1, iNumParameters>
+        ParametricExpression<double, TParameter>
         y() const;
         
-        ParametricExpression<1, iNumParameters>
+        ParametricExpression<double, TParameter>
         z() const;
         
-        ParametricExpression<1, iNumParameters>
+        ParametricExpression<double, TParameter>
         component(int index) const;
-        
-        template <int iNumComponents>
-        ParametricExpression<iNumComponents, iNumParameters>
-        components(int startIndex) const;
-        
-        template <int iNumOtherDimensions>
-        ParametricExpression<iNumDimensions + iNumOtherDimensions, iNumParameters>
-        concatenated(const ParametricExpression<iNumOtherDimensions, iNumParameters>& other) const;
 
-        ParametricExpression<1, iNumParameters>
-        dot(const Matrix<double, iNumDimensions, 1>& columnMatrix) const;
+        ParametricExpression<double, TParameter>
+        dot(const TValue& vector) const;
 
-        ParametricExpression<1, iNumParameters>
-        dot(const ParametricExpression<iNumDimensions, iNumParameters>& other) const;
+        ParametricExpression<double, TParameter>
+        dot(const ParametricExpression<TValue, TParameter>& other) const;
 
-        ParametricExpression<3, iNumParameters>
-        cross(const Matrix<double, 3, 1>& columnMatrix) const;
+        ParametricExpression<TValue, TParameter>
+        cross(const TValue& vector) const;
 
-        ParametricExpression<3, iNumParameters>
-        cross(const ParametricExpression<3, iNumParameters>& other) const;
+        ParametricExpression<TValue, TParameter>
+        cross(const ParametricExpression<TValue, TParameter>& other) const;
     };
 
-    template <int iNumParameters, int iNumDimensions>
-    ParametricExpression<iNumParameters, iNumDimensions>
-    operator-(const ParametricExpression<iNumParameters, iNumDimensions>& expression);
+    template <class TValue, class TParameter>
+    ParametricExpression<typename NegatedType<TValue>::Type, TParameter>
+    operator-(const ParametricExpression<TValue, TParameter>& expression);
 
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    operator+(const ParametricExpression<1, iNumParameters>& expression, double value);
-    
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    operator+(double value, const ParametricExpression<1, iNumParameters>& expression);
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename SumType<TFirstValue, TSecondValue>::Type, TParameter>
     operator+(
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        const Matrix<double, iNumDimensions, 1>& columnMatrix
+        const ParametricExpression<TFirstValue, TParameter>& firstExpression,
+        const ParametricExpression<TSecondValue, TParameter>& secondExpression
     );
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
+
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename SumType<TFirstValue, TSecondValue>::Type, TParameter>
     operator+(
-        const Matrix<double, iNumDimensions, 1>& columnMatrix,
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression
+        const ParametricExpression<TFirstValue, TParameter>& expression,
+        const TSecondValue& value
     );
 
-    template <int iNumParameters, int iNumDimensions>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename SumType<TFirstValue, TSecondValue>::Type, TParameter>
     operator+(
-        const ParametricExpression<iNumDimensions, iNumParameters>& firstExpression,
-        const ParametricExpression<iNumDimensions, iNumParameters>& secondExpression
+        const TFirstValue& value,
+        const ParametricExpression<TSecondValue, TParameter>& expression
     );
 
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    operator-(const ParametricExpression<1, iNumParameters>& expression, double value);
-    
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    operator-(double value, const ParametricExpression<1, iNumParameters>& expression);
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename DifferenceType<TFirstValue, TSecondValue>::Type, TParameter>
     operator-(
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        const Matrix<double, iNumDimensions, 1>& columnMatrix
+        const ParametricExpression<TFirstValue, TParameter>& firstExpression,
+        const ParametricExpression<TSecondValue, TParameter>& secondExpression
     );
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
+
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename DifferenceType<TFirstValue, TSecondValue>::Type, TParameter>
     operator-(
-        const Matrix<double, iNumDimensions, 1>& columnMatrix,
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression
+        const ParametricExpression<TFirstValue, TParameter>& expression,
+        const TSecondValue& value
     );
 
-    template <int iNumParameters, int iNumDimensions>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename DifferenceType<TFirstValue, TSecondValue>::Type, TParameter>
     operator-(
-        const ParametricExpression<iNumDimensions, iNumParameters>& firstExpression,
-        const ParametricExpression<iNumDimensions, iNumParameters>& secondExpression
-    );
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    operator*(
-        double value,
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression
+        const TFirstValue& value,
+        const ParametricExpression<TSecondValue, TParameter>& expression
     );
 
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename ProductType<TFirstValue, TSecondValue>::Type, TParameter>
     operator*(
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        double value
-    );
-    
-    template <int iNumDimensions, int iNumParameters, int iNumResultDimensions>
-    ParametricExpression<iNumResultDimensions, iNumParameters>
-    operator*(
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression
-    );
-    
-    template <int iNumParameters, int iNumResultDimensions>
-    ParametricExpression<iNumResultDimensions, iNumParameters>
-    operator*(
-        const ParametricExpression<1, iNumParameters>& expression,
-        const Matrix<double, iNumResultDimensions, 1>& columnMatrix
+        const ParametricExpression<TFirstValue, TParameter>& firstExpression,
+        const ParametricExpression<TSecondValue, TParameter>& secondExpression
     );
 
-    template <int iNumParameters, int iNumDimensions>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename ProductType<TFirstValue, TSecondValue>::Type, TParameter>
     operator*(
-        const ParametricExpression<iNumDimensions, iNumParameters>& firstExpression,
-        const ParametricExpression<1, iNumParameters>& secondExpression
+        const ParametricExpression<TFirstValue, TParameter>& expression,
+        const TSecondValue& value
     );
 
-    template <int iNumParameters, int iNumDimensions>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename ProductType<TFirstValue, TSecondValue>::Type, TParameter>
     operator*(
-        const ParametricExpression<1, iNumParameters>& firstExpression,
-        const ParametricExpression<iNumDimensions, iNumParameters>& secondExpression
+        const TFirstValue& value,
+        const ParametricExpression<TSecondValue, TParameter>& expression
     );
 
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    operator*(
-        const ParametricExpression<1, iNumParameters>& firstExpression,
-        const ParametricExpression<1, iNumParameters>& secondExpression
-    );
-
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename QuotientType<TFirstValue, TSecondValue>::Type, TParameter>
     operator/(
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        double value
-    );
-    
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    operator/(double value, const ParametricExpression<1, iNumParameters>& expression);
-    
-    template <int iNumResultDimensions, int iNumParameters>
-    ParametricExpression<iNumResultDimensions, iNumParameters>
-    operator/(
-        const Matrix<double, iNumResultDimensions, 1>& columnMatrix,
-        const ParametricExpression<1, iNumParameters>& expression
+        const ParametricExpression<TFirstValue, TParameter>& firstExpression,
+        const ParametricExpression<TSecondValue, TParameter>& secondExpression
     );
 
-    template <int iNumParameters, int iNumDimensions>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename QuotientType<TFirstValue, TSecondValue>::Type, TParameter>
     operator/(
-        const ParametricExpression<iNumDimensions, iNumParameters>& firstExpression,
-        const ParametricExpression<1, iNumParameters>& secondExpression
+        const ParametricExpression<TFirstValue, TParameter>& expression,
+        const TSecondValue& value
+    );
+
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename QuotientType<TFirstValue, TSecondValue>::Type, TParameter>
+    operator/(
+        const TFirstValue& value,
+        const ParametricExpression<TSecondValue, TParameter>& expression
     );
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    sin(const ParametricExpression<1, iNumParameters>& expression);
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    sin(const ParametricExpression<double, TParameter>& expression);
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    cos(const ParametricExpression<1, iNumParameters>& expression);
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    cos(const ParametricExpression<double, TParameter>& expression);
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    tan(const ParametricExpression<1, iNumParameters>& expression);
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    tan(const ParametricExpression<double, TParameter>& expression);
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    sqrt(const ParametricExpression<1, iNumParameters>& expression);
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    sqrt(const ParametricExpression<double, TParameter>& expression);
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    acos(const ParametricExpression<1, iNumParameters>& expression);
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    acos(const ParametricExpression<double, TParameter>& expression);
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    asin(const ParametricExpression<1, iNumParameters>& expression);
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    asin(const ParametricExpression<double, TParameter>& expression);
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    exp(const ParametricExpression<1, iNumParameters>& expression);
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    exp(const ParametricExpression<double, TParameter>& expression);
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    log(const ParametricExpression<1, iNumParameters>& expression);
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    log(const ParametricExpression<double, TParameter>& expression);
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    pow(const ParametricExpression<1, iNumParameters>& base, double exponent);
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    pow(const ParametricExpression<double, TParameter>& base, double exponent);
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    pow(double base, const ParametricExpression<1, iNumParameters>& exponent);
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    pow(double base, const ParametricExpression<double, TParameter>& exponent);
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
     pow(
-        const ParametricExpression<1, iNumParameters>& base,
-        const ParametricExpression<1, iNumParameters>& exponent
+        const ParametricExpression<double, TParameter>& base,
+        const ParametricExpression<double, TParameter>& exponent
     );
 
-    template <int iNumDimensions, int iNumParameters>
+    template <class TValue, class TParameter>
     std::ostream&
-    operator<<(
-        std::ostream& stream,
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression
-    );
+    operator<<(std::ostream& stream, const ParametricExpression<TValue, TParameter>& expression);
+
+    template <>
+    struct DerivativeType<double>
+    {
+        typedef double Type;
+    };
+
+    template <int iNumDimensions>
+    struct DerivativeType<Vector<double, iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct DerivativeType<Point<iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <>
+    struct NegatedType<double>
+    {
+        typedef double Type;
+    };
+
+    template <int iNumDimensions>
+    struct NegatedType<Vector<double, iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <>
+    struct SumType<double, double>
+    {
+        typedef double Type;
+    };
+
+    template <int iNumDimensions>
+    struct SumType<Vector<double, iNumDimensions>, Vector<double, iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct SumType<Point<iNumDimensions>, Vector<double, iNumDimensions>>
+    {
+        typedef Point<iNumDimensions> Type;
+    };
+
+    template <>
+    struct DifferenceType<double, double>
+    {
+        typedef double Type;
+    };
+
+    template <int iNumDimensions>
+    struct DifferenceType<Vector<double, iNumDimensions>, Vector<double, iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct DifferenceType<Point<iNumDimensions>, Vector<double, iNumDimensions>>
+    {
+        typedef Point<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct DifferenceType<Point<iNumDimensions>, Point<iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <>
+    struct ProductType<double, double>
+    {
+        typedef double Type;
+    };
+
+    template <int iNumDimensions>
+    struct ProductType<double, Vector<double, iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct ProductType<Vector<double, iNumDimensions>, double>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <>
+    struct QuotientType<double, double>
+    {
+        typedef double Type;
+    };
+
+    template <int iNumDimensions>
+    struct QuotientType<Vector<double, iNumDimensions>, double>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions, class TParameter>
+    struct ScalingFunction<ParametricExpression<Vector<double, iNumDimensions>, TParameter>>
+    {
+        ParametricExpression<Vector<double, iNumDimensions>, TParameter>
+        operator()(
+            const ParametricExpression<Vector<double, iNumDimensions>, TParameter>& expression,
+            const Point<iNumDimensions>& originPoint,
+            double scale
+        ) const;
+    };
+
+    template <int iNumDimensions, class TParameter>
+    struct ScalingFunction<ParametricExpression<Point<iNumDimensions>, TParameter>>
+    {
+        ParametricExpression<Point<iNumDimensions>, TParameter>
+        operator()(
+            const ParametricExpression<Point<iNumDimensions>, TParameter>& expression,
+            const Point<iNumDimensions>& originPoint,
+            double scale
+        ) const;
+    };
+
+    template <int iNumDimensions, class TParameter>
+    struct TranslationFunction<ParametricExpression<Vector<double, iNumDimensions>, TParameter>>
+    {
+        ParametricExpression<Vector<double, iNumDimensions>, TParameter>
+        operator()(
+            const ParametricExpression<Vector<double, iNumDimensions>, TParameter>& expression,
+            const Vector<double, iNumDimensions>& vector
+        ) const;
+    };
+
+    template <int iNumDimensions, class TParameter>
+    struct TranslationFunction<ParametricExpression<Point<iNumDimensions>, TParameter>>
+    {
+        ParametricExpression<Point<iNumDimensions>, TParameter>
+        operator()(
+            const ParametricExpression<Point<iNumDimensions>, TParameter>& expression,
+            const Vector<double, iNumDimensions>& vector
+        ) const;
+    };
+
+    template <int iNumDimensions, class TParameter, int iNumResultDimensions>
+    struct TransformationFunction<
+        ParametricExpression<Vector<double, iNumDimensions>, TParameter>,
+        iNumResultDimensions
+    >
+    {
+        ParametricExpression<Vector<double, iNumResultDimensions>, TParameter>
+        operator()(
+            const ParametricExpression<Vector<double, iNumDimensions>, TParameter>& expression,
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+            const Point<iNumResultDimensions>& destinationPoint
+        ) const;
+    };
+
+    template <int iNumDimensions, class TParameter, int iNumResultDimensions>
+    struct TransformationFunction<
+        ParametricExpression<Point<iNumDimensions>, TParameter>,
+        iNumResultDimensions
+    >
+    {
+        ParametricExpression<Point<iNumResultDimensions>, TParameter>
+        operator()(
+            const ParametricExpression<Point<iNumDimensions>, TParameter>& expression,
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+            const Point<iNumResultDimensions>& destinationPoint
+        ) const;
+    };
+
+    template <class TValue, class TParameter, class TResultValue>
+    struct MorphingFunction<
+        ParametricExpression<TValue, TParameter>,
+        ParametricExpression<TResultValue, TValue>
+    >
+    {
+        ParametricExpression<TResultValue, TParameter>
+        operator()(
+            const ParametricExpression<TValue, TParameter>& expression,
+            const ParametricExpression<TResultValue, TValue>& morphingExpression
+        ) const;
+    };
 }

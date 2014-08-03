@@ -38,6 +38,9 @@
 #include <OpenSolid/Core/ParametricExpression/Evaluator.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
+#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 
 #include <type_traits>
 
@@ -45,45 +48,62 @@ namespace opensolid
 {
     namespace detail
     {
-        template <int iNumDimensions, int iNumParameters>
+        template <class TValue, class TParameter>
         ExpressionImplementationPtr
         zeroExpression() {
             return ExpressionImplementationPtr(
-                new ConstantExpression(ColumnMatrixXd::zero(iNumDimensions), iNumParameters)
+                new ConstantExpression(
+                    ColumnMatrixXd::zero(NumDimensions<TValue>::Value),
+                    NumDimensions<TParameter>::Value
+                )
             );
         }
 
         inline
         ConstMatrixViewXd
         constView(const double& value) {
-            return ConstMatrixViewXd(&value, 1, 1, sizeof(double));
+            return ConstMatrixViewXd(&value, 1, 1, 1);
         }
 
         inline
         ConstIntervalMatrixViewXd
         constView(const Interval& value) {
-            return ConstIntervalMatrixViewXd(&value, 1, 1, sizeof(Interval));
+            return ConstIntervalMatrixViewXd(&value, 1, 1, 1);
         }
 
-        template <int iNumRows, int iNumColumns>
+        template <int iNumDimensions>
         inline
         ConstMatrixViewXd
-        constView(const Matrix<double, iNumRows, iNumColumns>& matrix) {
-            return matrix.view();
+        constView(const Vector<double, iNumDimensions>& vector) {
+            return vector.components().view();
         }
 
-        template <int iNumRows, int iNumColumns>
+        template <int iNumDimensions>
         inline
         ConstIntervalMatrixViewXd
-        constView(const Matrix<Interval, iNumRows, iNumColumns>& matrix) {
-            return matrix.view();
+        constView(const Vector<Interval, iNumDimensions>& intervalVector) {
+            return intervalVector.components().view();
+        }
+
+        template <int iNumDimensions>
+        inline
+        ConstMatrixViewXd
+        constView(const Point<iNumDimensions>& point) {
+            return point.components().view();
+        }
+
+        template <int iNumDimensions>
+        inline
+        ConstIntervalMatrixViewXd
+        constView(const Box<iNumDimensions>& box) {
+            return box.components().view();
         }
 
         inline
         ConstMatrixViewXd
         constView(const std::vector<double>& values) {
             return ConstMatrixViewXd(
-                &values.front(),
+                values.data(),
                 1,
                 int(values.size()),
                 sizeof(double)
@@ -94,7 +114,7 @@ namespace opensolid
         ConstIntervalMatrixViewXd
         constView(const std::vector<Interval>& values) {
             return ConstIntervalMatrixViewXd(
-                &values.front(),
+                values.data(),
                 1,
                 int(values.size()),
                 sizeof(Interval)
@@ -102,402 +122,361 @@ namespace opensolid
         }
 
         template <int iNumRows>
+        ConstMatrixViewXd
+
+        template <int iNumDimensions>
         inline
         ConstMatrixViewXd
-        constView(const std::vector<Matrix<double, iNumRows, 1>>& matrices) {
+        constView(const std::vector<Vector<double, iNumDimensions>>& vectors) {
             return ConstMatrixViewXd(
-                matrices.front().data(),
-                iNumRows,
-                int(matrices.size()),
-                iNumRows
+                vectors.front().data(),
+                iNumDimensions,
+                int(vectors.size()),
+                sizeof(Vector<double, iNumDimensions>)
             );
         }
 
-        template <int iNumRows>
+        template <int iNumDimensions>
         inline
         ConstIntervalMatrixViewXd
-        constView(const std::vector<Matrix<Interval, iNumRows, 1>>& matrices) {
+        constView(const std::vector<Vector<Interval, iNumDimensions>>& intervalVectors) {
             return ConstIntervalMatrixViewXd(
-                matrices.front().data(),
-                iNumRows,
-                int(matrices.size()),
-                iNumRows
+                intervalVectors.front().data(),
+                iNumDimensions,
+                int(intervalVectors.size()),
+                sizeof(Vector<Interval, iNumDimensions>)
             );
         }
 
-        template <int iNumRows, int iNumColumns>
+        template <int iNumDimensions>
         inline
-        MatrixViewXd
-        mutableView(Matrix<double, iNumRows, iNumColumns>& matrix) {
-            return matrix.view();
+        ConstMatrixViewXd
+        constView(const std::vector<Point<iNumDimensions>>& points) {
+            return ConstMatrixViewXd(
+                points.front().data(),
+                iNumDimensions,
+                int(points.size()),
+                sizeof(Point<iNumDimensions>)
+            );
         }
 
-        template <int iNumRows, int iNumColumns>
+        template <int iNumDimensions>
+        inline
+        ConstIntervalMatrixViewXd
+        constView(const std::vector<Box<iNumDimensions>>& boxes) {
+            return ConstIntervalMatrixViewXd(
+                boxes.front().data(),
+                iNumDimensions,
+                int(boxes.size()),
+                sizeof(Box<iNumDimensions>)
+            );
+        }
+
+        inline
+        MatrixViewXd
+        mutableView(double& value) {
+            return MatrixViewXd(&value, 1, 1, 1);
+        }
+
         inline
         IntervalMatrixViewXd
-        mutableView(Matrix<Interval, iNumRows, iNumColumns>& matrix) {
-            return matrix.view();
+        mutableView(Interval& value) {
+            return IntervalMatrixViewXd(&value, 1, 1, 1);
+        }
+
+        template <int iNumDimensions>
+        inline
+        MatrixViewXd
+        mutableView(Vector<double, iNumDimensions>& vector) {
+            return vector.components().view();
+        }
+
+        template <int iNumDimensions>
+        inline
+        IntervalMatrixViewXd
+        mutableView(Vector<Interval, iNumDimensions>& intervalVector) {
+            return intervalVector.components().view();
+        }
+
+        template <int iNumDimensions>
+        inline
+        MatrixViewXd
+        mutableView(Point<iNumDimensions>& point) {
+            return point.components().view();
+        }
+
+        template <int iNumDimensions>
+        inline
+        IntervalMatrixViewXd
+        mutableView(Box<iNumDimensions>& box) {
+            return box.components().view();
         }
 
         inline
         MatrixViewXd
         mutableView(std::vector<double>& values) {
-            return MatrixViewXd(&values.front(), 1, int(values.size()), sizeof(double));
+            return MatrixViewXd(
+                values.data(),
+                1,
+                int(values.size()),
+                sizeof(double)
+            );
         }
 
         inline
         IntervalMatrixViewXd
         mutableView(std::vector<Interval>& values) {
-            return IntervalMatrixViewXd(&values.front(), 1, int(values.size()), sizeof(Interval));
+            return IntervalMatrixViewXd(
+                values.data(),
+                1,
+                int(values.size()),
+                sizeof(Interval)
+            );
         }
 
-        template <int iNumRows>
+        template <int iNumDimensions>
         inline
         MatrixViewXd
-        mutableView(std::vector<Matrix<double, iNumRows, 1>>& matrices) {
+        mutableView(std::vector<Vector<double, iNumDimensions>>& vectors) {
             return MatrixViewXd(
-                matrices.front().data(),
-                iNumRows,
-                int(matrices.size()),
-                iNumRows * sizeof(double)
+                vectors.front().data(),
+                iNumDimensions,
+                int(vectors.size()),
+                sizeof(Vector<double, iNumDimensions>)
             );
         }
 
-        template <int iNumRows>
+        template <int iNumDimensions>
         inline
         IntervalMatrixViewXd
-        mutableView(std::vector<Matrix<Interval, iNumRows, 1>>& matrices) {
+        mutableView(std::vector<Vector<Interval, iNumDimensions>>& intervalVectors) {
             return IntervalMatrixViewXd(
-                matrices.front().data(),
-                iNumRows,
-                int(matrices.size()),
-                iNumRows * sizeof(Interval)
+                intervalVectors.front().data(),
+                iNumDimensions,
+                int(intervalVectors.size()),
+                sizeof(Vector<Interval, iNumDimensions>)
             );
         }
+
+        template <int iNumDimensions>
+        inline
+        MatrixViewXd
+        mutableView(std::vector<Point<iNumDimensions>>& points) {
+            return MatrixViewXd(
+                points.front().data(),
+                iNumDimensions,
+                int(points.size()),
+                sizeof(Point<iNumDimensions>)
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        IntervalMatrixViewXd
+        mutableView(std::vector<Box<iNumDimensions>>& boxes) {
+            return IntervalMatrixViewXd(
+                boxes.front().data(),
+                iNumDimensions,
+                int(boxes.size()),
+                sizeof(Box<iNumDimensions>)
+            );
+        }
+
+        inline
+        ColumnMatrixXd
+        components(double value) {
+            return ColumnMatrixXd::constant(1, value);
+        }
+
+        template <int iNumDimensions>
+        inline
+        ColumnMatrixXd
+        components(const Vector<double, iNumDimensions>& vector) {
+            return vector.components();
+        }
+
+        template <int iNumDimensions>
+        inline
+        ColumnMatrixXd
+        components(const Point<iNumDimensions>& point) {
+            return point.components();
+        }
+
+        template <class TValue>
+        struct IsVector
+        {
+            static bool value = false;
+        };
+
+        template <int iNumDimensions>
+        struct IsVector<Vector<double, iNumDimensions>>
+        {
+            static bool value = true;
+        };
     }
 
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::ParametricExpression() :
-        _implementationPtr(detail::zeroExpression<iNumDimensions, iNumParameters>()) {
+    template <class TValue, class TParameter>
+    ParametricExpression<TValue, TParameter>::ParametricExpression() :
+        _implementationPtr(detail::zeroExpression<TValue, TParameter>()) {
     }
     
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::ParametricExpression(
+    template <class TValue, class TParameter>
+    ParametricExpression<TValue, TParameter>::ParametricExpression(
         const detail::ExpressionImplementation* implementationPtr
     ) : _implementationPtr(implementationPtr) {
         if (!implementationPtr) {
             throw Error(new PlaceholderError());
-            _implementationPtr = detail::zeroExpression<iNumDimensions, iNumParameters>();
+            _implementationPtr = detail::zeroExpression<TValue, TParameter>();
         }
-        if (implementationPtr->numDimensions() != iNumDimensions) {
+        if (implementationPtr->numDimensions() != NumDimensions<TValue>::Value) {
             throw Error(new PlaceholderError());
-            _implementationPtr = detail::zeroExpression<iNumDimensions, iNumParameters>();
+            _implementationPtr = detail::zeroExpression<TValue, TParameter>();
         }
-        if (implementationPtr->numParameters() != iNumParameters) {
+        if (implementationPtr->numParameters() != NumDimensions<TParameter>::Value) {
             throw Error(new PlaceholderError());
-            _implementationPtr = detail::zeroExpression<iNumDimensions, iNumParameters>();
+            _implementationPtr = detail::zeroExpression<TValue, TParameter>();
         }
     }
     
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::ParametricExpression(
+    template <class TValue, class TParameter>
+    ParametricExpression<TValue, TParameter>::ParametricExpression(
         const detail::ExpressionImplementationPtr& implementationPtr
     ) : _implementationPtr(implementationPtr) {
         if (!implementationPtr) {
             throw Error(new PlaceholderError());
-            _implementationPtr = detail::zeroExpression<iNumDimensions, iNumParameters>();
+            _implementationPtr = detail::zeroExpression<TValue, TParameter>();
         }
-        if (implementationPtr->numDimensions() != iNumDimensions) {
+        if (implementationPtr->numDimensions() != NumDimensions<TValue>::Value) {
             throw Error(new PlaceholderError());
-            _implementationPtr = detail::zeroExpression<iNumDimensions, iNumParameters>();
+            _implementationPtr = detail::zeroExpression<TValue, TParameter>();
         }
-        if (implementationPtr->numParameters() != iNumParameters) {
+        if (implementationPtr->numParameters() != NumDimensions<TParameter>::Value) {
             throw Error(new PlaceholderError());
-            _implementationPtr = detail::zeroExpression<iNumDimensions, iNumParameters>();
+            _implementationPtr = detail::zeroExpression<TValue, TParameter>();
         }
     }
 
-    template <int iNumDimensions, int iNumParameters>
+    template <class TValue, class TParameter>
     inline
     const detail::ExpressionImplementationPtr&
-    ParametricExpression<iNumDimensions, iNumParameters>::implementation() const {
+    ParametricExpression<TValue, TParameter>::implementation() const {
         return _implementationPtr;
     }
-
-    template <int iNumDimensions, int iNumParameters>
+        
+    template <class TValue, class TParameter>
     inline
-    const Matrix<double, iNumDimensions, 1>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(double u) const {
-        static_assert(iNumParameters == 1, "Wrong number of parameters");
+    TValue
+    ParametricExpression<TValue, TParameter>::evaluate(const TParameter& parameterValue) const {
+        ConstMatrixViewXd parameterView = detail::constView(parameterValue);
 
-        return evaluate(Matrix1d(u));
-    }
+        TValue result;
+        MatrixViewXd resultView = detail::mutableView(result);
 
-    template <int iNumDimensions, int iNumParameters>
-    inline
-    const Matrix<double, iNumDimensions, 1>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(double u, double v) const {
-        static_assert(iNumParameters == 2, "Wrong number of parameters");
+        detail::Evaluator evaluator;
+        implementation()->evaluate(parameterView, resultView, evaluator);
 
-        return evaluate(ColumnMatrix2d(u, v));
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    inline
-    const Matrix<double, iNumDimensions, 1>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
-        double u,
-        double v,
-        double w
-    ) const {
-        static_assert(iNumParameters == 3, "Wrong number of parameters");
-
-        return evaluate(ColumnMatrix3d(u, v, w));
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    inline
-    const Matrix<Interval, iNumDimensions, 1>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(Interval u) const {
-        static_assert(iNumParameters == 1, "Wrong number of parameters");
-
-        return evaluate(IntervalMatrix1d(u));
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    inline
-    const Matrix<Interval, iNumDimensions, 1>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(Interval u, Interval v) const {
-        static_assert(iNumParameters == 2, "Wrong number of parameters");
-
-        return evaluate(IntervalColumnMatrix2d(u, v));
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    inline
-    const Matrix<Interval, iNumDimensions, 1>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
-        Interval u,
-        Interval v,
-        Interval w
-    ) const {
-        static_assert(iNumParameters == 3, "Wrong number of parameters");
-
-        return evaluate(IntervalColumnMatrix3d(u, v, w));
+        return result;
     }
     
-    template <int iNumDimensions, int iNumParameters> template <int iNumColumns>
+    template <class TValue, class TParameter>
     inline
-    const Matrix<double, iNumDimensions, iNumColumns>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
-        const Matrix<double, iNumParameters, iNumColumns>& columnMatrix
+    typename BoundsType<TValue>::Type
+    ParametricExpression<TValue, TParameter>::evaluate(
+        const typename BoundsType<TParameter>::Type& parameterBounds
     ) const {
-        ConstMatrixViewXd argumentView = detail::constView(columnMatrix);
+        ConstMatrixViewXI parameterView = detail::constView(parameterBounds);
 
-        Matrix<double, iNumDimensions, iNumColumns> results;
+        typename BoundsType<TValue>::Type result;
+        IntervalMatrixViewXd resultView = detail::mutableView(result);
+
+        detail::Evaluator evaluator;
+        implementation()->evaluate(parameterView, resultView, evaluator);
+
+        return result;
+    }
+
+    template <class TValue, class TParameter>
+    inline
+    std::vector<TValue>
+    ParametricExpression<TValue, TParameter>::evaluate(
+        const std::vector<TParameter>& parameterValues
+    ) const {
+        ConstMatrixViewXd parameterView = detail::constView(parameterValues);
+
+        std::vector<TValue> results(parameterValues.size());
         MatrixViewXd resultView = detail::mutableView(results);
 
         detail::Evaluator evaluator;
-        implementation()->evaluate(argumentView, resultView, evaluator);
+        implementation()->evaluate(parameterView, resultView, evaluator);
+
+        return results;
+    }
+
+    template <class TValue, class TParameter>
+    inline
+    std::vector<typename BoundsType<TValue>::Type>
+    ParametricExpression<TValue, TParameter>::evaluate(
+        const std::vector<typename BoundsType<TParameter>::Type>& parameterBounds
+    ) const {
+        ConstIntervalMatrixViewXd parameterView = detail::constView(parameterBounds);
+
+        std::vector<typename BoundsType<TValue>::Type> results(parameterBounds.size());
+        IntervalMatrixViewXd resultView = detail::mutableView(results);
+
+        detail::Evaluator evaluator;
+        implementation()->evaluate(parameterView, resultView, evaluator);
 
         return results;
     }
     
-    template <int iNumDimensions, int iNumParameters> template <int iNumColumns>
+    template <class TValue, class TParameter>
     inline
-    const Matrix<Interval, iNumDimensions, iNumColumns>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
-        const Matrix<Interval, iNumParameters, iNumColumns>& columnMatrix
-    ) const {
-        ConstIntervalMatrixViewXd argumentView = detail::constView(columnMatrix);
+    const Matrix<double, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value>
+    ParametricExpression<TValue, TParameter>::jacobian(const TParameter& parameterValue) const {
+        ConstMatrixViewXd parameterView = detail::constView(parameterValue);
 
-        Matrix<Interval, iNumDimensions, iNumColumns> results;
-        IntervalMatrixViewXd resultView = detail::mutableView(results);
+        Matrix<double, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value> result;
+        MatrixViewXd resultView = result.view();
 
         detail::Evaluator evaluator;
-        implementation()->evaluate(argumentView, resultView, evaluator);
+        implementation()->evaluateJacobian(parameterView, resultView, evaluator);
 
-        return results;
+        return result;
     }
-
-    template <int iNumDimensions, int iNumParameters>
-    std::vector<Matrix<double, iNumDimensions, 1>>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
-        const std::vector<double>& parameterValues
+    
+    template <class TValue, class TParameter>
+    inline
+    const Matrix<Interval, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value>
+    ParametricExpression<TValue, TParameter>::jacobian(
+        const typename BoundsType<TParameter>::Type& parameterBounds
     ) const {
-        static_assert(iNumParameters == 1, "Multiple parameters required");
+        ConstIntervalMatrixViewXd parameterView = detail::constView(parameterBounds);
 
-        ConstMatrixViewXd argumentView = detail::constView(parameterValues);
-
-        std::vector<Matrix<double, iNumDimensions, 1>> results(parameterValues.size());
-        MatrixViewXd resultView = detail::mutableView(results);
+        Matrix<Interval, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value> result;
+        IntervalMatrixViewXd resultView = result.view();
 
         detail::Evaluator evaluator;
-        implementation()->evaluate(argumentView, resultView, evaluator);
+        implementation()->evaluateJacobian(parameterView, resultView, evaluator);
 
-        return results;
+        return result;
     }
 
-    template <int iNumDimensions, int iNumParameters>
-    std::vector<Matrix<Interval, iNumDimensions, 1>>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
-        const std::vector<Interval>& parameterValues
-    ) const {
-        static_assert(iNumParameters == 1, "Multiple parameters required");
-
-        ConstIntervalMatrixViewXd argumentView = detail::constView(parameterValues);
-
-        std::vector<Matrix<Interval, iNumDimensions, 1>> results(parameterValues.size());
-        IntervalMatrixViewXd resultView = detail::mutableView(results);
-
-        detail::Evaluator evaluator;
-        implementation()->evaluate(argumentView, resultView, evaluator);
-
-        return results;
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    std::vector<Matrix<double, iNumDimensions, 1>>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
-        const std::vector<Matrix<double, iNumParameters, 1>>& parameterValues
-    ) const {
-        ConstMatrixViewXd argumentView = detail::constView(parameterValues);
-
-        std::vector<Matrix<double, iNumDimensions, 1>> results(parameterValues.size());
-        MatrixViewXd resultView = detail::mutableView(results);
-
-        detail::Evaluator evaluator;
-        implementation()->evaluate(argumentView, resultView, evaluator);
-
-        return results;
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    std::vector<Matrix<Interval, iNumDimensions, 1>>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
-        const std::vector<Matrix<Interval, iNumParameters, 1>>& parameterValues
-    ) const {
-        ConstIntervalMatrixViewXd argumentView = detail::constView(parameterValues);
-
-        std::vector<Matrix<Interval, iNumDimensions, 1>> results(parameterValues.size());
-        IntervalMatrixViewXd resultView = detail::mutableView(results);
-
-        detail::Evaluator evaluator;
-        implementation()->evaluate(argumentView, resultView, evaluator);
-
-        return results;
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    inline
-    const Matrix<double, iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(double u) const {
-        static_assert(iNumParameters == 1, "Wrong number of parameters");
-
-        return jacobian(Matrix1d(u));
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    inline
-    const Matrix<double, iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(double u, double v) const {
-        static_assert(iNumParameters == 2, "Wrong number of parameters");
-
-        return jacobian(ColumnMatrix2d(u, v));
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    inline
-    const Matrix<double, iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(
-        double u,
-        double v,
-        double w
-    ) const {
-        static_assert(iNumParameters == 3, "Wrong number of parameters");
-
-        return jacobian(ColumnMatrix3d(u, v, w));
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    inline
-    const Matrix<Interval, iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(Interval u) const {
-        static_assert(iNumParameters == 1, "Wrong number of parameters");
-
-        return jacobian(IntervalMatrix1d(u));
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    inline
-    const Matrix<Interval, iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(Interval u, Interval v) const {
-        static_assert(iNumParameters == 2, "Wrong number of parameters");
-
-        return jacobian(IntervalColumnMatrix2d(u, v));
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    inline
-    const Matrix<Interval, iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(
-        Interval u,
-        Interval v,
-        Interval w
-    ) const {
-        static_assert(iNumParameters == 3, "Wrong number of parameters");
-
-        return jacobian(IntervalColumnMatrix3d(u, v, w));
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    inline
-    const Matrix<double, iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(
-        const Matrix<double, iNumParameters, 1>& columnMatrix
-    ) const {
-        ConstMatrixViewXd argumentView = detail::constView(columnMatrix);
-
-        Matrix<double, iNumDimensions, iNumParameters> results;
-        MatrixViewXd resultView = detail::mutableView(results);
-
-        detail::Evaluator evaluator;
-        implementation()->evaluateJacobian(argumentView, resultView, evaluator);
-
-        return results;
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    inline
-    const Matrix<Interval, iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(
-        const Matrix<Interval, iNumParameters, 1>& columnMatrix
-    ) const {
-        ConstIntervalMatrixViewXd argumentView = detail::constView(columnMatrix);
-
-        Matrix<Interval, iNumDimensions, iNumParameters> results;
-        IntervalMatrixViewXd resultView = detail::mutableView(results);
-
-        detail::Evaluator evaluator;
-        implementation()->evaluateJacobian(argumentView, resultView, evaluator);
-
-        return results;
-    }
-
-    template <int iNumDimensions, int iNumParameters> template <int iNumInnerParameters>
-    ParametricExpression<iNumDimensions, iNumInnerParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::composed(
-        const ParametricExpression<iNumParameters, iNumInnerParameters>& other
+    template <class TValue, class TParameter> template <class TInnerParameter>
+    ParametricExpression<TValue, TInnerParameter>
+    ParametricExpression<TValue, TParameter>::composed(
+        const ParametricExpression<TParameter, TInnerParameter>& innerExpression
     ) const {
         detail::DeduplicationCache deduplicationCache;
-        return implementation()->composed(other.implementation())->deduplicated(deduplicationCache);
+        return implementation()->composed(
+            innerExpression.implementation()
+        )->deduplicated(deduplicationCache);
     }
     
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::derivative() const {
+    template <class TValue, class TParameter>
+    ParametricExpression<typename DerivativeType<TValue>::Type, TParameter>
+    ParametricExpression<TValue, TParameter>::derivative() const {
         static_assert(
-            iNumParameters == 1,
+            std::is_same<TParameter, double>::value,
             "Must supply Parameter object or parameter index to derivative() if parametric "
             "expression has multiple parameters"
         );
@@ -505,68 +484,83 @@ namespace opensolid
         return implementation()->derivative(0)->deduplicated(deduplicationCache);
     }
     
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::derivative(int parameterIndex) const {
-        if (parameterIndex < 0 || parameterIndex >= iNumParameters) {
+    template <class TValue, class TParameter>
+    ParametricExpression<typename DerivativeType<TValue>::Type, TParameter>
+    ParametricExpression<TValue, TParameter>::derivative(int parameterIndex) const {
+        if (parameterIndex < 0 || parameterIndex >= NumDimensions<TParameter>::Value) {
             throw Error(new PlaceholderError());
         }
         detail::DeduplicationCache deduplicationCache;
         return implementation()->derivative(parameterIndex)->deduplicated(deduplicationCache);
     }
     
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::derivative(
-        const Parameter<iNumParameters>& parameter
+    template <class TValue, class TParameter>
+    ParametricExpression<typename DerivativeType<TValue>::Type, TParameter>
+    ParametricExpression<TValue, TParameter>::derivative(
+        const Parameter<TParameter>& parameter
     ) const {
         return derivative(parameter.parameterIndex());
     }
     
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::norm() const {
+    template <class TValue, class TParameter>
+    ParametricExpression<double, TParameter>
+    ParametricExpression<TValue, TParameter>::norm() const {
+        static_assert(
+            detail::IsVector<TValue>::value,
+            "norm() only defined for vectors"
+        );
+
         detail::DeduplicationCache deduplicationCache;
         return implementation()->norm()->deduplicated(deduplicationCache);
     }
     
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::normalized() const {
+    template <class TValue, class TParameter>
+    ParametricExpression<TValue, TParameter>
+    ParametricExpression<TValue, TParameter>::normalized() const {
+        static_assert(
+            detail::IsVector<TValue>::value,
+            "normalized() only defined for vectors"
+        );
+
         detail::DeduplicationCache deduplicationCache;
         return implementation()->normalized()->deduplicated(deduplicationCache);
     }
     
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::squaredNorm() const {
+    template <class TValue, class TParameter>
+    ParametricExpression<double, TParameter>
+    ParametricExpression<TValue, TParameter>::squaredNorm() const {
+        static_assert(
+            detail::IsVector<TValue>::value,
+            "squaredNorm() only defined for vectors"
+        );
+
         detail::DeduplicationCache deduplicationCache;
         return implementation()->squaredNorm()->deduplicated(deduplicationCache);
     }
 
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::squared() const {
+    template <class TValue, class TParameter>
+    ParametricExpression<double, TParameter>
+    ParametricExpression<TValue, TParameter>::squared() const {
         static_assert(
-            iNumDimensions == 1,
-            "Use squaredNorm() for vectors (squared() is only for scalars)"
+            std::is_same<TValue, double>::value,
+            "squared() is only defined for scalars"
         );
 
         return squaredNorm();
     }
 
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::x() const {
+    template <class TValue, class TParameter>
+    ParametricExpression<double, TParameter>
+    ParametricExpression<TValue, TParameter>::x() const {
         detail::DeduplicationCache deduplicationCache;
         return implementation()->x()->deduplicated(deduplicationCache);
     }
 
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::y() const {
+    template <class TValue, class TParameter>
+    ParametricExpression<double, TParameter>
+    ParametricExpression<TValue, TParameter>::y() const {
         static_assert(
-            iNumDimensions >= 2,
+            NumDimensions<TValue>::Value >= 2,
             "No Y component exists"
         );
 
@@ -574,11 +568,11 @@ namespace opensolid
         return implementation()->y()->deduplicated(deduplicationCache);
     }
 
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::z() const {
+    template <class TValue, class TParameter>
+    ParametricExpression<double, TParameter>
+    ParametricExpression<TValue, TParameter>::z() const {
         static_assert(
-            iNumDimensions >= 3,
+            NumDimensions<TValue>::Value >= 3,
             "No Z component exists"
         );
 
@@ -586,139 +580,86 @@ namespace opensolid
         return implementation()->z()->deduplicated(deduplicationCache);
     }
     
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::component(int index) const {
-        if (index < 0 || index >= iNumDimensions) {
+    template <class TValue, class TParameter>
+    ParametricExpression<double, TParameter>
+    ParametricExpression<TValue, TParameter>::component(int index) const {
+        if (index < 0 || index >= NumDimensions<TValue>::Value) {
             throw Error(new PlaceholderError());
         }
         detail::DeduplicationCache deduplicationCache;
         return implementation()->component(index)->deduplicated(deduplicationCache);
     }
-    
-    template <int iNumDimensions, int iNumParameters> template <int iNumComponents>
-    ParametricExpression<iNumComponents, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::components(int startIndex) const {
+
+    template <class TValue, class TParameter>
+    ParametricExpression<double, TParameter>
+    ParametricExpression<TValue, TParameter>::dot(const TValue& vector) const {
         static_assert(
-            iNumComponents <= iNumDimensions,
-            "Too many components requested"
-        );
-        static_assert(
-            iNumComponents > 0,
-            "Zero or negative number of components requested"
+            detail::IsVector<TValue>::value,
+            "dot() only defined for vectors"
         );
 
-        if (startIndex < 0 || startIndex + iNumComponents > iNumDimensions) {
-            throw Error(new PlaceholderError());
-        }
-        detail::DeduplicationCache deduplicationCache;
-        return implementation()->components(
-            startIndex,
-            iNumComponents
-        )->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumDimensions, int iNumParameters> template <int iNumOtherDimensions>
-    ParametricExpression<iNumDimensions + iNumOtherDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::concatenated(
-        const ParametricExpression<iNumOtherDimensions, iNumParameters>& other
-    ) const {
-        detail::DeduplicationCache deduplicationCache;
-        return implementation()->concatenated(
-            other.implementation()
-        )->deduplicated(deduplicationCache);
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::dot(
-        const Matrix<double, iNumDimensions, 1>& columnMatrix
-    ) const {
         detail::DeduplicationCache deduplicationCache;
         return implementation()->dot(
-            new detail::ConstantExpression(columnMatrix, iNumParameters)
+            new detail::ConstantExpression(vector, NumDimensions<TParameter>::Value)
         )->deduplicated(deduplicationCache);
     }
     
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::dot(
-        const ParametricExpression<iNumDimensions, iNumParameters>& other
+    template <class TValue, class TParameter>
+    ParametricExpression<double, TParameter>
+    ParametricExpression<TValue, TParameter>::dot(
+        const ParametricExpression<TValue, TParameter>& other
     ) const {
+        static_assert(
+            detail::IsVector<TValue>::value,
+            "dot() only defined for vectors"
+        );
+
         detail::DeduplicationCache deduplicationCache;
         return implementation()->dot(other.implementation())->deduplicated(deduplicationCache);
     }
         
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<3, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::cross(
-        const Matrix<double, 3, 1>& columnMatrix
-    ) const {
-        static_assert(iNumDimensions == 3, "Cross product only defined in 3D");
+    template <class TValue, class TParameter>
+    ParametricExpression<TValue, TParameter>
+    ParametricExpression<TValue, TParameter>::cross(const TValue& vector) const {
+        static_assert(
+            std::is_same<TValue, Vector3d>::value,
+            "Cross product only defined for 3D vectors"
+        );
 
         detail::DeduplicationCache deduplicationCache;
         return implementation()->cross(
-            new detail::ConstantExpression(columnMatrix, iNumParameters)
+            new detail::ConstantExpression(vector, NumDimensions<TParameter>::Value)
         )->deduplicated(deduplicationCache);
     }
     
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<3, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::cross(
-        const ParametricExpression<3, iNumParameters>& other
+    template <class TValue, class TParameter>
+    ParametricExpression<TValue, TParameter>
+    ParametricExpression<TValue, TParameter>::cross(
+        const ParametricExpression<TValue, TParameter>& other
     ) const {
-        static_assert(iNumDimensions == 3, "Cross product only defined in 3D");
+        static_assert(
+            std::is_same<TValue, Vector3d>::value,
+            "Cross product only defined for 3D vectors"
+        );
 
         detail::DeduplicationCache deduplicationCache;
         return implementation()->cross(other.implementation())->deduplicated(deduplicationCache);
     }
 
-    template <int iNumParameters, int iNumDimensions>
-    ParametricExpression<iNumParameters, iNumDimensions>
-    operator-(const ParametricExpression<iNumParameters, iNumDimensions>& expression) {
+    template <class TValue, class TParameter>
+    ParametricExpression<typename NegatedType<TValue>::Type, TParameter>
+    operator-(const ParametricExpression<TValue, TParameter>& expression) {
         detail::DeduplicationCache deduplicationCache;
-        return (-expression.implementation())->deduplicated(deduplicationCache);
+        return (
+            -expression.implementation()
+        )->deduplicated(deduplicationCache);
     }
 
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    operator+(const ParametricExpression<1, iNumParameters>& expression, double value) {
-        detail::DeduplicationCache deduplicationCache;
-        return (expression.implementation() + value)->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    operator+(double value, const ParametricExpression<1, iNumParameters>& expression) {
-        detail::DeduplicationCache deduplicationCache;
-        return (value + expression.implementation())->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename SumType<TFirstValue, TSecondValue>::Type, TParameter>
     operator+(
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        const Matrix<double, iNumDimensions, 1>& columnMatrix
-    ) {
-        detail::DeduplicationCache deduplicationCache;
-        return (expression.implementation() + columnMatrix)->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    operator+(
-        const Matrix<double, iNumDimensions, 1>& columnMatrix,
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression
-    ) {
-        detail::DeduplicationCache deduplicationCache;
-        return (columnMatrix + expression.implementation())->deduplicated(deduplicationCache);
-    }
-
-    template <int iNumParameters, int iNumDimensions>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    operator+(
-        const ParametricExpression<iNumDimensions, iNumParameters>& firstExpression,
-        const ParametricExpression<iNumDimensions, iNumParameters>& secondExpression
+        const ParametricExpression<TFirstValue, TParameter>& firstExpression,
+        const ParametricExpression<TSecondValue, TParameter>& secondExpression
     ) {
         detail::DeduplicationCache deduplicationCache;
         return (
@@ -726,97 +667,70 @@ namespace opensolid
         )->deduplicated(deduplicationCache);
     }
 
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    operator-(const ParametricExpression<1, iNumParameters>& expression, double value) {
-        detail::DeduplicationCache deduplicationCache;
-        return (expression.implementation() - value)->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    operator-(double value, const ParametricExpression<1, iNumParameters>& expression) {
-        detail::DeduplicationCache deduplicationCache;
-        return (value - expression.implementation())->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    operator-(
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        const Matrix<double, iNumDimensions, 1>& columnMatrix
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename SumType<TFirstValue, TSecondValue>::Type, TParameter>
+    operator+(
+        const ParametricExpression<TFirstValue, TParameter>& expression,
+        const TSecondValue& value
     ) {
-        detail::DeduplicationCache deduplicationCache;
-        return (expression.implementation() - columnMatrix)->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    operator-(
-        const Matrix<double, iNumDimensions, 1>& columnMatrix,
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression
-    ) {
-        detail::DeduplicationCache deduplicationCache;
-        return (columnMatrix - expression.implementation())->deduplicated(deduplicationCache);
+        return (
+            expression.implementation() + detail::components(value)
+        )->deduplicated(deduplicationCache);
     }
 
-    template <int iNumParameters, int iNumDimensions>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename SumType<TFirstValue, TSecondValue>::Type, TParameter>
+    operator+(
+        const TFirstValue& value,
+        const ParametricExpression<TSecondValue, TParameter>& expression
+    ) {
+        detail::DeduplicationCache deduplicationCache;
+        return (
+            detail::components(value) + expression.implementation()
+        )->deduplicated(deduplicationCache);
+    }
+
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename DifferenceType<TFirstValue, TSecondValue>::Type, TParameter>
     operator-(
-        const ParametricExpression<iNumDimensions, iNumParameters>& firstExpression,
-        const ParametricExpression<iNumDimensions, iNumParameters>& secondExpression
+        const ParametricExpression<TFirstValue, TParameter>& firstExpression,
+        const ParametricExpression<TSecondValue, TParameter>& secondExpression
     ) {
         detail::DeduplicationCache deduplicationCache;
         return (
             firstExpression.implementation() - secondExpression.implementation()
         )->deduplicated(deduplicationCache);
     }
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    operator*(
-        double value,
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression
+
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename DifferenceType<TFirstValue, TSecondValue>::Type, TParameter>
+    operator-(
+        const ParametricExpression<TFirstValue, TParameter>& expression,
+        const TSecondValue& value
     ) {
         detail::DeduplicationCache deduplicationCache;
-        return (value * expression.implementation())->deduplicated(deduplicationCache);
+        return (
+            expression.implementation() - detail::components(value)
+        )->deduplicated(deduplicationCache);
     }
 
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    operator*(
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        double value
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename DifferenceType<TFirstValue, TSecondValue>::Type, TParameter>
+    operator-(
+        const TFirstValue& value,
+        const ParametricExpression<TSecondValue, TParameter>& expression
     ) {
         detail::DeduplicationCache deduplicationCache;
-        return (expression.implementation() * value)->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumDimensions, int iNumParameters, int iNumResultDimensions>
-    ParametricExpression<iNumResultDimensions, iNumParameters>
-    operator*(
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression
-    ) {
-        detail::DeduplicationCache deduplicationCache;
-        return (matrix * expression.implementation())->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumParameters, int iNumResultDimensions>
-    ParametricExpression<iNumResultDimensions, iNumParameters>
-    operator*(
-        const ParametricExpression<1, iNumParameters>& expression,
-        const Matrix<double, iNumResultDimensions, 1>& columnMatrix
-    ) {
-        detail::DeduplicationCache deduplicationCache;
-        return (expression.implementation() * columnMatrix)->deduplicated(deduplicationCache);
+        return (
+            detail::components(value) - expression.implementation()
+        )->deduplicated(deduplicationCache);
     }
 
-    template <int iNumParameters, int iNumDimensions>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename ProductType<TFirstValue, TSecondValue>::Type, TParameter>
     operator*(
-        const ParametricExpression<iNumDimensions, iNumParameters>& firstExpression,
-        const ParametricExpression<1, iNumParameters>& secondExpression
+        const ParametricExpression<TFirstValue, TParameter>& firstExpression,
+        const ParametricExpression<TSecondValue, TParameter>& secondExpression
     ) {
         detail::DeduplicationCache deduplicationCache;
         return (
@@ -824,147 +738,141 @@ namespace opensolid
         )->deduplicated(deduplicationCache);
     }
 
-    template <int iNumParameters, int iNumDimensions>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename ProductType<TFirstValue, TSecondValue>::Type, TParameter>
     operator*(
-        const ParametricExpression<1, iNumParameters>& firstExpression,
-        const ParametricExpression<iNumDimensions, iNumParameters>& secondExpression
+        const ParametricExpression<TFirstValue, TParameter>& expression,
+        const TSecondValue& value
     ) {
         detail::DeduplicationCache deduplicationCache;
         return (
-            firstExpression.implementation() * secondExpression.implementation()
+            expression.implementation() * detail::components(value)
         )->deduplicated(deduplicationCache);
     }
 
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename ProductType<TFirstValue, TSecondValue>::Type, TParameter>
     operator*(
-        const ParametricExpression<1, iNumParameters>& firstExpression,
-        const ParametricExpression<1, iNumParameters>& secondExpression
+        const TFirstValue& value,
+        const ParametricExpression<TSecondValue, TParameter>& expression
     ) {
         detail::DeduplicationCache deduplicationCache;
         return (
-            firstExpression.implementation() * secondExpression.implementation()
+            detail::components(value) * expression.implementation()
         )->deduplicated(deduplicationCache);
     }
 
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename QuotientType<TFirstValue, TSecondValue>::Type, TParameter>
     operator/(
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        double value
-    ) {
-        detail::DeduplicationCache deduplicationCache;
-        return (expression.implementation() / value)->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    operator/(
-        double value,
-        const ParametricExpression<1, iNumParameters>& expression
-    ) {
-        detail::DeduplicationCache deduplicationCache;
-        return (value / expression.implementation())->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumResultDimensions, int iNumParameters>
-    ParametricExpression<iNumResultDimensions, iNumParameters>
-    operator/(
-        const Matrix<double, iNumResultDimensions, 1>& columnMatrix,
-        const ParametricExpression<1, iNumParameters>& expression
-    ) {
-        detail::DeduplicationCache deduplicationCache;
-        return (columnMatrix / expression.implementation())->deduplicated(deduplicationCache);
-    }
-
-    template <int iNumParameters, int iNumDimensions>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    operator/(
-        const ParametricExpression<iNumDimensions, iNumParameters>& firstExpression,
-        const ParametricExpression<1, iNumParameters>& secondExpression
+        const ParametricExpression<TFirstValue, TParameter>& firstExpression,
+        const ParametricExpression<TSecondValue, TParameter>& secondExpression
     ) {
         detail::DeduplicationCache deduplicationCache;
         return (
             firstExpression.implementation() / secondExpression.implementation()
         )->deduplicated(deduplicationCache);
     }
-    
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    sin(const ParametricExpression<1, iNumParameters>& expression) {
+
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename QuotientType<TFirstValue, TSecondValue>::Type, TParameter>
+    operator/(
+        const ParametricExpression<TFirstValue, TParameter>& expression,
+        const TSecondValue& value
+    ) {
+        detail::DeduplicationCache deduplicationCache;
+        return (
+            expression.implementation() / detail::components(value)
+        )->deduplicated(deduplicationCache);
+    }
+
+    template <class TFirstValue, class TSecondValue, class TParameter>
+    ParametricExpression<typename QuotientType<TFirstValue, TSecondValue>::Type, TParameter>
+    operator/(
+        const TFirstValue& value,
+        const ParametricExpression<TSecondValue, TParameter>& expression
+    ) {
+        detail::DeduplicationCache deduplicationCache;
+        return (
+            detail::components(value) / expression.implementation()
+        )->deduplicated(deduplicationCache);
+    }
+
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    sin(const ParametricExpression<double, TParameter>& expression) {
         detail::DeduplicationCache deduplicationCache;
         return sin(expression.implementation())->deduplicated(deduplicationCache);
     }
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    cos(const ParametricExpression<1, iNumParameters>& expression) {
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    cos(const ParametricExpression<double, TParameter>& expression) {
         detail::DeduplicationCache deduplicationCache;
         return cos(expression.implementation())->deduplicated(deduplicationCache);
     }
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    tan(const ParametricExpression<1, iNumParameters>& expression) {
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    tan(const ParametricExpression<double, TParameter>& expression) {
         detail::DeduplicationCache deduplicationCache;
         return tan(expression.implementation())->deduplicated(deduplicationCache);
     }
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    sqrt(const ParametricExpression<1, iNumParameters>& expression) {
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    sqrt(const ParametricExpression<double, TParameter>& expression) {
         detail::DeduplicationCache deduplicationCache;
         return sqrt(expression.implementation())->deduplicated(deduplicationCache);
     }
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    acos(const ParametricExpression<1, iNumParameters>& expression) {
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    acos(const ParametricExpression<double, TParameter>& expression) {
         detail::DeduplicationCache deduplicationCache;
         return acos(expression.implementation())->deduplicated(deduplicationCache);
     }
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    asin(const ParametricExpression<1, iNumParameters>& expression) {
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    asin(const ParametricExpression<double, TParameter>& expression) {
         detail::DeduplicationCache deduplicationCache;
         return asin(expression.implementation())->deduplicated(deduplicationCache);
     }
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    exp(const ParametricExpression<1, iNumParameters>& expression) {
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    exp(const ParametricExpression<double, TParameter>& expression) {
         detail::DeduplicationCache deduplicationCache;
         return exp(expression.implementation())->deduplicated(deduplicationCache);
     }
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    log(const ParametricExpression<1, iNumParameters>& expression) {
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    log(const ParametricExpression<double, TParameter>& expression) {
         detail::DeduplicationCache deduplicationCache;
         return log(expression.implementation())->deduplicated(deduplicationCache);
     }
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    pow(const ParametricExpression<1, iNumParameters>& base, double exponent) {
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    pow(const ParametricExpression<double, TParameter>& base, double exponent) {
         detail::DeduplicationCache deduplicationCache;
         return pow(base.implementation(), exponent)->deduplicated(deduplicationCache);
     }
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    pow(double base, const ParametricExpression<1, iNumParameters>& exponent) {
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
+    pow(double base, const ParametricExpression<double, TParameter>& exponent) {
         detail::DeduplicationCache deduplicationCache;
         return pow(base, exponent.implementation())->deduplicated(deduplicationCache);
     }
     
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
+    template <class TParameter>
+    ParametricExpression<double, TParameter>
     pow(
-        const ParametricExpression<1, iNumParameters>& base,
-        const ParametricExpression<1, iNumParameters>& exponent
+        const ParametricExpression<double, TParameter>& base,
+        const ParametricExpression<double, TParameter>& exponent
     ) {
         detail::DeduplicationCache deduplicationCache;
         return pow(
@@ -973,13 +881,103 @@ namespace opensolid
         )->deduplicated(deduplicationCache);
     }
 
-    template <int iNumDimensions, int iNumParameters>
+    template <class TValue, class TParameter>
     std::ostream&
     operator<<(
         std::ostream& stream,
-        const ParametricExpression<iNumDimensions, iNumParameters>& expression
+        const ParametricExpression<TValue, TParameter>& expression
     ) {
         expression.implementation()->debug(stream, 0);
         return stream;
+    }
+
+    template <int iNumDimensions, class TParameter>
+    ParametricExpression<Vector<double, iNumDimensions>, TParameter>
+    inline
+    ScalingFunction<ParametricExpression<Vector<double, iNumDimensions>, TParameter>>::operator()(
+        const ParametricExpression<Vector<double, iNumDimensions>, TParameter>& expression,
+        const Point<iNumDimensions>& originPoint,
+        double scale
+    ) const {
+        return scale * expression;
+    }
+
+    template <int iNumDimensions, class TParameter>
+    inline
+    ParametricExpression<Point<iNumDimensions>, TParameter>
+    ScalingFunction<ParametricExpression<Point<iNumDimensions>, TParameter>>::operator()(
+        const ParametricExpression<Point<iNumDimensions>, TParameter>& expression,
+        const Point<iNumDimensions>& originPoint,
+        double scale
+    ) const {
+        return originPoint + scale * (expression - originPoint);
+    }
+
+    template <int iNumDimensions, class TParameter>
+    inline
+    ParametricExpression<Vector<double, iNumDimensions>, TParameter>
+    TranslationFunction<
+        ParametricExpression<Vector<double, iNumDimensions>, TParameter>
+    >::operator()(
+        const ParametricExpression<Vector<double, iNumDimensions>, TParameter>& expression,
+        const Vector<double, iNumDimensions>& vector
+    ) const {
+        return expression;
+    }
+
+    template <int iNumDimensions, class TParameter>
+    inline
+    ParametricExpression<Point<iNumDimensions>, TParameter>
+    TranslationFunction<ParametricExpression<Point<iNumDimensions>, TParameter>>::operator()(
+        const ParametricExpression<Point<iNumDimensions>, TParameter>& expression,
+        const Vector<double, iNumDimensions>& vector
+    ) const {
+        return expression + vector;
+    }
+
+    template <int iNumDimensions, class TParameter, int iNumResultDimensions>
+    inline
+    ParametricExpression<Vector<double, iNumResultDimensions>, TParameter>
+    TransformationFunction<
+        ParametricExpression<Vector<double, iNumDimensions>, TParameter>,
+        iNumResultDimensions
+    >::operator()(
+        const ParametricExpression<Vector<double, iNumDimensions>, TParameter>& expression,
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
+    ) const {
+        return transformationMatrix * expression.implementation();
+    }
+
+    template <int iNumDimensions, class TParameter, int iNumResultDimensions>
+    inline
+    ParametricExpression<Point<iNumResultDimensions>, TParameter>
+    TransformationFunction<
+        ParametricExpression<Point<iNumDimensions>, TParameter>,
+        iNumResultDimensions
+    >::operator()(
+        const ParametricExpression<Point<iNumDimensions>, TParameter>& expression,
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
+    ) const {
+        return (
+            transformationMatrix * (expression - originPoint).implementation() +
+            destinationPoint.components()
+        );
+    }
+
+    template <class TValue, class TParameter, class TResultValue>
+    inline
+    ParametricExpression<TResultValue, TParameter>
+    MorphingFunction<
+        ParametricExpression<TValue, TParameter>,
+        ParametricExpression<TResultValue, TValue>
+    >::operator()(
+        const ParametricExpression<TValue, TParameter>& expression,
+        const ParametricExpression<TResultValue, TValue>& morphingExpression
+    ) const {
+        return morphingExpression.composed(expression);
     }
 }

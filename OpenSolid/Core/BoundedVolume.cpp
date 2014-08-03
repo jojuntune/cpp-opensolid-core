@@ -109,9 +109,9 @@ namespace opensolid
     }
 
     const BoundedVolume3d
-    MorphingFunction<BoundedVolume3d, 3>::operator()(
+    MorphingFunction<BoundedVolume3d, ParametricExpression<Point3d, Point3d>>::operator()(
         const BoundedVolume3d& boundedVolume,
-        const ParametricExpression<3, 3>& morphingExpression
+        const ParametricExpression<Point3d, Point3d>& morphingExpression
     ) const {
         return BoundedVolume3d(
             SpatialSet<ParametricSurface3d>(

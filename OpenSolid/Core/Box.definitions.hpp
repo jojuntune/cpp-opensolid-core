@@ -62,7 +62,10 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<Box<iNumDimensions>, iNumResultDimensions>
+    struct MorphedType<
+        Box<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         typedef Box<iNumResultDimensions> Type;
     };
@@ -227,12 +230,18 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<Box<iNumDimensions>, iNumResultDimensions>
+    struct MorphingFunction<
+        Box<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         const Box<iNumResultDimensions>
         operator()(
             const Box<iNumDimensions>& box,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+            const ParametricExpression<
+                Point<iNumResultDimensions>,
+                Point<iNumDimensions>
+            >& morphingExpression
         ) const;
     };
 }

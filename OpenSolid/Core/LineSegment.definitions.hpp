@@ -63,7 +63,10 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<LineSegment<iNumDimensions>, iNumResultDimensions>
+    struct MorphedType<
+        LineSegment<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         typedef LineSegment<iNumResultDimensions> Type;
     };
@@ -190,12 +193,18 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<LineSegment<iNumDimensions>, iNumResultDimensions>
+    struct MorphingFunction<
+        LineSegment<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         LineSegment<iNumResultDimensions>
         operator()(
             const LineSegment<iNumDimensions>& lineSegment,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+            const ParametricExpression<
+                Point<iNumResultDimensions>,
+                Point<iNumDimensions>
+            >& morphingExpression
         ) const;
     };
 }

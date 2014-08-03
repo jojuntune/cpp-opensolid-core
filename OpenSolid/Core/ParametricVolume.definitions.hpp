@@ -58,12 +58,16 @@ namespace opensolid
         BoundedVolume3d _domain;
         Box<3> _bounds;
     public:
+        OPENSOLID_CORE_EXPORT
         ParametricVolume3d();
 
+        OPENSOLID_CORE_EXPORT
         ParametricVolume3d(const ParametricVolume3d& other);
 
+        OPENSOLID_CORE_EXPORT
         ParametricVolume3d(ParametricVolume3d&& other);
 
+        OPENSOLID_CORE_EXPORT
         ParametricVolume3d(
             const ParametricExpression<3, 3>& expression,
             const BoundedVolume3d& domain
@@ -78,9 +82,11 @@ namespace opensolid
         const Box<3>&
         bounds() const;
 
+        OPENSOLID_CORE_EXPORT
         Point<3>
         evaluate(double u, double v, double w) const;
 
+        OPENSOLID_CORE_EXPORT
         Box<3>
         evaluate(Interval u, Interval v, Interval w) const;
     };
@@ -88,6 +94,7 @@ namespace opensolid
     template <>
     struct ScalingFunction<ParametricVolume3d>
     {
+        OPENSOLID_CORE_EXPORT
         ParametricVolume3d
         operator()(
             const ParametricVolume3d& parametricVolume,
@@ -99,6 +106,7 @@ namespace opensolid
     template <>
     struct TranslationFunction<ParametricVolume3d>
     {
+        OPENSOLID_CORE_EXPORT
         ParametricVolume3d
         operator()(
             const ParametricVolume3d& parametricVolume,
@@ -109,6 +117,7 @@ namespace opensolid
     template <>
     struct TransformationFunction<ParametricVolume3d, 3>
     {
+        OPENSOLID_CORE_EXPORT
         ParametricVolume3d
         operator()(
             const ParametricVolume3d& parametricVolume,
@@ -119,12 +128,13 @@ namespace opensolid
     };
 
     template <>
-    struct MorphingFunction<ParametricVolume3d, 3>
+    struct MorphingFunction<ParametricVolume3d, ParametricExpression<Point<3>, Point<3>>>
     {
+        OPENSOLID_CORE_EXPORT
         ParametricVolume3d
         operator()(
             const ParametricVolume3d& parametricVolume,
-            const ParametricExpression<3, 3>& morphingExpression
+            const ParametricExpression<Point<3>, Point<3>>& morphingExpression
         ) const;
     };
 }

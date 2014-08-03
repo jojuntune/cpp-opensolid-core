@@ -172,13 +172,13 @@ namespace opensolid
     };
 
     template <>
-    struct MorphingFunction<Tetrahedron3d, 3>
+    struct MorphingFunction<Tetrahedron3d, ParametricExpression<Point<3>, Point<3>>>
     {
         OPENSOLID_CORE_EXPORT
         Tetrahedron3d
         operator()(
             const Tetrahedron3d& tetrahedron,
-            const ParametricExpression<3, 3>& morphingExpression
+            const ParametricExpression<Point<3>, Point<3>>& morphingExpression
         ) const;
     };
 }

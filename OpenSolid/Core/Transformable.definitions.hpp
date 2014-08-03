@@ -82,16 +82,10 @@ namespace opensolid
         typedef TTransformable Type;
     };
 
-    template <class TTransformable, int iNumResultDimensions>
-    struct MorphedType
+    template <class TTransformable, class TResult>
+    struct MorphedType<TTransformable, ParametricExpression<TResult, TTransformable>>
     {
-        static_assert(
-            iNumResultDimensions == NumDimensions<TTransformable>::Value,
-            "Must specialize MorphedType<TTransformable, iNumResultDimensions> "
-            "when morphing into a different number of dimensions"
-        );
-
-        typedef TTransformable Type;
+        typedef TResult Type;
     };
 
     template <class TTransformable>
@@ -188,13 +182,18 @@ namespace opensolid
             const Point<iNumResultDimensions>& destinationPoint
         ) const;
 
-        template <int iNumResultDimensions>
-        typename MorphedType<TDerived, iNumResultDimensions>::Type
-        morphedBy(
-            const ParametricExpression<
-                iNumResultDimensions,
-                NumDimensions<TDerived>::Value
-            >& morphingExpression
+        template <class TValue, class TParameter>
+        typename MorphedType<TDerived, ParametricExpression<TValue, TParameter>>::Type
+        morphedBy(const ParametricExpression<TValue, TParameter>& morphingExpression) const;
+    };
+
+    template <class TTransformable, class TResult>
+    struct MorphingFunction<TTransformable, ParametricExpression<TResult, TTransformable>>
+    {
+        TResult
+        operator()(
+            const TTransformable& transformable,
+            const ParametricExpression<TResult, TTransformable>& morphingExpression
         ) const;
     };
 
@@ -289,14 +288,11 @@ namespace opensolid
         const Point<iNumResultDimensions>& destinationPoint
     );
 
-    template <class TTransformable, int iNumResultDimensions>
-    typename MorphedType<TTransformable, iNumResultDimensions>::Type
+    template <class TTransformable, class TValue, class TParameter>
+    typename MorphedType<TTransformable, ParametricExpression<TValue, TParameter>>::Type
     morphed(
         const TTransformable& transformable,
-        const ParametricExpression<
-            iNumResultDimensions,
-            NumDimensions<TTransformable>::Value
-        >& morphingExpression
+        const ParametricExpression<TValue, TParameter>& morphingExpression
     );
 
     template <class TTransformable>

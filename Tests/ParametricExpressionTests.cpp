@@ -22,6 +22,7 @@
 *                                                                                   *
 ************************************************************************************/
 
+#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ConstantExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/Evaluator.hpp>
@@ -35,70 +36,134 @@
 
 using namespace opensolid;
 
-ParametricExpression<1, 2>
+ParametricExpression<double, Point2d>
 scalarSquiggle() {
     Parameter2d u = Parameter2d(0);
     Parameter2d v = Parameter2d(1);
     return sin(2 * M_PI * u) + cos(2 * M_PI * v);
 }
 
-ParametricExpression<3, 2>
+ParametricExpression<Vector3d, Point2d>
 vectorSquiggle() {
     Parameter2d u = Parameter2d(0);
     Parameter2d v = Parameter2d(1);
-    return ParametricExpression<3, 2>::fromComponents(u, v, scalarSquiggle());
+    return ParametricExpression<Vector3d, Point2d>::fromComponents(u, v, scalarSquiggle());
 }
 
-std::vector<ColumnMatrix2d>
+std::vector<Point2d>
 squiggleParameterValues() {
-    std::vector<ColumnMatrix2d> results(25);
+    std::vector<Point2d> results(25);
     for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 5; ++j) {
-            results[i * 5 + j] = ColumnMatrix2d(i / 5.0 + 0.1, j / 5.0 + 0.1);
+            results[i * 5 + j] = Point2d(i / 5.0 + 0.1, j / 5.0 + 0.1);
         }
     }
     return results;
 }
 
-template <int iNumDimensions, int iNumParameters>
+namespace
+{
+    Matrix1d
+    components(double value) {
+        return Matrix1d(value);
+    }
+
+    template <int iNumDimensions>
+    Matrix<double, iNumDimensions, 1>
+    components(const Vector<double, iNumDimensions>& vector) {
+        return vector.components();
+    }
+
+    template <int iNumDimensions>
+    Matrix<double, iNumDimensions, 1>
+    components(const Point<iNumDimensions>& point) {
+        return point.components();
+    }
+
+    double
+    offset(double parameterValue, int index, double amount) {
+        assert(index == 0);
+        return parameterValue + amount;
+    }
+
+    template <int iNumDimensions>
+    Vector<double, iNumDimensions>
+    offset(const Vector<double, iNumDimensions>& vector, int index, double amount) {
+        assert(index >= 0 && index < iNumDimensions);
+        return vector + amount * Vector<double, iNumDimensions>::unit(index);
+    }
+
+    template <int iNumDimensions>
+    Point<iNumDimensions>
+    offset(const Point<iNumDimensions>& point, int index, double amount) {
+        assert(index >= 0 && index < iNumDimensions);
+        return point + amount * Vector<double, iNumDimensions>::unit(index);
+    }
+}
+
+template <class TValue, class TParameter>
 void testJacobian(
-    const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-    const Matrix<double, iNumParameters, 1>& parameterValues
+    const ParametricExpression<TValue, TParameter>& expression,
+    const TParameter& parameterValues
 ) {
-    Matrix<double, iNumDimensions, iNumParameters> jacobian = expression.jacobian(parameterValues);
-    Matrix<double, iNumDimensions, iNumParameters> expectedJacobian;;
-    for (int j = 0; j < iNumParameters; ++j) {
-        Matrix<double, iNumDimensions, 1> partialDerivative =
-            expression.derivative(j).evaluate(parameterValues);
-        for (int i = 0; i < iNumDimensions; ++i) {
+    Matrix<
+        double,
+        NumDimensions<TValue>::Value,
+        NumDimensions<TParameter>::Value
+    > jacobian = expression.jacobian(parameterValues);
+
+    Matrix<
+        double,
+        NumDimensions<TValue>::Value,
+        NumDimensions<TParameter>::Value
+    > expectedJacobian;
+
+    for (int j = 0; j < NumDimensions<TParameter>::Value; ++j) {
+        Matrix<double, NumDimensions<TValue>::Value, 1> partialDerivative = components(
+            expression.derivative(j).evaluate(parameterValues)
+        );
+        for (int i = 0; i < NumDimensions<TParameter>::Value; ++i) {
             expectedJacobian(i, j) = partialDerivative(i);
         }
     }
-    CAPTURE(expression);
-    CAPTURE(parameterValues);
-    CAPTURE(jacobian);
-    CAPTURE(expectedJacobian);
-    CAPTURE(jacobian - expectedJacobian);
     REQUIRE((jacobian - expectedJacobian).isZero());
-    for (int j = 0; j < iNumParameters; ++j) {
-        Matrix<double, iNumParameters, 2> shiftedParameterValues;
-        shiftedParameterValues.column(0) = parameterValues;
-        shiftedParameterValues.column(1) = parameterValues;
-        shiftedParameterValues(j, 0) -= 1e-6 / 2;
-        shiftedParameterValues(j, 1) += 1e-6 / 2;
-        Matrix<double, iNumDimensions, 2> shiftedValues =
-            expression.evaluate(shiftedParameterValues);
-        Matrix<double, iNumDimensions, 1> numericalDerivative = shiftedValues.column(1);
-        numericalDerivative = (shiftedValues.column(1) - shiftedValues.column(0)) / 1e-6;
-        CAPTURE(expression);
-        CAPTURE(numericalDerivative);
-        CAPTURE(ColumnMatrixXd(jacobian.column(j)));
-        REQUIRE((numericalDerivative - jacobian.column(j)).isZero(1e-3));
+    if (!(jacobian - expectedJacobian).isZero()) {
+        std::cout << "ParametricExpression:" << std::endl;
+        std::cout << expression << std::endl;
+        std::cout << "Jacobian ";
+        std::cout << "(parameter values " << parameterValues << ")";
+        std::cout << ":" << std::endl;
+        std::cout << jacobian << std::endl;
+        std::cout << "Expected:" << std::endl;
+        std::cout << expectedJacobian << std::endl;
+        std::cout << "Difference:" << std::endl;
+        std::cout << jacobian - expectedJacobian << std::endl;
+    }
+    for (int j = 0; j < NumDimensions<TParameter>::Value; ++j) {
+        std::vector<TParameter> shiftedParameterValues(2);
+        shiftedParameterValues[0] = offset(parameterValues, j, -1e-6 / 2.0)
+        shiftedParameterValues[1] = offset(parameterValues, j, 1e-6 / 2.0)
+        std::vector<TValue> shiftedValues = expression.evaluate(shiftedParameterValues);
+        Matrix<double, NumDimensions<TValue>::Value, 1> numericalDerivative = components(
+            shiftedValues[1] - shiftedValues[0]
+        ) / 1e-6;
+        Matrix<double, NumDimensions<TValue>::Value, 1> jacobianDerivative = jacobian.column(j);
+        REQUIRE((numericalDerivative - jacobianDerivative).isZero(1e-3));
+        if (!(numericalDerivative - jacobianDerivative).isZero(1e-3)) {
+            std::cout << "ParametricExpression:" << std::endl;
+            std::cout << expression << std::endl;
+            std::cout << "Numerical derivative " << j << ": " << std::endl;
+            std::cout << numericalDerivative << std::endl;
+            std::cout << "Jacobian derivative: " << std::endl;
+            std::cout << jacobianDerivative << std::endl;
+        }
     }
 }
 
 TEST_CASE("Constant") {
-    ParametricExpression<1, 1> expression = ParametricExpression<1, 1>::constant(3.0);
+    ParametricExpression<double, double> expression = (
+        ParametricExpression<double, double>::constant(3.0)
+    );
     REQUIRE(expression.implementation()->isConstantExpression());
     REQUIRE((expression.evaluate(0.0) - 3.0) == Zero());
 }
@@ -106,67 +171,70 @@ TEST_CASE("Constant") {
 TEST_CASE("Arithmetic") {
     Parameter2d u = Parameter2d(0);
     Parameter2d v = Parameter2d(1);
-    ParametricExpression<1, 2> expression = 2.0 + u * 1.0 - 1.0 * v;
+    ParametricExpression<double, Point2d> expression = 2.0 + u * 1.0 - 1.0 * v;
     
-    REQUIRE((expression.evaluate(0, 0) - 2.0) == Zero());
-    REQUIRE((expression.evaluate(1, 0) - 3.0) == Zero());
-    REQUIRE((expression.evaluate(1, 1) - 2.0) == Zero());
-    REQUIRE((expression.evaluate(0, 1) - 1.0) == Zero());
-    REQUIRE((expression.derivative(u).evaluate(0, 0) - 1.0) == Zero());
-    REQUIRE((expression.derivative(v).evaluate(0, 0) + 1.0) == Zero());
+    REQUIRE((expression.evaluate(Point2d(0.0, 0.0) - 2.0) == Zero());
+    REQUIRE((expression.evaluate(Point2d(1.0, 0.0) - 3.0) == Zero());
+    REQUIRE((expression.evaluate(Point2d(1.0, 1.0) - 2.0) == Zero());
+    REQUIRE((expression.evaluate(Point2d(0.0, 1.0) - 1.0) == Zero());
+    REQUIRE((expression.derivative(u).evaluate(Point2d(0.0, 0.0) - 1.0) == Zero());
+    REQUIRE((expression.derivative(v).evaluate(Point2d(0.0, 0.0) + 1.0) == Zero());
     
-    ParametricExpression<1, 2> negated = -expression;
+    ParametricExpression<double, Point2d> negated = -expression;
     
-    REQUIRE((negated.evaluate(0, 0) + 2.0) == Zero());
-    REQUIRE((negated.evaluate(1, 0) + 3.0) == Zero());
-    REQUIRE((negated.evaluate(1, 1) + 2.0) == Zero());
-    REQUIRE((negated.evaluate(0, 1) + 1.0) == Zero());
-    REQUIRE((negated.derivative(u).evaluate(0, 0) + 1.0) == Zero());
-    REQUIRE((negated.derivative(v).evaluate(0, 0) - 1.0) == Zero());
+    REQUIRE((negated.evaluate(Point2d(0.0, 0.0)) + 2.0) == Zero());
+    REQUIRE((negated.evaluate(Point2d(1.0, 0.0)) + 3.0) == Zero());
+    REQUIRE((negated.evaluate(Point2d(1.0, 1.0)) + 2.0) == Zero());
+    REQUIRE((negated.evaluate(Point2d(0.0, 1.0)) + 1.0) == Zero());
+    REQUIRE((negated.derivative(u).evaluate(Point2d(0.0, 0.0)) + 1.0) == Zero());
+    REQUIRE((negated.derivative(v).evaluate(Point2d(0.0, 0.0)) - 1.0) == Zero());
 }
 
 TEST_CASE("Multiplication") {
     Parameter2d u = Parameter2d(0);
     Parameter2d v = Parameter2d(1);
-    ParametricExpression<1, 2> expression = 1.0 + u / 1.0 * v / 1.0;
+    ParametricExpression<double, Point2d> expression = 1.0 + u / 1.0 * v / 1.0;
 
-    REQUIRE((expression.evaluate(0, 0) - 1.0) == Zero());
-    REQUIRE((expression.evaluate(1, 0) - 1.0) == Zero());
-    REQUIRE((expression.evaluate(1, 1) - 2.0) == Zero());
-    REQUIRE((expression.evaluate(0, 1) - 1.0) == Zero());
+    REQUIRE((expression.evaluate(Point2d(0.0, 0.0)) - 1.0) == Zero());
+    REQUIRE((expression.evaluate(Point2d(1.0, 0.0)) - 1.0) == Zero());
+    REQUIRE((expression.evaluate(Point2d(1.0, 1.0)) - 2.0) == Zero());
+    REQUIRE((expression.evaluate(Point2d(0.0, 1.0)) - 1.0) == Zero());
 
-    ParametricExpression<1, 2> uDerivative = expression.derivative(u);
+    ParametricExpression<double, Point2d> uDerivative = expression.derivative(u);
     
-    REQUIRE(uDerivative.evaluate(0, 0) == Zero());
-    REQUIRE(uDerivative.evaluate(1, 0) == Zero());
-    REQUIRE((uDerivative.evaluate(1, 1) - 1.0) == Zero());
-    REQUIRE((uDerivative.evaluate(0, 1) - 1.0) == Zero());
+    REQUIRE(uDerivative.evaluate(Point2d(0.0, 0.0)) == Zero());
+    REQUIRE(uDerivative.evaluate(Point2d(1.0, 0.0)) == Zero());
+    REQUIRE((uDerivative.evaluate(Point2d(1.0, 1.0)) - 1.0) == Zero());
+    REQUIRE((uDerivative.evaluate(Point2d(0.0, 1.0)) - 1.0) == Zero());
 
-    ParametricExpression<1, 2> vDerivative = expression.derivative(v);
+    ParametricExpression<double, Point2d> vDerivative = expression.derivative(v);
     
-    REQUIRE(vDerivative.evaluate(0, 0) == Zero());
-    REQUIRE((vDerivative.evaluate(1, 0) - 1.0) == Zero());
-    REQUIRE((vDerivative.evaluate(1, 1) - 1.0) == Zero());
-    REQUIRE(vDerivative.evaluate(0, 1) == Zero());
+    REQUIRE(vDerivative.evaluate(Point2d(0.0, 0.0)) == Zero());
+    REQUIRE((vDerivative.evaluate(Point2d(1.0, 0.0)) - 1.0) == Zero());
+    REQUIRE((vDerivative.evaluate(Point2d(1.0, 1.0)) - 1.0) == Zero());
+    REQUIRE(vDerivative.evaluate(Point2d(0.0, 1.0)) == Zero());
 }
 
 TEST_CASE("Square") {
     Parameter2d u = Parameter2d(0);
     Parameter2d v = Parameter2d(1);
-    ParametricExpression<1, 2> expression = u.squared() * 1.0 + v.squared() * 1.0;
-    REQUIRE((expression.evaluate(1, 2) - 5.0) == Zero());
-    ParametricExpression<1, 2> uDerivative = expression.derivative(u);
-    REQUIRE((uDerivative.evaluate(3, 4) - 6.0) == Zero());
-    ParametricExpression<1, 2> vSecondDerivative = expression.derivative(v).derivative(v);
-    REQUIRE((vSecondDerivative.evaluate(5, 6) - 2.0) == Zero());
+    ParametricExpression<double, Point2d> expression = u.squared() * 1.0 + v.squared() * 1.0;
+    REQUIRE((expression.evaluate(Point2d(1.0, 2.0)) - 5.0) == Zero());
+    ParametricExpression<double, Point2d> uDerivative = expression.derivative(u);
+    REQUIRE((uDerivative.evaluate(Point2d(3.0, 4.0)) - 6.0) == Zero());
+    ParametricExpression<double, Point2d> vSecondDerivative = (
+        expression.derivative(v).derivative(v)
+    );
+    REQUIRE((vSecondDerivative.evaluate(Point2d(5.0, 6.0)) - 2.0) == Zero());
 }
 
 TEST_CASE("Norm") {
     Parameter1d t;
-    ParametricExpression<2, 1> arc =
-        3 * (cos(t) * ColumnMatrix2d(1, 0) + ColumnMatrix2d(0, 1) * sin(t));
-    ColumnMatrix2d evaluated = arc.normalized().evaluate(M_PI / 4);
-    ColumnMatrix2d expected(1 / sqrt(2.0), 1 / sqrt(2.0));
+    ParametricExpression<Vector2d, double> arc = (
+        3.0 * (cos(t) * Vector2d(1.0, 0.0) + Vector2d(0.0, 1.0) * sin(t))
+    );
+    Vector2d evaluated = arc.normalized().evaluate(M_PI / 4.0);
+    Vector2d expected(1.0 / sqrt(2.0), 1.0 / sqrt(2.0));
     REQUIRE((evaluated - expected).isZero());
 }
 
@@ -174,12 +242,17 @@ TEST_CASE("Conversion") {
     Parameter2d u = Parameter2d(0);
     Parameter2d v = Parameter2d(1);
     {
-        ParametricExpression<1, 2> expression = u * v;
-        REQUIRE((expression.evaluate(2, 3) - 6.0) == Zero());
+        ParametricExpression<double, Point2d> expression = u * v;
+        REQUIRE((expression.evaluate(Point2d(2.0, 3.0)) - 6.0) == Zero());
     }
     {
-        ParametricExpression<1, 1> expression = ParametricExpression<1, 1>::constant(2.0);
-        RowMatrix3d parameterValues(1.0, 2.0, 3.0);
+        ParametricExpression<double, double> expression = (
+            ParametricExpression<double, double>::constant(2.0)
+        );
+        std::vector<double> parameterValues(3);
+        parameter_values[0] = 1.0;
+        parameter_values[1] = 2.0;
+        parameter_values[2] = 3.0;
 
         REQUIRE(expression.evaluate(parameterValues) == RowMatrix3d::constant(2.0));
     }
@@ -187,45 +260,45 @@ TEST_CASE("Conversion") {
 
 TEST_CASE("Sine") {
     Parameter1d t;
-    ParametricExpression<1, 1> expression = sin(t);
+    ParametricExpression<double, double> expression = sin(t);
 
     std::vector<double> parameterValues(4);
-    parameterValues[0] = 0;
-    parameterValues[1] = M_PI / 2;
+    parameterValues[0] = 0.0;
+    parameterValues[1] = M_PI / 2.0;
     parameterValues[2] = M_PI;
-    parameterValues[3] = 3 * M_PI / 2;
-    std::vector<Matrix1d> resultValues = expression.evaluate(parameterValues);
+    parameterValues[3] = 3.0 * M_PI / 2.0;
+    std::vector<double> resultValues = expression.evaluate(parameterValues);
     REQUIRE(resultValues[0] == Zero());
     REQUIRE((resultValues[1] - 1.0) == Zero());
     REQUIRE(resultValues[2] == Zero());
     REQUIRE((resultValues[3] + 1.0) == Zero());
 
     std::vector<Interval> parameterBounds(4);
-    parameterBounds[0] = Interval(0, M_PI / 2);
-    parameterBounds[1] = Interval(M_PI / 2, M_PI);
-    parameterBounds[2] = Interval(M_PI, 3 * M_PI / 2);
-    parameterBounds[3] = Interval(0, 2 * M_PI);
-    std::vector<IntervalMatrix1d> resultBounds = expression.evaluate(parameterBounds);
-    REQUIRE(resultBounds[0].value().lowerBound() == Zero());
-    REQUIRE((resultBounds[0].value().upperBound() - 1) == Zero());
-    REQUIRE(resultBounds[1].value().lowerBound() == Zero());
-    REQUIRE((resultBounds[1].value().upperBound() - 1) == Zero());
-    REQUIRE((resultBounds[2].value().lowerBound() + 1) == Zero());
-    REQUIRE(resultBounds[2].value().upperBound() == Zero());
-    REQUIRE((resultBounds[3].value().lowerBound() + 1) == Zero());
-    REQUIRE((resultBounds[3].value().upperBound() - 1) == Zero());
+    parameterBounds[0] = Interval(0.0, M_PI / 2.0);
+    parameterBounds[1] = Interval(M_PI / 2.0, M_PI);
+    parameterBounds[2] = Interval(M_PI, 3.0 * M_PI / 2.0);
+    parameterBounds[3] = Interval(0.0, 2.0 * M_PI);
+    std::vector<Interval> resultBounds = expression.evaluate(parameterBounds);
+    REQUIRE(resultBounds[0].lowerBound() == Zero());
+    REQUIRE((resultBounds[0].upperBound() - 1) == Zero());
+    REQUIRE(resultBounds[1].lowerBound() == Zero());
+    REQUIRE((resultBounds[1].upperBound() - 1) == Zero());
+    REQUIRE((resultBounds[2].lowerBound() + 1) == Zero());
+    REQUIRE(resultBounds[2].upperBound() == Zero());
+    REQUIRE((resultBounds[3].lowerBound() + 1) == Zero());
+    REQUIRE((resultBounds[3].upperBound() - 1) == Zero());
 }
 
 TEST_CASE("Cosine") {
     Parameter1d t;
-    ParametricExpression<1, 1> expression = cos(t);
+    ParametricExpression<double, double> expression = cos(t);
 
     std::vector<double> parameterValues(4);
     parameterValues[0] = 0;
     parameterValues[1] = M_PI / 2;
     parameterValues[2] = M_PI;
     parameterValues[3] = 3 * M_PI / 2;
-    std::vector<Matrix1d> resultValues = expression.evaluate(parameterValues);
+    std::vector<double> resultValues = expression.evaluate(parameterValues);
     REQUIRE((resultValues[0] - 1.0) == Zero());
     REQUIRE(resultValues[1] == Zero());
     REQUIRE((resultValues[2] + 1.0) == Zero());
@@ -236,31 +309,34 @@ TEST_CASE("Cosine") {
     parameterBounds[1] = Interval(M_PI / 2, M_PI);
     parameterBounds[2] = Interval(M_PI, 3 * M_PI / 2);
     parameterBounds[3] = Interval(0, 2 * M_PI);
-    std::vector<IntervalMatrix1d> resultBounds = expression.evaluate(parameterBounds);
-    REQUIRE(resultBounds[0].value().lowerBound() == Zero());
-    REQUIRE((resultBounds[0].value().upperBound() - 1) == Zero());
-    REQUIRE((resultBounds[1].value().lowerBound() + 1) == Zero());
-    REQUIRE(resultBounds[1].value().upperBound() == Zero());
-    REQUIRE((resultBounds[2].value().lowerBound() + 1) == Zero());
-    REQUIRE(resultBounds[2].value().upperBound() == Zero());
-    REQUIRE((resultBounds[3].value().lowerBound() + 1) == Zero());
-    REQUIRE((resultBounds[3].value().upperBound() - 1) == Zero());
+    std::vector<Interval> resultBounds = expression.evaluate(parameterBounds);
+    REQUIRE(resultBounds[0].lowerBound() == Zero());
+    REQUIRE((resultBounds[0].upperBound() - 1) == Zero());
+    REQUIRE((resultBounds[1].lowerBound() + 1) == Zero());
+    REQUIRE(resultBounds[1].upperBound() == Zero());
+    REQUIRE((resultBounds[2].lowerBound() + 1) == Zero());
+    REQUIRE(resultBounds[2].upperBound() == Zero());
+    REQUIRE((resultBounds[3].lowerBound() + 1) == Zero());
+    REQUIRE((resultBounds[3].upperBound() - 1) == Zero());
 }
 
 TEST_CASE("Component") {
     Parameter1d t;
-    ParametricExpression<3, 1> expression = ColumnMatrix3d(1, 2, 3) + t * ColumnMatrix3d(1, 2, 3);
-    RowMatrix3d parameterValues(0.0, 0.5, 1.0);
+    ParametricExpression<Vector3d, double> expression = Vector3d(1, 2, 3) + t * Vector3d(1, 2, 3);
+    std::vector<double> parameterValues(3);
+    parameter_values[0] = 0.0;
+    parameter_values[1] = 0.5;
+    parameter_values[2] = 1.0;
 
-    RowMatrix3d results = expression.component(1).evaluate(parameterValues);
-    REQUIRE((results(0) - 2.0) == Zero());
-    REQUIRE((results(1) - 3.0) == Zero());
-    REQUIRE((results(2) - 4.0) == Zero());
+    std::vector<double> results = expression.component(1).evaluate(parameterValues);
+    REQUIRE((results[0] - 2.0) == Zero());
+    REQUIRE((results[1] - 3.0) == Zero());
+    REQUIRE((results[2] - 4.0) == Zero());
 
     results = expression.evaluate(parameterValues).row(1);
-    REQUIRE((results(0) - 2.0) == Zero());
-    REQUIRE((results(1) - 3.0) == Zero());
-    REQUIRE((results(2) - 4.0) == Zero());
+    REQUIRE((results[0] - 2.0) == Zero());
+    REQUIRE((results[1] - 3.0) == Zero());
+    REQUIRE((results[2] - 4.0) == Zero());
 
     double value = expression.z().evaluate(0.5);
     REQUIRE((value - 4.5) == Zero());
@@ -272,28 +348,21 @@ TEST_CASE("Transformation") {
     coordinateSystem = coordinateSystem.rotatedAbout(coordinateSystem.zAxis(), M_PI / 4);
 
     Parameter1d t;
-    ParametricExpression<3, 1> linear = ColumnMatrix3d::ones() * t;
-    ParametricExpression<3, 1> product = coordinateSystem.basisMatrix() * linear +
-        coordinateSystem.originPoint().components();
-    ParametricExpression<3, 1> quotient = coordinateSystem.inverseMatrix() *
-        (linear - coordinateSystem.originPoint().components());
+    ParametricExpression<Point3d, 1> linear = Point3d::origin() + Vector3d(1.0, 1.0, 1.0) * t;
+    ParametricExpression<Point3d, 1> product = coordinateSystem * linear;
+    ParametricExpression<Point3d, 1> quotient = linear / coordinateSystem;
 
     std::vector<double> parameterValues(5);
-    std::vector<ColumnMatrix3d> expectedProductValues(5);
-    std::vector<ColumnMatrix3d> expectedQuotientValues(5);
+    std::vector<Point3d> expectedProductValues(5);
+    std::vector<Point3d> expectedQuotientValues(5);
     for (int i = 0; i < 5; ++i) {
         parameterValues[i] = i / 4.0;
-        expectedProductValues[i] = (
-            parameterValues[i] * ColumnMatrix3d(0, sqrt(2.0), 1) +
-            ColumnMatrix3d(1, 1, 1)
-        );
-        expectedQuotientValues[i] = (
-            parameterValues[i] * ColumnMatrix3d(sqrt(2.0), 0, 1) +
-            ColumnMatrix3d(-sqrt(2.0), 0, -1)
-        );
+        Point3d expectedValue =  Point3d::origin() + Vector3d(1.0, 1.0, 1.0) * parameterValues[i];
+        expectedProductValues[i] = coordinateSystem * expectedValue;
+        expectedQuotientValues[i] = expectedValue / coordinateSystem;
     }
-    std::vector<ColumnMatrix3d> productValues = product.evaluate(parameterValues);
-    std::vector<ColumnMatrix3d> quotientValues = quotient.evaluate(parameterValues);
+    std::vector<Point3d> productValues = product.evaluate(parameterValues);
+    std::vector<Point3d> quotientValues = quotient.evaluate(parameterValues);
     for (int i = 0; i < 5; ++i) {
         REQUIRE((productValues[i] - expectedProductValues[i]).isZero());
         REQUIRE((quotientValues[i] - expectedQuotientValues[i]).isZero());
@@ -302,17 +371,18 @@ TEST_CASE("Transformation") {
 
 TEST_CASE("Concatenation") {
     Parameter1d t;
-    ParametricExpression<1, 1> x = t;
-    ParametricExpression<1, 1> y = ParametricExpression<1, 1>::constant(3.0);
-    ParametricExpression<1, 1> z = t.squared();
-    ParametricExpression<3, 1> concatenated =
-        ParametricExpression<3, 1>::fromComponents(x, y, z);
-    REQUIRE((concatenated.evaluate(2.0) - ColumnMatrix3d(2.0, 3.0, 4.0)).isZero());
+    ParametricExpression<double, double> x = t;
+    ParametricExpression<double, double> y = ParametricExpression<double, double>::constant(3.0);
+    ParametricExpression<double, double> z = t.squared();
+    ParametricExpression<Point3d, double> concatenated = (
+        ParametricExpression<Point3d, double>::fromComponents(x, y, z)
+    );
+    REQUIRE((concatenated.evaluate(2.0) - Point3d(2.0, 3.0, 4.0)).isZero());
 }
 
 TEST_CASE("Arccosine") {
     Parameter1d t;
-    ParametricExpression<1, 1> expression = acos(t);
+    ParametricExpression<double, double> expression = acos(t);
     Interval bounds;
     bounds = expression.evaluate(Interval(-1, 0));
     REQUIRE((bounds.lowerBound() - M_PI / 2) == Zero());
@@ -324,23 +394,23 @@ TEST_CASE("Arccosine") {
     REQUIRE(bounds.lowerBound() == Zero());
     REQUIRE(bounds.upperBound() == Zero());
 
-    testJacobian(expression, Matrix1d(-0.5));
-    testJacobian(expression, Matrix1d(0.0));
-    testJacobian(expression, Matrix1d(0.5));
+    testJacobian(expression, -0.5);
+    testJacobian(expression, 0.0);
+    testJacobian(expression, 0.5);
 
     Parameter2d u = Parameter2d(0);
     Parameter2d v = Parameter2d(1);
-    ParametricExpression<1, 2> expression2 = acos(u - v);
-    testJacobian(expression2, ColumnMatrix2d(0.5, 0));
-    testJacobian(expression2, ColumnMatrix2d(0, 0.25));
-    testJacobian(expression2, ColumnMatrix2d(-0.5, 0));
-    testJacobian(expression2, ColumnMatrix2d(0, -0.25));
-    testJacobian(expression2, ColumnMatrix2d(0, 0));
+    ParametricExpression<double, Point2d> expression2 = acos(u - v);
+    testJacobian(expression2, Point2d(0.5, 0));
+    testJacobian(expression2, Point2d(0, 0.25));
+    testJacobian(expression2, Point2d(-0.5, 0));
+    testJacobian(expression2, Point2d(0, -0.25));
+    testJacobian(expression2, Point2d(0, 0));
 }
 
 TEST_CASE("Arcsine") {
     Parameter1d t;
-    ParametricExpression<1,1 > expression = asin(t);
+    ParametricExpression<double, double> expression = asin(t);
     Interval bounds;
     bounds = expression.evaluate(Interval(-1, 0));
     REQUIRE((bounds.lowerBound() + M_PI / 2) == Zero());
@@ -355,13 +425,15 @@ TEST_CASE("Arcsine") {
 
 TEST_CASE("Normal vector") {
     Parameter1d t;
-    ParametricExpression<2, 1> expression =
-        ColumnMatrix2d(1, 1) + 2 * ParametricExpression<2, 1>::fromComponents(cos(t), sin(t));
-    REQUIRE((expression.evaluate(-M_PI / 2) - ColumnMatrix2d(1, -1)).isZero());
-    REQUIRE((expression.evaluate(0) - ColumnMatrix2d(3, 1)).isZero());
-    REQUIRE((expression.evaluate(M_PI / 2) - ColumnMatrix2d(1, 3)).isZero());
+    ParametricExpression<Point2d, double> expression = (
+        Point2d(1.0, 1.0) +
+        2.0 * ParametricExpression<Vector2d, double>::fromComponents(cos(t), sin(t))
+    );
+    REQUIRE((expression.evaluate(-M_PI / 2) - Point2d(1, -1)).isZero());
+    REQUIRE((expression.evaluate(0) - Point2d(3, 1)).isZero());
+    REQUIRE((expression.evaluate(M_PI / 2) - Point2d(1, 3)).isZero());
 
-    ParametricExpression<2, 1> normalVector =
+    ParametricExpression<Vector2d, double> normalVector =
         expression.derivative().normalized().derivative().normalized();
     std::vector<double> parameterValues(5);
     parameterValues[0] = -M_PI / 2;
@@ -370,10 +442,10 @@ TEST_CASE("Normal vector") {
     parameterValues[3] = M_PI / 4;
     parameterValues[4] = M_PI / 2;
 
-    std::vector<ColumnMatrix2d> expressionValues = expression.evaluate(parameterValues);
-    std::vector<ColumnMatrix2d> normalValues = normalVector.evaluate(parameterValues);
+    std::vector<Point2d> expressionValues = expression.evaluate(parameterValues);
+    std::vector<Vector2d> normalValues = normalVector.evaluate(parameterValues);
     for (unsigned i = 0; i < expressionValues.size(); ++i) {
-        REQUIRE((expressionValues[i] + 2 * normalValues[i] - ColumnMatrix2d(1, 1)).isZero());
+        REQUIRE((expressionValues[i] + 2 * normalValues[i] - Point2d(1, 1)).isZero());
     }
 }
 
@@ -382,14 +454,14 @@ TEST_CASE("Deduplication") {
     Parameter2d u = Parameter2d(0);
     Parameter2d v = Parameter2d(1);
     {
-        ParametricExpression<3, 1> constant1 =
-            ParametricExpression<3, 1>::constant(ColumnMatrix3d(1, 2, 3));
-        ParametricExpression<3, 1> constant2 =
-            ParametricExpression<3, 1>::constant(ColumnMatrix3d(1, 2, 3));
-        ParametricExpression<3, 1> constant3 =
-            ParametricExpression<3, 1>::constant(ColumnMatrix3d(1, 2, 4));
+        ParametricExpression<Point3d, double> constant1 =
+            ParametricExpression<Point3d, double>::constant(Point3d(1, 2, 3));
+        ParametricExpression<Point3d, double> constant2 =
+            ParametricExpression<Point3d, double>::constant(Point3d(1, 2, 3));
+        ParametricExpression<Point3d, double> constant3 =
+            ParametricExpression<Point3d, double>::constant(Point3d(1, 2, 4));
         ParametricExpression<3, 2> constant4 =
-            ParametricExpression<3, 2>::constant(ColumnMatrix3d(1, 2, 3));
+            ParametricExpression<Point3d, Point2d>::constant(Point3d(1, 2, 3));
 
         REQUIRE(constant1.implementation()->isDuplicateOf(constant2.implementation()));
         REQUIRE_FALSE(constant1.implementation()->isDuplicateOf(constant3.implementation()));
@@ -397,37 +469,37 @@ TEST_CASE("Deduplication") {
     }
 
     {
-        ParametricExpression<1, 1> expression1 = t.squared() + 2 * t;
-        ParametricExpression<1, 1> expression2 = t * 2 + t.squared();
+        ParametricExpression<double, double> expression1 = t.squared() + 2 * t;
+        ParametricExpression<double, double> expression2 = t * 2 + t.squared();
 
         REQUIRE(expression1.implementation()->isDuplicateOf(expression2.implementation()));
     }
 
     {
-        ParametricExpression<1, 2> expression1 = cos(u.squared() + v.squared());
-        ParametricExpression<1, 2> expression2 = cos(v.squared() + u.squared());
+        ParametricExpression<double, Point2d> expression1 = cos(u.squared() + v.squared());
+        ParametricExpression<double, Point2d> expression2 = cos(v.squared() + u.squared());
 
         REQUIRE(expression1.implementation()->isDuplicateOf(expression2.implementation()));
     }
 
     {
-        ParametricExpression<1, 2> expression1 = u.squared();
-        ParametricExpression<1, 2> expression2 = v.squared();
+        ParametricExpression<double, Point2d> expression1 = u.squared();
+        ParametricExpression<double, Point2d> expression2 = v.squared();
 
         REQUIRE_FALSE(expression1.implementation()->isDuplicateOf(expression2.implementation()));
     }
 
     {
-        ParametricExpression<1, 1> expression1 = sin(t);
-        ParametricExpression<1, 1> expression2 = expression1;
+        ParametricExpression<double, double> expression1 = sin(t);
+        ParametricExpression<double, double> expression2 = expression1;
 
         REQUIRE(expression1.implementation()->isDuplicateOf(expression1.implementation()));
         REQUIRE(expression1.implementation()->isDuplicateOf(expression2.implementation()));
     }
 
     {
-        ParametricExpression<1, 2> expression1 = sin(sqrt(u));
-        ParametricExpression<1, 2> expression2 = sin(sqrt(u));
+        ParametricExpression<double, Point2d> expression1 = sin(sqrt(u));
+        ParametricExpression<double, Point2d> expression2 = sin(sqrt(u));
 
         REQUIRE(expression1.implementation()->isDuplicateOf(expression2.implementation()));
     }
@@ -435,15 +507,18 @@ TEST_CASE("Deduplication") {
 
 TEST_CASE("Deduplicated output") {
     Parameter1d t;
-    ParametricExpression<1, 1> expression = t.squared() + sin(t.squared());
+    ParametricExpression<double, double> expression = t.squared() + sin(t.squared());
     std::cout << expression << std::endl;
 }
 
 TEST_CASE("Evaluator double") {
     Parameter1d t;
-    ParametricExpression<1, 1> expression = t.squared();
+    ParametricExpression<double, double> expression = t.squared();
     detail::Evaluator evaluator;
-    RowMatrix3d parameterValues(1.0, 2.0, 3.0);
+    std::vector<double> parameterValues(3);
+    parameterValues[0] = 1.0;
+    parameterValues[1] = 2.0;
+    parameterValues[2] = 3.0;
     ConstMatrixViewXd parameterMap(parameterValues.data(), 1, 3, 1);
 
     ConstMatrixViewXd results1 = evaluator.evaluate(expression.implementation(), parameterMap);
@@ -455,7 +530,7 @@ TEST_CASE("Evaluator double") {
 
 TEST_CASE("Evaluator interval") {
     Parameter1d t;
-    ParametricExpression<1, 1> expression = t.squared();
+    ParametricExpression<double, double> expression = t.squared();
     detail::Evaluator evaluator;
 
     IntervalRowMatrix3d parameterValues(Interval(1.0, 2.0), Interval(3.0, 4.0), Interval(5.0, 6.0));
@@ -473,34 +548,33 @@ TEST_CASE("Evaluator interval") {
 
 TEST_CASE("Ellipse Jacobian") {
     Parameter1d t;
-    ParametricExpression<2, 1> ellipseExpression =
-        ColumnMatrix2d(3, 1) * cos(t) + ColumnMatrix2d(1, 3) * sin(t);
-    testJacobian(ellipseExpression, Matrix1d(0.0));
-    testJacobian(ellipseExpression, Matrix1d(M_PI / 4));
-    testJacobian(ellipseExpression, Matrix1d(M_PI / 2));
-    testJacobian(ellipseExpression, Matrix1d(3 * M_PI / 4));
+    ParametricExpression<Vector2d, double> ellipseExpression =
+        Vector2d(3, 1) * cos(t) + Vector2d(1, 3) * sin(t);
+    testJacobian(ellipseExpression, 0.0;
+    testJacobian(ellipseExpression, M_PI / 4);
+    testJacobian(ellipseExpression, M_PI / 2);
+    testJacobian(ellipseExpression, 3 * M_PI / 4);
 }
 
 TEST_CASE("Ellipsoid Jacobian") {
     Parameter2d u = Parameter2d(0);
     Parameter2d v = Parameter2d(1);
-    ParametricExpression<3, 2> ellipsoidExpression = sin(v) * ColumnMatrix3d(1, 1, 3) +
-        cos(v) * (sin(u) * ColumnMatrix3d(1, 3, 1) + cos(u) * ColumnMatrix3d(3, 1, 1));
-    testJacobian(ellipsoidExpression, ColumnMatrix2d(0, 0));
-    testJacobian(ellipsoidExpression, ColumnMatrix2d(M_PI / 4, 0));
-    testJacobian(ellipsoidExpression, ColumnMatrix2d(0, M_PI / 4));
-    testJacobian(ellipsoidExpression, ColumnMatrix2d(M_PI / 4, M_PI / 4));
-    testJacobian(ellipsoidExpression, ColumnMatrix2d(M_PI / 2, 0));
-    testJacobian(ellipsoidExpression, ColumnMatrix2d(0, 3 * M_PI / 4));
+    ParametricExpression<Vector3d, Point2d> ellipsoidExpression = sin(v) * Vector3d(1, 1, 3) +
+        cos(v) * (sin(u) * Vector3d(1, 3, 1) + cos(u) * Vector3d(3, 1, 1));
+    testJacobian(ellipsoidExpression, Point2d(0, 0));
+    testJacobian(ellipsoidExpression, Point2d(M_PI / 4, 0));
+    testJacobian(ellipsoidExpression, Point2d(0, M_PI / 4));
+    testJacobian(ellipsoidExpression, Point2d(M_PI / 4, M_PI / 4));
+    testJacobian(ellipsoidExpression, Point2d(M_PI / 2, 0));
+    testJacobian(ellipsoidExpression, Point2d(0, 3 * M_PI / 4));
 }
 
 TEST_CASE("Squiggle Jacobians") {
     Parameter2d u = Parameter2d(0);
     Parameter2d v = Parameter2d(1);
-    ParametricExpression<1, 2> scalar = scalarSquiggle();
-    ParametricExpression<3, 2> vector = vectorSquiggle();
-    std::vector<ColumnMatrix2d> parameterValues = squiggleParameterValues();
-    Matrix3d rotationMatrix = Quaternion3d(Vector3d::unitX(), M_PI / 4).rotationMatrix();
+    ParametricExpression<double, Point2d> scalar = scalarSquiggle();
+    ParametricExpression<Vector3d, Point2d> vector = vectorSquiggle();
+    std::vector<Point2d> parameterValues = squiggleParameterValues();
 
     for (unsigned i = 0; i < parameterValues.size(); ++i) {
         testJacobian(scalar, parameterValues[i]);
@@ -508,14 +582,13 @@ TEST_CASE("Squiggle Jacobians") {
 
         testJacobian(acos(scalar / 2), parameterValues[i]);
         testJacobian(asin(scalar / 2), parameterValues[i]);
-        testJacobian(vector.components<2>(1), parameterValues[i]);
         testJacobian(cos(scalar), parameterValues[i]);
-        testJacobian(vector.cross(vector + ColumnMatrix3d(0, 0, 1)), parameterValues[i]);
-        testJacobian(vector - u * ColumnMatrix3d(0, 0, 1), parameterValues[i]);
-        testJacobian(vector.dot(vector + ColumnMatrix3d(0, 0, 1)), parameterValues[i]);
+        testJacobian(vector.cross(vector + Vector3d(0, 0, 1)), parameterValues[i]);
+        testJacobian(vector - u * Vector3d(0, 0, 1), parameterValues[i]);
+        testJacobian(vector.dot(vector + Vector3d(0, 0, 1)), parameterValues[i]);
         testJacobian(exp(scalar), parameterValues[i]);
         testJacobian(log(scalar + 2), parameterValues[i]);
-        testJacobian(rotationMatrix * vector, parameterValues[i]);
+        testJacobian(vector.rotatedAbout(Axis3d::x(), M_PI / 4), parameterValues[i]);
         testJacobian(-vector, parameterValues[i]);
         testJacobian(vector.normalized(), parameterValues[i]);
         testJacobian(vector.norm(), parameterValues[i]);
@@ -528,9 +601,9 @@ TEST_CASE("Squiggle Jacobians") {
         testJacobian(sin(scalar), parameterValues[i]);
         testJacobian(vector.squaredNorm(), parameterValues[i]);
         testJacobian(sqrt(scalar + 2), parameterValues[i]);
-        testJacobian(vector + u * ColumnMatrix3d(0, 0, 1), parameterValues[i]);
+        testJacobian(vector + u * Vector3d(0, 0, 1), parameterValues[i]);
         testJacobian(tan(scalar), parameterValues[i]);
-        testJacobian(vector + ColumnMatrix3d(1, 2, 3), parameterValues[i]);
+        testJacobian(vector + Vector3d(1, 2, 3), parameterValues[i]);
 
         // Composition?
         // Concatenation?
@@ -539,18 +612,22 @@ TEST_CASE("Squiggle Jacobians") {
 
 TEST_CASE("Dot product with constant") {
     Parameter1d t;
-    ParametricExpression<3, 1> line = ColumnMatrix3d::ones() + ColumnMatrix3d::ones() * t;
-    ParametricExpression<1, 1> dotProduct = line.dot(ColumnMatrix3d(0, 1, 0));
+    ParametricExpression<Vector3d, double> line = (
+        Vector3d(1.0, 1.0, 1.0) + Vector3d(1.0, 1.0, 1.0) * t
+    );
+    ParametricExpression<double, double> dotProduct = line.dot(Vector3d(0, 1, 0));
     REQUIRE((dotProduct.evaluate(0.0) - 1.0) == Zero());
     REQUIRE((dotProduct.evaluate(1.0) - 2.0) == Zero());
 }
 
 TEST_CASE("Cross product with constant") {
     Parameter1d t;
-    ParametricExpression<3, 1> line = ColumnMatrix3d::ones() + ColumnMatrix3d::ones() * t;
-    ParametricExpression<3, 1> crossProduct = line.cross(ColumnMatrix3d(0, 1, 0));
-    REQUIRE((crossProduct.evaluate(0.0) - ColumnMatrix3d(-1, 0, 1)).isZero());
-    REQUIRE((crossProduct.evaluate(1.0) - ColumnMatrix3d(-2, 0, 2)).isZero());
+    ParametricExpression<Vector3d, double> line = (
+        Vector3d(1.0, 1.0, 1.0) + Vector3d(1.0, 1.0, 1.0) * t
+    );
+    ParametricExpression<Vector3d, double> crossProduct = line.cross(Vector3d(0.0, 1.0, 0.0));
+    REQUIRE((crossProduct.evaluate(0.0) - Vector3d(-1.0, 0.0, 1.0)).isZero());
+    REQUIRE((crossProduct.evaluate(1.0) - Vector3d(-2.0, 0.0, 2.0)).isZero());
 }
 
 //void xtestRoots() {

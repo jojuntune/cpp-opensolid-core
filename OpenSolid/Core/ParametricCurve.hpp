@@ -58,7 +58,7 @@ namespace opensolid
 
     inline
     ParametricCurve2d::ParametricCurve(
-        const ParametricExpression<2, 1>& expression,
+        const ParametricExpression<Point2d, double>& expression,
         Interval domain
     ) : ParametricCurveBase<2>(expression, domain) {
     }
@@ -79,7 +79,7 @@ namespace opensolid
 
     inline
     ParametricCurve3d::ParametricCurve(
-        const ParametricExpression<3, 1>& expression,
+        const ParametricExpression<Point3d, double>& expression,
         Interval domain
     ) : ParametricCurveBase<3>(expression, domain) {
     }
@@ -92,7 +92,7 @@ namespace opensolid
         double scale
     ) const {
         return ParametricCurve<iNumDimensions>(
-            originPoint.components() + scale * (curve.expression() - originPoint.components()),
+            scaled(curve.expression(), originPoint, scale),
             curve.domain()
         );
     }
@@ -104,7 +104,7 @@ namespace opensolid
         const Vector<double, iNumDimensions>& vector
     ) const {
         return ParametricCurve<iNumDimensions>(
-            curve.expression() + vector.components(),
+            curve.expression() + vector,
             curve.domain()
         );
     }
@@ -118,9 +118,7 @@ namespace opensolid
         const Point<iNumResultDimensions>& destinationPoint
     ) const {
         return ParametricCurve<iNumResultDimensions>(
-            destinationPoint.components() + (
-                transformationMatrix * (curve.expression() - originPoint.components())
-            ),
+            transformed(curve.expression(), originPoint, transformationMatrix, destinationPoint),
             curve.domain()
         );
     }
@@ -129,7 +127,10 @@ namespace opensolid
     ParametricCurve<iNumResultDimensions>
     MorphingFunction<ParametricCurve<iNumDimensions>, iNumResultDimensions>::operator()(
         const ParametricCurve<iNumDimensions>& curve,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        const ParametricExpression<
+            Point<iNumResultDimensions>,
+            Point<iNumDimensions>
+        >& morphingExpression
     ) const {
         return ParametricCurve<iNumResultDimensions>(
             morphingExpression.composed(curve.expression()),

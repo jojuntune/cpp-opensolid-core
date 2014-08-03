@@ -78,6 +78,9 @@ namespace opensolid
         unitRandom();
 
         static const UnitVector<1>
+        unit(int index);
+
+        static const UnitVector<1>
         unitX();
     };
 
@@ -102,6 +105,9 @@ namespace opensolid
 
         static const UnitVector<2>
         unitRandom();
+
+        static const UnitVector<2>
+        unit(int index);
 
         static const UnitVector<2>
         unitX();
@@ -137,6 +143,9 @@ namespace opensolid
 
         static const UnitVector<3>
         unitRandom();
+
+        static const UnitVector<3>
+        unit(int index);
 
         static const UnitVector<3>
         unitX();
