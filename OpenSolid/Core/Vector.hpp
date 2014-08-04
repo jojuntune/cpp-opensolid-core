@@ -110,12 +110,9 @@ namespace opensolid
     const UnitVector2d
     Vector2d::unit(int index) {
         switch (index) {
-            case 0:
-                return UnitVector2d(1.0, 0.0);
-            case 1:
-                return UnitVector2d(0.0, 1.0);
-            default:
-                throw Error(new PlaceholderError());
+            case 0: return UnitVector2d(1.0, 0.0);
+            case 1: return UnitVector2d(0.0, 1.0);
+            default: throw Error(new PlaceholderError());
         }
     }
 
@@ -211,14 +208,10 @@ namespace opensolid
     const UnitVector3d
     Vector3d::unit(int index) {
         switch (index) {
-            case 0:
-                return UnitVector3d(1.0, 0.0, 0.0);
-            case 1:
-                return UnitVector3d(0.0, 1.0, 0.0);
-            case 2:
-                return UnitVector3d(0.0, 0.0, 1.0);
-            default:
-                throw Error(new PlaceholderError());
+            case 0: return UnitVector3d(1.0, 0.0, 0.0);
+            case 1: return UnitVector3d(0.0, 1.0, 0.0);
+            case 2: return UnitVector3d(0.0, 0.0, 1.0);
+            default: throw Error(new PlaceholderError());
         }
     }
 
@@ -321,39 +314,72 @@ namespace opensolid
         );
     }
 
-    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() * TSecondScalar()), iNumDimensions>
-    operator*(TFirstScalar scale, const Vector<TSecondScalar, iNumDimensions>& vector) {
-        typedef decltype(TFirstScalar() * TSecondScalar()) ResultScalarType;
-        return Vector<ResultScalarType, iNumDimensions>(
+    template <class TScalar, int iNumDimensions>
+    const Vector<TScalar, iNumDimensions>
+    operator*(double scale, const Vector<TScalar, iNumDimensions>& vector) {
+        return Vector<TScalar, iNumDimensions>(
             vector.components().map(
-                [scale] (TSecondScalar component) -> ResultScalarType {
+                [scale] (TScalar component) -> TScalar {
                     return scale * component;
                 }
             )
         );
     }
 
-    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() * TSecondScalar()), iNumDimensions>
-    operator*(const Vector<TFirstScalar, iNumDimensions>& vector, TSecondScalar scale) {
-        typedef decltype(TFirstScalar() * TSecondScalar()) ResultScalarType;
-        return Vector<ResultScalarType, iNumDimensions>(
+    template <class TScalar, int iNumDimensions>
+    const Vector<Interval, iNumDimensions>
+    operator*(Interval scale, const Vector<TScalar, iNumDimensions>& vector) {
+        return Vector<Interval, iNumDimensions>(
             vector.components().map(
-                [scale] (TFirstScalar component) -> ResultScalarType {
+                [scale] (TScalar component) -> Interval {
+                    return scale * component;
+                }
+            )
+        );
+    }
+
+    template <class TScalar, int iNumDimensions>
+    const Vector<TScalar, iNumDimensions>
+    operator*(const Vector<TScalar, iNumDimensions>& vector, double scale) {
+        return Vector<TScalar, iNumDimensions>(
+            vector.components().map(
+                [scale] (TScalar component) -> TScalar {
                     return component * scale;
                 }
             )
         );
     }
 
-    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() / TSecondScalar()), iNumDimensions>
-    operator/(const Vector<TFirstScalar, iNumDimensions>& vector, TSecondScalar divisor) {
-        typedef decltype(TFirstScalar() / TSecondScalar()) ResultScalarType;
-        return Vector<ResultScalarType, iNumDimensions>(
+    template <class TScalar, int iNumDimensions>
+    const Vector<Interval, iNumDimensions>
+    operator*(const Vector<TScalar, iNumDimensions>& vector, Interval scale) {
+        return Vector<Interval, iNumDimensions>(
             vector.components().map(
-                [divisor] (TFirstScalar component) -> ResultScalarType {
+                [scale] (TScalar component) -> Interval {
+                    return component * scale;
+                }
+            )
+        );
+    }
+
+    template <class TScalar, int iNumDimensions>
+    const Vector<TScalar, iNumDimensions>
+    operator/(const Vector<TScalar, iNumDimensions>& vector, double divisor) {
+        return Vector<TScalar, iNumDimensions>(
+            vector.components().map(
+                [divisor] (TScalar component) -> TScalar {
+                    return component / divisor;
+                }
+            )
+        );
+    }
+
+    template <class TScalar, int iNumDimensions>
+    const Vector<Interval, iNumDimensions>
+    operator/(const Vector<TScalar, iNumDimensions>& vector, Interval divisor) {
+        return Vector<Interval, iNumDimensions>(
+            vector.components().map(
+                [divisor] (TScalar component) -> Interval {
                     return component / divisor;
                 }
             )

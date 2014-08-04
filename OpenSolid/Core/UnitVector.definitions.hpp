@@ -56,6 +56,15 @@ namespace opensolid
         typedef Vector<double, iNumResultDimensions> Type;
     };
 
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<
+        UnitVector<iNumDimensions>,
+        ParametricExpression<Vector<double, iNumResultDimensions>, Vector<double, iNumDimensions>>
+    >
+    {
+        typedef Vector<double, iNumResultDimensions> Type;
+    };
+
     template <>
     class UnitVector<1> :
         public Vector<double, 1>

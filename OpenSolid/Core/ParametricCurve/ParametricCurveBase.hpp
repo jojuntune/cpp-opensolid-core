@@ -134,7 +134,7 @@ namespace opensolid
         template <int iNumDimensions>
         ParametricCurve<iNumDimensions>
         ParametricCurveBase<iNumDimensions>::reversed() const {
-            ParametricExpression<1, 1> reversedParameter = (
+            ParametricExpression<double, double> reversedParameter = (
                 domain().upperBound() + domain().lowerBound() - Parameter1d()
             );
             return ParametricCurve<iNumDimensions>(
@@ -144,19 +144,19 @@ namespace opensolid
         }
 
         template <int iNumDimensions>
-        ParametricExpression<Point<iNumDimensions>, double>
+        ParametricExpression<Vector<double, iNumDimensions>, double>
         ParametricCurveBase<iNumDimensions>::tangentVector() const {
             return expression().derivative().normalized();
         }
 
         template <int iNumDimensions>
-        ParametricExpression<Point<iNumDimensions>, double>
+        ParametricExpression<Vector<double, iNumDimensions>, double>
         ParametricCurveBase<iNumDimensions>::normalVector() const {
             return tangentVector().derivative().normalized();
         }
 
         template <int iNumDimensions>
-        ParametricExpression<Point<iNumDimensions>, double>
+        ParametricExpression<Vector<double, iNumDimensions>, double>
         ParametricCurveBase<iNumDimensions>::binormalVector() const {
             return tangentVector().cross(normalVector());
         }

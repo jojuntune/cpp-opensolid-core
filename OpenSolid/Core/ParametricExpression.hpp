@@ -62,13 +62,13 @@ namespace opensolid
         inline
         ConstMatrixViewXd
         constView(const double& value) {
-            return ConstMatrixViewXd(&value, 1, 1, 1);
+            return ConstMatrixViewXd(&value, 1, 1, sizeof(double));
         }
 
         inline
         ConstIntervalMatrixViewXd
         constView(const Interval& value) {
-            return ConstIntervalMatrixViewXd(&value, 1, 1, 1);
+            return ConstIntervalMatrixViewXd(&value, 1, 1, sizeof(Interval));
         }
 
         template <int iNumDimensions>
@@ -121,9 +121,6 @@ namespace opensolid
             );
         }
 
-        template <int iNumRows>
-        ConstMatrixViewXd
-
         template <int iNumDimensions>
         inline
         ConstMatrixViewXd
@@ -175,13 +172,13 @@ namespace opensolid
         inline
         MatrixViewXd
         mutableView(double& value) {
-            return MatrixViewXd(&value, 1, 1, 1);
+            return MatrixViewXd(&value, 1, 1, sizeof(double));
         }
 
         inline
         IntervalMatrixViewXd
         mutableView(Interval& value) {
-            return IntervalMatrixViewXd(&value, 1, 1, 1);
+            return IntervalMatrixViewXd(&value, 1, 1, sizeof(Interval));
         }
 
         template <int iNumDimensions>
@@ -305,13 +302,13 @@ namespace opensolid
         template <class TValue>
         struct IsVector
         {
-            static bool value = false;
+            static const bool Value = false;
         };
 
         template <int iNumDimensions>
         struct IsVector<Vector<double, iNumDimensions>>
         {
-            static bool value = true;
+            static const bool Value = true;
         };
     }
 
@@ -326,15 +323,12 @@ namespace opensolid
     ) : _implementationPtr(implementationPtr) {
         if (!implementationPtr) {
             throw Error(new PlaceholderError());
-            _implementationPtr = detail::zeroExpression<TValue, TParameter>();
         }
         if (implementationPtr->numDimensions() != NumDimensions<TValue>::Value) {
             throw Error(new PlaceholderError());
-            _implementationPtr = detail::zeroExpression<TValue, TParameter>();
         }
         if (implementationPtr->numParameters() != NumDimensions<TParameter>::Value) {
             throw Error(new PlaceholderError());
-            _implementationPtr = detail::zeroExpression<TValue, TParameter>();
         }
     }
     
@@ -344,15 +338,12 @@ namespace opensolid
     ) : _implementationPtr(implementationPtr) {
         if (!implementationPtr) {
             throw Error(new PlaceholderError());
-            _implementationPtr = detail::zeroExpression<TValue, TParameter>();
         }
         if (implementationPtr->numDimensions() != NumDimensions<TValue>::Value) {
             throw Error(new PlaceholderError());
-            _implementationPtr = detail::zeroExpression<TValue, TParameter>();
         }
         if (implementationPtr->numParameters() != NumDimensions<TParameter>::Value) {
             throw Error(new PlaceholderError());
-            _implementationPtr = detail::zeroExpression<TValue, TParameter>();
         }
     }
 
@@ -384,7 +375,7 @@ namespace opensolid
     ParametricExpression<TValue, TParameter>::evaluate(
         const typename BoundsType<TParameter>::Type& parameterBounds
     ) const {
-        ConstMatrixViewXI parameterView = detail::constView(parameterBounds);
+        ConstIntervalMatrixViewXd parameterView = detail::constView(parameterBounds);
 
         typename BoundsType<TValue>::Type result;
         IntervalMatrixViewXd resultView = detail::mutableView(result);
@@ -506,7 +497,7 @@ namespace opensolid
     ParametricExpression<double, TParameter>
     ParametricExpression<TValue, TParameter>::norm() const {
         static_assert(
-            detail::IsVector<TValue>::value,
+            detail::IsVector<TValue>::Value,
             "norm() only defined for vectors"
         );
 
@@ -518,7 +509,7 @@ namespace opensolid
     ParametricExpression<TValue, TParameter>
     ParametricExpression<TValue, TParameter>::normalized() const {
         static_assert(
-            detail::IsVector<TValue>::value,
+            detail::IsVector<TValue>::Value,
             "normalized() only defined for vectors"
         );
 
@@ -530,7 +521,7 @@ namespace opensolid
     ParametricExpression<double, TParameter>
     ParametricExpression<TValue, TParameter>::squaredNorm() const {
         static_assert(
-            detail::IsVector<TValue>::value,
+            detail::IsVector<TValue>::Value,
             "squaredNorm() only defined for vectors"
         );
 
@@ -546,7 +537,8 @@ namespace opensolid
             "squared() is only defined for scalars"
         );
 
-        return squaredNorm();
+        detail::DeduplicationCache deduplicationCache;
+        return implementation()->squaredNorm()->deduplicated(deduplicationCache);
     }
 
     template <class TValue, class TParameter>
@@ -594,13 +586,13 @@ namespace opensolid
     ParametricExpression<double, TParameter>
     ParametricExpression<TValue, TParameter>::dot(const TValue& vector) const {
         static_assert(
-            detail::IsVector<TValue>::value,
+            detail::IsVector<TValue>::Value,
             "dot() only defined for vectors"
         );
 
         detail::DeduplicationCache deduplicationCache;
         return implementation()->dot(
-            new detail::ConstantExpression(vector, NumDimensions<TParameter>::Value)
+            new detail::ConstantExpression(vector.components(), NumDimensions<TParameter>::Value)
         )->deduplicated(deduplicationCache);
     }
     
@@ -610,7 +602,7 @@ namespace opensolid
         const ParametricExpression<TValue, TParameter>& other
     ) const {
         static_assert(
-            detail::IsVector<TValue>::value,
+            detail::IsVector<TValue>::Value,
             "dot() only defined for vectors"
         );
 
@@ -628,7 +620,7 @@ namespace opensolid
 
         detail::DeduplicationCache deduplicationCache;
         return implementation()->cross(
-            new detail::ConstantExpression(vector, NumDimensions<TParameter>::Value)
+            new detail::ConstantExpression(vector.components(), NumDimensions<TParameter>::Value)
         )->deduplicated(deduplicationCache);
     }
     
@@ -650,9 +642,7 @@ namespace opensolid
     ParametricExpression<typename NegatedType<TValue>::Type, TParameter>
     operator-(const ParametricExpression<TValue, TParameter>& expression) {
         detail::DeduplicationCache deduplicationCache;
-        return (
-            -expression.implementation()
-        )->deduplicated(deduplicationCache);
+        return (-expression.implementation())->deduplicated(deduplicationCache);
     }
 
     template <class TFirstValue, class TSecondValue, class TParameter>
@@ -673,6 +663,7 @@ namespace opensolid
         const ParametricExpression<TFirstValue, TParameter>& expression,
         const TSecondValue& value
     ) {
+        detail::DeduplicationCache deduplicationCache;
         return (
             expression.implementation() + detail::components(value)
         )->deduplicated(deduplicationCache);
@@ -774,16 +765,11 @@ namespace opensolid
         )->deduplicated(deduplicationCache);
     }
 
-    template <class TFirstValue, class TSecondValue, class TParameter>
-    ParametricExpression<typename QuotientType<TFirstValue, TSecondValue>::Type, TParameter>
-    operator/(
-        const ParametricExpression<TFirstValue, TParameter>& expression,
-        const TSecondValue& value
-    ) {
+    template <class TValue, class TParameter>
+    ParametricExpression<typename QuotientType<TValue, double>::Type, TParameter>
+    operator/(const ParametricExpression<TValue, TParameter>& expression, double value) {
         detail::DeduplicationCache deduplicationCache;
-        return (
-            expression.implementation() / detail::components(value)
-        )->deduplicated(deduplicationCache);
+        return (expression.implementation() / value)->deduplicated(deduplicationCache);
     }
 
     template <class TFirstValue, class TSecondValue, class TParameter>
@@ -963,8 +949,8 @@ namespace opensolid
         const Point<iNumResultDimensions>& destinationPoint
     ) const {
         return (
-            transformationMatrix * (expression - originPoint).implementation() +
-            destinationPoint.components()
+            destinationPoint.components() +
+            transformationMatrix * (expression - originPoint).implementation()
         );
     }
 

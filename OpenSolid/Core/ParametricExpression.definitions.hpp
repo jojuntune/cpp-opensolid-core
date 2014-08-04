@@ -28,6 +28,7 @@
  
 #include <OpenSolid/Core/ParametricExpression.declarations.hpp>
 
+#include <OpenSolid/Core/BoundsType.definitions.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
@@ -230,12 +231,9 @@ namespace opensolid
         const ParametricExpression<TSecondValue, TParameter>& secondExpression
     );
 
-    template <class TFirstValue, class TSecondValue, class TParameter>
-    ParametricExpression<typename QuotientType<TFirstValue, TSecondValue>::Type, TParameter>
-    operator/(
-        const ParametricExpression<TFirstValue, TParameter>& expression,
-        const TSecondValue& value
-    );
+    template <class TValue, class TParameter>
+    ParametricExpression<typename QuotientType<TValue, double>::Type, TParameter>
+    operator/(const ParametricExpression<TValue, TParameter>& expression, double value);
 
     template <class TFirstValue, class TSecondValue, class TParameter>
     ParametricExpression<typename QuotientType<TFirstValue, TSecondValue>::Type, TParameter>

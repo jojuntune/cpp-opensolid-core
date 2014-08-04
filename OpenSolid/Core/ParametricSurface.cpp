@@ -44,24 +44,24 @@ namespace opensolid
     }
 
     ParametricSurface3d::ParametricSurface3d(
-        const ParametricExpression<3, 2>& expression,
+        const ParametricExpression<Point3d, Point2d>& expression,
         const BoundedArea2d& domain
     ) : _expression(expression),
         _domain(domain),
-        _bounds(expression.evaluate(domain.bounds().components())) {
+        _bounds(expression.evaluate(domain.bounds())) {
     }
 
     Point3d
-    ParametricSurface3d::evaluate(double u, double v) const {
-        return Point3d(expression().evaluate(u, v));
+    ParametricSurface3d::evaluate(const Point2d& parameterValues) const {
+        return expression().evaluate(parameterValues);
     }
 
     Box3d
-    ParametricSurface3d::evaluate(Interval u, Interval v) const {
-        return Box3d(expression().evaluate(u, v));
+    ParametricSurface3d::evaluate(const Box2d& parameterBounds) const {
+        return expression().evaluate(parameterBounds);
     }
 
-    ParametricExpression<3, 2>
+    ParametricExpression<Vector3d, Point2d>
     ParametricSurface3d::normalVector() const {
         return expression().derivative(0).cross(expression().derivative(1)).normalized();
     }

@@ -44,6 +44,12 @@ namespace opensolid
         static const int Value = 3;
     };
 
+    template <>
+    struct MorphedType<Plane3d, ParametricExpression<Point<3>, Point<3>>>
+    {
+        typedef Plane3d Type;
+    };
+
     class Plane3d :
         public Convertible<Plane3d>,
         public Transformable<Plane3d>

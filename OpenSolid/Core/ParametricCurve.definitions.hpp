@@ -87,7 +87,7 @@ namespace opensolid
 
         ParametricCurve(ParametricCurve<2>&& other);
 
-        ParametricCurve(const ParametricExpression<2, 1>& expression, Interval domain);
+        ParametricCurve(const ParametricExpression<Point<2>, double>& expression, Interval domain);
 
         ///// Arcs /////
         //

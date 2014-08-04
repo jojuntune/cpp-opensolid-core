@@ -57,6 +57,12 @@ namespace opensolid
         static const int Value = 3;
     };
 
+    template <>
+    struct MorphedType<Tetrahedron3d, ParametricExpression<Point<3>, Point<3>>>
+    {
+        typedef Tetrahedron3d Type;
+    };
+
     class Tetrahedron3d :
         public Convertible<Tetrahedron3d>,
         public Transformable<Tetrahedron3d>

@@ -125,7 +125,10 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumResultDimensions>
     ParametricCurve<iNumResultDimensions>
-    MorphingFunction<ParametricCurve<iNumDimensions>, iNumResultDimensions>::operator()(
+    MorphingFunction<
+        ParametricCurve<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >::operator()(
         const ParametricCurve<iNumDimensions>& curve,
         const ParametricExpression<
             Point<iNumResultDimensions>,

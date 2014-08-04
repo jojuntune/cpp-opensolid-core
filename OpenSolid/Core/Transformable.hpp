@@ -188,7 +188,7 @@ namespace opensolid
     template <class TTransformable, class TResult>
     inline
     TResult
-    MorphingFunction<TTransformable, ParametricExpression<TResult, TTransformable>>:operator()(
+    MorphingFunction<TTransformable, ParametricExpression<TResult, TTransformable>>::operator()(
         const TTransformable& transformable,
         const ParametricExpression<TResult, TTransformable>& morphingExpression
     ) const {

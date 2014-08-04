@@ -38,7 +38,7 @@
 namespace opensolid
 {
     inline
-    const ParametricExpression<3, 2>&
+    const ParametricExpression<Point3d, Point2d>&
     ParametricSurface3d::expression() const {
         return _expression;
     }

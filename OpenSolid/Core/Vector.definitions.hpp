@@ -217,17 +217,29 @@ namespace opensolid
 
     typedef Vector<Interval, 3> IntervalVector3d;
 
-    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() * TSecondScalar()), iNumDimensions>
-    operator*(TFirstScalar scale, const Vector<TSecondScalar, iNumDimensions>& vector);
+    template <class TScalar, int iNumDimensions>
+    const Vector<TScalar, iNumDimensions>
+    operator*(double scale, const Vector<TScalar, iNumDimensions>& vector);
 
-    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() * TSecondScalar()), iNumDimensions>
-    operator*(const Vector<TFirstScalar, iNumDimensions>& vector, TSecondScalar scale);
+    template <class TScalar, int iNumDimensions>
+    const Vector<Interval, iNumDimensions>
+    operator*(Interval scale, const Vector<TScalar, iNumDimensions>& vector);
 
-    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() / TSecondScalar()), iNumDimensions>
-    operator/(const Vector<TFirstScalar, iNumDimensions>& vector, TSecondScalar divisor);
+    template <class TScalar, int iNumDimensions>
+    const Vector<TScalar, iNumDimensions>
+    operator*(const Vector<TScalar, iNumDimensions>& vector, double scale);
+
+    template <class TScalar, int iNumDimensions>
+    const Vector<Interval, iNumDimensions>
+    operator*(const Vector<TScalar, iNumDimensions>& vector, Interval scale);
+
+    template <class TScalar, int iNumDimensions>
+    const Vector<TScalar, iNumDimensions>
+    operator/(const Vector<TScalar, iNumDimensions>& vector, double divisor);
+
+    template <class TScalar, int iNumDimensions>
+    const Vector<Interval, iNumDimensions>
+    operator/(const Vector<TScalar, iNumDimensions>& vector, Interval divisor);
 
     template <class TScalar, int iNumDimensions>
     const Vector<TScalar, iNumDimensions>

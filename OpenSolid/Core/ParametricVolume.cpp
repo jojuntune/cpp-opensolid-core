@@ -44,21 +44,21 @@ namespace opensolid
     }
 
     ParametricVolume3d::ParametricVolume3d(
-        const ParametricExpression<3, 3>& expression,
+        const ParametricExpression<Point3d, Point3d>& expression,
         const BoundedVolume3d& domain
     ) : _expression(expression),
         _domain(domain),
-        _bounds(expression.evaluate(domain.bounds().components())) {
+        _bounds(expression.evaluate(domain.bounds())) {
     }
 
     Point3d
-    ParametricVolume3d::evaluate(double u, double v, double w) const {
-        return Point3d(expression().evaluate(u, v, w));
+    ParametricVolume3d::evaluate(const Point3d& parameterValues) const {
+        return expression().evaluate(parameterValues);
     }
 
     Box3d
-    ParametricVolume3d::evaluate(Interval u, Interval v, Interval w) const {
-        return Box3d(expression().evaluate(u, v, w));
+    ParametricVolume3d::evaluate(const Box3d& parameterBounds) const {
+        return expression().evaluate(parameterBounds);
     }
 
     ParametricVolume3d

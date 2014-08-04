@@ -58,7 +58,7 @@ namespace opensolid
 
     Box2d
     ParametricArea2d::evaluate(const Box2d& parameterBounds) const {
-        return expression().evaluate(parameterBounds));
+        return expression().evaluate(parameterBounds);
     }
 
     ParametricArea2d

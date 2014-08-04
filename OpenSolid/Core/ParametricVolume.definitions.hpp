@@ -50,11 +50,17 @@ namespace opensolid
         static const int Value = 3;
     };
 
+    template <>
+    struct MorphedType<ParametricVolume3d, ParametricExpression<Point<3>, Point<3>>>
+    {
+        typedef ParametricVolume3d Type;
+    };
+
     class ParametricVolume3d :
         public Transformable<ParametricVolume3d>
     {
     private:
-        ParametricExpression<3, 3> _expression;
+        ParametricExpression<Point<3>, Point<3>> _expression;
         BoundedVolume3d _domain;
         Box<3> _bounds;
     public:
@@ -69,11 +75,11 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         ParametricVolume3d(
-            const ParametricExpression<3, 3>& expression,
+            const ParametricExpression<Point<3>, Point<3>>& expression,
             const BoundedVolume3d& domain
         );
 
-        const ParametricExpression<3, 3>&
+        const ParametricExpression<Point<3>, Point<3>>&
         expression() const;
 
         const BoundedVolume3d&
@@ -84,11 +90,11 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         Point<3>
-        evaluate(double u, double v, double w) const;
+        evaluate(const Point<3>& parameterValues) const;
 
         OPENSOLID_CORE_EXPORT
         Box<3>
-        evaluate(Interval u, Interval v, Interval w) const;
+        evaluate(const Box<3>& parameterBounds) const;
     };
 
     template <>

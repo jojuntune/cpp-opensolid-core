@@ -85,7 +85,7 @@ TEST_CASE("Arc") {
     expectedValue = Vector3d(0, secondDerivativeMagnitude, 0);
     REQUIRE((secondDerivative.evaluate(1.0) - expectedValue).isZero());
     
-    ParametricExpression<3, 1> normal = arc.normalVector();
+    ParametricExpression<Vector3d, double> normal = arc.normalVector();
     REQUIRE((normal.evaluate(0.0) - Vector3d(-1, 0, 0)).isZero());
     REQUIRE((normal.evaluate(1.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
     REQUIRE((normal.evaluate(2.0 / 3.0) - Vector3d(1, 0, 0)).isZero());

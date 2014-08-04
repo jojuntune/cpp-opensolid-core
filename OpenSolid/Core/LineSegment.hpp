@@ -303,7 +303,10 @@ namespace opensolid
     template <int iNumDimensions, int iNumResultDimensions>
     inline
     LineSegment<iNumResultDimensions>
-    MorphingFunction<LineSegment<iNumDimensions>, iNumResultDimensions>::operator()(
+    MorphingFunction<
+        LineSegment<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >::operator()(
         const LineSegment<iNumDimensions>& lineSegment,
         const ParametricExpression<
             Point<iNumResultDimensions>,

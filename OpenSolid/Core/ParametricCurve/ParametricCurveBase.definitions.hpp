@@ -32,6 +32,7 @@
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/ParametricCurve.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
 
 namespace opensolid
 {
@@ -86,16 +87,16 @@ namespace opensolid
             ParametricCurve<iNumDimensions>
             reversed() const;
 
-            ParametricExpression<iNumDimensions, 1>
+            ParametricExpression<Vector<double, iNumDimensions>, double>
             tangentVector() const;
 
-            ParametricExpression<iNumDimensions, 1>
+            ParametricExpression<Vector<double, iNumDimensions>, double>
             normalVector() const;
 
-            ParametricExpression<iNumDimensions, 1>
+            ParametricExpression<Vector<double, iNumDimensions>, double>
             binormalVector() const;
 
-            ParametricExpression<1, 1>
+            ParametricExpression<double, double>
             curvature() const;
         };
     }

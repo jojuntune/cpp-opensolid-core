@@ -132,7 +132,7 @@ namespace opensolid
             centerPoint.y() + radius * sin(angleExpression)
         );
         ParametricExpression<Point2d, double> curveExpression = (
-            ParametricExpression<2, 1>::fromComponents(xExpression, yExpression)
+            ParametricExpression<Point2d, double>::fromComponents(xExpression, yExpression)
         );
         return ParametricCurve2d(curveExpression, Interval::unit());
     }

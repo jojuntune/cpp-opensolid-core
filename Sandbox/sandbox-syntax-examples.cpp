@@ -207,29 +207,30 @@ void spatialSetExamples() {
 void parametricExpressionExamples() {
     Parameter1d t;
 
-    ParametricExpression<3, 1> lineExpression = ColumnMatrix3d::ones() + t * ColumnMatrix3d::ones();
-    ColumnMatrix3d start = lineExpression.evaluate(0.0);
-    ColumnMatrix3d mid = lineExpression.evaluate(0.5);
-    ColumnMatrix3d end = lineExpression.evaluate(1.0);
+    ParametricExpression<Point3d, double> lineExpression =
+        Point3d(1.0, 1.0, 1.0) + t * Vector3d(1.0, 1.0, 1.0);
+    Point3d start = lineExpression.evaluate(0.0);
+    Point3d mid = lineExpression.evaluate(0.5);
+    Point3d end = lineExpression.evaluate(1.0);
 
-    assert((start - ColumnMatrix3d::ones()).isZero());
-    assert((mid - ColumnMatrix3d::constant(1.5)).isZero());
-    assert((end - ColumnMatrix3d::constant(2)).isZero());
+    assert((start - Point3d(1.0, 1.0, 1.0)).isZero());
+    assert((mid - Point3d(1.5, 1.5, 1.5)).isZero());
+    assert((end - Point3d(2.0, 2.0, 2.0)).isZero());
 
-    ParametricExpression<1, 1> sineDerivative = sin(t).derivative();
-    ParametricExpression<1, 1> cosineExpression = cos(t);
+    ParametricExpression<double, double> sineDerivative = sin(t).derivative();
+    ParametricExpression<double, double> cosineExpression = cos(t);
     std::vector<double> parameterValues(10);
     for (unsigned i = 0; i < parameterValues.size(); ++i) {
         parameterValues[i] = i * 2 * M_PI / (parameterValues.size() - 1);
     }
-    std::vector<Matrix1d> sineDerivativeValues = sineDerivative.evaluate(parameterValues);
-    std::vector<Matrix1d> cosineValues = cosineExpression.evaluate(parameterValues);
+    std::vector<double> sineDerivativeValues = sineDerivative.evaluate(parameterValues);
+    std::vector<double> cosineValues = cosineExpression.evaluate(parameterValues);
     for (unsigned i = 0; i < parameterValues.size(); ++i) {
         assert(sineDerivativeValues[i] - cosineValues[i] == Zero());
     }
 
-    ParametricExpression<1, 1> shouldBeZero = sin(2 * t) - 2 * sin(t) * cos(t);
-    std::vector<Matrix1d> zeroValues = shouldBeZero.evaluate(parameterValues);
+    ParametricExpression<double, double> shouldBeZero = sin(2.0 * t) - 2.0 * sin(t) * cos(t);
+    std::vector<double> zeroValues = shouldBeZero.evaluate(parameterValues);
     for (unsigned i = 0; i < parameterValues.size(); ++i) {
         assert(zeroValues[i] == Zero());
     }

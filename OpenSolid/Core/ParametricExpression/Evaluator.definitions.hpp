@@ -56,13 +56,13 @@ namespace opensolid
             typedef std::unordered_map<
                 Key,
                 std::unique_ptr<MatrixXd>,
-                Evaluator::KeyHash
+                KeyHash
             > Cache;
 
             typedef std::unordered_map<
                 IntervalKey,
                 std::unique_ptr<IntervalMatrixXd>,
-                Evaluator::KeyHash
+                KeyHash
             > IntervalCache;
 
             Cache _valuesCache;
