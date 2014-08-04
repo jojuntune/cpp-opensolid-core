@@ -109,7 +109,7 @@ namespace opensolid
             ExpressionImplementationPtr xImplementation(
                 new ConstantExpression(x, NumDimensions<TParameter>::Value)
             );
-            return xExpression.implementation()->concatenated(yImplementation);
+            return xImplementation->concatenated(y.implementation());
         }
 
         template <class TValue, class TParameter>
