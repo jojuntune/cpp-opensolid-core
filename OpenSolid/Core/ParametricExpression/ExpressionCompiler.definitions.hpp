@@ -28,8 +28,8 @@
 
 #include <OpenSolid/Core/ParametricExpression/ExpressionCompiler.declarations.hpp>
 
-#include <OpenSolid/Core/ParametricExpression/CompiledExpression.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression/EvaluationOperation.definitions.hpp>
+#include <OpenSolid/Core/ParametricExpression/EvaluationSequence.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression/MatrixID.declarations.hpp>
 
@@ -99,8 +99,8 @@ namespace opensolid
             );
 
             OPENSOLID_CORE_EXPORT
-            CompiledExpression<TScalar>
-            compiledExpression() const;
+            EvaluationSequence<TScalar>
+            evaluationSequence() const;
         public:
             OPENSOLID_CORE_EXPORT
             ExpressionCompiler();
@@ -165,11 +165,11 @@ namespace opensolid
             );
 
             OPENSOLID_CORE_EXPORT
-            static CompiledExpression<TScalar>
+            static EvaluationSequence<TScalar>
             compile(const ExpressionImplementation* expression);
 
             OPENSOLID_CORE_EXPORT
-            static CompiledExpression<TScalar>
+            static EvaluationSequence<TScalar>
             compileJacobian(const ExpressionImplementation* expression);
         };
     }

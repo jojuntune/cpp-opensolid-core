@@ -24,6 +24,11 @@
 
 #pragma once
 
-#include <OpenSolid/config.hpp>
-
-#include <OpenSolid/Core/ParametricExpression/CompiledExpression.definitions.hpp>
+namespace opensolid
+{
+    namespace detail
+    {
+        template <class TScalar>
+        class EvaluationSequence;
+    }
+}

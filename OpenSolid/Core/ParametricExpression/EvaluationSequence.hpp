@@ -26,44 +26,4 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/ParametricExpression/CompiledExpression.declarations.hpp>
-
-#include <OpenSolid/Core/MatrixView.declarations.hpp>
-#include <OpenSolid/Core/ParametricExpression/EvaluationOperation.definitions.hpp>
-
-#include <vector>
-
-namespace opensolid
-{
-    namespace detail
-    {
-        template <class TScalar>
-        class CompiledExpression
-        {
-        private:
-            std::vector<EvaluationOperation<TScalar>> _evaluationOperations;
-            int _maxStackRows;
-            int _maxStackComponents;
-            int _numHeapRows;
-            int _numHeapComponents;
-            int _maxTemporaryMatrices;
-        public:
-            OPENSOLID_CORE_EXPORT
-            CompiledExpression(
-                std::vector<EvaluationOperation<TScalar>> evaluationOperations,
-                int maxStackRows,
-                int maxStackComponents,
-                int numHeapRows,
-                int numHeapComponents,
-                int maxTemporaryMatrices
-            );
-
-            OPENSOLID_CORE_EXPORT   
-            void
-            evaluate(
-                const MatrixView<TScalar, -1, -1, -1>& parameterView,
-                MatrixView<TScalar, -1, -1, -1>& resultView
-            ) const;
-        };
-    }
-}
+#include <OpenSolid/Core/ParametricExpression/EvaluationSequence.definitions.hpp>

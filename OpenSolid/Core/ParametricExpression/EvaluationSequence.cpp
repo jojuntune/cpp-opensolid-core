@@ -26,7 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/ParametricExpression/CompiledExpression.definitions.hpp>
+#include <OpenSolid/Core/ParametricExpression/EvaluationSequence.definitions.hpp>
 
 #include <OpenSolid/Core/ParametricExpression/EvaluationContext.hpp>
 #include <OpenSolid/Core/ParametricExpression/EvaluationOperation.hpp>
@@ -36,7 +36,7 @@ namespace opensolid
     namespace detail
     {
         template <class TScalar>
-        CompiledExpression<TScalar>::CompiledExpression(
+        EvaluationSequence<TScalar>::EvaluationSequence(
             std::vector<EvaluationOperation<TScalar>> evaluationOperations,
             int maxStackRows,
             int maxStackComponents,
@@ -53,7 +53,7 @@ namespace opensolid
 
         template <class TScalar>
         void
-        CompiledExpression<TScalar>::evaluate(
+        EvaluationSequence<TScalar>::evaluate(
             const MatrixView<TScalar, -1, -1, -1>& parameterView,
             MatrixView<TScalar, -1, -1, -1>& resultView
         ) const {
@@ -72,7 +72,7 @@ namespace opensolid
             }
         }
 
-        template class CompiledExpression<double>;
-        template class CompiledExpression<Interval>;
+        template class EvaluationSequence<double>;
+        template class EvaluationSequence<Interval>;
     }
 }

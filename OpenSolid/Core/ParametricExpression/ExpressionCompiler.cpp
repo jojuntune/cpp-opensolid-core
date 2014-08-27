@@ -26,11 +26,11 @@
 
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/ParametricExpression/CompiledExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ComponentsExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ConstantExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/EvaluationContext.hpp>
 #include <OpenSolid/Core/ParametricExpression/EvaluationOperation.hpp>
+#include <OpenSolid/Core/ParametricExpression/EvaluationSequence.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 #include <OpenSolid/Core/ParametricExpression/IdentityExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/MatrixID.hpp>
@@ -134,9 +134,9 @@ namespace opensolid
         }
 
         template <class TScalar>
-        CompiledExpression<TScalar>
-        ExpressionCompiler<TScalar>::compiledExpression() const {
-            return CompiledExpression<TScalar>(
+        EvaluationSequence<TScalar>
+        ExpressionCompiler<TScalar>::evaluationSequence() const {
+            return EvaluationSequence<TScalar>(
                 _evaluationOperations,
                 _maxStackRows,
                 _maxStackComponents,
@@ -417,23 +417,23 @@ namespace opensolid
         }
 
         template <class TScalar>
-        CompiledExpression<TScalar>
+        EvaluationSequence<TScalar>
         ExpressionCompiler<TScalar>::compile(const ExpressionImplementation* expression) {
             ExpressionCompiler<TScalar> compiler;
             MatrixID<const TScalar> parameterID(-1);
             MatrixID<TScalar> resultID(0);
             compiler.evaluate(expression, parameterID, resultID);
-            return compiler.compiledExpression();
+            return compiler.evaluationSequence();
         }
 
         template <class TScalar>
-        CompiledExpression<TScalar>
+        EvaluationSequence<TScalar>
         ExpressionCompiler<TScalar>::compileJacobian(const ExpressionImplementation* expression) {
             ExpressionCompiler<TScalar> compiler;
             MatrixID<const TScalar> parameterID(-1);
             MatrixID<TScalar> resultID(0);
             compiler.evaluateJacobian(expression, parameterID, resultID);
-            return compiler.compiledExpression();
+            return compiler.evaluationSequence();
         }
 
         template class ExpressionCompiler<double>;
