@@ -43,48 +43,68 @@ namespace opensolid
         
         void
         ConstantExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator&
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = ConstMatrixViewXd(
-                columnMatrix().data(),
-                numDimensions(),
-                resultView.numColumns(),
-                0
+            expressionCompiler.compute(
+                resultID,
+                [this] (MatrixViewXd& resultView) {
+                    resultView = ConstMatrixViewXd(
+                        columnMatrix().data(),
+                        numDimensions(),
+                        resultView.numColumns(),
+                        0
+                    );
+                }
             );
         }
         
         void
         ConstantExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator&
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = ConstIntervalMatrixViewXd(
-                intervalColumnMatrix().data(),
-                numDimensions(),
-                resultView.numColumns(),
-                0
+            expressionCompiler.compute(
+                resultID,
+                [this] (IntervalMatrixViewXd& resultView) {
+                    resultView = ConstIntervalMatrixViewXd(
+                        intervalColumnMatrix().data(),
+                        numDimensions(),
+                        resultView.numColumns(),
+                        0
+                    );
+                }
             );
         }
 
         void
         ConstantExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView.setZero();
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd& resultView) {
+                    resultView.setZero();
+                }
+            );
         }
         
         void
         ConstantExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView.setZero();
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd& resultView) {
+                    resultView.setZero();
+                }
+            );
         }
         
         ExpressionImplementationPtr

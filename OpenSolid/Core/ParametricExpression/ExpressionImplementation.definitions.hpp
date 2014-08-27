@@ -32,7 +32,8 @@
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/MatrixView.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression/DeduplicationCache.declarations.hpp>
-#include <OpenSolid/Core/ParametricExpression/Evaluator.declarations.hpp>
+#include <OpenSolid/Core/ParametricExpression/ExpressionCompiler.declarations.hpp>
+#include <OpenSolid/Core/ParametricExpression/MatrixID.declarations.hpp>
 #include <OpenSolid/Core/ReferenceCounted.hpp>
 
 #include <vector>
@@ -56,33 +57,33 @@ namespace opensolid
             OPENSOLID_CORE_EXPORT
             virtual void
             evaluateImpl(
-                const ConstMatrixViewXd& parameterView,
-                MatrixViewXd& resultView,
-                Evaluator& evaluator
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultView,
+                ExpressionCompiler<double>& expressionCompiler
             ) const = 0;
             
             OPENSOLID_CORE_EXPORT
             virtual void
             evaluateImpl(
-                const ConstIntervalMatrixViewXd& parameterView,
-                IntervalMatrixViewXd& resultView,
-                Evaluator& evaluator
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultView,
+                ExpressionCompiler<Interval>& expressionCompiler
             ) const = 0;
 
             OPENSOLID_CORE_EXPORT
             virtual void
             evaluateJacobianImpl(
-                const ConstMatrixViewXd& parameterView,
-                MatrixViewXd& resultView,
-                Evaluator& evaluator
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultView,
+                ExpressionCompiler<double>& expressionCompiler
             ) const = 0;
             
             OPENSOLID_CORE_EXPORT
             virtual void
             evaluateJacobianImpl(
-                const ConstIntervalMatrixViewXd& parameterView,
-                IntervalMatrixViewXd& resultView,
-                Evaluator& evaluator
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultView,
+                ExpressionCompiler<Interval>& expressionCompiler
             ) const = 0;
 
             OPENSOLID_CORE_EXPORT
@@ -198,6 +199,9 @@ namespace opensolid
             bool
             isParameterExpression() const;
 
+            bool
+            isComponentsExpression() const;
+
             template <class TExpressionImplementation>
             const TExpressionImplementation*
             cast() const;
@@ -210,30 +214,30 @@ namespace opensolid
             
             void
             evaluate(
-                const ConstMatrixViewXd& parameterView,
-                MatrixViewXd& resultView,
-                Evaluator& evaluator
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultID,
+                ExpressionCompiler<double>& expressionCompiler
             ) const;
             
             void
             evaluate(
-                const ConstIntervalMatrixViewXd& parameterView,
-                IntervalMatrixViewXd& resultView,
-                Evaluator& evaluator
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultID,
+                ExpressionCompiler<Interval>& expressionCompiler
             ) const;
             
             void
             evaluateJacobian(
-                const ConstMatrixViewXd& parameterView,
-                MatrixViewXd& resultView,
-                Evaluator& evaluator
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultID,
+                ExpressionCompiler<double>& expressionCompiler
             ) const;
 
             void
             evaluateJacobian(
-                const ConstIntervalMatrixViewXd& parameterView,
-                IntervalMatrixViewXd& resultView,
-                Evaluator& evaluator
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultID,
+                ExpressionCompiler<Interval>& expressionCompiler
             ) const;
             
             OPENSOLID_CORE_EXPORT

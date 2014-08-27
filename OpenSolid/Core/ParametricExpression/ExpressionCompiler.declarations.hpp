@@ -28,6 +28,7 @@ namespace opensolid
 {
     namespace detail
     {
-        class Evaluator;
+        template <class TScalar>
+        class ExpressionCompiler;
     }
 }

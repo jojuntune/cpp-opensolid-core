@@ -26,4 +26,53 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/ParametricExpression/Evaluator.definitions.hpp>
+#include <OpenSolid/Core/ParametricExpression/CompiledExpression.definitions.hpp>
+
+#include <OpenSolid/Core/ParametricExpression/EvaluationContext.hpp>
+#include <OpenSolid/Core/ParametricExpression/EvaluationOperation.hpp>
+
+namespace opensolid
+{
+    namespace detail
+    {
+        template <class TScalar>
+        CompiledExpression<TScalar>::CompiledExpression(
+            std::vector<EvaluationOperation<TScalar>> evaluationOperations,
+            int maxStackRows,
+            int maxStackComponents,
+            int numHeapRows,
+            int numHeapComponents,
+            int maxTemporaryMatrices
+        ) : _evaluationOperations(std::move(evaluationOperations)),
+            _maxStackRows(maxStackRows),
+            _maxStackComponents(maxStackComponents),
+            _numHeapRows(numHeapRows),
+            _numHeapComponents(numHeapComponents),
+            _maxTemporaryMatrices(maxTemporaryMatrices) {
+        }
+
+        template <class TScalar>
+        void
+        CompiledExpression<TScalar>::evaluate(
+            const MatrixView<TScalar, -1, -1, -1>& parameterView,
+            MatrixView<TScalar, -1, -1, -1>& resultView
+        ) const {
+            int numColumns = parameterView.numColumns();
+            int stackSize = _maxStackRows * numColumns + _maxStackComponents;
+            int heapSize = _numHeapRows * numColumns + _numHeapComponents;
+            EvaluationContext<TScalar> evaluationContext(
+                parameterView,
+                resultView,
+                stackSize,
+                heapSize,
+                _maxTemporaryMatrices
+            );
+            for (const EvaluationOperation<TScalar>& evaluationOperation : _evaluationOperations) {
+                evaluationOperation.execute(evaluationContext);
+            }
+        }
+
+        template class CompiledExpression<double>;
+        template class CompiledExpression<Interval>;
+    }
+}

@@ -50,33 +50,33 @@ namespace opensolid
             OPENSOLID_CORE_EXPORT
             void
             evaluateImpl(
-                const ConstMatrixViewXd& parameterView,
-                MatrixViewXd& resultView,
-                Evaluator& evaluator
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultID,
+                ExpressionCompiler<double>& expressionCompiler
             ) const override;
             
             OPENSOLID_CORE_EXPORT
             void
             evaluateImpl(
-                const ConstIntervalMatrixViewXd& parameterView,
-                IntervalMatrixViewXd& resultView,
-                Evaluator& evaluator
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultID,
+                ExpressionCompiler<Interval>& expressionCompiler
             ) const override;
 
             OPENSOLID_CORE_EXPORT
             void
             evaluateJacobianImpl(
-                const ConstMatrixViewXd& parameterView,
-                MatrixViewXd& resultView,
-                Evaluator& evaluator
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultID,
+                ExpressionCompiler<double>& expressionCompiler
             ) const override;
             
             OPENSOLID_CORE_EXPORT
             void
             evaluateJacobianImpl(
-                const ConstIntervalMatrixViewXd& parameterView,
-                IntervalMatrixViewXd& resultView,
-                Evaluator& evaluator
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultID,
+                ExpressionCompiler<Interval>& expressionCompiler
             ) const override;
 
             OPENSOLID_CORE_EXPORT
