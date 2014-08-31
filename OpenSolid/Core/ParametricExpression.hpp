@@ -34,8 +34,8 @@
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Parameter.hpp>
+#include <OpenSolid/Core/ParametricExpression/CompiledExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/DeduplicationCache.hpp>
-#include <OpenSolid/Core/ParametricExpression/Evaluator.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 #include <OpenSolid/Core/Point.hpp>
@@ -314,35 +314,37 @@ namespace opensolid
 
     template <class TValue, class TParameter>
     ParametricExpression<TValue, TParameter>::ParametricExpression() :
-        _implementationPtr(detail::zeroExpression<TValue, TParameter>()) {
+        _compiledExpressionPtr(
+            new detail::CompiledExpression(detail::zeroExpression<TValue, TParameter>())
+        ) {
     }
     
     template <class TValue, class TParameter>
     ParametricExpression<TValue, TParameter>::ParametricExpression(
         const detail::ExpressionImplementation* implementationPtr
-    ) : _implementationPtr(implementationPtr) {
-        if (!implementationPtr) {
+    ) : _compiledExpressionPtr(new detail::CompiledExpression(implementationPtr)) {
+        if (!implementation()) {
             throw Error(new PlaceholderError());
         }
-        if (implementationPtr->numDimensions() != NumDimensions<TValue>::Value) {
+        if (implementation()->numDimensions() != NumDimensions<TValue>::Value) {
             throw Error(new PlaceholderError());
         }
-        if (implementationPtr->numParameters() != NumDimensions<TParameter>::Value) {
+        if (implementation()->numParameters() != NumDimensions<TParameter>::Value) {
             throw Error(new PlaceholderError());
         }
     }
     
     template <class TValue, class TParameter>
     ParametricExpression<TValue, TParameter>::ParametricExpression(
-        const detail::ExpressionImplementationPtr& implementationPtr
-    ) : _implementationPtr(implementationPtr) {
-        if (!implementationPtr) {
+        detail::ExpressionImplementationPtr implementationPtr
+    ) : _compiledExpressionPtr(new detail::CompiledExpression(std::move(implementationPtr))) {
+        if (!implementation()) {
             throw Error(new PlaceholderError());
         }
-        if (implementationPtr->numDimensions() != NumDimensions<TValue>::Value) {
+        if (implementation()->numDimensions() != NumDimensions<TValue>::Value) {
             throw Error(new PlaceholderError());
         }
-        if (implementationPtr->numParameters() != NumDimensions<TParameter>::Value) {
+        if (implementation()->numParameters() != NumDimensions<TParameter>::Value) {
             throw Error(new PlaceholderError());
         }
     }
@@ -351,7 +353,7 @@ namespace opensolid
     inline
     const detail::ExpressionImplementationPtr&
     ParametricExpression<TValue, TParameter>::implementation() const {
-        return _implementationPtr;
+        return _compiledExpressionPtr->implementation();
     }
         
     template <class TValue, class TParameter>
@@ -363,8 +365,7 @@ namespace opensolid
         TValue result;
         MatrixViewXd resultView = detail::mutableView(result);
 
-        detail::Evaluator evaluator;
-        implementation()->evaluate(parameterView, resultView, evaluator);
+        _compiledExpressionPtr->evaluate(parameterView, resultView);
 
         return result;
     }
@@ -380,8 +381,7 @@ namespace opensolid
         typename BoundsType<TValue>::Type result;
         IntervalMatrixViewXd resultView = detail::mutableView(result);
 
-        detail::Evaluator evaluator;
-        implementation()->evaluate(parameterView, resultView, evaluator);
+        _compiledExpressionPtr->evaluate(parameterView, resultView);
 
         return result;
     }
@@ -397,8 +397,7 @@ namespace opensolid
         std::vector<TValue> results(parameterValues.size());
         MatrixViewXd resultView = detail::mutableView(results);
 
-        detail::Evaluator evaluator;
-        implementation()->evaluate(parameterView, resultView, evaluator);
+        _compiledExpressionPtr->evaluate(parameterView, resultView);
 
         return results;
     }
@@ -414,8 +413,7 @@ namespace opensolid
         std::vector<typename BoundsType<TValue>::Type> results(parameterBounds.size());
         IntervalMatrixViewXd resultView = detail::mutableView(results);
 
-        detail::Evaluator evaluator;
-        implementation()->evaluate(parameterView, resultView, evaluator);
+        _compiledExpressionPtr->evaluate(parameterView, resultView);
 
         return results;
     }
@@ -429,8 +427,7 @@ namespace opensolid
         Matrix<double, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value> result;
         MatrixViewXd resultView = result.view();
 
-        detail::Evaluator evaluator;
-        implementation()->evaluateJacobian(parameterView, resultView, evaluator);
+        _compiledExpressionPtr->evaluateJacobian(parameterView, resultView);
 
         return result;
     }
@@ -446,8 +443,7 @@ namespace opensolid
         Matrix<Interval, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value> result;
         IntervalMatrixViewXd resultView = result.view();
 
-        detail::Evaluator evaluator;
-        implementation()->evaluateJacobian(parameterView, resultView, evaluator);
+        _compiledExpressionPtr->evaluateJacobian(parameterView, resultView);
 
         return result;
     }

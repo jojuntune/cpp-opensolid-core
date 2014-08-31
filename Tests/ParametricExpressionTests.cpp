@@ -25,7 +25,6 @@
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ConstantExpression.hpp>
-#include <OpenSolid/Core/ParametricExpression/Evaluator.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
@@ -489,41 +488,6 @@ TEST_CASE("Deduplicated output") {
     Parameter1d t;
     ParametricExpression<double, double> expression = t.squared() + sin(t.squared());
     std::cout << expression << std::endl;
-}
-
-TEST_CASE("Evaluator double") {
-    Parameter1d t;
-    ParametricExpression<double, double> expression = t.squared();
-    detail::Evaluator evaluator;
-    std::vector<double> parameterValues(3);
-    parameterValues[0] = 1.0;
-    parameterValues[1] = 2.0;
-    parameterValues[2] = 3.0;
-    ConstMatrixViewXd parameterMap(parameterValues.data(), 1, 3, 1);
-
-    ConstMatrixViewXd results1 = evaluator.evaluate(expression.implementation(), parameterMap);
-    ConstMatrixViewXd results2 = evaluator.evaluate(expression.implementation(), parameterMap);
-    REQUIRE(results1.data() == results2.data());
-    ConstMatrixViewXd results3 = evaluator.evaluate(expression.implementation(), parameterMap);
-    REQUIRE(results1.data() == results3.data());
-}
-
-TEST_CASE("Evaluator interval") {
-    Parameter1d t;
-    ParametricExpression<double, double> expression = t.squared();
-    detail::Evaluator evaluator;
-
-    IntervalRowMatrix3d parameterValues(Interval(1.0, 2.0), Interval(3.0, 4.0), Interval(5.0, 6.0));
-
-    ConstIntervalMatrixViewXd parameterMap(parameterValues.data(), 1, 3, 1);
-    ConstIntervalMatrixViewXd results1 =
-        evaluator.evaluate(expression.implementation(), parameterMap);
-    ConstIntervalMatrixViewXd results2 =
-        evaluator.evaluate(expression.implementation(), parameterMap);
-    REQUIRE(results1.data() == results2.data());
-    ConstIntervalMatrixViewXd results3 =
-        evaluator.evaluate(expression.implementation(), parameterMap);
-    REQUIRE(results1.data() == results3.data());
 }
 
 TEST_CASE("Ellipse Jacobian") {

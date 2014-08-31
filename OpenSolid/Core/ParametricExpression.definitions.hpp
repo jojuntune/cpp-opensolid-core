@@ -35,6 +35,7 @@
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Matrix/MatrixInterface.definitions.hpp>
 #include <OpenSolid/Core/Parameter.declarations.hpp>
+#include <OpenSolid/Core/ParametricExpression/CompiledExpression.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
@@ -78,13 +79,13 @@ namespace opensolid
         public Transformable<ParametricExpression<TValue, TParameter>>
     {
     private:
-        detail::ExpressionImplementationPtr _implementationPtr;
+        detail::CompiledExpressionPtr _compiledExpressionPtr;
     public:
         ParametricExpression();
 
         ParametricExpression(const detail::ExpressionImplementation* implementationPtr);
         
-        ParametricExpression(const detail::ExpressionImplementationPtr& implementationPtr);
+        ParametricExpression(detail::ExpressionImplementationPtr implementationPtr);
         
         const detail::ExpressionImplementationPtr&
         implementation() const;
