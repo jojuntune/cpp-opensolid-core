@@ -53,8 +53,8 @@ namespace opensolid
 
         template <class TScalar>
         void
-        EvaluationSequence<TScalar>::evaluate(
-            const MatrixView<TScalar, -1, -1, -1>& parameterView,
+        EvaluationSequence<TScalar>::execute(
+            const MatrixView<const TScalar, -1, -1, -1>& parameterView,
             MatrixView<TScalar, -1, -1, -1>& resultView
         ) const {
             int numColumns = parameterView.numColumns();

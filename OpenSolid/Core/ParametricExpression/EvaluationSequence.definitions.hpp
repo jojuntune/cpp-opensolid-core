@@ -60,8 +60,8 @@ namespace opensolid
 
             OPENSOLID_CORE_EXPORT   
             void
-            evaluate(
-                const MatrixView<TScalar, -1, -1, -1>& parameterView,
+            execute(
+                const MatrixView<const TScalar, -1, -1, -1>& parameterView,
                 MatrixView<TScalar, -1, -1, -1>& resultView
             ) const;
         };
