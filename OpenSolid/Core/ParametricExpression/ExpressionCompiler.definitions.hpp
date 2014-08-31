@@ -85,7 +85,7 @@ namespace opensolid
             OPENSOLID_CORE_EXPORT
             void
             evaluateExpression(
-                const ExpressionImplementation* expression,
+                const ExpressionImplementationPtr& expressionPtr,
                 const MatrixID<const TScalar>& parameterID,
                 const MatrixID<TScalar>& resultID
             );
@@ -93,7 +93,7 @@ namespace opensolid
             OPENSOLID_CORE_EXPORT
             void
             evaluateExpressionJacobian(
-                const ExpressionImplementation* expression,
+                const ExpressionImplementationPtr& expressionPtr,
                 const MatrixID<const TScalar>& parameterID,
                 const MatrixID<TScalar>& resultID
             );
@@ -116,14 +116,14 @@ namespace opensolid
             OPENSOLID_CORE_EXPORT
             MatrixID<const TScalar>
             evaluate(
-                const ExpressionImplementation* expression,
+                const ExpressionImplementationPtr& expressionPtr,
                 const MatrixID<const TScalar>& parameterID
             );
 
             OPENSOLID_CORE_EXPORT
             void
             evaluate(
-                const ExpressionImplementation* expression,
+                const ExpressionImplementationPtr& expressionPtr,
                 const MatrixID<const TScalar>& parameterID,
                 const MatrixID<TScalar>& resultID
             );
@@ -131,14 +131,14 @@ namespace opensolid
             OPENSOLID_CORE_EXPORT
             MatrixID<const TScalar>
             evaluateJacobian(
-                const ExpressionImplementation* expression,
+                const ExpressionImplementationPtr& expressionPtr,
                 const MatrixID<const TScalar>& parameterID
             );
 
             OPENSOLID_CORE_EXPORT
             void
             evaluateJacobian(
-                const ExpressionImplementation* expression,
+                const ExpressionImplementationPtr& expressionPtr,
                 const MatrixID<const TScalar>& parameterID,
                 const MatrixID<TScalar>& resultID
             );
@@ -166,11 +166,11 @@ namespace opensolid
 
             OPENSOLID_CORE_EXPORT
             static EvaluationSequence<TScalar>
-            compile(const ExpressionImplementation* expression);
+            compile(const ExpressionImplementationPtr& expressionPtr);
 
             OPENSOLID_CORE_EXPORT
             static EvaluationSequence<TScalar>
-            compileJacobian(const ExpressionImplementation* expression);
+            compileJacobian(const ExpressionImplementationPtr& expressionPtr);
         };
     }
 }

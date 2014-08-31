@@ -92,7 +92,7 @@ namespace opensolid
         template <class TScalar>
         void
         ExpressionCompiler<TScalar>::evaluateExpression(
-            const ExpressionImplementation* expression,
+            const ExpressionImplementationPtr& expressionPtr,
             const MatrixID<const TScalar>& parameterID,
             const MatrixID<TScalar>& resultID
         ) {
@@ -101,7 +101,7 @@ namespace opensolid
             stackEntries.swap(_stackEntries);
 
             // Descend into expression
-            expression->evaluate(parameterID, resultID, *this);
+            expressionPtr->evaluate(parameterID, resultID, *this);
 
             // Restore current stack state and store any stack-allocated matrix
             // indices back in stackEntries
@@ -114,7 +114,7 @@ namespace opensolid
         template <class TScalar>
         void
         ExpressionCompiler<TScalar>::evaluateExpressionJacobian(
-            const ExpressionImplementation* expression,
+            const ExpressionImplementationPtr& expressionPtr,
             const MatrixID<const TScalar>& parameterID,
             const MatrixID<TScalar>& resultID
         ) {
@@ -123,7 +123,7 @@ namespace opensolid
             stackEntries.swap(_stackEntries);
 
             // Descend into expression
-            expression->evaluateJacobian(parameterID, resultID, *this);
+            expressionPtr->evaluateJacobian(parameterID, resultID, *this);
 
             // Restore current stack state and store any stack-allocated matrix
             // indices back in stackEntries
@@ -210,32 +210,32 @@ namespace opensolid
         template <class TScalar>
         MatrixID<const TScalar>
         ExpressionCompiler<TScalar>::evaluate(
-            const ExpressionImplementation* expression,
+            const ExpressionImplementationPtr& expressionPtr,
             const MatrixID<const TScalar>& parameterID
         ) {
-            if (expression->isIdentityExpression()) {
+            if (expressionPtr->isIdentityExpression()) {
                 // Identity expression: simply return parameter values
                 return parameterID;
-            } else if (expression->isConstantExpression()) {
+            } else if (expressionPtr->isConstantExpression()) {
                 // Constant expression: return view into internal matrix
-                return MatrixID<const TScalar>(expression->cast<ConstantExpression>());
-            } else if (expression->isParameterExpression()) {
+                return MatrixID<const TScalar>(expressionPtr->cast<ConstantExpression>());
+            } else if (expressionPtr->isParameterExpression()) {
                 // Parameter expresssion: return row of parameter values
                 return parameterID.block(
-                    expression->cast<ParameterExpression>()->parameterIndex(),
+                    expressionPtr->cast<ParameterExpression>()->parameterIndex(),
                     1
                 );
-            } else if (expression->isComponentsExpression()) {
+            } else if (expressionPtr->isComponentsExpression()) {
                 // Components expression: return block of operand results
                 return evaluate(
-                    expression->cast<ComponentsExpression>()->operand().get(),
+                    expressionPtr->cast<ComponentsExpression>()->operand().get(),
                     parameterID
                 ).block(
-                    expression->cast<ComponentsExpression>()->startIndex(),
-                    expression->cast<ComponentsExpression>()->numComponents()
+                    expressionPtr->cast<ComponentsExpression>()->startIndex(),
+                    expressionPtr->cast<ComponentsExpression>()->numComponents()
                 );
             } else {
-                EvaluationKey evaluationKey(expression, parameterID);
+                EvaluationKey evaluationKey(expressionPtr.get(), parameterID);
                 auto cacheIterator = _evaluationCache.find(evaluationKey);
                 if (cacheIterator != _evaluationCache.end()) {
                     // Expression has already been evaluated with this parameter
@@ -245,7 +245,7 @@ namespace opensolid
                     // Allocate a new heap-based matrix to evaluate expression into
                     int resultIndex = allocateMatrixIndex();
                     MatrixID<TScalar> resultID(resultIndex);
-                    int numDimensions = expression->numDimensions();
+                    int numDimensions = expressionPtr->numDimensions();
                     _evaluationOperations.push_back(
                         [resultIndex, numDimensions] (
                             EvaluationContext<TScalar>& evaluationContext
@@ -264,7 +264,7 @@ namespace opensolid
                     _numHeapRows += numDimensions;
 
                     // Evaluate expression into newly-allocated matrix
-                    evaluateExpression(expression, parameterID, resultID);
+                    evaluateExpression(expressionPtr, parameterID, resultID);
 
                     // Insert result into cache
                     _evaluationCache[evaluationKey] = resultID;
@@ -277,11 +277,11 @@ namespace opensolid
         template <class TScalar>
         void
         ExpressionCompiler<TScalar>::evaluate(
-            const ExpressionImplementation* expression,
+            const ExpressionImplementationPtr& expressionPtr,
             const MatrixID<const TScalar>& parameterID,
             const MatrixID<TScalar>& resultID
         ) {
-            if (expression->isIdentityExpression()) {
+            if (expressionPtr->isIdentityExpression()) {
                 // Identity expression: assign parameter values to result
                 _evaluationOperations.push_back(
                     [parameterID, resultID] (EvaluationContext<TScalar>& evaluationContext) {
@@ -290,9 +290,9 @@ namespace opensolid
                         );
                     }
                 );
-            } else if (expression->isConstantExpression()) {
+            } else if (expressionPtr->isConstantExpression()) {
                 // Constant expression: assign constant values to result
-                MatrixID<const TScalar> constantID(expression->cast<ConstantExpression>());
+                MatrixID<const TScalar> constantID(expressionPtr->cast<ConstantExpression>());
                 _evaluationOperations.push_back(
                     [resultID, constantID] (EvaluationContext<TScalar>& evaluationContext) {
                         evaluationContext.matrixView(resultID) = (
@@ -300,10 +300,10 @@ namespace opensolid
                         );
                     }
                 );
-            } else if (expression->isParameterExpression()) {
+            } else if (expressionPtr->isParameterExpression()) {
                 // Parameter expresssion: return row of parameter values
                 MatrixID<const TScalar> rowID =  parameterID.block(
-                    expression->cast<ParameterExpression>()->parameterIndex(),
+                    expressionPtr->cast<ParameterExpression>()->parameterIndex(),
                     1
                 );
                 _evaluationOperations.push_back(
@@ -313,14 +313,14 @@ namespace opensolid
                         );
                     }
                 );
-            } else if (expression->isComponentsExpression()) {
+            } else if (expressionPtr->isComponentsExpression()) {
                 // Components expression: return block of operand results
                 MatrixID<const TScalar> componentsID = evaluate(
-                    expression->cast<ComponentsExpression>()->operand().get(),
+                    expressionPtr->cast<ComponentsExpression>()->operand().get(),
                     parameterID
                 ).block(
-                    expression->cast<ComponentsExpression>()->startIndex(),
-                    expression->cast<ComponentsExpression>()->numComponents()
+                    expressionPtr->cast<ComponentsExpression>()->startIndex(),
+                    expressionPtr->cast<ComponentsExpression>()->numComponents()
                 );
                 _evaluationOperations.push_back(
                     [resultID, componentsID] (EvaluationContext<TScalar>& evaluationContext) {
@@ -330,7 +330,7 @@ namespace opensolid
                     }
                 );
             } else {
-                EvaluationKey evaluationKey(expression, parameterID);
+                EvaluationKey evaluationKey(expressionPtr.get(), parameterID);
                 auto cacheIterator = _evaluationCache.find(evaluationKey);
                 if (cacheIterator != _evaluationCache.end()) {
                     // Expression has already been evaluated with this parameter
@@ -345,7 +345,7 @@ namespace opensolid
                     );
                 } else {
                     // Evaluate expression into result matrix
-                    evaluateExpression(expression, parameterID, resultID);
+                    evaluateExpression(expressionPtr, parameterID, resultID);
                 }
             }
         }
@@ -353,10 +353,10 @@ namespace opensolid
         template <class TScalar>
         MatrixID<const TScalar>
         ExpressionCompiler<TScalar>::evaluateJacobian(
-            const ExpressionImplementation* expression,
+            const ExpressionImplementationPtr& expressionPtr,
             const MatrixID<const TScalar>& parameterID
         ) {
-            EvaluationKey evaluationKey(expression, parameterID);
+            EvaluationKey evaluationKey(expressionPtr.get(), parameterID);
             auto cacheIterator = _jacobianCache.find(evaluationKey);
             if (cacheIterator != _jacobianCache.end()) {
                 // Expression Jacobian has already been evaluated with this
@@ -366,8 +366,8 @@ namespace opensolid
                 // Allocate a new heap-based matrix to evaluate Jacobian into
                 int resultIndex = allocateMatrixIndex();
                 MatrixID<TScalar> resultID(resultIndex);
-                int numDimensions = expression->numDimensions();
-                int numParameters = expression->numParameters();
+                int numDimensions = expressionPtr->numDimensions();
+                int numParameters = expressionPtr->numParameters();
                 _evaluationOperations.push_back(
                     [resultIndex, numDimensions, numParameters] (
                         EvaluationContext<TScalar>& evaluationContext
@@ -381,7 +381,7 @@ namespace opensolid
                 _numHeapComponents += numDimensions * numParameters;
 
                 // Evaluate expression into newly-allocated matrix
-                evaluateExpressionJacobian(expression, parameterID, resultID);
+                evaluateExpressionJacobian(expressionPtr, parameterID, resultID);
 
                 // Insert result into cache
                 _jacobianCache[evaluationKey] = resultID;
@@ -393,11 +393,11 @@ namespace opensolid
         template <class TScalar>
         void
         ExpressionCompiler<TScalar>::evaluateJacobian(
-            const ExpressionImplementation* expression,
+            const ExpressionImplementationPtr& expressionPtr,
             const MatrixID<const TScalar>& parameterID,
             const MatrixID<TScalar>& resultID
         ) {
-            EvaluationKey evaluationKey(expression, parameterID);
+            EvaluationKey evaluationKey(expressionPtr.get(), parameterID);
             auto cacheIterator = _jacobianCache.find(evaluationKey);
             if (cacheIterator != _jacobianCache.end()) {
                 // Expression Jacobian has already been evaluated with this
@@ -412,27 +412,31 @@ namespace opensolid
                 );
             } else {
                 // Evaluate expression into result matrix
-                evaluateExpressionJacobian(expression, parameterID, resultID);
+                evaluateExpressionJacobian(expressionPtr, parameterID, resultID);
             }
         }
 
         template <class TScalar>
         EvaluationSequence<TScalar>
-        ExpressionCompiler<TScalar>::compile(const ExpressionImplementation* expression) {
+        ExpressionCompiler<TScalar>::compile(
+            const ExpressionImplementationPtr& expressionPtr
+        ) {
             ExpressionCompiler<TScalar> compiler;
             MatrixID<const TScalar> parameterID(-1);
             MatrixID<TScalar> resultID(0);
-            compiler.evaluate(expression, parameterID, resultID);
+            compiler.evaluate(expressionPtr, parameterID, resultID);
             return compiler.evaluationSequence();
         }
 
         template <class TScalar>
         EvaluationSequence<TScalar>
-        ExpressionCompiler<TScalar>::compileJacobian(const ExpressionImplementation* expression) {
+        ExpressionCompiler<TScalar>::compileJacobian(
+            const ExpressionImplementationPtr& expressionPtr
+        ) {
             ExpressionCompiler<TScalar> compiler;
             MatrixID<const TScalar> parameterID(-1);
             MatrixID<TScalar> resultID(0);
-            compiler.evaluateJacobian(expression, parameterID, resultID);
+            compiler.evaluateJacobian(expressionPtr, parameterID, resultID);
             return compiler.evaluationSequence();
         }
 
