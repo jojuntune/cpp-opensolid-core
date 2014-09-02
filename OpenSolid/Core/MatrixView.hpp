@@ -111,8 +111,8 @@ namespace opensolid
         assert(numColumns == iNumColumns || iNumColumns == -1);
         assert(columnStrideInBytes == iColumnStrideInBytes || iColumnStrideInBytes == -1);
 
-        assert(numRows > 0);
-        assert(numColumns > 0);
+        assert(numRows >= 0);
+        assert(numColumns >= 0);
         assert(columnStrideInBytes >= 0);
     }
 
