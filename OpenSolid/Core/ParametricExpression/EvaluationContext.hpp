@@ -90,7 +90,12 @@ namespace opensolid
             assert(view.data() == nullptr);
 
             // Create new MatrixView pointing to block of internal stack
-            new (&view) MatrixView<TScalar, -1, -1, -1>(data, numRows, numColumns, numRows);
+            new (&view) MatrixView<TScalar, -1, -1, -1>(
+                data,
+                numRows,
+                numColumns,
+                numRows * sizeof(TScalar)
+            );
         }
 
         template <class TScalar>
@@ -139,26 +144,34 @@ namespace opensolid
             _heapEnd += numRows * numColumns;
 
             // Check for internal heap overflow
-            assert(_heapEnd - _memory.data() <= _memory.size());
+            assert(_heapEnd - _memory.data() <= std::ptrdiff_t(_memory.size()));
 
             // Get pointer to target matrix view
             MatrixView<TScalar, -1, -1, -1>& view = _mutableViews[viewIndex];
 
             // Create new MatrixView pointing to block of internal heap
-            new (&view) MatrixView<TScalar, -1, -1, -1>(data, numRows, numColumns, numRows);
+            new (&view) MatrixView<TScalar, -1, -1, -1>(
+                data,
+                numRows,
+                numColumns,
+                numRows * sizeof(TScalar)
+            );
         }
 
         template <class TScalar>
+        inline
         const TScalar*
         dataPointer(const ConstantExpression* constantExpression);
 
         template <>
+        inline
         const double*
         dataPointer<double>(const ConstantExpression* constantExpression) {
             return constantExpression->columnMatrix().data();
         }
 
         template <>
+        inline
         const Interval*
         dataPointer<Interval>(const ConstantExpression* constantExpression) {
             return constantExpression->intervalColumnMatrix().data();
