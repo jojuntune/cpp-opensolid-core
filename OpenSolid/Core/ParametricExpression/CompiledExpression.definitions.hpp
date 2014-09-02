@@ -56,26 +56,26 @@ namespace opensolid
 
             void
             evaluate(
-                const ConstMatrixViewXd& parameterView,
-                MatrixViewXd& resultView
+                const MatrixView<const double, -1, -1, -1>& parameterView,
+                MatrixView<double, -1, -1, -1>& resultView
             ) const;
 
             void
             evaluate(
-                const ConstIntervalMatrixViewXd& parameterView,
-                IntervalMatrixViewXd& resultView
+                const MatrixView<const Interval, -1, -1, -1>& parameterView,
+                MatrixView<Interval, -1, -1, -1>& resultView
             ) const;
 
             void
             evaluateJacobian(
-                const ConstMatrixViewXd& parameterView,
-                MatrixViewXd& resultView
+                const MatrixView<const double, -1, -1, -1>& parameterView,
+                MatrixView<double, -1, -1, -1>& resultView
             ) const;
 
             void
             evaluateJacobian(
-                const ConstIntervalMatrixViewXd& parameterView,
-                IntervalMatrixViewXd& resultView
+                const MatrixView<const Interval, -1, -1, -1>& parameterView,
+                MatrixView<Interval, -1, -1, -1>& resultView
             ) const;
         };
     }
