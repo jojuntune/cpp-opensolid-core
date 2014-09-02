@@ -36,16 +36,16 @@ namespace opensolid
         CompiledExpression::CompiledExpression(ExpressionImplementationPtr implementationPtr) :
             _implementationPtr(std::move(implementationPtr)),
             _doubleEvaluationSequence(
-                ExpressionCompiler<double>::compile(implementationPtr)
+                ExpressionCompiler<double>::compile(_implementationPtr)
             ),
             _intervalEvaluationSequence(
-                ExpressionCompiler<Interval>::compile(implementationPtr)
+                ExpressionCompiler<Interval>::compile(_implementationPtr)
             ),
             _doubleJacobianEvaluationSequence(
-                ExpressionCompiler<double>::compileJacobian(implementationPtr)
+                ExpressionCompiler<double>::compileJacobian(_implementationPtr)
             ),
             _intervalJacobianEvaluationSequence(
-                ExpressionCompiler<Interval>::compileJacobian(implementationPtr)
+                ExpressionCompiler<Interval>::compileJacobian(_implementationPtr)
             ) {
         }
     }
