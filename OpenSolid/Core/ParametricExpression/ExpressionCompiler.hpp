@@ -37,55 +37,238 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TScalar> template <class TNullaryFunction>
+        template <class TScalar>
+        template <
+            class TFirstScalar,
+            class TFunction
+        >
         void
         ExpressionCompiler<TScalar>::compute(
-            const MatrixID<TScalar>& matrixID,
-            TNullaryFunction nullaryFunction
+            const MatrixID<TFirstScalar>& firstID,
+            TFunction function
         ) {
             _evaluationOperations.push_back(
-                [matrixID, nullaryFunction] (EvaluationContext<TScalar>& evaluationContext) {
-                    nullaryFunction(evaluationContext.matrixView(matrixID));   
+                [=] (EvaluationContext<TScalar>& evaluationContext) {
+                    function(
+                        evaluationContext.matrixView(firstID)
+                    );   
                 }
             );
         }
 
-        template <class TScalar> template <class TUnaryFunction>
+        template <class TScalar>
+        template <
+            class TFirstScalar,
+            class TSecondScalar,
+            class TFunction
+        >
         void
         ExpressionCompiler<TScalar>::compute(
-            const MatrixID<const TScalar>& argumentID,
-            const MatrixID<TScalar>& resultID,
-            TUnaryFunction unaryFunction
+            const MatrixID<TFirstScalar>& firstID,
+            const MatrixID<TSecondScalar>& secondID,
+            TFunction function
         ) {
             _evaluationOperations.push_back(
-                [argumentID, resultID, unaryFunction] (
-                    EvaluationContext<TScalar>& evaluationContext
-                ) {
-                    unaryFunction(
-                        evaluationContext.matrixView(argumentID),
-                        evaluationContext.matrixView(resultID)
-                    );
+                [=] (EvaluationContext<TScalar>& evaluationContext) {
+                    function(
+                        evaluationContext.matrixView(firstID),
+                        evaluationContext.matrixView(secondID)
+                    );   
                 }
             );
         }
 
-        template <class TScalar> template <class TBinaryFunction>
+        template <class TScalar>
+        template <
+            class TFirstScalar,
+            class TSecondScalar,
+            class TThirdScalar,
+            class TFunction
+        >
         void
         ExpressionCompiler<TScalar>::compute(
-            const MatrixID<const TScalar>& firstArgumentID,
-            const MatrixID<const TScalar>& secondArgumentID,
-            const MatrixID<TScalar>& resultID,
-            TBinaryFunction binaryFunction
+            const MatrixID<TFirstScalar>& firstID,
+            const MatrixID<TSecondScalar>& secondID,
+            const MatrixID<TThirdScalar>& thirdID,
+            TFunction function
         ) {
             _evaluationOperations.push_back(
-                [firstArgumentID, secondArgumentID, resultID, binaryFunction] (
-                    EvaluationContext<TScalar>& evaluationContext
-                ) {
-                    binaryFunction(
-                        evaluationContext.matrixView(firstArgumentID),
-                        evaluationContext.matrixView(secondArgumentID),
-                        evaluationContext.matrixView(resultID)
-                    );
+                [=] (EvaluationContext<TScalar>& evaluationContext) {
+                    function(
+                        evaluationContext.matrixView(firstID),
+                        evaluationContext.matrixView(secondID),
+                        evaluationContext.matrixView(thirdID)
+                    );   
+                }
+            );
+        }
+
+        template <class TScalar>
+        template <
+            class TFirstScalar,
+            class TSecondScalar,
+            class TThirdScalar,
+            class TFourthScalar,
+            class TFunction
+        >
+        void
+        ExpressionCompiler<TScalar>::compute(
+            const MatrixID<TFirstScalar>& firstID,
+            const MatrixID<TSecondScalar>& secondID,
+            const MatrixID<TThirdScalar>& thirdID,
+            const MatrixID<TFourthScalar>& fourthID,
+            TFunction function
+        ) {
+            _evaluationOperations.push_back(
+                [=] (EvaluationContext<TScalar>& evaluationContext) {
+                    function(
+                        evaluationContext.matrixView(firstID),
+                        evaluationContext.matrixView(secondID),
+                        evaluationContext.matrixView(thirdID),
+                        evaluationContext.matrixView(fourthID)
+                    );   
+                }
+            );
+        }
+
+        template <class TScalar>
+        template <
+            class TFirstScalar,
+            class TSecondScalar,
+            class TThirdScalar,
+            class TFourthScalar,
+            class TFifthScalar,
+            class TFunction
+        >
+        void
+        ExpressionCompiler<TScalar>::compute(
+            const MatrixID<TFirstScalar>& firstID,
+            const MatrixID<TSecondScalar>& secondID,
+            const MatrixID<TThirdScalar>& thirdID,
+            const MatrixID<TFourthScalar>& fourthID,
+            const MatrixID<TFifthScalar>& fifthID,
+            TFunction function
+        ) {
+            _evaluationOperations.push_back(
+                [=] (EvaluationContext<TScalar>& evaluationContext) {
+                    function(
+                        evaluationContext.matrixView(firstID),
+                        evaluationContext.matrixView(secondID),
+                        evaluationContext.matrixView(thirdID),
+                        evaluationContext.matrixView(fourthID),
+                        evaluationContext.matrixView(fifthID)
+                    );   
+                }
+            );
+        }
+
+        template <class TScalar>
+        template <
+            class TFirstScalar,
+            class TSecondScalar,
+            class TThirdScalar,
+            class TFourthScalar,
+            class TFifthScalar,
+            class TSixthScalar,
+            class TFunction
+        >
+        void
+        ExpressionCompiler<TScalar>::compute(
+            const MatrixID<TFirstScalar>& firstID,
+            const MatrixID<TSecondScalar>& secondID,
+            const MatrixID<TThirdScalar>& thirdID,
+            const MatrixID<TFourthScalar>& fourthID,
+            const MatrixID<TFifthScalar>& fifthID,
+            const MatrixID<TSixthScalar>& sixthID,
+            TFunction function
+        ) {
+            _evaluationOperations.push_back(
+                [=] (EvaluationContext<TScalar>& evaluationContext) {
+                    function(
+                        evaluationContext.matrixView(firstID),
+                        evaluationContext.matrixView(secondID),
+                        evaluationContext.matrixView(thirdID),
+                        evaluationContext.matrixView(fourthID),
+                        evaluationContext.matrixView(fifthID),
+                        evaluationContext.matrixView(sixthID)
+                    );   
+                }
+            );
+        }
+
+        template <class TScalar>
+        template <
+            class TFirstScalar,
+            class TSecondScalar,
+            class TThirdScalar,
+            class TFourthScalar,
+            class TFifthScalar,
+            class TSixthScalar,
+            class TSeventhScalar,
+            class TFunction
+        >
+        void
+        ExpressionCompiler<TScalar>::compute(
+            const MatrixID<TFirstScalar>& firstID,
+            const MatrixID<TSecondScalar>& secondID,
+            const MatrixID<TThirdScalar>& thirdID,
+            const MatrixID<TFourthScalar>& fourthID,
+            const MatrixID<TFifthScalar>& fifthID,
+            const MatrixID<TSixthScalar>& sixthID,
+            const MatrixID<TSeventhScalar>& seventhID,
+            TFunction function
+        ) {
+            _evaluationOperations.push_back(
+                [=] (EvaluationContext<TScalar>& evaluationContext) {
+                    function(
+                        evaluationContext.matrixView(firstID),
+                        evaluationContext.matrixView(secondID),
+                        evaluationContext.matrixView(thirdID),
+                        evaluationContext.matrixView(fourthID),
+                        evaluationContext.matrixView(fifthID),
+                        evaluationContext.matrixView(sixthID),
+                        evaluationContext.matrixView(seventhID)
+                    );   
+                }
+            );
+        }
+
+        template <class TScalar>
+        template <
+            class TFirstScalar,
+            class TSecondScalar,
+            class TThirdScalar,
+            class TFourthScalar,
+            class TFifthScalar,
+            class TSixthScalar,
+            class TSeventhScalar,
+            class TEigthScalar,
+            class TFunction
+        >
+        void
+        ExpressionCompiler<TScalar>::compute(
+            const MatrixID<TFirstScalar>& firstID,
+            const MatrixID<TSecondScalar>& secondID,
+            const MatrixID<TThirdScalar>& thirdID,
+            const MatrixID<TFourthScalar>& fourthID,
+            const MatrixID<TFifthScalar>& fifthID,
+            const MatrixID<TSixthScalar>& sixthID,
+            const MatrixID<TSeventhScalar>& seventhID,
+            const MatrixID<TEigthScalar>& eigthID,
+            TFunction function
+        ) {
+            _evaluationOperations.push_back(
+                [=] (EvaluationContext<TScalar>& evaluationContext) {
+                    function(
+                        evaluationContext.matrixView(firstID),
+                        evaluationContext.matrixView(secondID),
+                        evaluationContext.matrixView(thirdID),
+                        evaluationContext.matrixView(fourthID),
+                        evaluationContext.matrixView(fifthID),
+                        evaluationContext.matrixView(sixthID),
+                        evaluationContext.matrixView(seventhID),
+                        evaluationContext.matrixView(eigthID)
+                    );   
                 }
             );
         }

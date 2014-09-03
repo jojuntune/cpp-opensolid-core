@@ -143,25 +143,140 @@ namespace opensolid
                 const MatrixID<TScalar>& resultID
             );
 
-            template <class TNullaryFunction>
-            void
-            compute(const MatrixID<TScalar>& matrixID, TNullaryFunction nullaryFunction);
-
-            template <class TUnaryFunction>
+            template <
+                class TFirstScalar,
+                class TFunction
+            >
             void
             compute(
-                const MatrixID<const TScalar>& argumentID,
-                const MatrixID<TScalar>& resultID,
-                TUnaryFunction unaryFunction
+                const MatrixID<TFirstScalar>& firstID,
+                TFunction function
             );
 
-            template <class TBinaryFunction>
+            template <
+                class TFirstScalar,
+                class TSecondScalar,
+                class TFunction
+            >
             void
             compute(
-                const MatrixID<const TScalar>& firstArgumentID,
-                const MatrixID<const TScalar>& secondArgumentID,
-                const MatrixID<TScalar>& resultID,
-                TBinaryFunction binaryFunction
+                const MatrixID<TFirstScalar>& firstID,
+                const MatrixID<TSecondScalar>& secondID,
+                TFunction function
+            );
+
+            template <
+                class TFirstScalar,
+                class TSecondScalar,
+                class TThirdScalar,
+                class TFunction
+            >
+            void
+            compute(
+                const MatrixID<TFirstScalar>& firstID,
+                const MatrixID<TSecondScalar>& secondID,
+                const MatrixID<TThirdScalar>& thirdID,
+                TFunction function
+            );
+
+            template <
+                class TFirstScalar,
+                class TSecondScalar,
+                class TThirdScalar,
+                class TFourthScalar,
+                class TFunction
+            >
+            void
+            compute(
+                const MatrixID<TFirstScalar>& firstID,
+                const MatrixID<TSecondScalar>& secondID,
+                const MatrixID<TThirdScalar>& thirdID,
+                const MatrixID<TFourthScalar>& fourthID,
+                TFunction function
+            );
+
+            template <
+                class TFirstScalar,
+                class TSecondScalar,
+                class TThirdScalar,
+                class TFourthScalar,
+                class TFifthScalar,
+                class TFunction
+            >
+            void
+            compute(
+                const MatrixID<TFirstScalar>& firstID,
+                const MatrixID<TSecondScalar>& secondID,
+                const MatrixID<TThirdScalar>& thirdID,
+                const MatrixID<TFourthScalar>& fourthID,
+                const MatrixID<TFifthScalar>& fifthID,
+                TFunction function
+            );
+
+            template <
+                class TFirstScalar,
+                class TSecondScalar,
+                class TThirdScalar,
+                class TFourthScalar,
+                class TFifthScalar,
+                class TSixthScalar,
+                class TFunction
+            >
+            void
+            compute(
+                const MatrixID<TFirstScalar>& firstID,
+                const MatrixID<TSecondScalar>& secondID,
+                const MatrixID<TThirdScalar>& thirdID,
+                const MatrixID<TFourthScalar>& fourthID,
+                const MatrixID<TFifthScalar>& fifthID,
+                const MatrixID<TSixthScalar>& sixthID,
+                TFunction function
+            );
+
+            template <
+                class TFirstScalar,
+                class TSecondScalar,
+                class TThirdScalar,
+                class TFourthScalar,
+                class TFifthScalar,
+                class TSixthScalar,
+                class TSeventhScalar,
+                class TFunction
+            >
+            void
+            compute(
+                const MatrixID<TFirstScalar>& firstID,
+                const MatrixID<TSecondScalar>& secondID,
+                const MatrixID<TThirdScalar>& thirdID,
+                const MatrixID<TFourthScalar>& fourthID,
+                const MatrixID<TFifthScalar>& fifthID,
+                const MatrixID<TSixthScalar>& sixthID,
+                const MatrixID<TSeventhScalar>& seventhID,
+                TFunction function
+            );
+
+            template <
+                class TFirstScalar,
+                class TSecondScalar,
+                class TThirdScalar,
+                class TFourthScalar,
+                class TFifthScalar,
+                class TSixthScalar,
+                class TSeventhScalar,
+                class TEigthScalar,
+                class TFunction
+            >
+            void
+            compute(
+                const MatrixID<TFirstScalar>& firstID,
+                const MatrixID<TSecondScalar>& secondID,
+                const MatrixID<TThirdScalar>& thirdID,
+                const MatrixID<TFourthScalar>& fourthID,
+                const MatrixID<TFifthScalar>& fifthID,
+                const MatrixID<TSixthScalar>& sixthID,
+                const MatrixID<TSeventhScalar>& seventhID,
+                const MatrixID<TEigthScalar>& eigthID,
+                TFunction function
             );
 
             OPENSOLID_CORE_EXPORT
