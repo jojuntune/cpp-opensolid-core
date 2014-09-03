@@ -69,7 +69,7 @@ namespace opensolid
         EvaluationContext<TScalar>::stackAllocate(int viewIndex, int numRows, int numColumns) {
             // Check that the given index does not refer to the result view
             // (index 0) and is otherwise a valid index
-            assert(viewIndex > 0 && viewIndex < _mutableViews.size());
+            assert(viewIndex > 0 && viewIndex < int(_mutableViews.size()));
 
             // Check for valid matrix dimensions
             assert(numRows > 0 && numColumns > 0);
@@ -104,7 +104,7 @@ namespace opensolid
         EvaluationContext<TScalar>::stackDeallocate(int viewIndex) {
             // Check that the given index does not refer to the result view
             // (index 0) and is otherwise a valid index
-            assert(viewIndex > 0 && viewIndex < _mutableViews.size());
+            assert(viewIndex > 0 && viewIndex < int(_mutableViews.size()));
 
             // Get pointer to target matrix view
             MatrixView<TScalar, -1, -1, -1>& view = _mutableViews[viewIndex];
@@ -132,7 +132,7 @@ namespace opensolid
         EvaluationContext<TScalar>::heapAllocate(int viewIndex, int numRows, int numColumns) {
             // Check that the given index does not refer to the result view
             // (index 0) and is otherwise a valid index
-            assert(viewIndex > 0 && viewIndex < _mutableViews.size());
+            assert(viewIndex > 0 && viewIndex < int(_mutableViews.size()));
 
             // Check for valid matrix dimensions
             assert(numRows > 0 && numColumns > 0);
@@ -182,7 +182,7 @@ namespace opensolid
         MatrixView<TScalar, -1, -1, -1>
         EvaluationContext<TScalar>::matrixView(const MatrixID<TScalar>& matrixID) {
             assert(matrixID._matrixIndex >= 0);
-            assert(matrixID._matrixIndex < _mutableViews.size());
+            assert(matrixID._matrixIndex < int(_mutableViews.size()));
             assert(_mutableViews[matrixID._matrixIndex].data() != nullptr);
             return _mutableViews[matrixID._matrixIndex];
         }
@@ -205,7 +205,7 @@ namespace opensolid
                         return _parameterView;
                     }
                 } else {
-                    assert(index >= 0 && index < _mutableViews.size());
+                    assert(index >= 0 && index < int(_mutableViews.size()));
                     MatrixView<const TScalar, -1, -1, -1> view = _mutableViews[index];
                     assert(view.data() != nullptr);
                     if (matrixID._isBlock) {

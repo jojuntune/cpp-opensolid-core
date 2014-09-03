@@ -63,7 +63,7 @@ namespace opensolid
         ExpressionCompiler<TScalar>::unwindStack(const std::vector<StackEntry>& stackEntries) {
             std::vector<int> stackIndices(stackEntries.size());
             _availableMatrixIndices.reserve(_availableMatrixIndices.size() + stackEntries.size());
-            for (int i = 0; i < stackEntries.size(); ++i) {
+            for (std::size_t i = 0; i < stackEntries.size(); ++i) {
                 int matrixIndex = stackEntries[i].matrixIndex;
 
                 // Collect matrix indices to use in bulk deallocation operation
