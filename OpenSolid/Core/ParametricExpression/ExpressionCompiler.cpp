@@ -82,8 +82,13 @@ namespace opensolid
             // Add evaluation operation to perform actual stack deallocation
             _evaluationOperations.push_back(
                 [stackIndices] (EvaluationContext<TScalar>& evaluationContext) {
-                    for (int stackIndex : stackIndices) {
-                        evaluationContext.stackDeallocate(stackIndex);
+                    // Deallocate stack indices in reverse order (topmost first)
+                    for (
+                        auto iterator = stackIndices.rbegin();
+                        iterator != stackIndices.rend();
+                        ++iterator
+                    ) {
+                        evaluationContext.stackDeallocate(*iterator);
                     }
                 }
             );
