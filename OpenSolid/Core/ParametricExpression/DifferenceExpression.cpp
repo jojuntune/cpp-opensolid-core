@@ -37,42 +37,66 @@ namespace opensolid
         
         void
         DifferenceExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(firstOperand(), parameterView);
-            resultView -= evaluator.evaluate(secondOperand(), parameterView);
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd secondValues, MatrixViewXd results) {
+                    results -= secondValues;
+                }
+            );
         }
         
         void
         DifferenceExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(firstOperand(), parameterView);
-            resultView -= evaluator.evaluate(secondOperand(), parameterView);
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd secondValues, IntervalMatrixViewXd results) {
+                    results -= secondValues;
+                }
+            );
         }
 
         void
         DifferenceExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluateJacobian(firstOperand(), parameterView);
-            resultView -= evaluator.evaluateJacobian(secondOperand(), parameterView);
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd secondJacobian, MatrixViewXd results) {
+                    results -= secondJacobian;
+                }
+            );
         }
         
         void
         DifferenceExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluateJacobian(firstOperand(), parameterView);
-            resultView -= evaluator.evaluateJacobian(secondOperand(), parameterView);
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd secondJacobian, IntervalMatrixViewXd results) {
+                    results -= secondJacobian;
+                }
+            );
         }
 
         ExpressionImplementationPtr

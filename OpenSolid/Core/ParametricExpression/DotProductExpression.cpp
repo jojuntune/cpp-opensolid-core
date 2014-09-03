@@ -37,89 +37,121 @@ namespace opensolid
         
         void
         DotProductExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            ConstMatrixViewXd firstValues = evaluator.evaluate(firstOperand(), parameterView);
-            ConstMatrixViewXd secondValues = evaluator.evaluate(secondOperand(), parameterView);
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                resultView(0, columnIndex) = firstValues.column(columnIndex).binaryFold(
-                    secondValues.column(columnIndex),
-                    0.0,
-                    [] (double result, double firstValue, double secondValue) {
-                        return result + firstValue * secondValue;
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (
+                    ConstMatrixViewXd firstValues,
+                    ConstMatrixViewXd secondValues,
+                    MatrixViewXd results
+                ) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results(0, columnIndex) = firstValues.column(columnIndex).binaryFold(
+                            secondValues.column(columnIndex),
+                            0.0,
+                            [] (double result, double firstValue, double secondValue) {
+                                return result + firstValue * secondValue;
+                            }
+                        );
                     }
-                );
-            }
+                }
+            );
         }
         
         void
         DotProductExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            ConstIntervalMatrixViewXd firstValues =
-                evaluator.evaluate(firstOperand(), parameterView);
-            ConstIntervalMatrixViewXd secondValues =
-                evaluator.evaluate(secondOperand(), parameterView);
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                resultView(0, columnIndex) = firstValues.column(columnIndex).binaryFold(
-                    secondValues.column(columnIndex),
-                    Interval(0.0),
-                    [] (Interval result, Interval firstValue, Interval secondValue) {
-                        return result + firstValue * secondValue;
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (
+                    ConstIntervalMatrixViewXd firstValues,
+                    ConstIntervalMatrixViewXd secondValues,
+                    IntervalMatrixViewXd results
+                ) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results(0, columnIndex) = firstValues.column(columnIndex).binaryFold(
+                            secondValues.column(columnIndex),
+                            Interval(0.0),
+                            [] (Interval result, Interval firstValue, Interval secondValue) {
+                                return result + firstValue * secondValue;
+                            }
+                        );
                     }
-                );
-            }
+                }
+            );
         }
 
         void
         DotProductExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            ConstMatrixViewXd firstValue = evaluator.evaluate(firstOperand(), parameterView);
-            ConstMatrixViewXd secondValue = evaluator.evaluate(secondOperand(), parameterView);
-
-            ConstMatrixViewXd firstJacobian = (
-                evaluator.evaluateJacobian(firstOperand(), parameterView)
+            MatrixID<double> secondTransposeProductID = expressionCompiler.createTemporary(
+                1,
+                numParameters()
             );
-            ConstMatrixViewXd secondJacobian = (
-                evaluator.evaluateJacobian(secondOperand(), parameterView)
-            );
-            
-            resultView = (
-                firstValue.transposeProduct(secondJacobian) +
-                secondValue.transposeProduct(firstJacobian)
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                secondTransposeProductID,
+                resultID,
+                [] (
+                    ConstMatrixViewXd firstValues,
+                    ConstMatrixViewXd secondValues,
+                    ConstMatrixViewXd firstJacobian,
+                    ConstMatrixViewXd secondJacobian,
+                    MatrixViewXd secondTransposeProduct,
+                    MatrixViewXd results
+                ) {
+                    results.setTransposeProduct(firstValues, secondJacobian);
+                    secondTransposeProduct.setTransposeProduct(secondValues, firstJacobian);
+                    results += secondTransposeProduct;
+                }
             );
         }
         
         void
         DotProductExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            ConstIntervalMatrixViewXd firstValue = (
-                evaluator.evaluate(firstOperand(), parameterView)
+            MatrixID<Interval> secondTransposeProductID = expressionCompiler.createTemporary(
+                1,
+                numParameters()
             );
-            ConstIntervalMatrixViewXd secondValue = (
-                evaluator.evaluate(secondOperand(), parameterView)
-            );
-
-            ConstIntervalMatrixViewXd firstJacobian = (
-                evaluator.evaluateJacobian(firstOperand(), parameterView)
-            );
-            ConstIntervalMatrixViewXd secondJacobian = (
-                evaluator.evaluateJacobian(secondOperand(), parameterView)
-            );
-            
-            resultView = (
-                firstValue.transposeProduct(secondJacobian) +
-                secondValue.transposeProduct(firstJacobian)
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                secondTransposeProductID,
+                resultID,
+                [] (
+                    ConstIntervalMatrixViewXd firstValues,
+                    ConstIntervalMatrixViewXd secondValues,
+                    ConstIntervalMatrixViewXd firstJacobian,
+                    ConstIntervalMatrixViewXd secondJacobian,
+                    IntervalMatrixViewXd secondTransposeProduct,
+                    IntervalMatrixViewXd results
+                ) {
+                    results.setTransposeProduct(firstValues, secondJacobian);
+                    secondTransposeProduct.setTransposeProduct(secondValues, firstJacobian);
+                    results += secondTransposeProduct;
+                }
             );
         }
 

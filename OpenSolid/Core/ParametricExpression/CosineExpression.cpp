@@ -37,50 +37,74 @@ namespace opensolid
         
         void
         CosineExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView.setMap(
-                evaluator.evaluate(operand(), parameterView),
-                [] (double value) {
-                    return opensolid::cos(value);
-                }            
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (double value) {
+                            return opensolid::cos(value);
+                        }
+                    );
+                }
             );
         }
         
         void
         CosineExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView.setMap(
-                evaluator.evaluate(operand(), parameterView),
-                [] (Interval value) {
-                    return cos(value);
-                }            
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (Interval value) {
+                            return opensolid::cos(value);
+                        }
+                    );
+                }
             );
         }
 
         void
         CosineExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
-            resultView *= -opensolid::sin(evaluator.evaluate(operand(), parameterView).value());
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
+                    results *= -opensolid::sin(operandValues.value());
+                }
+            );
         }
         
         void
         CosineExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
-            resultView *= -sin(evaluator.evaluate(operand(), parameterView).value());
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
+                    results *= -opensolid::sin(operandValues.value());
+                }
+            );
         }
 
         ExpressionImplementationPtr

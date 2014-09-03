@@ -37,38 +37,78 @@ namespace opensolid
         
         void
         TransformationExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView.setProduct(matrix(), evaluator.evaluate(operand(), parameterView));
+            MatrixXd transformationMatrix = this->matrix();
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [transformationMatrix] (
+                    ConstMatrixViewXd operandValues,
+                    MatrixViewXd results
+                ) {
+                    results.setProduct(transformationMatrix, operandValues);
+                }
+            );
         }
         
         void
         TransformationExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView.setProduct(matrix(), evaluator.evaluate(operand(), parameterView));
+            MatrixXd transformationMatrix = this->matrix();
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [transformationMatrix] (
+                    ConstIntervalMatrixViewXd operandValues,
+                    IntervalMatrixViewXd results
+                ) {
+                    results.setProduct(transformationMatrix, operandValues);
+                }
+            );
         }
 
         void
         TransformationExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView.setProduct(matrix(), evaluator.evaluateJacobian(operand(), parameterView));
+            MatrixXd transformationMatrix = this->matrix();
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(operand(), parameterID),
+                resultID,
+                [transformationMatrix] (
+                    ConstMatrixViewXd operandJacobian,
+                    MatrixViewXd results
+                ) {
+                    results.setProduct(transformationMatrix, operandJacobian);
+                }
+            );
         }
         
         void
         TransformationExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView.setProduct(matrix(), evaluator.evaluateJacobian(operand(), parameterView));
+            MatrixXd transformationMatrix = this->matrix();
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(operand(), parameterID),
+                resultID,
+                [transformationMatrix] (
+                    ConstIntervalMatrixViewXd operandJacobian,
+                    IntervalMatrixViewXd results
+                ) {
+                    results.setProduct(transformationMatrix, operandJacobian);
+                }
+            );
         }
         
         ExpressionImplementationPtr

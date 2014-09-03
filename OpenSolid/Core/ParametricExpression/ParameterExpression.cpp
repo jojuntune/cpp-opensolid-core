@@ -42,40 +42,72 @@ namespace opensolid
         
         void
         ParameterExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator&
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = parameterView.row(parameterIndex());
+            int parameterIndex = this->parameterIndex();
+            expressionCompiler.compute(
+                parameterID,
+                resultID,
+                [parameterIndex] (
+                    ConstMatrixViewXd parameterValues,
+                    MatrixViewXd results
+                ) {
+                    results = parameterValues.row(parameterIndex);
+                }
+            );
         }
         
         void
         ParameterExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator&
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = parameterView.row(parameterIndex());
+            int parameterIndex = this->parameterIndex();
+            expressionCompiler.compute(
+                parameterID,
+                resultID,
+                [parameterIndex] (
+                    ConstIntervalMatrixViewXd parameterValues,
+                    IntervalMatrixViewXd results
+                ) {
+                    results = parameterValues.row(parameterIndex);
+                }
+            );
         }
 
         void
         ParameterExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView.setZero();
-            resultView(0, parameterIndex()) = 1;
+            int parameterIndex = this->parameterIndex();
+            expressionCompiler.compute(
+                resultID,
+                [parameterIndex] (MatrixViewXd results) {
+                    results.setZero();
+                    results(0, parameterIndex) = 1.0;
+                }
+            );
         }
         
         void
         ParameterExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView.setZero();
-            resultView(0, parameterIndex()) = 1;
+            int parameterIndex = this->parameterIndex();
+            expressionCompiler.compute(
+                resultID,
+                [parameterIndex] (IntervalMatrixViewXd results) {
+                    results.setZero();
+                    results(0, parameterIndex) = Interval(1.0);
+                }
+            );
         }
 
         ExpressionImplementationPtr

@@ -97,33 +97,49 @@ namespace opensolid
             
         void
         PowerExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            ConstMatrixViewXd baseValues = evaluator.evaluate(firstOperand(), parameterView);
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
             if (_exponentIsInteger) {
-                resultView.setMap(
-                    baseValues,
-                    [this] (double baseValue) {
-                        return opensolid::pow(baseValue, _integerExponent);
-                    }                
+                int integerExponent = _integerExponent;
+                expressionCompiler.compute(
+                    resultID,
+                    [integerExponent] (MatrixViewXd results) {
+                        results.setMap(
+                            results,
+                            [integerExponent] (double baseValue) {
+                                return opensolid::pow(baseValue, integerExponent);
+                            }
+                        );
+                    }
                 );
             } else if (_exponentIsConstant) {
-                resultView.setMap(
-                    baseValues,
-                    [this] (double baseValue) {
-                        return opensolid::pow(baseValue, _constantExponent);
-                    }             
+                double constantExponent = _constantExponent;
+                expressionCompiler.compute(
+                    resultID,
+                    [constantExponent] (MatrixViewXd results) {
+                        results.setMap(
+                            results,
+                            [constantExponent] (double baseValue) {
+                                return opensolid::pow(baseValue, constantExponent);
+                            }
+                        );
+                    }
                 );
             } else {
-                ConstMatrixViewXd exponentValues = 
-                    evaluator.evaluate(secondOperand(), parameterView);
-                resultView.setBinaryMap(
-                    baseValues,
-                    exponentValues,
-                    [] (double baseValue, double exponentValue) {
-                        return opensolid::pow(baseValue, exponentValue);
+                expressionCompiler.compute(
+                    expressionCompiler.evaluate(secondOperand(), parameterID),
+                    resultID,
+                    [] (ConstMatrixViewXd exponentValues, MatrixViewXd results) {
+                        results.setBinaryMap(
+                            results,
+                            exponentValues,
+                            [] (double baseValue, double exponentValue) {
+                                return opensolid::pow(baseValue, exponentValue);
+                            }
+                        );
                     }
                 );
             }
@@ -131,34 +147,49 @@ namespace opensolid
 
         void
         PowerExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            ConstIntervalMatrixViewXd baseValues = 
-                evaluator.evaluate(firstOperand(), parameterView);
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
             if (_exponentIsInteger) {
-                resultView.setMap(
-                    baseValues,
-                    [this] (Interval baseValue) {
-                        return opensolid::pow(baseValue, _integerExponent);
-                    }         
+                int integerExponent = _integerExponent;
+                expressionCompiler.compute(
+                    resultID,
+                    [integerExponent] (IntervalMatrixViewXd results) {
+                        results.setMap(
+                            results,
+                            [integerExponent] (Interval baseValue) {
+                                return opensolid::pow(baseValue, integerExponent);
+                            }
+                        );
+                    }
                 );
             } else if (_exponentIsConstant) {
-                resultView.setMap(
-                    baseValues,
-                    [this] (Interval baseValue) {
-                        return opensolid::pow(baseValue, _constantExponent);
-                    }            
+                double constantExponent = _constantExponent;
+                expressionCompiler.compute(
+                    resultID,
+                    [constantExponent] (IntervalMatrixViewXd results) {
+                        results.setMap(
+                            results,
+                            [constantExponent] (Interval baseValue) {
+                                return opensolid::pow(baseValue, constantExponent);
+                            }
+                        );
+                    }
                 );
             } else {
-                ConstIntervalMatrixViewXd exponentValues =
-                    evaluator.evaluate(secondOperand(), parameterView);
-                resultView.setBinaryMap(
-                    baseValues,
-                    exponentValues,
-                    [] (Interval baseValue, Interval exponentValue) {
-                        return opensolid::pow(baseValue, exponentValue);
+                expressionCompiler.compute(
+                    expressionCompiler.evaluate(secondOperand(), parameterID),
+                    resultID,
+                    [] (ConstIntervalMatrixViewXd exponentValues, IntervalMatrixViewXd results) {
+                        results.setBinaryMap(
+                            results,
+                            exponentValues,
+                            [] (Interval baseValue, Interval exponentValue) {
+                                return opensolid::pow(baseValue, exponentValue);
+                            }
+                        );
                     }
                 );
             }
@@ -166,59 +197,108 @@ namespace opensolid
 
         void
         PowerExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            double baseValue = evaluator.evaluate(firstOperand(), parameterView).value();
-            if (baseValue <= Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            ConstMatrixViewXd baseJacobian = 
-                evaluator.evaluateJacobian(firstOperand(), parameterView);
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
             if (_exponentIsConstant) {
-                resultView = (
-                    _constantExponent * 
-                    opensolid::pow(baseValue, _constantExponent - 1) * 
-                    baseJacobian
+                double constantExponent = _constantExponent;
+                expressionCompiler.compute(
+                    expressionCompiler.evaluate(firstOperand(), parameterID),
+                    resultID,
+                    [constantExponent] (
+                        ConstMatrixViewXd baseValues,
+                        MatrixViewXd results
+                    ) {
+                        double baseValue = baseValues.value();
+                        if (baseValue <= Zero()) {
+                            throw Error(new PlaceholderError());
+                        }
+                        results *= (
+                            constantExponent * opensolid::pow(baseValue, constantExponent - 1.0)
+                        );
+                    }
                 );
             } else {
-                double exponentValue = evaluator.evaluate(secondOperand(), parameterView).value();
-                ConstMatrixViewXd exponentJacobian =
-                    evaluator.evaluateJacobian(secondOperand(), parameterView);
-                resultView = opensolid::pow(baseValue, exponentValue) * (
-                    opensolid::log(baseValue) * exponentJacobian +
-                    exponentValue * baseJacobian / baseValue
+                expressionCompiler.compute(
+                    expressionCompiler.evaluate(firstOperand(), parameterID),
+                    expressionCompiler.evaluate(secondOperand(), parameterID),
+                    expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                    expressionCompiler.createTemporary(numDimensions(), numParameters()),
+                    resultID,
+                    [] (
+                        ConstMatrixViewXd baseValues,
+                        ConstMatrixViewXd exponentValues,
+                        ConstMatrixViewXd exponentJacobian,
+                        MatrixViewXd scaledExponentJacobian,
+                        MatrixViewXd results
+                    ) {
+                        double baseValue = baseValues.value();
+                        if (baseValue <= Zero()) {
+                            throw Error(new PlaceholderError());
+                        }
+                        double exponentValue = exponentValues.value();
+                        scaledExponentJacobian = exponentJacobian;
+                        scaledExponentJacobian *= opensolid::log(baseValue);
+                        results *= (exponentValue / baseValue);
+                        results += scaledExponentJacobian;
+                        results *= opensolid::pow(baseValue, exponentValue);
+                    }
                 );
             }
         }
         
         void
         PowerExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            Interval baseValue = evaluator.evaluate(firstOperand(), parameterView).value();
-            if (baseValue.upperBound() <= Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            ConstIntervalMatrixViewXd baseJacobian =
-                evaluator.evaluateJacobian(firstOperand(), parameterView);
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
             if (_exponentIsConstant) {
-                resultView = (
-                    _constantExponent *
-                    opensolid::pow(baseValue, _constantExponent - 1) *
-                    baseJacobian
+                double constantExponent = _constantExponent;
+                expressionCompiler.compute(
+                    expressionCompiler.evaluate(firstOperand(), parameterID),
+                    resultID,
+                    [constantExponent] (
+                        ConstIntervalMatrixViewXd baseValues,
+                        IntervalMatrixViewXd results
+                    ) {
+                        Interval baseValue = baseValues.value();
+                        if (baseValue <= Zero()) {
+                            throw Error(new PlaceholderError());
+                        }
+                        results *= (
+                            constantExponent * opensolid::pow(baseValue, constantExponent - 1.0)
+                        );
+                    }
                 );
             } else {
-                Interval exponentValue = 
-                    evaluator.evaluate(secondOperand(), parameterView).value();
-                ConstIntervalMatrixViewXd exponentJacobian =
-                    evaluator.evaluateJacobian(secondOperand(), parameterView);
-                resultView = opensolid::pow(baseValue, exponentValue) * (
-                    opensolid::log(baseValue) * exponentJacobian +
-                    exponentValue * baseJacobian / baseValue
+                expressionCompiler.compute(
+                    expressionCompiler.evaluate(firstOperand(), parameterID),
+                    expressionCompiler.evaluate(secondOperand(), parameterID),
+                    expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                    expressionCompiler.createTemporary(numDimensions(), numParameters()),
+                    resultID,
+                    [] (
+                        ConstIntervalMatrixViewXd baseValues,
+                        ConstIntervalMatrixViewXd exponentValues,
+                        ConstIntervalMatrixViewXd exponentJacobian,
+                        IntervalMatrixViewXd scaledExponentJacobian,
+                        IntervalMatrixViewXd results
+                    ) {
+                        Interval baseValue = baseValues.value();
+                        if (baseValue.upperBound() <= Zero()) {
+                            throw Error(new PlaceholderError());
+                        }
+                        Interval exponentValue = exponentValues.value();
+                        scaledExponentJacobian = exponentJacobian;
+                        scaledExponentJacobian *= opensolid::log(baseValue);
+                        results *= (exponentValue / baseValue);
+                        results += scaledExponentJacobian;
+                        results *= opensolid::pow(baseValue, exponentValue);
+                    }
                 );
             }
         }

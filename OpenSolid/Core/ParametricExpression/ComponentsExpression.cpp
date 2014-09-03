@@ -37,57 +37,101 @@ namespace opensolid
         
         void
         ComponentsExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(operand(), parameterView).block(
-                startIndex(),
-                0,
-                numComponents(),
-                parameterView.numColumns()
+            int startIndex = this->startIndex();
+            int numComponents = this->numComponents();
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [startIndex, numComponents] (
+                    const ConstMatrixViewXd operandValues,
+                    MatrixViewXd results
+                ) {
+                    results = operandValues.block(
+                        startIndex,
+                        0,
+                        numComponents,
+                        operandValues.numColumns()
+                    );
+                }
             );
         }
         
         void
         ComponentsExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(operand(), parameterView).block(
-                startIndex(),
-                0,
-                numComponents(),
-                parameterView.numColumns()
+            int startIndex = this->startIndex();
+            int numComponents = this->numComponents();
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [startIndex, numComponents] (
+                    ConstIntervalMatrixViewXd operandValues,
+                    IntervalMatrixViewXd results
+                ) {
+                    results = operandValues.block(
+                        startIndex,
+                        0,
+                        numComponents,
+                        operandValues.numColumns()
+                    );
+                }
             );
         }
 
         void
         ComponentsExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluateJacobian(operand(), parameterView).block(
-                startIndex(),
-                0,
-                numComponents(),
-                numParameters()
+            int startIndex = this->startIndex();
+            int numComponents = this->numComponents();
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(operand(), parameterID),
+                resultID,
+                [startIndex, numComponents] (
+                    ConstMatrixViewXd operandJacobian,
+                    MatrixViewXd results
+                ) {
+                    results = operandJacobian.block(
+                        startIndex,
+                        0,
+                        numComponents,
+                        operandJacobian.numColumns()
+                    );
+                }
             );
         }
         
         void
         ComponentsExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluateJacobian(operand(), parameterView).block(
-                startIndex(),
-                0,
-                numComponents(),
-                numParameters()
+            int startIndex = this->startIndex();
+            int numComponents = this->numComponents();
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(operand(), parameterID),
+                resultID,
+                [startIndex, numComponents] (
+                    ConstIntervalMatrixViewXd operandJacobian,
+                    IntervalMatrixViewXd results
+                ) {
+                    results = operandJacobian.block(
+                        startIndex,
+                        0,
+                        numComponents,
+                        operandJacobian.numColumns()
+                    );
+                }
             );
         }
 

@@ -43,58 +43,82 @@ namespace opensolid
             
         void
         LogarithmExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView.setMap(
-                evaluator.evaluate(operand(), parameterView),
-                [] (double value) {
-                    return opensolid::log(value);
-                }            
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (double value) {
+                            return opensolid::log(value);
+                        }
+                    );
+                }
             );
         }
 
         void
         LogarithmExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView.setMap(
-                evaluator.evaluate(operand(), parameterView),
-                [] (Interval value) {
-                    return log(value);
-                }            
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (Interval value) {
+                            return opensolid::log(value);
+                        }
+                    );
+                }
             );
         }
 
         void
         LogarithmExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            double operandValue = evaluator.evaluate(operand(), parameterView).value();
-            if (operandValue <= Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
-            resultView /= operandValue;
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
+                    double operandValue = operandValues.value();
+                    if (operandValue <= Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results /= operandValue;
+                }
+            );
         }
         
         void
         LogarithmExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            Interval operandBounds = evaluator.evaluate(operand(), parameterView).value();
-            if (operandBounds.upperBound() <= Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
-            resultView /= operandBounds;
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
+                    Interval operandValue = operandValues.value();
+                    if (operandValue.upperBound() <= Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results /= operandValue;
+                }
+            );
         }
 
         ExpressionImplementationPtr

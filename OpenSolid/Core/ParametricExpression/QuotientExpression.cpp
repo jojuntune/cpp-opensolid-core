@@ -38,86 +38,109 @@ namespace opensolid
         
         void
         QuotientExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(firstOperand(), parameterView);
-            ConstMatrixViewXd divisorValues = evaluator.evaluate(secondOperand(), parameterView);
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                double divisorValue = divisorValues(0, columnIndex);
-                if (divisorValue == Zero()) {
-                    throw Error(new PlaceholderError());
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd divisorValues, MatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        double divisorValue = divisorValues(0, columnIndex);
+                        if (divisorValue == Zero()) {
+                            throw Error(new PlaceholderError());
+                        }
+                        results.column(columnIndex) /= divisorValue;
+                    }
                 }
-                resultView.column(columnIndex) /= divisorValue;
-            }
+            );
         }
         
         void
         QuotientExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(firstOperand(), parameterView);
-            ConstIntervalMatrixViewXd divisorValues =
-                evaluator.evaluate(secondOperand(), parameterView);
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                Interval divisorValue = divisorValues(0, columnIndex);
-                if (divisorValue == Zero()) {
-                    throw Error(new PlaceholderError());
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd divisorValues, IntervalMatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        Interval divisorValue = divisorValues(0, columnIndex);
+                        if (divisorValue == Zero()) {
+                            throw Error(new PlaceholderError());
+                        }
+                        results.column(columnIndex) /= divisorValue;
+                    }
                 }
-                resultView.column(columnIndex) /= divisorValue;
-            }
+            );
         }
 
         void
         QuotientExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            double divisorValue = evaluator.evaluate(secondOperand(), parameterView).value();
-            if (divisorValue == Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            ConstMatrixViewXd dividendValues = (
-                evaluator.evaluate(firstOperand(), parameterView)
-            );
-            ConstMatrixViewXd dividendJacobian = (
-                evaluator.evaluateJacobian(firstOperand(), parameterView)
-            );
-            ConstMatrixViewXd divisorJacobian = (
-                evaluator.evaluateJacobian(secondOperand(), parameterView)
-            );
-            resultView = (
-                (dividendJacobian * divisorValue - dividendValues * divisorJacobian) / 
-                (divisorValue * divisorValue)
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                expressionCompiler.createTemporary(numDimensions(), numParameters()),
+                resultID,
+                [] (
+                    ConstMatrixViewXd dividendValues,
+                    ConstMatrixViewXd divisorValues,
+                    ConstMatrixViewXd divisorJacobian,
+                    MatrixViewXd tempProduct,
+                    MatrixViewXd results
+                ) {
+                    double divisorValue = divisorValues.value();
+                    if (divisorValue == Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= divisorValue;
+                    tempProduct.setProduct(dividendValues, divisorJacobian);
+                    results -= tempProduct;
+                    results *= (1.0 / (divisorValue * divisorValue));
+                }
             );
         }
         
         void
         QuotientExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            Interval divisorValue = evaluator.evaluate(secondOperand(), parameterView).value();
-            if (divisorValue == Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            ConstIntervalMatrixViewXd dividendValues = (
-                evaluator.evaluate(firstOperand(), parameterView)
-            );
-            ConstIntervalMatrixViewXd dividendJacobian = (
-                evaluator.evaluateJacobian(firstOperand(), parameterView)
-            );
-            ConstIntervalMatrixViewXd divisorJacobian = (
-                evaluator.evaluateJacobian(secondOperand(), parameterView)
-            );
-            resultView = (
-                (dividendJacobian * divisorValue - dividendValues * divisorJacobian) / 
-                (divisorValue * divisorValue)
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                expressionCompiler.createTemporary(numDimensions(), numParameters()),
+                resultID,
+                [] (
+                    ConstIntervalMatrixViewXd dividendValues,
+                    ConstIntervalMatrixViewXd divisorValues,
+                    ConstIntervalMatrixViewXd divisorJacobian,
+                    IntervalMatrixViewXd tempProduct,
+                    IntervalMatrixViewXd results
+                ) {
+                    Interval divisorValue = divisorValues.value();
+                    if (divisorValue == Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= divisorValue;
+                    tempProduct.setProduct(dividendValues, divisorJacobian);
+                    results -= tempProduct;
+                    results *= (1.0 / divisorValue.squared());
+                }
             );
         }
 

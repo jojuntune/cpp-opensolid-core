@@ -37,42 +37,66 @@ namespace opensolid
         
         void
         ScalingExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(operand(), parameterView);
-            resultView *= scale();
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            double scale = this->scale();
+            expressionCompiler.compute(
+                resultID,
+                [scale] (MatrixViewXd results) {
+                    results *= scale;
+                }
+            );
         }
         
         void
         ScalingExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(operand(), parameterView);
-            resultView *= scale();
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            double scale = this->scale();
+            expressionCompiler.compute(
+                resultID,
+                [scale] (IntervalMatrixViewXd results) {
+                    results *= scale;
+                }
+            );
         }
 
         void
         ScalingExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
-            resultView *= scale();
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            double scale = this->scale();
+            expressionCompiler.compute(
+                resultID,
+                [scale] (MatrixViewXd results) {
+                    results *= scale;
+                }
+            );
         }
         
         void
         ScalingExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
-            resultView *= scale();
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            double scale = this->scale();
+            expressionCompiler.compute(
+                resultID,
+                [scale] (IntervalMatrixViewXd results) {
+                    results *= scale;
+                }
+            );
         }
         
         ExpressionImplementationPtr

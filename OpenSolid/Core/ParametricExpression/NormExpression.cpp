@@ -43,80 +43,106 @@ namespace opensolid
         
         void
         NormExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            ConstMatrixViewXd operandValues = evaluator.evaluate(operand(), parameterView);
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                resultView(0, columnIndex) = opensolid::sqrt(
-                    operandValues.column(columnIndex).fold(
-                        0.0,
-                        [] (double result, double value) {
-                            return result + value * value;
-                        }
-                    )
-                );
-            }
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results(0, columnIndex) = opensolid::sqrt(
+                            operandValues.column(columnIndex).fold(
+                                0.0,
+                                [] (double result, double value) {
+                                    return result + value * value;
+                                }
+                            )
+                        );
+                    }
+                }
+            );
         }
         
         void 
         NormExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            ConstIntervalMatrixViewXd operandValues = evaluator.evaluate(operand(), parameterView);
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                resultView(0, columnIndex) = sqrt(
-                    operandValues.column(columnIndex).fold(
-                        Interval(0.0),
-                        [] (Interval result, Interval value) {
-                            return result + value.squared();
-                        }
-                    )
-                );
-            }
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results(0, columnIndex) = opensolid::sqrt(
+                            operandValues.column(columnIndex).fold(
+                                Interval(0.0),
+                                [] (Interval result, Interval value) {
+                                    return result + value * value;
+                                }
+                            )
+                        );
+                    }
+                }
+            );
         }
 
         void
         NormExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            ConstMatrixViewXd operandValue = evaluator.evaluate(operand(), parameterView);
-            double operandNorm = opensolid::sqrt(operandValue.cwiseSquared().sum());
-            if (operandNorm == Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            ColumnMatrixXd operandNormalized = operandValue;
-            operandNormalized /= operandNorm;
-
-            ConstMatrixViewXd operandJacobian = 
-                evaluator.evaluateJacobian(operand(), parameterView);
-            
-            resultView.setTransposeProduct(operandNormalized, operandJacobian);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                expressionCompiler.createTemporary(operand()->numDimensions(), 1),
+                expressionCompiler.evaluateJacobian(operand(), parameterID),
+                resultID,
+                [] (
+                    ConstMatrixViewXd operandValues,
+                    MatrixViewXd operandNormalized,
+                    ConstMatrixViewXd operandJacobian,
+                    MatrixViewXd results
+                ) {
+                    double operandNorm = opensolid::sqrt(operandValues.cwiseSquared().sum());
+                    if (operandNorm == Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    operandNormalized = operandValues;
+                    operandNormalized /= operandNorm;
+                    results.setTransposeProduct(operandNormalized, operandJacobian);
+                }
+            );
         }
         
         void
         NormExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            ConstIntervalMatrixViewXd operandValue = evaluator.evaluate(operand(), parameterView);
-            Interval operandNorm = sqrt(operandValue.cwiseSquared().sum());
-            if (operandNorm == Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            IntervalColumnMatrixXd operandNormalized = operandValue;
-            operandNormalized /= operandNorm;
-
-            ConstIntervalMatrixViewXd operandJacobian =
-                evaluator.evaluateJacobian(operand(), parameterView);
-
-            resultView.setTransposeProduct(operandNormalized, operandJacobian);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                expressionCompiler.createTemporary(operand()->numDimensions(), 1),
+                expressionCompiler.evaluateJacobian(operand(), parameterID),
+                resultID,
+                [] (
+                    ConstIntervalMatrixViewXd operandValues,
+                    IntervalMatrixViewXd operandNormalized,
+                    ConstIntervalMatrixViewXd operandJacobian,
+                    IntervalMatrixViewXd results
+                ) {
+                    Interval operandNorm = opensolid::sqrt(operandValues.cwiseSquared().sum());
+                    if (operandNorm == Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    operandNormalized = operandValues;
+                    operandNormalized /= operandNorm;
+                    results.setTransposeProduct(operandNormalized, operandJacobian);
+                }
+            );
         }
 
         ExpressionImplementationPtr

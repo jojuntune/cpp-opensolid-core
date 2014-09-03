@@ -27,6 +27,7 @@
 #include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/ParametricExpression/ArccosineExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ArcsineExpression.hpp>
+#include <OpenSolid/Core/ParametricExpression/CompiledExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ComponentsExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/CompositionExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ConcatenationExpression.hpp>
@@ -206,7 +207,7 @@ namespace opensolid
                 throw Error(new PlaceholderError());
             }
             if (innerExpression->isConstantExpression()) {
-                ConstMatrixViewXd argumentMap(
+                ConstMatrixViewXd argumentView(
                     innerExpression->cast<ConstantExpression>()->columnMatrix().data(),
                     innerExpression->numDimensions(),
                     1,
@@ -214,15 +215,14 @@ namespace opensolid
                 );
                 
                 ColumnMatrixXd result(this->numDimensions());
-                MatrixViewXd resultMap(
+                MatrixViewXd resultView(
                     result.data(),
                     this->numDimensions(),
                     1,
                     0
                 );
 
-                Evaluator evaluator;
-                evaluate(argumentMap, resultMap, evaluator);
+                CompiledExpression(this).evaluate(argumentView, resultView);
                 
                 return new ConstantExpression(result, innerExpression->numParameters());
             }

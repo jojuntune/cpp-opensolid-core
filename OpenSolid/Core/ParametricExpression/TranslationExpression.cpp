@@ -37,44 +37,56 @@ namespace opensolid
         
         void
         TranslationExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(operand(), parameterView);
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                resultView.column(columnIndex) += columnMatrix();
-            }
+            ColumnMatrixXd columnMatrix = this->columnMatrix();
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [columnMatrix] (MatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results.column(columnIndex) += columnMatrix;
+                    }
+                }
+            );
         }
         
         void
         TranslationExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(operand(), parameterView);
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                resultView.column(columnIndex) += columnMatrix();
-            }
+            ColumnMatrixXd columnMatrix = this->columnMatrix();
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [columnMatrix] (IntervalMatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results.column(columnIndex) += columnMatrix;
+                    }
+                }
+            );
         }
 
         void
         TranslationExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
         }
         
         void
         TranslationExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
         }
         
         ExpressionImplementationPtr

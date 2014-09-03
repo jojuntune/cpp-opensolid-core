@@ -38,60 +38,82 @@ namespace opensolid
         
         void
         TangentExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView.setMap(
-                evaluator.evaluate(operand(), parameterView),
-                [] (double value) {
-                    return opensolid::tan(value);
-                }            
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (double value) {
+                            return opensolid::tan(value);
+                        }
+                    );
+                }
             );
         }
         
         void
         TangentExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView.setMap(
-                evaluator.evaluate(operand(), parameterView),
-                [] (Interval value) {
-                    return tan(value);
-                }            
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (Interval value) {
+                            return opensolid::tan(value);
+                        }
+                    );
+                }
             );
         }
 
         void
         TangentExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            double operandValue = evaluator.evaluate(operand(), parameterView).value();
-            double cosine = opensolid::cos(operandValue);
-            if (cosine == Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
-            resultView /= cosine * cosine;
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
+                    double cosine = opensolid::cos(operandValues.value());
+                    if (cosine == Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= (1.0 / (cosine * cosine));
+                }
+            );
         }
         
         void
         TangentExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            Interval operandValue = evaluator.evaluate(operand(), parameterView).value();
-            Interval cosine = cos(operandValue);
-            if (cosine == Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
-            resultView /= cosine.squared();
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
+                    Interval cosine = opensolid::cos(operandValues.value());
+                    if (cosine == Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= (1.0 / cosine.squared());
+                }
+            );
         }
 
         ExpressionImplementationPtr

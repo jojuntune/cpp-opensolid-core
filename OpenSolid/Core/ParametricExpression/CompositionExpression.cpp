@@ -42,56 +42,74 @@ namespace opensolid
 
         void
         CompositionExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(
+            expressionCompiler.evaluate(
                 outerExpression(),
-                evaluator.evaluate(innerExpression(), parameterView)
+                expressionCompiler.evaluate(innerExpression(), parameterID),
+                resultID
             );
         }
 
         void
         CompositionExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(
+            expressionCompiler.evaluate(
                 outerExpression(),
-                evaluator.evaluate(innerExpression(), parameterView)
+                expressionCompiler.evaluate(innerExpression(), parameterID),
+                resultID
             );
         }
 
         void
         CompositionExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            ConstMatrixViewXd innerJacobian =
-                evaluator.evaluateJacobian(innerExpression(), parameterView);
-            ConstMatrixViewXd innerValues =
-                evaluator.evaluate(innerExpression(), parameterView);
-            ConstMatrixViewXd outerJacobian =
-                evaluator.evaluateJacobian(outerExpression(), innerValues);
-            resultView = outerJacobian * innerJacobian;
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(innerExpression(), parameterID),
+                expressionCompiler.evaluateJacobian(
+                    outerExpression(),
+                    expressionCompiler.evaluate(innerExpression(), parameterID)
+                ),
+                resultID,
+                [] (
+                    ConstMatrixViewXd innerJacobian,
+                    ConstMatrixViewXd outerJacobian,
+                    MatrixViewXd results
+                ) {
+                    results.setProduct(outerJacobian, innerJacobian);
+                }
+            );
         }
         
         void
         CompositionExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            ConstIntervalMatrixViewXd innerJacobian =
-                evaluator.evaluateJacobian(innerExpression(), parameterView);
-            ConstIntervalMatrixViewXd innerBounds =
-                evaluator.evaluate(innerExpression(), parameterView);
-            ConstIntervalMatrixViewXd outerJacobian =
-                evaluator.evaluateJacobian(outerExpression(), innerBounds);
-            resultView = outerJacobian * innerJacobian;
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(innerExpression(), parameterID),
+                expressionCompiler.evaluateJacobian(
+                    outerExpression(),
+                    expressionCompiler.evaluate(innerExpression(), parameterID)
+                ),
+                resultID,
+                [] (
+                    ConstIntervalMatrixViewXd innerJacobian,
+                    ConstIntervalMatrixViewXd outerJacobian,
+                    IntervalMatrixViewXd results
+                ) {
+                    results.setProduct(outerJacobian, innerJacobian);
+                }
+            );
         }
 
         ExpressionImplementationPtr

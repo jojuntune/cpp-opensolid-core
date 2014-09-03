@@ -37,71 +37,93 @@ namespace opensolid
         
         void
         ProductExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            ConstMatrixViewXd multiplierValues = evaluator.evaluate(firstOperand(), parameterView);
-            resultView = evaluator.evaluate(secondOperand(), parameterView);
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                resultView.column(columnIndex) *= multiplierValues(0, columnIndex);
-            }
+            expressionCompiler.evaluate(secondOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd multiplierValues, MatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results.column(columnIndex) *= multiplierValues(0, columnIndex);
+                    }
+                }
+            );
         }
         
         void
         ProductExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            ConstIntervalMatrixViewXd multiplierValues = (
-                evaluator.evaluate(firstOperand(), parameterView)
+            expressionCompiler.evaluate(secondOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd multiplierValues, IntervalMatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results.column(columnIndex) *= multiplierValues(0, columnIndex);
+                    }
+                }
             );
-            resultView = evaluator.evaluate(secondOperand(), parameterView);
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                resultView.column(columnIndex) *= multiplierValues(0, columnIndex);
-            }
         }
 
         void
         ProductExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            double multiplierValue = evaluator.evaluate(firstOperand(), parameterView).value();
-            ConstMatrixViewXd multiplicandValue = (
-                evaluator.evaluate(secondOperand(), parameterView)
-            );
-            ConstMatrixViewXd multiplierJacobian = (
-                evaluator.evaluateJacobian(firstOperand(), parameterView)
-            );
-            ConstMatrixViewXd multiplicandJacobian = (
-                evaluator.evaluateJacobian(secondOperand(), parameterView)
-            );
-            resultView = (
-                multiplierValue * multiplicandJacobian + multiplicandValue * multiplierJacobian
+            expressionCompiler.evaluateJacobian(secondOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.createTemporary(numDimensions(), numParameters()),
+                resultID,
+                [] (
+                    ConstMatrixViewXd multiplierValues,
+                    ConstMatrixViewXd multiplicandValues,
+                    ConstMatrixViewXd multiplierJacobian,
+                    MatrixViewXd tempProduct,
+                    MatrixViewXd results
+                ) {
+                    double multiplierValue = multiplierValues.value();
+                    results *= multiplierValue;
+                    tempProduct.setProduct(multiplicandValues, multiplierJacobian);
+                    results += tempProduct;
+                }
             );
         }
         
         void
         ProductExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            Interval multiplierValue = evaluator.evaluate(firstOperand(), parameterView).value();
-            ConstIntervalMatrixViewXd multiplicandValue = (
-                evaluator.evaluate(secondOperand(), parameterView)
-            );
-            ConstIntervalMatrixViewXd multiplierJacobian = (
-                evaluator.evaluateJacobian(firstOperand(), parameterView)
-            );
-            ConstIntervalMatrixViewXd multiplicandJacobian = (
-                evaluator.evaluateJacobian(secondOperand(), parameterView)
-            );
-            resultView = (
-                multiplierValue * multiplicandJacobian + multiplicandValue * multiplierJacobian
+            expressionCompiler.evaluateJacobian(secondOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.createTemporary(numDimensions(), numParameters()),
+                resultID,
+                [] (
+                    ConstIntervalMatrixViewXd multiplierValues,
+                    ConstIntervalMatrixViewXd multiplicandValues,
+                    ConstIntervalMatrixViewXd multiplierJacobian,
+                    IntervalMatrixViewXd tempProduct,
+                    IntervalMatrixViewXd results
+                ) {
+                    Interval multiplierValue = multiplierValues.value();
+                    results *= multiplierValue;
+                    tempProduct.setProduct(multiplicandValues, multiplierJacobian);
+                    results += tempProduct;
+                }
             );
         }
 

@@ -42,38 +42,60 @@ namespace opensolid
         
         void
         IdentityExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator&
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = parameterView;
+            expressionCompiler.compute(
+                parameterID,
+                resultID,
+                [] (ConstMatrixViewXd parameterValues, MatrixViewXd results) {
+                    results = parameterValues;
+                }
+            );
         }
         
         void
         IdentityExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator&
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = parameterView;
+            expressionCompiler.compute(
+                parameterID,
+                resultID,
+                [] (ConstIntervalMatrixViewXd parameterValues, IntervalMatrixViewXd results) {
+                    results = parameterValues;
+                }
+            );
         }
 
         void
         IdentityExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView.setIdentity();
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results.setIdentity();
+                }
+            );
         }
         
         void
         IdentityExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView.setIdentity();
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results.setIdentity();
+                }
+            );
         }
 
         ExpressionImplementationPtr

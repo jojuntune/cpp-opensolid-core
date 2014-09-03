@@ -38,62 +38,90 @@ namespace opensolid
         
         void
         ArcsineExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView.setMap(
-                evaluator.evaluate(operand(), parameterView),
-                [] (double value) {
-                    Interval domain(-1, 1);
-                    assert(domain.contains(value));
-                    return opensolid::asin(domain.clamp(value));
-                }            
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (double value) {
+                            Interval domain(-1, 1);
+                            if (!domain.contains(value)) {
+                                throw Error(new PlaceholderError());
+                            }
+                            return opensolid::asin(domain.clamp(value));
+                        }
+                    );
+                }
             );
         }
         
         void
         ArcsineExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView.setMap(
-                evaluator.evaluate(operand(), parameterView),
-                [] (Interval value) {
-                    Interval domain(-1, 1);
-                    assert(domain.overlaps(value));
-                    return asin(domain.clamp(value));
-                }            
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (Interval value) {
+                            Interval domain(-1, 1);
+                            if (!domain.overlaps(value)) {
+                                throw Error(new PlaceholderError());
+                            }
+                            return opensolid::asin(domain.clamp(value));
+                        }
+                    );
+                }
             );
         }
 
         void
         ArcsineExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            double operandValue = evaluator.evaluate(operand(), parameterView).value();
-            if (abs(operandValue) - 1 >= Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
-            resultView *= 1.0 / opensolid::sqrt(1 - operandValue * operandValue);
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
+                    double operandValue = operandValues.value();
+                    if (!Interval(-1, 1).strictlyContains(operandValue)) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= 1.0 / opensolid::sqrt(1 - operandValue * operandValue);
+                }
+            );
         }
         
         void
         ArcsineExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            Interval operandBounds = evaluator.evaluate(operand(), parameterView).value();
-            if (abs(operandBounds).lowerBound() - 1 >= Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
-            resultView *= 1.0 / sqrt(1 - operandBounds.squared());
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
+                    Interval operandValue = operandValues.value();
+                    if (!Interval(-1, 1).strictlyOverlaps(operandValue)) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= 1.0 / opensolid::sqrt(1 - operandValue.squared());
+                }
+            );
         }
         
         ExpressionImplementationPtr

@@ -37,42 +37,62 @@ namespace opensolid
 
         void
         NegatedExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(operand(), parameterView);
-            resultView *= -1.0;
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results *= -1.0;
+                }
+            );
         }
 
         void
         NegatedExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluate(operand(), parameterView);
-            resultView *= -1.0;
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results *= -1.0;
+                }
+            );
         }
 
         void
         NegatedExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
-            resultView *= -1.0;
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results *= -1.0;
+                }
+            );
         }
         
         void
         NegatedExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            resultView = evaluator.evaluateJacobian(operand(), parameterView);
-            resultView *= -1.0;
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results *= -1.0;
+                }
+            );
         }
 
         ExpressionImplementationPtr

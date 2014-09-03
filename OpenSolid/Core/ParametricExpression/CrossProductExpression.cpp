@@ -38,81 +38,116 @@ namespace opensolid
         
         void
         CrossProductExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            ConstMatrixViewXd firstValues = evaluator.evaluate(firstOperand(), parameterView);
-            ConstMatrixViewXd secondValues = evaluator.evaluate(secondOperand(), parameterView);
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                Vector3d firstVector(firstValues.column(columnIndex));
-                Vector3d secondVector(secondValues.column(columnIndex));
-                resultView.column(columnIndex) = firstVector.cross(secondVector).components();
-            }
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (
+                    ConstMatrixViewXd firstValues,
+                    ConstMatrixViewXd secondValues,
+                    MatrixViewXd results
+                ) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        Vector3d firstVector(firstValues.column(columnIndex));
+                        Vector3d secondVector(secondValues.column(columnIndex));
+                        results.column(columnIndex) = firstVector.cross(secondVector).components();
+                    } 
+                }
+            );
         }
         
         void
         CrossProductExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-            ConstIntervalMatrixViewXd firstValues =
-                evaluator.evaluate(firstOperand(), parameterView);
-            ConstIntervalMatrixViewXd secondValues =
-                evaluator.evaluate(secondOperand(), parameterView);
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                IntervalVector3d firstVector(firstValues.column(columnIndex));
-                IntervalVector3d secondVector(secondValues.column(columnIndex));
-                resultView.column(columnIndex) = firstVector.cross(secondVector).components();
-            }
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (
+                    ConstIntervalMatrixViewXd firstValues,
+                    ConstIntervalMatrixViewXd secondValues,
+                    IntervalMatrixViewXd results
+                ) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        IntervalVector3d firstVector(firstValues.column(columnIndex));
+                        IntervalVector3d secondVector(secondValues.column(columnIndex));
+                        results.column(columnIndex) = firstVector.cross(secondVector).components();
+                    } 
+                }
+            );
         }
 
         void
         CrossProductExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
-            Vector3d firstVector(evaluator.evaluate(firstOperand(), parameterView));
-            Vector3d secondVector(evaluator.evaluate(secondOperand(), parameterView));
-
-            ConstMatrixViewXd firstJacobian =
-                evaluator.evaluateJacobian(firstOperand(), parameterView);
-            ConstMatrixViewXd secondJacobian =
-                evaluator.evaluateJacobian(secondOperand(), parameterView);
-
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                Vector3d firstPartial(firstJacobian.column(columnIndex));
-                Vector3d secondPartial(secondJacobian.column(columnIndex));
-                resultView.column(columnIndex) = (
-                    firstPartial.cross(secondVector) + firstVector.cross(secondPartial)
-                ).components();
-            }
+            int numParameters = this->numParameters();
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                resultID,
+                [numParameters] (
+                    ConstMatrixViewXd firstValues,
+                    ConstMatrixViewXd secondValues,
+                    ConstMatrixViewXd firstJacobian,
+                    ConstMatrixViewXd secondJacobian,
+                    MatrixViewXd results
+                ) {
+                    Vector3d firstVector(firstValues);
+                    Vector3d secondVector(secondValues);
+                    for (int columnIndex = 0; columnIndex < numParameters; ++columnIndex) {
+                        Vector3d firstPartial(firstJacobian.column(columnIndex));
+                        Vector3d secondPartial(secondJacobian.column(columnIndex));
+                        results.column(columnIndex) = (
+                            firstPartial.cross(secondVector) + firstVector.cross(secondPartial)
+                        ).components();
+                    }
+                }
+            );
         }
         
         void
         CrossProductExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
-
-            IntervalVector3d firstVector(evaluator.evaluate(firstOperand(), parameterView));
-            IntervalVector3d secondVector(evaluator.evaluate(secondOperand(), parameterView));
-
-            ConstIntervalMatrixViewXd firstJacobian =
-                evaluator.evaluateJacobian(firstOperand(), parameterView);
-            ConstIntervalMatrixViewXd secondJacobian =
-                evaluator.evaluateJacobian(secondOperand(), parameterView);
-
-            for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-                IntervalVector3d firstPartial(firstJacobian.column(columnIndex));
-                IntervalVector3d secondPartial(secondJacobian.column(columnIndex));
-                resultView.column(columnIndex) = (
-                    firstPartial.cross(secondVector) + firstVector.cross(secondPartial)
-                ).components();
-            }
+            int numParameters = this->numParameters();
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                resultID,
+                [numParameters] (
+                    ConstIntervalMatrixViewXd firstValues,
+                    ConstIntervalMatrixViewXd secondValues,
+                    ConstIntervalMatrixViewXd firstJacobian,
+                    ConstIntervalMatrixViewXd secondJacobian,
+                    IntervalMatrixViewXd results
+                ) {
+                    IntervalVector3d firstVector(firstValues);
+                    IntervalVector3d secondVector(secondValues);
+                    for (int columnIndex = 0; columnIndex < numParameters; ++columnIndex) {
+                        IntervalVector3d firstPartial(firstJacobian.column(columnIndex));
+                        IntervalVector3d secondPartial(secondJacobian.column(columnIndex));
+                        results.column(columnIndex) = (
+                            firstPartial.cross(secondVector) + firstVector.cross(secondPartial)
+                        ).components();
+                    }
+                }
+            );
         }
 
         ExpressionImplementationPtr

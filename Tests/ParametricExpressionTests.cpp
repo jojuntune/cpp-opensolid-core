@@ -125,19 +125,11 @@ void testJacobian(
             expectedJacobian(i, j) = partialDerivative(i);
         }
     }
+    CAPTURE(expression);
+    CAPTURE(parameterValues);
+    CAPTURE(jacobian);
+    CAPTURE(expectedJacobian);
     REQUIRE((jacobian - expectedJacobian).isZero());
-    if (!(jacobian - expectedJacobian).isZero()) {
-        std::cout << "ParametricExpression:" << std::endl;
-        std::cout << expression << std::endl;
-        std::cout << "Jacobian ";
-        std::cout << "(parameter values " << parameterValues << ")";
-        std::cout << ":" << std::endl;
-        std::cout << jacobian << std::endl;
-        std::cout << "Expected:" << std::endl;
-        std::cout << expectedJacobian << std::endl;
-        std::cout << "Difference:" << std::endl;
-        std::cout << jacobian - expectedJacobian << std::endl;
-    }
     for (int j = 0; j < NumDimensions<TParameter>::Value; ++j) {
         std::vector<TParameter> shiftedParameterValues(2);
         shiftedParameterValues[0] = offsetParameter(parameterValues, j, -1e-6 / 2.0);
@@ -147,15 +139,10 @@ void testJacobian(
             shiftedValues[1] - shiftedValues[0]
         ) / 1e-6;
         Matrix<double, NumDimensions<TValue>::Value, 1> jacobianDerivative = jacobian.column(j);
+        CAPTURE(expression);
+        CAPTURE(numericalDerivative);
+        CAPTURE(jacobianDerivative);
         REQUIRE((numericalDerivative - jacobianDerivative).isZero(1e-3));
-        if (!(numericalDerivative - jacobianDerivative).isZero(1e-3)) {
-            std::cout << "ParametricExpression:" << std::endl;
-            std::cout << expression << std::endl;
-            std::cout << "Numerical derivative " << j << ": " << std::endl;
-            std::cout << numericalDerivative << std::endl;
-            std::cout << "Jacobian derivative: " << std::endl;
-            std::cout << jacobianDerivative << std::endl;
-        }
     }
 }
 
@@ -307,15 +294,15 @@ TEST_CASE("Component") {
     parameterValues[1] = 0.5;
     parameterValues[2] = 1.0;
 
-    std::vector<double> componentResults = expression.component(1).evaluate(parameterValues);
-    REQUIRE((componentResults[0] - 2.0) == Zero());
-    REQUIRE((componentResults[1] - 3.0) == Zero());
-    REQUIRE((componentResults[2] - 4.0) == Zero());
-
     std::vector<Vector3d> vectorResults = expression.evaluate(parameterValues);
     REQUIRE((vectorResults[0].y() - 2.0) == Zero());
     REQUIRE((vectorResults[1].y() - 3.0) == Zero());
     REQUIRE((vectorResults[2].y() - 4.0) == Zero());
+
+    std::vector<double> componentResults = expression.component(1).evaluate(parameterValues);
+    REQUIRE((componentResults[0] - 2.0) == Zero());
+    REQUIRE((componentResults[1] - 3.0) == Zero());
+    REQUIRE((componentResults[2] - 4.0) == Zero());
 
     double value = expression.z().evaluate(0.5);
     REQUIRE((value - 4.5) == Zero());

@@ -37,69 +37,107 @@ namespace opensolid
         
         void
         ConcatenationExpression::evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
             int firstDimensions = firstOperand()->numDimensions();
             int secondDimensions = secondOperand()->numDimensions();
-
-            resultView.block(0, 0, firstDimensions, resultView.numColumns()) = (
-                evaluator.evaluate(firstOperand(), parameterView)
-            );
-            resultView.block(firstDimensions, 0, secondDimensions, resultView.numColumns()) = (
-                evaluator.evaluate(secondOperand(), parameterView)
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [firstDimensions, secondDimensions] (
+                    ConstMatrixViewXd firstValues,
+                    ConstMatrixViewXd secondValues,
+                    MatrixViewXd results
+                ) {
+                    int numColumns = results.numColumns();
+                    results.block(0, 0, firstDimensions, numColumns) = firstValues;
+                    results.block(firstDimensions, 0, secondDimensions, numColumns) = secondValues;
+                }
             );
         }
         
         void
         ConcatenationExpression::evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
             int firstDimensions = firstOperand()->numDimensions();
             int secondDimensions = secondOperand()->numDimensions();
-            
-            resultView.block(0, 0, firstDimensions, resultView.numColumns()) = (
-                evaluator.evaluate(firstOperand(), parameterView)
-            );
-            resultView.block(firstDimensions, 0, secondDimensions, resultView.numColumns()) = (
-                evaluator.evaluate(secondOperand(), parameterView)
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [firstDimensions, secondDimensions] (
+                    ConstIntervalMatrixViewXd firstValues,
+                    ConstIntervalMatrixViewXd secondValues,
+                    IntervalMatrixViewXd results
+                ) {
+                    int numColumns = results.numColumns();
+                    results.block(0, 0, firstDimensions, numColumns) = firstValues;
+                    results.block(firstDimensions, 0, secondDimensions, numColumns) = secondValues;
+                }
             );
         }
 
         void
         ConcatenationExpression::evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
         ) const {
+            int numParameters = this->numParameters();
             int firstDimensions = firstOperand()->numDimensions();
             int secondDimensions = secondOperand()->numDimensions();
-            
-            resultView.block(0, 0, firstDimensions, resultView.numColumns()) = (
-                evaluator.evaluateJacobian(firstOperand(), parameterView)
-            );
-            resultView.block(firstDimensions, 0, secondDimensions, resultView.numColumns()) = (
-                evaluator.evaluateJacobian(secondOperand(), parameterView)
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                resultID,
+                [numParameters, firstDimensions, secondDimensions] (
+                    ConstMatrixViewXd firstJacobian,
+                    ConstMatrixViewXd secondJacobian,
+                    MatrixViewXd results
+                ) {
+                    results.block(0, 0, firstDimensions, numParameters) = firstJacobian;
+                    results.block(
+                        firstDimensions,
+                        0,
+                        secondDimensions,
+                        numParameters
+                    ) = secondJacobian;
+                }
             );
         }
         
         void
         ConcatenationExpression::evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
         ) const {
+            int numParameters = this->numParameters();
             int firstDimensions = firstOperand()->numDimensions();
             int secondDimensions = secondOperand()->numDimensions();
-            
-            resultView.block(0, 0, firstDimensions, resultView.numColumns()) = (
-                evaluator.evaluateJacobian(firstOperand(), parameterView)
-            );
-            resultView.block(firstDimensions, 0, secondDimensions, resultView.numColumns()) = (
-                evaluator.evaluateJacobian(secondOperand(), parameterView)
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                resultID,
+                [numParameters, firstDimensions, secondDimensions] (
+                    ConstIntervalMatrixViewXd firstJacobian,
+                    ConstIntervalMatrixViewXd secondJacobian,
+                    IntervalMatrixViewXd results
+                ) {
+                    results.block(0, 0, firstDimensions, numParameters) = firstJacobian;
+                    results.block(
+                        firstDimensions,
+                        0,
+                        secondDimensions,
+                        numParameters
+                    ) = secondJacobian;
+                }
             );
         }
         

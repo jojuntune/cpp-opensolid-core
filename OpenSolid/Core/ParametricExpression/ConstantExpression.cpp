@@ -49,11 +49,11 @@ namespace opensolid
         ) const {
             expressionCompiler.compute(
                 resultID,
-                [this] (MatrixViewXd& resultView) {
-                    resultView = ConstMatrixViewXd(
+                [this] (MatrixViewXd results) {
+                    results = ConstMatrixViewXd(
                         columnMatrix().data(),
                         numDimensions(),
-                        resultView.numColumns(),
+                        results.numColumns(),
                         0
                     );
                 }
@@ -68,11 +68,11 @@ namespace opensolid
         ) const {
             expressionCompiler.compute(
                 resultID,
-                [this] (IntervalMatrixViewXd& resultView) {
-                    resultView = ConstIntervalMatrixViewXd(
+                [this] (IntervalMatrixViewXd results) {
+                    results = ConstIntervalMatrixViewXd(
                         intervalColumnMatrix().data(),
                         numDimensions(),
-                        resultView.numColumns(),
+                        results.numColumns(),
                         0
                     );
                 }
@@ -87,8 +87,8 @@ namespace opensolid
         ) const {
             expressionCompiler.compute(
                 resultID,
-                [] (MatrixViewXd& resultView) {
-                    resultView.setZero();
+                [] (MatrixViewXd results) {
+                    results.setZero();
                 }
             );
         }
@@ -101,8 +101,8 @@ namespace opensolid
         ) const {
             expressionCompiler.compute(
                 resultID,
-                [] (IntervalMatrixViewXd& resultView) {
-                    resultView.setZero();
+                [] (IntervalMatrixViewXd results) {
+                    results.setZero();
                 }
             );
         }
