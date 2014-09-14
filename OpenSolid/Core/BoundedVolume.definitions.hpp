@@ -128,4 +128,27 @@ namespace opensolid
             const ParametricExpression<Point<3>, Point<3>>& morphingExpression
         ) const;
     };
+
+    template <>
+    struct MirrorFunction<BoundedVolume3d>
+    {
+        OPENSOLID_CORE_EXPORT
+        BoundedVolume3d
+        operator()(
+            const BoundedVolume3d& boundedArea,
+            const Point<3>& originPoint,
+            const UnitVector<3>& normalVector
+        ) const;
+    };
+
+    template <>
+    struct ProjectionFunction<BoundedVolume3d, Plane3d>
+    {
+        OPENSOLID_CORE_EXPORT
+        BoundedVolume3d
+        operator()(
+            const BoundedVolume3d& boundedArea,
+            const Plane3d& plane
+        ) const;
+    };
 }

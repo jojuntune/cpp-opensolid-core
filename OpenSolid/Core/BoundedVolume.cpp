@@ -28,8 +28,11 @@
 
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/ParametricSurface.hpp>
+#include <OpenSolid/Core/Plane.hpp>
+#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 
 namespace opensolid
 {
@@ -118,6 +121,39 @@ namespace opensolid
                 boundedVolume.boundaries().map(
                     [&morphingExpression] (const ParametricSurface3d& surface) {
                         return morphed(surface, morphingExpression);
+                    }
+                )
+            )
+        );
+    }
+
+    BoundedVolume3d
+    MirrorFunction<BoundedVolume3d>::operator()(
+        const BoundedVolume3d& boundedVolume,
+        const Point3d& originPoint,
+        const UnitVector3d& normalVector
+    ) const {
+        return BoundedVolume3d(
+            SpatialSet<ParametricSurface3d>(
+                boundedVolume.boundaries().map(
+                    [&originPoint, &normalVector] (const ParametricSurface3d& surface) {
+                        return mirrored(surface, originPoint, normalVector);
+                    }
+                )
+            )
+        );
+    }
+
+    BoundedVolume3d
+    ProjectionFunction<BoundedVolume3d, Plane3d>::operator()(
+        const BoundedVolume3d& boundedVolume,
+        const Plane3d& plane
+    ) const {
+        return BoundedVolume3d(
+            SpatialSet<ParametricSurface3d>(
+                boundedVolume.boundaries().map(
+                    [&plane] (const ParametricSurface3d& surface) {
+                        return projected(surface, plane);
                     }
                 )
             )
