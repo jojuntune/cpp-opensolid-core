@@ -52,13 +52,6 @@ namespace opensolid
     }
 
     inline
-    UnitVector1d::UnitVector(const Vector1d& vector) :
-        Vector1d(vector) {
-
-        assert(abs(vector.value()) - 1.0 == opensolid::Zero());
-    }
-
-    inline
     double
     UnitVector1d::norm() {
         return 1.0;
@@ -93,13 +86,6 @@ namespace opensolid
         Vector2d(components) {
 
         assert(sqrt(components.cwiseSquared().sum()) - 1.0 == opensolid::Zero());
-    }
-
-    inline
-    UnitVector2d::UnitVector(const Vector2d& vector) :
-        Vector2d(vector) {
-
-        assert(vector.norm() - 1.0 == opensolid::Zero());
     }
 
     inline
@@ -143,13 +129,6 @@ namespace opensolid
         Vector3d(components) {
 
         assert(sqrt(components.cwiseSquared().sum()) - 1.0 == opensolid::Zero());
-    }
-
-    inline
-    UnitVector3d::UnitVector(const Vector3d& vector) :
-        Vector3d(vector) {
-
-        assert(vector.norm() - 1.0 == opensolid::Zero());
     }
 
     inline

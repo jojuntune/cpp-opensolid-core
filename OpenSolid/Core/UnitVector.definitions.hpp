@@ -78,9 +78,6 @@ namespace opensolid
         explicit
         UnitVector(const Matrix<double, 1, 1>& components);
 
-        explicit
-        UnitVector(const Vector<double, 1>& vector);
-
         double
         norm();
 
@@ -110,9 +107,6 @@ namespace opensolid
 
         explicit
         UnitVector(const Matrix<double, 2, 1>& components);
-
-        explicit
-        UnitVector(const Vector<double, 2>& vector);
 
         double
         norm() const;
@@ -149,9 +143,6 @@ namespace opensolid
 
         explicit
         UnitVector(const Matrix<double, 3, 1>& components);
-
-        explicit
-        UnitVector(const Vector<double, 3>& vector);
 
         double
         norm() const;

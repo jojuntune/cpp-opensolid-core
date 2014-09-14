@@ -138,7 +138,7 @@ namespace opensolid
             );
             double candidateSquaredNorm = candidate.squaredNorm();
             if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
-                return UnitVector2d(candidate / sqrt(candidateSquaredNorm));
+                return UnitVector2d((candidate / sqrt(candidateSquaredNorm)).components());
             }
         }
     }
@@ -244,7 +244,7 @@ namespace opensolid
             );
             double candidateSquaredNorm = candidate.squaredNorm();
             if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
-                return UnitVector3d(candidate / sqrt(candidateSquaredNorm));
+                return UnitVector3d((candidate / sqrt(candidateSquaredNorm)).components());
             }
         }
     }
