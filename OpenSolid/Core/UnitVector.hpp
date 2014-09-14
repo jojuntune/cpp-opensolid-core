@@ -191,4 +191,28 @@ namespace opensolid
     ) const {
         return unitVector;
     }
+
+    template <int iNumDimensions>
+    inline
+    UnitVector<iNumDimensions>
+    RotationFunction<UnitVector<iNumDimensions>>::operator()(
+        const UnitVector<iNumDimensions>& unitVector,
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
+    ) const {
+        return UnitVector<iNumDimensions>(rotationMatrix * unitVector.components());
+    }
+
+    template <int iNumDimensions>
+    inline
+    UnitVector<iNumDimensions>
+    MirrorFunction<UnitVector<iNumDimensions>>::operator()(
+        const UnitVector<iNumDimensions>& unitVector,
+        const Point<iNumDimensions>& originPoint,
+        const UnitVector<iNumDimensions>& normalVector
+    ) const {
+        return UnitVector<iNumDimensions>(
+            (unitVector - 2 * (unitVector.dot(normalVector)) * normalVector).components()
+        );
+    }
 }

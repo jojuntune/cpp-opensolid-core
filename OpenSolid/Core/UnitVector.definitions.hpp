@@ -28,20 +28,21 @@
 
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
 
+#include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Vector.definitions.hpp>
 
 namespace opensolid
 {
     template <int iNumDimensions>
-    struct NumDimensions<UnitVector<iNumDimensions>>
-    {
-        static const int Value = iNumDimensions;
-    };
-
-    template <int iNumDimensions>
     struct BoundsType<UnitVector<iNumDimensions>>
     {
         typedef Vector<Interval, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct NumDimensions<UnitVector<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
     };
 
     template <int iNumDimensions>
@@ -50,24 +51,34 @@ namespace opensolid
         typedef Vector<double, iNumDimensions> Type;
     };
 
+    template <int iNumDimensions>
+    struct TranslatedType<UnitVector<iNumDimensions>>
+    {
+        typedef UnitVector<iNumDimensions> Type;
+    };
+
     template <int iNumDimensions, int iNumResultDimensions>
     struct TransformedType<UnitVector<iNumDimensions>, iNumResultDimensions>
     {
         typedef Vector<double, iNumResultDimensions> Type;
     };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<
-        UnitVector<iNumDimensions>,
-        ParametricExpression<Vector<double, iNumResultDimensions>, Vector<double, iNumDimensions>>
-    >
+    template <int iNumDimensions>
+    struct RotatedType<UnitVector<iNumDimensions>>
     {
-        typedef Vector<double, iNumResultDimensions> Type;
+        typedef UnitVector<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct MirroredType<UnitVector<iNumDimensions>>
+    {
+        typedef UnitVector<iNumDimensions> Type;
     };
 
     template <>
     class UnitVector<1> :
-        public Vector<double, 1>
+        public Vector<double, 1>,
+        public Transformable<UnitVector<1>>
     {
     public:
         UnitVector();
@@ -86,13 +97,22 @@ namespace opensolid
 
         const UnitVector<1>
         normalized() const;
+
+        using Transformable<UnitVector<1>>::scaledAbout;
+        using Transformable<UnitVector<1>>::translatedBy;
+        using Transformable<UnitVector<1>>::translatedAlong;
+        using Transformable<UnitVector<1>>::rotatedAbout;
+        using Transformable<UnitVector<1>>::mirroredAbout;
+        using Transformable<UnitVector<1>>::projectedOnto;
+        using Transformable<UnitVector<1>>::transformed;
     };
 
     typedef UnitVector<1> UnitVector1d;
  
     template <>
     class UnitVector<2> :
-        public Vector<double, 2>
+        public Vector<double, 2>,
+        public Transformable<UnitVector<2>>
     {
     public:
         UnitVector();
@@ -113,13 +133,22 @@ namespace opensolid
 
         const UnitVector<2>
         unitOrthogonal() const;
+
+        using Transformable<UnitVector<2>>::scaledAbout;
+        using Transformable<UnitVector<2>>::translatedBy;
+        using Transformable<UnitVector<2>>::translatedAlong;
+        using Transformable<UnitVector<2>>::rotatedAbout;
+        using Transformable<UnitVector<2>>::mirroredAbout;
+        using Transformable<UnitVector<2>>::projectedOnto;
+        using Transformable<UnitVector<2>>::transformed;
     };
 
     typedef UnitVector<2> UnitVector2d;
 
     template <>
     class UnitVector<3> :
-        public Vector<double, 3>
+        public Vector<double, 3>,
+        public Transformable<UnitVector<3>>
     {
     public:
         UnitVector();
@@ -137,6 +166,14 @@ namespace opensolid
 
         UnitVector<3>
         normalized() const;
+
+        using Transformable<UnitVector<3>>::scaledAbout;
+        using Transformable<UnitVector<3>>::translatedBy;
+        using Transformable<UnitVector<3>>::translatedAlong;
+        using Transformable<UnitVector<3>>::rotatedAbout;
+        using Transformable<UnitVector<3>>::mirroredAbout;
+        using Transformable<UnitVector<3>>::projectedOnto;
+        using Transformable<UnitVector<3>>::transformed;
     };
 
     typedef UnitVector<3> UnitVector3d;
@@ -180,5 +217,27 @@ namespace opensolid
     struct TransformationFunction<UnitVector<iNumDimensions>, iNumResultDimensions> :
         public TransformationFunction<Vector<double, iNumDimensions>, iNumResultDimensions>
     {
+    };
+
+    template <int iNumDimensions>
+    struct RotationFunction<UnitVector<iNumDimensions>>
+    {
+        UnitVector<iNumDimensions>
+        operator()(
+            const UnitVector<iNumDimensions>& unitVector,
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
+        ) const;
+    };
+
+    template <int iNumDimensions>
+    struct MirrorFunction<UnitVector<iNumDimensions>>
+    {
+        UnitVector<iNumDimensions>
+        operator()(
+            const UnitVector<iNumDimensions>& unitVector,
+            const Point<iNumDimensions>& originPoint,
+            const UnitVector<iNumDimensions>& normalVector
+        ) const;
     };
 }

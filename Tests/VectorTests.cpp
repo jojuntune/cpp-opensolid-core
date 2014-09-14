@@ -182,3 +182,29 @@ TEST_CASE("Interval vector normalization") {
         }
     }
 }
+
+TEST_CASE("Unit vector translation") {
+    UnitVector3d original = Vector3d(1, 2, 3).normalized();
+    UnitVector3d translated = original.translatedBy(Vector3d(4, 5, 6));
+    REQUIRE(translated == original);
+}
+
+TEST_CASE("Unit vector rotation") {
+    UnitVector2d original = Vector2d(1, 1).normalized();
+    UnitVector2d rotated = original.rotatedAbout(Point2d::origin(), M_PI / 4);
+    REQUIRE((rotated - UnitVector2d::unitY()).isZero());
+}
+
+TEST_CASE("Unit vector mirroring") {
+    UnitVector3d original = Vector3d(4, 5, 6).normalized();
+    UnitVector3d mirrored = original.mirroredAbout(Plane3d::yz());
+    REQUIRE((original.x() + mirrored.x()) == Zero());
+    REQUIRE((original.y() - mirrored.y()) == Zero());
+    REQUIRE((original.z() - mirrored.z()) == Zero());
+}
+
+TEST_CASE("Unit vector projection") {
+    UnitVector3d original = Vector3d(1, 0, 1).normalized();
+    Vector3d projected = original.projectedOnto(Plane3d::xy());
+    REQUIRE((projected - Vector3d(1.0 / sqrt(2.0), 0.0, 0.0)).isZero());
+}
