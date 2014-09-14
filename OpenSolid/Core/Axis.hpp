@@ -266,4 +266,51 @@ namespace opensolid
             UnitVector<iNumResultDimensions>(morphedDirection)
         );
     }
+
+    template <int iNumDimensions>
+    inline
+    Axis<iNumDimensions>
+    MirrorFunction<Axis<iNumDimensions>>::operator()(
+        const Axis<iNumDimensions>& axis,
+        const Point<iNumDimensions>& originPoint,
+        const UnitVector<iNumDimensions>& normalVector
+    ) const {
+        return Axis<iNumDimensions>(
+            mirrored(axis.originPoint(), originPoint, normalVector),
+            mirrored(axis.directionVector(), originPoint, normalVector)
+        );
+    }
+
+    inline
+    Axis2d
+    ProjectionFunction<Axis<2>, Axis<2>>::operator()(
+        const Axis2d& axis,
+        const Axis2d& mirrorAxis
+    ) const {
+        if (axis.directionVector().dot(mirrorAxis.directionVector()) == Zero()) {
+            throw Error(new PlaceholderError());
+        }
+        return Axis2d(
+            projected(axis.originPoint(), mirrorAxis),
+            projected(axis.directionVector(), mirrorAxis).normalized()
+        );
+    }
+
+    inline
+    Axis<3>
+    ProjectionFunction<Axis3d, Plane3d>::operator()(
+        const Axis3d& axis,
+        const Plane3d& plane
+    ) const {
+        if (
+            (axis.directionVector() - plane.normalVector()).isZero() ||
+            (axis.directionVector() + plane.normalVector()).isZero()
+        ) {
+            throw Error(new PlaceholderError());
+        }
+        return Axis3d(
+            projected(axis.originPoint(), plane),
+            projected(axis.directionVector(), plane).normalized()
+        );
+    }
 }

@@ -201,4 +201,29 @@ namespace opensolid
             >& morphingExpression
         ) const;
     };
+
+    template <int iNumDimensions>
+    struct MirrorFunction<Axis<iNumDimensions>>
+    {
+        Axis<iNumDimensions>
+        operator()(
+            const Axis<iNumDimensions>& axis,
+            const Point<iNumDimensions>& originPoint,
+            const UnitVector<iNumDimensions>& normalVector
+        ) const;
+    };
+
+    template <>
+    struct ProjectionFunction<Axis<2>, Axis<2>>
+    {
+        Axis<2>
+        operator()(const Axis<2>& axis, const Axis<2>& mirrorAxis) const;
+    };
+
+    template <>
+    struct ProjectionFunction<Axis<3>, Plane3d>
+    {
+        Axis<3>
+        operator()(const Axis<3>& axis, const Plane3d& plane) const;
+    };
 }
