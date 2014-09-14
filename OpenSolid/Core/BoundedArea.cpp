@@ -26,10 +26,13 @@
 
 #include <OpenSolid/Core/BoundedArea.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/ParametricCurve.hpp>
+#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 
 namespace opensolid
 {
