@@ -85,7 +85,7 @@ namespace opensolid
 
         Point3d originPoint = planeBelow.originPoint() + 0.5 * displacementVector;
         UnitVector3d normalVector = UnitVector3d(
-            belowNormalVector + 0.5 * (aboveNormalVector - belowNormalVector)
+            (belowNormalVector + 0.5 * (aboveNormalVector - belowNormalVector)).components()
         );
         return Plane3d(originPoint, normalVector);
     }
@@ -183,7 +183,7 @@ namespace opensolid
                 transformationMatrix,
                 destinationPoint
             ),
-            UnitVector3d(transformedNormal)
+            UnitVector3d(transformedNormal.components())
         );
     }
 
@@ -207,7 +207,7 @@ namespace opensolid
         morphedNormal *= (1.0 / morphedNorm);
         return Plane3d(
             morphed(plane.originPoint(), morphingExpression),
-            UnitVector3d(morphedNormal)
+            UnitVector3d(morphedNormal.components())
         );
     }
 }
