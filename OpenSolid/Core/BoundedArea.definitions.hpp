@@ -128,4 +128,27 @@ namespace opensolid
             const ParametricExpression<Point<2>, Point<2>>& morphingExpression
         ) const;
     };
+
+    template <>
+    struct MirrorFunction<BoundedArea2d>
+    {
+        OPENSOLID_CORE_EXPORT
+        BoundedArea2d
+        operator()(
+            const BoundedArea2d& boundedArea,
+            const Point<2>& originPoint,
+            const UnitVector<2>& normalVector
+        ) const;
+    };
+
+    template <>
+    struct ProjectionFunction<BoundedArea2d, Axis<2>>
+    {
+        OPENSOLID_CORE_EXPORT
+        BoundedArea2d
+        operator()(
+            const BoundedArea2d& boundedArea,
+            const Axis<2>& axis
+        ) const;
+    };
 }

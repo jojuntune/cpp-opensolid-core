@@ -123,4 +123,37 @@ namespace opensolid
             )
         );
     }
+
+    BoundedArea2d
+    MirrorFunction<BoundedArea2d>::operator()(
+        const BoundedArea2d& boundedArea,
+        const Point2d& originPoint,
+        const UnitVector2d& normalVector
+    ) const {
+        return BoundedArea2d(
+            SpatialSet<ParametricCurve2d>(
+                boundedArea.boundaries().map(
+                    [&originPoint, &normalVector] (const ParametricCurve2d& curve) {
+                        return mirrored(curve, originPoint, normalVector);
+                    }
+                )
+            )
+        );
+    }
+
+    BoundedArea2d
+    ProjectionFunction<BoundedArea2d, Axis<2>>::operator()(
+        const BoundedArea2d& boundedArea,
+        const Axis2d& axis
+    ) const {
+        return BoundedArea2d(
+            SpatialSet<ParametricCurve2d>(
+                boundedArea.boundaries().map(
+                    [&axis] (const ParametricCurve2d& curve) {
+                        return projected(curve, axis);
+                    }
+                )
+            )
+        );
+    }
 }
