@@ -385,7 +385,7 @@ namespace opensolid
         const TTransformable& transformable,
         const Axis<NumDimensions<TTransformable>::Value>& axis
     ) {
-        return ProjectionFunction<TTransformable, Axis<NumDimensions<TTransformable>::Value>>(
+        return ProjectionFunction<TTransformable, Axis<NumDimensions<TTransformable>::Value>>()(
             transformable,
             axis
         );
@@ -395,7 +395,7 @@ namespace opensolid
     inline
     typename ProjectedType<TTransformable, Plane3d>::Type
     projected(const TTransformable& transformable, const Plane3d& plane) {
-        return ProjectionFunction<TTransformable, Plane3d>(transformable, plane);
+        return ProjectionFunction<TTransformable, Plane3d>()(transformable, plane);
     }
 
     template <class TTransformable, class TCoordinateSystem>
