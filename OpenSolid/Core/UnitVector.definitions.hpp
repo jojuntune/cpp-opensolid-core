@@ -86,12 +86,6 @@ namespace opensolid
 
         const UnitVector<1>
         normalized() const;
-
-        static const UnitVector<1>
-        i();
-
-        static const UnitVector<1>
-        random();
     };
 
     typedef UnitVector<1> UnitVector1d;
@@ -119,15 +113,6 @@ namespace opensolid
 
         const UnitVector<2>
         unitOrthogonal() const;
-
-        static const UnitVector<2>
-        i();
-
-        static const UnitVector<2>
-        j();
-
-        static const UnitVector<2>
-        random();
     };
 
     typedef UnitVector<2> UnitVector2d;
@@ -152,18 +137,6 @@ namespace opensolid
 
         UnitVector<3>
         normalized() const;
-
-        static const UnitVector<3>
-        i();
-
-        static const UnitVector<3>
-        j();
-
-        static const UnitVector<3>
-        k();
-
-        static const UnitVector<3>
-        random();
     };
 
     typedef UnitVector<3> UnitVector3d;
