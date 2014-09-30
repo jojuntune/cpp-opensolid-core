@@ -76,22 +76,16 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        PointBase<iNumDimensions>::PointBase(const double* sourcePtr) :
-            detail::CartesianBase<double, iNumDimensions>(sourcePtr) {
-        }
-
-        template <int iNumDimensions>
-        inline
         double
         PointBase<iNumDimensions>::squaredDistanceTo(const Point<iNumDimensions>& other) const {
-           return (derived() - other).squaredNorm();
+            return (derived() - other).squaredNorm();
         }
 
         template <int iNumDimensions>
         inline
         double
         PointBase<iNumDimensions>::distanceTo(const Point<iNumDimensions>& other) const {
-           return (derived() - other).norm();
+            return (derived() - other).norm();
         }
 
         template <int iNumDimensions>
@@ -102,7 +96,7 @@ namespace opensolid
                 this->components().binaryMap(
                     other.components(),
                     [] (double component, double otherComponent) -> Interval {
-                        return Interval::Hull(component, otherComponent);
+                        return Interval::hull(component, otherComponent);
                     }
                 )
             );
@@ -146,8 +140,8 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Point<iNumDimensions>
-        PointBase<iNumDimensions>::Origin() {
-            return Point<iNumDimensions>(Matrix<double, iNumDimensions, 1>::Zero());
+        PointBase<iNumDimensions>::origin() {
+            return Point<iNumDimensions>(Matrix<double, iNumDimensions, 1>::zero());
         }
     }
 }

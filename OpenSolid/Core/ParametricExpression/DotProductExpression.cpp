@@ -27,119 +27,168 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 
 namespace opensolid
-{   
-    int
-    DotProductExpression::numDimensionsImpl() const {
-        return 1;
-    }
-    
-    void
-    DotProductExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        ConstMatrixViewXd firstValues = evaluator.evaluate(firstOperand(), parameterView);
-        ConstMatrixViewXd secondValues = evaluator.evaluate(secondOperand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            resultView(0, columnIndex) = firstValues.column(columnIndex).binaryFold(
-                secondValues.column(columnIndex),
-                0.0,
-                [] (double result, double firstValue, double secondValue) {
-                    return result + firstValue * secondValue;
+{ 
+    namespace detail
+    {
+        int
+        DotProductExpression::numDimensionsImpl() const {
+            return 1;
+        }
+        
+        void
+        DotProductExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (
+                    ConstMatrixViewXd firstValues,
+                    ConstMatrixViewXd secondValues,
+                    MatrixViewXd results
+                ) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results(0, columnIndex) = firstValues.column(columnIndex).binaryFold(
+                            secondValues.column(columnIndex),
+                            0.0,
+                            [] (double result, double firstValue, double secondValue) {
+                                return result + firstValue * secondValue;
+                            }
+                        );
+                    }
                 }
             );
         }
-    }
-    
-    void
-    DotProductExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        ConstIntervalMatrixViewXd firstValues =
-            evaluator.evaluate(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXd secondValues =
-            evaluator.evaluate(secondOperand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            resultView(0, columnIndex) = firstValues.column(columnIndex).binaryFold(
-                secondValues.column(columnIndex),
-                Interval(0.0),
-                [] (Interval result, Interval firstValue, Interval secondValue) {
-                    return result + firstValue * secondValue;
+        
+        void
+        DotProductExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (
+                    ConstIntervalMatrixViewXd firstValues,
+                    ConstIntervalMatrixViewXd secondValues,
+                    IntervalMatrixViewXd results
+                ) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results(0, columnIndex) = firstValues.column(columnIndex).binaryFold(
+                            secondValues.column(columnIndex),
+                            Interval(0.0),
+                            [] (Interval result, Interval firstValue, Interval secondValue) {
+                                return result + firstValue * secondValue;
+                            }
+                        );
+                    }
                 }
             );
         }
-    }
 
-    void
-    DotProductExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        ConstMatrixViewXd firstValue = evaluator.evaluate(firstOperand(), parameterView);
-        ConstMatrixViewXd secondValue = evaluator.evaluate(secondOperand(), parameterView);
-
-        ConstMatrixViewXd firstJacobian =
-            evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstMatrixViewXd secondJacobian =
-            evaluator.evaluateJacobian(secondOperand(), parameterView);
+        void
+        DotProductExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            MatrixID<double> secondTransposeProductID = expressionCompiler.createTemporary(
+                1,
+                numParameters()
+            );
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                secondTransposeProductID,
+                resultID,
+                [] (
+                    ConstMatrixViewXd firstValues,
+                    ConstMatrixViewXd secondValues,
+                    ConstMatrixViewXd firstJacobian,
+                    ConstMatrixViewXd secondJacobian,
+                    MatrixViewXd secondTransposeProduct,
+                    MatrixViewXd results
+                ) {
+                    results.setTransposeProduct(firstValues, secondJacobian);
+                    secondTransposeProduct.setTransposeProduct(secondValues, firstJacobian);
+                    results += secondTransposeProduct;
+                }
+            );
+        }
         
-        resultView = firstValue.transpose() * secondJacobian +
-            secondValue.transpose() * firstJacobian;
-    }
-    
-    void
-    DotProductExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        ConstIntervalMatrixViewXd firstValue = evaluator.evaluate(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXd secondValue = evaluator.evaluate(secondOperand(), parameterView);
+        void
+        DotProductExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            MatrixID<Interval> secondTransposeProductID = expressionCompiler.createTemporary(
+                1,
+                numParameters()
+            );
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                secondTransposeProductID,
+                resultID,
+                [] (
+                    ConstIntervalMatrixViewXd firstValues,
+                    ConstIntervalMatrixViewXd secondValues,
+                    ConstIntervalMatrixViewXd firstJacobian,
+                    ConstIntervalMatrixViewXd secondJacobian,
+                    IntervalMatrixViewXd secondTransposeProduct,
+                    IntervalMatrixViewXd results
+                ) {
+                    results.setTransposeProduct(firstValues, secondJacobian);
+                    secondTransposeProduct.setTransposeProduct(secondValues, firstJacobian);
+                    results += secondTransposeProduct;
+                }
+            );
+        }
 
-        ConstIntervalMatrixViewXd firstJacobian =
-            evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXd secondJacobian =
-            evaluator.evaluateJacobian(secondOperand(), parameterView);
+        ExpressionImplementationPtr
+        DotProductExpression::derivativeImpl(int parameterIndex) const {
+            return (
+                firstOperand()->derivative(parameterIndex)->dot(secondOperand()) +
+                firstOperand()->dot(secondOperand()->derivative(parameterIndex))
+            );
+        }
+
+        bool
+        DotProductExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other, true);
+        }
         
-        resultView = firstValue.transpose() * secondJacobian +
-            secondValue.transpose() * firstJacobian;
-    }
+        void
+        DotProductExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "DotProductExpression" << std::endl;
+            firstOperand()->debug(stream, indent + 1);
+            secondOperand()->debug(stream, indent + 1);
+        }
 
-    ExpressionImplementationPtr
-    DotProductExpression::derivativeImpl(int parameterIndex) const {
-        return firstOperand()->derivative(parameterIndex)->dot(secondOperand())
-            + firstOperand()->dot(secondOperand()->derivative(parameterIndex));
-    }
+        ExpressionImplementationPtr
+        DotProductExpression::withNewOperandsImpl(
+            const ExpressionImplementationPtr& newFirstOperand,
+            const ExpressionImplementationPtr& newSecondOperand
+        ) const {
+            return newFirstOperand->dot(newSecondOperand);
+        }
 
-    bool
-    DotProductExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other, true);
-    }
-    
-    void
-    DotProductExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "DotProductExpression" << std::endl;
-        firstOperand()->debug(stream, indent + 1);
-        secondOperand()->debug(stream, indent + 1);
-    }
+        DotProductExpression::DotProductExpression(
+            const ExpressionImplementationPtr& firstOperand,
+            const ExpressionImplementationPtr& secondOperand
+        ) : BinaryOperation(firstOperand, secondOperand) {
 
-    ExpressionImplementationPtr
-    DotProductExpression::withNewOperandsImpl(
-        const ExpressionImplementationPtr& newFirstOperand,
-        const ExpressionImplementationPtr& newSecondOperand
-    ) const {
-        return newFirstOperand->dot(newSecondOperand);
-    }
-
-    DotProductExpression::DotProductExpression(
-        const ExpressionImplementationPtr& firstOperand,
-        const ExpressionImplementationPtr& secondOperand
-    ) : BinaryOperation(firstOperand, secondOperand) {
-
-        assert(firstOperand->numDimensions() == secondOperand->numDimensions());
+            assert(firstOperand->numDimensions() == secondOperand->numDimensions());
+        }
     }
 }

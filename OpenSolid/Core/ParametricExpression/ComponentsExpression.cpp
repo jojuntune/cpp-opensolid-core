@@ -28,105 +28,156 @@
 
 namespace opensolid
 {
-    int
-    ComponentsExpression::numDimensionsImpl() const {
-        return numComponents();
-    }
-    
-    void
-    ComponentsExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluate(operand(), parameterView).block(
-            startIndex(),
-            0,
-            numComponents(),
-            parameterView.numColumns()
-        );
-    }
-    
-    void
-    ComponentsExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluate(operand(), parameterView).block(
-            startIndex(),
-            0,
-            numComponents(),
-            parameterView.numColumns()
-        );
-    }
+    namespace detail
+    {
+        int
+        ComponentsExpression::numDimensionsImpl() const {
+            return numComponents();
+        }
+        
+        void
+        ComponentsExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            int startIndex = this->startIndex();
+            int numComponents = this->numComponents();
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [startIndex, numComponents] (
+                    const ConstMatrixViewXd operandValues,
+                    MatrixViewXd results
+                ) {
+                    results = operandValues.block(
+                        startIndex,
+                        0,
+                        numComponents,
+                        operandValues.numColumns()
+                    );
+                }
+            );
+        }
+        
+        void
+        ComponentsExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            int startIndex = this->startIndex();
+            int numComponents = this->numComponents();
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [startIndex, numComponents] (
+                    ConstIntervalMatrixViewXd operandValues,
+                    IntervalMatrixViewXd results
+                ) {
+                    results = operandValues.block(
+                        startIndex,
+                        0,
+                        numComponents,
+                        operandValues.numColumns()
+                    );
+                }
+            );
+        }
 
-    void
-    ComponentsExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(operand(), parameterView).block(
-            startIndex(),
-            0,
-            numComponents(),
-            numParameters()
-        );
-    }
-    
-    void
-    ComponentsExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(operand(), parameterView).block(
-            startIndex(),
-            0,
-            numComponents(),
-            numParameters()
-        );
-    }
+        void
+        ComponentsExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            int startIndex = this->startIndex();
+            int numComponents = this->numComponents();
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(operand(), parameterID),
+                resultID,
+                [startIndex, numComponents] (
+                    ConstMatrixViewXd operandJacobian,
+                    MatrixViewXd results
+                ) {
+                    results = operandJacobian.block(
+                        startIndex,
+                        0,
+                        numComponents,
+                        operandJacobian.numColumns()
+                    );
+                }
+            );
+        }
+        
+        void
+        ComponentsExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            int startIndex = this->startIndex();
+            int numComponents = this->numComponents();
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(operand(), parameterID),
+                resultID,
+                [startIndex, numComponents] (
+                    ConstIntervalMatrixViewXd operandJacobian,
+                    IntervalMatrixViewXd results
+                ) {
+                    results = operandJacobian.block(
+                        startIndex,
+                        0,
+                        numComponents,
+                        operandJacobian.numColumns()
+                    );
+                }
+            );
+        }
 
-    ExpressionImplementationPtr
-    ComponentsExpression::derivativeImpl(int parameterIndex) const {
-        return operand()->derivative(parameterIndex)->components(startIndex(), numComponents());
-    }
+        ExpressionImplementationPtr
+        ComponentsExpression::derivativeImpl(int parameterIndex) const {
+            return operand()->derivative(parameterIndex)->components(startIndex(), numComponents());
+        }
 
-    bool
-    ComponentsExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other) &&
-            this->startIndex() == other->cast<ComponentsExpression>()->startIndex() &&
-            this->numComponents() == other->cast<ComponentsExpression>()->numComponents();
-    }
-    
-    ExpressionImplementationPtr
-    ComponentsExpression::componentsImpl(int startIndex, int numComponents) const {
-        return operand()->components(this->startIndex() + startIndex, numComponents);
-    }
-    
-    void
-    ComponentsExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "ComponentsExpression" << std::endl;
-        operand()->debug(stream, indent + 1);
-    }
+        bool
+        ComponentsExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return (
+                duplicateOperands(other) &&
+                this->startIndex() == other->cast<ComponentsExpression>()->startIndex() &&
+                this->numComponents() == other->cast<ComponentsExpression>()->numComponents()
+            );
+        }
+        
+        ExpressionImplementationPtr
+        ComponentsExpression::componentsImpl(int startIndex, int numComponents) const {
+            return operand()->components(this->startIndex() + startIndex, numComponents);
+        }
+        
+        void
+        ComponentsExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "ComponentsExpression" << std::endl;
+            operand()->debug(stream, indent + 1);
+        }
 
-    ExpressionImplementationPtr
-    ComponentsExpression::withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const {
-        return newOperand->components(startIndex(), numComponents());
-    }
+        ExpressionImplementationPtr
+        ComponentsExpression::withNewOperandImpl(
+            const ExpressionImplementationPtr& newOperand
+        ) const {
+            return newOperand->components(startIndex(), numComponents());
+        }
 
-    ComponentsExpression::ComponentsExpression(
-        const ExpressionImplementationPtr& operand,
-        int startIndex,
-        int numComponents
-    ) : UnaryOperation(operand),
-        _startIndex(startIndex),
-        _numComponents(numComponents) {
+        ComponentsExpression::ComponentsExpression(
+            const ExpressionImplementationPtr& operand,
+            int startIndex,
+            int numComponents
+        ) : UnaryOperation(operand),
+            _startIndex(startIndex),
+            _numComponents(numComponents) {
 
-        assert(startIndex >= 0);
-        assert(numComponents > 0);
-        assert(startIndex + numComponents <= operand->numDimensions());
+            assert(startIndex >= 0);
+            assert(numComponents > 0);
+            assert(startIndex + numComponents <= operand->numDimensions());
+        }
     }
 }

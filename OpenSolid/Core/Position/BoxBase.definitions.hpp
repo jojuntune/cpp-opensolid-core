@@ -56,8 +56,6 @@ namespace opensolid
             BoxBase(Interval x, Interval y, Interval z);
 
             BoxBase(const Matrix<Interval, iNumDimensions, 1>& components);
-
-            BoxBase(const Interval* sourcePtr);
         public:
             bool
             isEmpty() const;
@@ -111,13 +109,13 @@ namespace opensolid
             intersection(const Box<iNumDimensions>& other) const;
 
             static const Box<iNumDimensions>
-            Unit();
+            unit();
 
             static const Box<iNumDimensions>
-            Empty();
+            empty();
 
             static const Box<iNumDimensions>
-            Whole();
+            whole();
         };
     }
 }

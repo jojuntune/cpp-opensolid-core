@@ -48,6 +48,12 @@ namespace opensolid
         static const int Value = 3;
     };
 
+    template <>
+    struct MorphedType<BoundedVolume3d, ParametricExpression<Point<3>, Point<3>>>
+    {
+        typedef BoundedVolume3d Type;
+    };
+
     class BoundedVolume3d :
         public Transformable<BoundedVolume3d>
     {
@@ -84,7 +90,11 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedVolume3d
-        operator()(const BoundedVolume3d& boundedVolume, double scale) const;
+        operator()(
+            const BoundedVolume3d& boundedVolume,
+            const Point<3>& originPoint,
+            double scale
+        ) const;
     };
 
     template <>
@@ -92,7 +102,7 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedVolume3d
-        operator()(const BoundedVolume3d& boundedVolume, const Vector3d& vector) const;
+        operator()(const BoundedVolume3d& boundedVolume, const Vector<double ,3>& vector) const;
     };
 
     template <>
@@ -100,17 +110,45 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedVolume3d
-        operator()(const BoundedVolume3d& boundedVolume, const Matrix3d& matrix) const;
+        operator()(
+            const BoundedVolume3d& boundedVolume,
+            const Point<3>& originPoint,
+            const Matrix<double, 3, 3>& transformationMatrix,
+            const Point<3>& destinationPoint
+        ) const;
     };
 
     template <>
-    struct MorphingFunction<BoundedVolume3d, 3>
+    struct MorphingFunction<BoundedVolume3d, ParametricExpression<Point<3>, Point<3>>>
     {
         OPENSOLID_CORE_EXPORT
         const BoundedVolume3d
         operator()(
             const BoundedVolume3d& boundedVolume,
-            const ParametricExpression<3, 3>& morphingExpression
+            const ParametricExpression<Point<3>, Point<3>>& morphingExpression
+        ) const;
+    };
+
+    template <>
+    struct MirrorFunction<BoundedVolume3d>
+    {
+        OPENSOLID_CORE_EXPORT
+        BoundedVolume3d
+        operator()(
+            const BoundedVolume3d& boundedArea,
+            const Point<3>& originPoint,
+            const UnitVector<3>& normalVector
+        ) const;
+    };
+
+    template <>
+    struct ProjectionFunction<BoundedVolume3d, Plane3d>
+    {
+        OPENSOLID_CORE_EXPORT
+        BoundedVolume3d
+        operator()(
+            const BoundedVolume3d& boundedArea,
+            const Plane3d& plane
         ) const;
     };
 }

@@ -28,116 +28,165 @@
 
 namespace opensolid
 {
-    int
-    ConcatenationExpression::numDimensionsImpl() const {
-        return firstOperand()->numDimensions() + secondOperand()->numDimensions();
-    }
-    
-    void
-    ConcatenationExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        int firstDimensions = firstOperand()->numDimensions();
-        int secondDimensions = secondOperand()->numDimensions();
-
-        resultView.block(0, 0, firstDimensions, resultView.numColumns()) =
-            evaluator.evaluate(firstOperand(), parameterView);
-        resultView.block(firstDimensions, 0, secondDimensions, resultView.numColumns()) =
-            evaluator.evaluate(secondOperand(), parameterView);
-    }
-    
-    void
-    ConcatenationExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        int firstDimensions = firstOperand()->numDimensions();
-        int secondDimensions = secondOperand()->numDimensions();
+    namespace detail
+    {
+        int
+        ConcatenationExpression::numDimensionsImpl() const {
+            return firstOperand()->numDimensions() + secondOperand()->numDimensions();
+        }
         
-        resultView.block(0, 0, firstDimensions, resultView.numColumns()) =
-            evaluator.evaluate(firstOperand(), parameterView);
-        resultView.block(firstDimensions, 0, secondDimensions, resultView.numColumns()) =
-            evaluator.evaluate(secondOperand(), parameterView);
-    }
-
-    void
-    ConcatenationExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        int firstDimensions = firstOperand()->numDimensions();
-        int secondDimensions = secondOperand()->numDimensions();
-        
-        resultView.block(0, 0, firstDimensions, resultView.numColumns()) =
-            evaluator.evaluateJacobian(firstOperand(), parameterView);
-        resultView.block(firstDimensions, 0, secondDimensions, resultView.numColumns()) =
-            evaluator.evaluateJacobian(secondOperand(), parameterView);
-    }
-    
-    void
-    ConcatenationExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        int firstDimensions = firstOperand()->numDimensions();
-        int secondDimensions = secondOperand()->numDimensions();
-        
-        resultView.block(0, 0, firstDimensions, resultView.numColumns()) =
-            evaluator.evaluateJacobian(firstOperand(), parameterView);
-        resultView.block(firstDimensions, 0, secondDimensions, resultView.numColumns()) =
-            evaluator.evaluateJacobian(secondOperand(), parameterView);
-    }
-    
-    ExpressionImplementationPtr
-    ConcatenationExpression::derivativeImpl(int parameterIndex) const {
-        return firstOperand()->derivative(parameterIndex)->concatenated(
-            secondOperand()->derivative(parameterIndex)
-        );
-    }
-
-    bool
-    ConcatenationExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other, false);
-    }
-    
-    ExpressionImplementationPtr
-    ConcatenationExpression::componentsImpl(int startIndex, int numComponents) const {
-        int firstDimensions = firstOperand()->numDimensions();
-        if (startIndex + numComponents <= firstDimensions) {
-            return firstOperand()->components(startIndex, numComponents);
-        } else if (startIndex >= firstDimensions) {
-            return secondOperand()->components(startIndex - firstDimensions, numComponents);
-        } else {
-            return new ConcatenationExpression(
-                firstOperand()->components(startIndex, firstDimensions - startIndex),
-                secondOperand()->components(0, startIndex + numComponents - firstDimensions)
+        void
+        ConcatenationExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            int firstDimensions = firstOperand()->numDimensions();
+            int secondDimensions = secondOperand()->numDimensions();
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [firstDimensions, secondDimensions] (
+                    ConstMatrixViewXd firstValues,
+                    ConstMatrixViewXd secondValues,
+                    MatrixViewXd results
+                ) {
+                    int numColumns = results.numColumns();
+                    results.block(0, 0, firstDimensions, numColumns) = firstValues;
+                    results.block(firstDimensions, 0, secondDimensions, numColumns) = secondValues;
+                }
             );
         }
-    }
-    
-    void
-    ConcatenationExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "ConcatenationExpression" << std::endl;
-        firstOperand()->debug(stream, indent + 1);
-        secondOperand()->debug(stream, indent + 1);
-    }
+        
+        void
+        ConcatenationExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            int firstDimensions = firstOperand()->numDimensions();
+            int secondDimensions = secondOperand()->numDimensions();
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [firstDimensions, secondDimensions] (
+                    ConstIntervalMatrixViewXd firstValues,
+                    ConstIntervalMatrixViewXd secondValues,
+                    IntervalMatrixViewXd results
+                ) {
+                    int numColumns = results.numColumns();
+                    results.block(0, 0, firstDimensions, numColumns) = firstValues;
+                    results.block(firstDimensions, 0, secondDimensions, numColumns) = secondValues;
+                }
+            );
+        }
 
-    ExpressionImplementationPtr
-    ConcatenationExpression::withNewOperandsImpl(
-        const ExpressionImplementationPtr& newFirstOperand,
-        const ExpressionImplementationPtr& newSecondOperand
-    ) const {
-        return newFirstOperand->concatenated(newSecondOperand);
-    }
+        void
+        ConcatenationExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            int numParameters = this->numParameters();
+            int firstDimensions = firstOperand()->numDimensions();
+            int secondDimensions = secondOperand()->numDimensions();
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                resultID,
+                [numParameters, firstDimensions, secondDimensions] (
+                    ConstMatrixViewXd firstJacobian,
+                    ConstMatrixViewXd secondJacobian,
+                    MatrixViewXd results
+                ) {
+                    results.block(0, 0, firstDimensions, numParameters) = firstJacobian;
+                    results.block(
+                        firstDimensions,
+                        0,
+                        secondDimensions,
+                        numParameters
+                    ) = secondJacobian;
+                }
+            );
+        }
+        
+        void
+        ConcatenationExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            int numParameters = this->numParameters();
+            int firstDimensions = firstOperand()->numDimensions();
+            int secondDimensions = secondOperand()->numDimensions();
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                resultID,
+                [numParameters, firstDimensions, secondDimensions] (
+                    ConstIntervalMatrixViewXd firstJacobian,
+                    ConstIntervalMatrixViewXd secondJacobian,
+                    IntervalMatrixViewXd results
+                ) {
+                    results.block(0, 0, firstDimensions, numParameters) = firstJacobian;
+                    results.block(
+                        firstDimensions,
+                        0,
+                        secondDimensions,
+                        numParameters
+                    ) = secondJacobian;
+                }
+            );
+        }
+        
+        ExpressionImplementationPtr
+        ConcatenationExpression::derivativeImpl(int parameterIndex) const {
+            return firstOperand()->derivative(parameterIndex)->concatenated(
+                secondOperand()->derivative(parameterIndex)
+            );
+        }
 
-    ConcatenationExpression::ConcatenationExpression(
-        const ExpressionImplementationPtr& firstOperand,
-        const ExpressionImplementationPtr& secondOperand
-    ) : BinaryOperation(firstOperand, secondOperand) {
+        bool
+        ConcatenationExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other, false);
+        }
+        
+        ExpressionImplementationPtr
+        ConcatenationExpression::componentsImpl(int startIndex, int numComponents) const {
+            int firstDimensions = firstOperand()->numDimensions();
+            if (startIndex + numComponents <= firstDimensions) {
+                return firstOperand()->components(startIndex, numComponents);
+            } else if (startIndex >= firstDimensions) {
+                return secondOperand()->components(startIndex - firstDimensions, numComponents);
+            } else {
+                return new ConcatenationExpression(
+                    firstOperand()->components(startIndex, firstDimensions - startIndex),
+                    secondOperand()->components(0, startIndex + numComponents - firstDimensions)
+                );
+            }
+        }
+        
+        void
+        ConcatenationExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "ConcatenationExpression" << std::endl;
+            firstOperand()->debug(stream, indent + 1);
+            secondOperand()->debug(stream, indent + 1);
+        }
+
+        ExpressionImplementationPtr
+        ConcatenationExpression::withNewOperandsImpl(
+            const ExpressionImplementationPtr& newFirstOperand,
+            const ExpressionImplementationPtr& newSecondOperand
+        ) const {
+            return newFirstOperand->concatenated(newSecondOperand);
+        }
+
+        ConcatenationExpression::ConcatenationExpression(
+            const ExpressionImplementationPtr& firstOperand,
+            const ExpressionImplementationPtr& secondOperand
+        ) : BinaryOperation(firstOperand, secondOperand) {
+        }
     }
 }

@@ -62,7 +62,10 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<Box<iNumDimensions>, iNumResultDimensions>
+    struct MorphedType<
+        Box<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         typedef Box<iNumResultDimensions> Type;
     };
@@ -84,9 +87,6 @@ namespace opensolid
 
         explicit
         Box(const Matrix<Interval, 1, 1>& components);
-
-        explicit
-        Box(const Interval* sourcePtr);
 
         const Point<1>
         interpolated(double xValue) const;
@@ -114,9 +114,6 @@ namespace opensolid
         explicit
         Box(const Matrix<Interval, 2, 1>& components);
 
-        explicit
-        Box(const Interval* sourcePtr);
-
         const Point<2>
         interpolated(double xValue, double yValue) const;
 
@@ -142,9 +139,6 @@ namespace opensolid
 
         explicit
         Box(const Matrix<Interval, 3, 1>& components);
-
-        explicit
-        Box(const Interval* sourcePtr);
 
         const Point<3>
         interpolated(double xValue, double yValue, double zValue) const;
@@ -206,7 +200,11 @@ namespace opensolid
     struct ScalingFunction<Box<iNumDimensions>>
     {
         const Box<iNumDimensions>
-        operator()(const Box<iNumDimensions>& box, double scale) const;
+        operator()(
+            const Box<iNumDimensions>& box,
+            const Point<iNumDimensions>& originPoint,
+            double scale
+        ) const;
     };
 
     template <int iNumDimensions>
@@ -225,17 +223,25 @@ namespace opensolid
         const Box<iNumResultDimensions>
         operator()(
             const Box<iNumDimensions>& box,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
+            const Point<iNumResultDimensions>& destinationPoint
         ) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<Box<iNumDimensions>, iNumResultDimensions>
+    struct MorphingFunction<
+        Box<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         const Box<iNumResultDimensions>
         operator()(
             const Box<iNumDimensions>& box,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+            const ParametricExpression<
+                Point<iNumResultDimensions>,
+                Point<iNumDimensions>
+            >& morphingExpression
         ) const;
     };
 }

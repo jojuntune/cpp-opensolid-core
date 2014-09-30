@@ -28,134 +28,153 @@
 
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.declarations.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumParameters>
-    class ZeroExpressionConstructor
+    namespace detail
     {
-    public:
-        static ParametricExpression<iNumDimensions, iNumParameters>
-        Zero();
-    };
+        template <class TValue, class TParameter>
+        class ZeroExpressionConstructor
+        {
+        public:
+            static ParametricExpression<TValue, TParameter>
+            zero();
+        };
 
-    template <int iNumDimensions, int iNumParameters>
-    class ConstantExpressionConstructor
-    {
-    public:
-        static ParametricExpression<iNumDimensions, iNumParameters>
-        Constant(const Matrix<double, iNumDimensions, 1>& columnMatrix);
-    };
+        template <class TValue, class TParameter>
+        class ConstantExpressionConstructor;
 
-    template <int iNumParameters>
-    class ConstantExpressionConstructor<1, iNumParameters>
-    {
-    public:
-        static ParametricExpression<1, iNumParameters>
-        Constant(double value);
-    };
+        template <class TParameter>
+        class ConstantExpressionConstructor<double, TParameter>
+        {
+        public:
+            static ParametricExpression<double, TParameter>
+            constant(double value);
+        };
 
-    template <int iNumDimensions, int iNumParameters>
-    class IdentityExpressionConstructor
-    {
-    };
+        template <int iNumDimensions, class TParameter>
+        class ConstantExpressionConstructor<Vector<double, iNumDimensions>, TParameter>
+        {
+        public:
+            static ParametricExpression<Vector<double, iNumDimensions>, TParameter>
+            constant(const Vector<double, iNumDimensions>& vector);
+        };
 
-    template <int iNumDimensions>
-    class IdentityExpressionConstructor<iNumDimensions, iNumDimensions>
-    {
-    public:
-        static ParametricExpression<iNumDimensions, iNumDimensions>
-        Identity();
-    };
+        template <int iNumDimensions, class TParameter>
+        class ConstantExpressionConstructor<Point<iNumDimensions>, TParameter>
+        {
+        public:
+            static ParametricExpression<Point<iNumDimensions>, TParameter>
+            constant(const Point<iNumDimensions>& point);
+        };
 
-    template <int iNumDimensions, int iNumParameters>
-    class FromComponentsExpressionConstructors
-    {
-    };
+        template <class TValue, class TParameter>
+        class IdentityExpressionConstructor
+        {
+        };
 
-    template <int iNumParameters>
-    class FromComponentsExpressionConstructors<2, iNumParameters>
-    {
-    public:
-        static ParametricExpression<2, iNumParameters>
-        FromComponents(
-            const ParametricExpression<1, iNumParameters>& x,
-            const ParametricExpression<1, iNumParameters>& y
-        );
+        template <class TValue>
+        class IdentityExpressionConstructor<TValue, TValue>
+        {
+        public:
+            static ParametricExpression<TValue, TValue>
+            identity();
+        };
 
-        static ParametricExpression<2, iNumParameters>
-        FromComponents(
-            const ParametricExpression<1, iNumParameters>& x,
-            double y
-        );
+        template <class TValue, int iValueDimension, class TParameter>
+        class FromComponentsExpressionConstructors
+        {
+        };
 
-        static ParametricExpression<2, iNumParameters>
-        FromComponents(
-            double x,
-            const ParametricExpression<1, iNumParameters>& y
-        );
-    };
+        template <class TValue, class TParameter>
+        class FromComponentsExpressionConstructors<TValue, 2, TParameter>
+        {
+        public:
+            static ParametricExpression<TValue, TParameter>
+            fromComponents(
+                const ParametricExpression<double, TParameter>& x,
+                const ParametricExpression<double, TParameter>& y
+            );
 
-    template <int iNumParameters>
-    class FromComponentsExpressionConstructors<3, iNumParameters>
-    {
-    public:
-        static ParametricExpression<3, iNumParameters>
-        FromComponents(
-            const ParametricExpression<1, iNumParameters>& x,
-            const ParametricExpression<1, iNumParameters>& y,
-            const ParametricExpression<1, iNumParameters>& z
-        );
+            static ParametricExpression<TValue, TParameter>
+            fromComponents(
+                const ParametricExpression<double, TParameter>& x,
+                double y
+            );
 
-        static ParametricExpression<3, iNumParameters>
-        FromComponents(
-            const ParametricExpression<1, iNumParameters>& x,
-            const ParametricExpression<1, iNumParameters>& y,
-            double z
-        );
-        
-        static ParametricExpression<3, iNumParameters>
-        FromComponents(
-            const ParametricExpression<1, iNumParameters>& x,
-            double y,
-            const ParametricExpression<1, iNumParameters>& z
-        );
-        
-        static ParametricExpression<3, iNumParameters>
-        FromComponents(
-            double x,
-            const ParametricExpression<1, iNumParameters>& y,
-            const ParametricExpression<1, iNumParameters>& z
-        );
-        
-        static ParametricExpression<3, iNumParameters>
-        FromComponents(
-            const ParametricExpression<1, iNumParameters>& x,
-            double y,
-            double z
-        );
-        
-        static ParametricExpression<3, iNumParameters>
-        FromComponents(
-            double x,
-            const ParametricExpression<1, iNumParameters>& y,
-            double z
-        );
-        
-        static ParametricExpression<3, iNumParameters>
-        FromComponents(
-            double x,
-            double y,
-            const ParametricExpression<1, iNumParameters>& z
-        );
-    };
+            static ParametricExpression<TValue, TParameter>
+            fromComponents(
+                double x,
+                const ParametricExpression<double, TParameter>& y
+            );
+        };
 
-    template <int iNumDimensions, int iNumParameters>
-    class ExpressionConstructors :
-        public ZeroExpressionConstructor<iNumDimensions, iNumParameters>,
-        public ConstantExpressionConstructor<iNumDimensions, iNumParameters>,
-        public IdentityExpressionConstructor<iNumDimensions, iNumParameters>,
-        public FromComponentsExpressionConstructors<iNumDimensions, iNumParameters>
-    {
-    };
+        template <class TValue, class TParameter>
+        class FromComponentsExpressionConstructors<TValue, 3, TParameter>
+        {
+        public:
+            static ParametricExpression<TValue, TParameter>
+            fromComponents(
+                const ParametricExpression<double, TParameter>& x,
+                const ParametricExpression<double, TParameter>& y,
+                const ParametricExpression<double, TParameter>& z
+            );
+
+            static ParametricExpression<TValue, TParameter>
+            fromComponents(
+                const ParametricExpression<double, TParameter>& x,
+                const ParametricExpression<double, TParameter>& y,
+                double z
+            );
+            
+            static ParametricExpression<TValue, TParameter>
+            fromComponents(
+                const ParametricExpression<double, TParameter>& x,
+                double y,
+                const ParametricExpression<double, TParameter>& z
+            );
+            
+            static ParametricExpression<TValue, TParameter>
+            fromComponents(
+                double x,
+                const ParametricExpression<double, TParameter>& y,
+                const ParametricExpression<double, TParameter>& z
+            );
+            
+            static ParametricExpression<TValue, TParameter>
+            fromComponents(
+                const ParametricExpression<double, TParameter>& x,
+                double y,
+                double z
+            );
+            
+            static ParametricExpression<TValue, TParameter>
+            fromComponents(
+                double x,
+                const ParametricExpression<double, TParameter>& y,
+                double z
+            );
+            
+            static ParametricExpression<TValue, TParameter>
+            fromComponents(
+                double x,
+                double y,
+                const ParametricExpression<double, TParameter>& z
+            );
+        };
+
+        template <class TValue, class TParameter>
+        class ExpressionConstructors :
+            public ZeroExpressionConstructor<TValue, TParameter>,
+            public ConstantExpressionConstructor<TValue, TParameter>,
+            public IdentityExpressionConstructor<TValue, TParameter>,
+            public FromComponentsExpressionConstructors<
+                TValue,
+                NumDimensions<TValue>::Value,
+                TParameter
+            >
+        {
+        };
+    }
 }

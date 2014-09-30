@@ -65,12 +65,6 @@ namespace opensolid
         typedef Point<iNumResultDimensions> Type;
     };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<Point<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef Point<iNumResultDimensions> Type;
-    };
-
     template <>
     class Point<1> :
         public detail::PointBase<1>,
@@ -88,9 +82,6 @@ namespace opensolid
 
         explicit
         Point(const Matrix<double, 1, 1>& components);
-
-        explicit
-        Point(const double* sourcePtr);
     };
 
     typedef Point<1> Point1d;
@@ -112,14 +103,11 @@ namespace opensolid
         explicit
         Point(const Matrix<double, 2, 1>& components);
 
-        explicit
-        Point(const double* sourcePtr);
-
         double
         distanceTo(const Axis<2>& axis) const;
 
         static const Point<2>
-        Polar(double radius, double angle);
+        polar(double radius, double angle);
     };
 
     typedef Point<2> Point2d;
@@ -141,9 +129,6 @@ namespace opensolid
         explicit
         Point(const Matrix<double, 3, 1>& components);
 
-        explicit
-        Point(const double* sourcePtr);
-
         double
         squaredDistanceTo(const Axis<3>& axis) const;
 
@@ -154,10 +139,10 @@ namespace opensolid
         distanceTo(const Plane3d& plane) const;
         
         static const Point<3>
-        Cylindrical(double radius, double angle, double height);
+        cylindrical(double radius, double angle, double height);
 
         static const Point<3>
-        Spherical(double radius, double polarAngle, double elevationAngle);
+        spherical(double radius, double polarAngle, double elevationAngle);
     };
 
     typedef Point<3> Point3d;
@@ -200,7 +185,11 @@ namespace opensolid
     struct ScalingFunction<Point<iNumDimensions>>
     {
         const Point<iNumDimensions>
-        operator()(const Point<iNumDimensions>& point, double scale) const;
+        operator()(
+            const Point<iNumDimensions>& point,
+            const Point<iNumDimensions>& originPoint,
+            double scale
+        ) const;
     };
 
     template <int iNumDimensions>
@@ -219,17 +208,9 @@ namespace opensolid
         const Point<iNumResultDimensions>
         operator()(
             const Point<iNumDimensions>& point,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<Point<iNumDimensions>, iNumResultDimensions>
-    {
-        const Point<iNumResultDimensions>
-        operator()(
-            const Point<iNumDimensions>& point,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+            const Point<iNumResultDimensions>& destinationPoint
         ) const;
     };
 }

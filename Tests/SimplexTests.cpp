@@ -50,9 +50,11 @@ struct MyPoint3d
 inline
 bool
 operator==(const MyPoint3d& myFirstPoint, const MyPoint3d& mySecondPoint) {
-    return myFirstPoint.x == mySecondPoint.x &&
+    return (
+        myFirstPoint.x == mySecondPoint.x &&
         myFirstPoint.y == mySecondPoint.y &&
-        myFirstPoint.z == mySecondPoint.z;
+        myFirstPoint.z == mySecondPoint.z
+    );
 }
 
 struct MyLineSegment3d
@@ -69,8 +71,10 @@ struct MyLineSegment3d
 inline
 bool
 operator==(const MyLineSegment3d& myFirstLineSegment, const MyLineSegment3d& mySecondLineSegment) {
-    return myFirstLineSegment.startPoint == mySecondLineSegment.startPoint &&
-        myFirstLineSegment.endPoint == mySecondLineSegment.endPoint;
+    return (
+        myFirstLineSegment.startPoint == mySecondLineSegment.startPoint &&
+        myFirstLineSegment.endPoint == mySecondLineSegment.endPoint
+    );
 }
 
 struct MyTriangle3d
@@ -89,9 +93,11 @@ struct MyTriangle3d
 inline
 bool
 operator==(const MyTriangle3d& myFirstTriangle, const MyTriangle3d& mySecondTriangle) {
-    return myFirstTriangle.point1 == mySecondTriangle.point1 &&
+    return ( 
+        myFirstTriangle.point1 == mySecondTriangle.point1 &&
         myFirstTriangle.point2 == mySecondTriangle.point2 &&
-        myFirstTriangle.point3 == mySecondTriangle.point3;
+        myFirstTriangle.point3 == mySecondTriangle.point3
+    );
 }
 
 struct MyTetrahedron3d
@@ -116,10 +122,12 @@ struct MyTetrahedron3d
 inline
 bool
 operator==(const MyTetrahedron3d& myFirstTetrahedron, const MyTetrahedron3d& mySecondTetrahedron) {
-    return myFirstTetrahedron.point1 == mySecondTetrahedron.point1 &&
+    return (
+        myFirstTetrahedron.point1 == mySecondTetrahedron.point1 &&
         myFirstTetrahedron.point2 == mySecondTetrahedron.point2 &&
         myFirstTetrahedron.point3 == mySecondTetrahedron.point3 &&
-        myFirstTetrahedron.point4 == mySecondTetrahedron.point4;
+        myFirstTetrahedron.point4 == mySecondTetrahedron.point4
+    );
 }
 
 namespace opensolid
@@ -148,8 +156,8 @@ namespace opensolid
         const LineSegment3d
         operator()(const MyLineSegment3d& myLineSegment) const {
             return LineSegment3d(
-                Point3d::From(myLineSegment.startPoint),
-                Point3d::From(myLineSegment.endPoint)
+                Point3d::from(myLineSegment.startPoint),
+                Point3d::from(myLineSegment.endPoint)
             );
         }
     };
@@ -172,9 +180,9 @@ namespace opensolid
         const Triangle3d
         operator()(const MyTriangle3d& myTriangle) const {
             return Triangle3d(
-                Point3d::From(myTriangle.point1),
-                Point3d::From(myTriangle.point2),
-                Point3d::From(myTriangle.point3)
+                Point3d::from(myTriangle.point1),
+                Point3d::from(myTriangle.point2),
+                Point3d::from(myTriangle.point3)
             );
         }
     };
@@ -198,10 +206,10 @@ namespace opensolid
         const Tetrahedron3d
         operator()(const MyTetrahedron3d& myTetrahedron) const {
             return Tetrahedron3d(
-                Point3d::From(myTetrahedron.point1),
-                Point3d::From(myTetrahedron.point2),
-                Point3d::From(myTetrahedron.point3),
-                Point3d::From(myTetrahedron.point4)
+                Point3d::from(myTetrahedron.point1),
+                Point3d::from(myTetrahedron.point2),
+                Point3d::from(myTetrahedron.point3),
+                Point3d::from(myTetrahedron.point4)
             );
         }
     };
@@ -211,7 +219,7 @@ namespace opensolid
     {
         const MyTetrahedron3d
         operator()(const Tetrahedron3d& tetrahedron) const {
-           return MyTetrahedron3d(
+            return MyTetrahedron3d(
                 tetrahedron.vertex(0).to<MyPoint3d>(),
                 tetrahedron.vertex(1).to<MyPoint3d>(),
                 tetrahedron.vertex(2).to<MyPoint3d>(),
@@ -224,19 +232,19 @@ namespace opensolid
 TEST_CASE("Localization") {
     Triangle3d triangle3d(Point3d(1, 1, 1), Point3d(3, 1, 2), Point3d(2, 2, 4));
     PlanarCoordinateSystem3d xyCoordinateSystem(
-        Point3d::Origin(),
-        UnitVector3d::X(),
-        UnitVector3d::Y()
+        Point3d::origin(),
+        Vector3d::unitX(),
+        Vector3d::unitY()
     );
     PlanarCoordinateSystem3d yzCoordinateSystem(
-        Point3d::Origin(),
-        UnitVector3d::Y(),
-        UnitVector3d::Z()
+        Point3d::origin(),
+        Vector3d::unitY(),
+        Vector3d::unitZ()
     );
     PlanarCoordinateSystem3d xzCoordinateSystem(
-        Point3d::Origin(),
-        UnitVector3d::X(),
-        UnitVector3d::Z()
+        Point3d::origin(),
+        Vector3d::unitX(),
+        Vector3d::unitZ()
     );
 
     Triangle2d xyComponents = triangle3d / xyCoordinateSystem;
@@ -298,7 +306,7 @@ TEST_CASE("Triangle normal") {
 }
 
 TEST_CASE("Coordinate system") {
-    Triangle3d triangle(Point3d::Origin(), Point3d(2, 0, 0), Point3d(1, 2, 0));
+    Triangle3d triangle(Point3d::origin(), Point3d(2, 0, 0), Point3d(1, 2, 0));
     PlanarCoordinateSystem3d coordinateSystem = triangle.coordinateSystem();
 
     Point3d globalized = coordinateSystem * Point2d(0.5, 0.5);
@@ -316,7 +324,7 @@ TEST_CASE("Coordinate system") {
 
 TEST_CASE("1D line segment") {
     LineSegment3d lineSegment3d(Point3d(1, 2, 3), Point3d(4, 5, 6));
-    AxialCoordinateSystem3d axialCoordinateSystem(Point3d::Origin(), UnitVector3d::Y());
+    AxialCoordinateSystem3d axialCoordinateSystem(Point3d::origin(), Vector3d::unitY());
     
     LineSegment1d localized = lineSegment3d / axialCoordinateSystem;
     REQUIRE((localized.startVertex() - Point1d(2)).isZero());
@@ -330,7 +338,7 @@ TEST_CASE("1D line segment") {
 
 TEST_CASE("Set") {
     std::vector<Triangle3d> triangles(3);
-    triangles[0] = Triangle3d(Point3d::Origin(), Point3d(1, 0, 0), Point3d(0, 1, 0));
+    triangles[0] = Triangle3d(Point3d::origin(), Point3d(1, 0, 0), Point3d(0, 1, 0));
     triangles[1] = Triangle3d(Point3d(2, 1, 0), Point3d(3, 0, 0), Point3d(3, 1, 0));
     triangles[2] = Triangle3d(Point3d(0, 0, 1), Point3d(1, 0, 1), Point3d(1, 1, 1));
 
@@ -378,7 +386,7 @@ TEST_CASE("Triangle edges") {
     auto lengthAccumulator = [] (double lengthSoFar, const LineSegment2d& edge) {
         return lengthSoFar + edge.length();
     };
-    double circumference = Triangle2d::Unit().edges().fold(0.0, lengthAccumulator);
+    double circumference = Triangle2d::unit().edges().fold(0.0, lengthAccumulator);
     REQUIRE((circumference - (2.0 + sqrt(2.0))) == Zero());
 }
 
@@ -386,11 +394,11 @@ TEST_CASE("Tetrahedron vertices") {
     auto pointIsOrigin = [] (const Point3d& point) {
         return point.isOrigin();
     };
-    REQUIRE(Tetrahedron3d::Unit().vertices().where(pointIsOrigin).size() == 1);
+    REQUIRE(Tetrahedron3d::unit().vertices().where(pointIsOrigin).size() == 1);
 }
 
 TEST_CASE("Tetrahedron edges") {
-    double totalLength = Tetrahedron3d::Unit().edges().fold(
+    double totalLength = Tetrahedron3d::unit().edges().fold(
         0.0,
         [] (double lengthSoFar, const LineSegment3d& edge) {
             return lengthSoFar + edge.length();
@@ -400,7 +408,7 @@ TEST_CASE("Tetrahedron edges") {
 }
 
 TEST_CASE("Tetrahedron faces") {
-    double totalArea = Tetrahedron3d::Unit().faces().fold(
+    double totalArea = Tetrahedron3d::unit().faces().fold(
         0.0,
         [] (double areaSoFar, const Triangle3d& face) {
             return areaSoFar + face.area();
@@ -410,11 +418,11 @@ TEST_CASE("Tetrahedron faces") {
 }
 
 TEST_CASE("Line segment/plane intersection") {
-    Plane3d plane(Point3d(0, 0, 1), UnitVector3d::Z());
+    Plane3d plane(Point3d(0, 0, 1), Vector3d::unitZ());
 
     LineSegment3d firstSegment(Point3d(0, 0, 2), Point3d(2, 2, 2));
     LineSegment3d secondSegment(Point3d(0, 0, 1), Point3d(1, 1, 1));
-    LineSegment3d thirdSegment(Point3d::Origin(), Point3d(2, 2, 2));
+    LineSegment3d thirdSegment(Point3d::origin(), Point3d(2, 2, 2));
 
     auto firstIntersection = firstSegment.intersection(plane);
     auto secondIntersection = secondSegment.intersection(plane);
@@ -434,24 +442,24 @@ TEST_CASE("Triangle containment") {
     REQUIRE(triangle.contains(triangle.centroid()));
     REQUIRE(triangle.strictlyContains(triangle.centroid()));
     REQUIRE_FALSE(triangle.strictlyContains(triangle.vertex(2)));
-    REQUIRE_FALSE(triangle.contains(Point2d::Origin()));
-    REQUIRE_FALSE(triangle.strictlyContains(Point2d::Origin()));
+    REQUIRE_FALSE(triangle.contains(Point2d::origin()));
+    REQUIRE_FALSE(triangle.strictlyContains(Point2d::origin()));
 }
 
 TEST_CASE("Tetrahedron containment") {
-    Tetrahedron3d tetrahedron = Tetrahedron3d::Unit();
+    Tetrahedron3d tetrahedron = Tetrahedron3d::unit();
 
     REQUIRE(tetrahedron.contains(tetrahedron.vertex(2)));
     REQUIRE(tetrahedron.contains(tetrahedron.centroid()));
     REQUIRE(tetrahedron.strictlyContains(tetrahedron.centroid()));
     REQUIRE_FALSE(tetrahedron.strictlyContains(tetrahedron.vertex(2)));
-    REQUIRE(tetrahedron.contains(Point3d::Origin()));
-    REQUIRE_FALSE(tetrahedron.strictlyContains(Point3d::Origin()));
+    REQUIRE(tetrahedron.contains(Point3d::origin()));
+    REQUIRE_FALSE(tetrahedron.strictlyContains(Point3d::origin()));
 }
 
 TEST_CASE("Line segment conversion") {
     MyLineSegment3d initial = MyLineSegment3d(MyPoint3d(1, 0, 1), MyPoint3d(2, 0, 2));
-    LineSegment3d converted = LineSegment3d::From(initial);
+    LineSegment3d converted = LineSegment3d::from(initial);
     MyLineSegment3d final = converted.to<MyLineSegment3d>();
 
     REQUIRE((converted.squaredLength() - 2) == Zero());
@@ -460,7 +468,7 @@ TEST_CASE("Line segment conversion") {
 
 TEST_CASE("Triangle conversion") {
     MyTriangle3d initial = MyTriangle3d(MyPoint3d(1, 1, 0), MyPoint3d(2, 1, 0), MyPoint3d(1, 2, 0));
-    Triangle3d converted = Triangle3d::From(initial);
+    Triangle3d converted = Triangle3d::from(initial);
     MyTriangle3d final = converted.to<MyTriangle3d>();
 
     REQUIRE((converted.area() - 0.5) == Zero());
@@ -468,7 +476,7 @@ TEST_CASE("Triangle conversion") {
 }
 
 TEST_CASE("Tetrahedron conversion") {
-    Tetrahedron3d initial = Tetrahedron3d::Unit();
+    Tetrahedron3d initial = Tetrahedron3d::unit();
     MyTetrahedron3d converted = initial.to<MyTetrahedron3d>();
     MyTetrahedron3d expected = MyTetrahedron3d(
         MyPoint3d(0, 0, 0),
@@ -476,7 +484,7 @@ TEST_CASE("Tetrahedron conversion") {
         MyPoint3d(0, 1, 0),
         MyPoint3d(0, 0, 1)
     );
-    Tetrahedron3d final = Tetrahedron3d::From(converted);
+    Tetrahedron3d final = Tetrahedron3d::from(converted);
 
     REQUIRE(converted == expected);
     REQUIRE(initial == final);

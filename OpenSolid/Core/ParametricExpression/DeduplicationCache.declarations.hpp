@@ -26,5 +26,8 @@
 
 namespace opensolid
 {
-    class DeduplicationCache;
+    namespace detail
+    {
+        class DeduplicationCache;
+    }
 }

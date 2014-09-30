@@ -28,103 +28,139 @@
 
 namespace opensolid
 {   
-    int
-    ProductExpression::numDimensionsImpl() const {
-        return secondOperand()->numDimensions();
-    }
-    
-    void
-    ProductExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        ConstMatrixViewXd multiplierValues = evaluator.evaluate(firstOperand(), parameterView);
-        resultView = evaluator.evaluate(secondOperand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            resultView.column(columnIndex) *= multiplierValues(0, columnIndex);
+    namespace detail
+    {
+        int
+        ProductExpression::numDimensionsImpl() const {
+            return secondOperand()->numDimensions();
         }
-    }
-    
-    void
-    ProductExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        ConstIntervalMatrixViewXd multiplierValues =
-            evaluator.evaluate(firstOperand(), parameterView);
-        resultView = evaluator.evaluate(secondOperand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            resultView.column(columnIndex) *= multiplierValues(0, columnIndex);
+        
+        void
+        ProductExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(secondOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd multiplierValues, MatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results.column(columnIndex) *= multiplierValues(0, columnIndex);
+                    }
+                }
+            );
         }
-    }
+        
+        void
+        ProductExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(secondOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd multiplierValues, IntervalMatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results.column(columnIndex) *= multiplierValues(0, columnIndex);
+                    }
+                }
+            );
+        }
 
-    void
-    ProductExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        double multiplierValue = evaluator.evaluate(firstOperand(), parameterView).value();
-        ConstMatrixViewXd multiplicandValue =
-            evaluator.evaluate(secondOperand(), parameterView);
-        ConstMatrixViewXd multiplierJacobian =
-            evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstMatrixViewXd multiplicandJacobian =
-            evaluator.evaluateJacobian(secondOperand(), parameterView);
-        resultView =
-            multiplierValue * multiplicandJacobian + multiplicandValue * multiplierJacobian;
-    }
-    
-    void
-    ProductExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        Interval multiplierValue = evaluator.evaluate(firstOperand(), parameterView).value();
-        ConstIntervalMatrixViewXd multiplicandValue =
-            evaluator.evaluate(secondOperand(), parameterView);
-        ConstIntervalMatrixViewXd multiplierJacobian =
-            evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXd multiplicandJacobian =
-            evaluator.evaluateJacobian(secondOperand(), parameterView);
-        resultView =
-            multiplierValue * multiplicandJacobian + multiplicandValue * multiplierJacobian;
-    }
+        void
+        ProductExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(secondOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.createTemporary(numDimensions(), numParameters()),
+                resultID,
+                [] (
+                    ConstMatrixViewXd multiplierValues,
+                    ConstMatrixViewXd multiplicandValues,
+                    ConstMatrixViewXd multiplierJacobian,
+                    MatrixViewXd tempProduct,
+                    MatrixViewXd results
+                ) {
+                    double multiplierValue = multiplierValues.value();
+                    results *= multiplierValue;
+                    tempProduct.setProduct(multiplicandValues, multiplierJacobian);
+                    results += tempProduct;
+                }
+            );
+        }
+        
+        void
+        ProductExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(secondOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(firstOperand(), parameterID),
+                expressionCompiler.createTemporary(numDimensions(), numParameters()),
+                resultID,
+                [] (
+                    ConstIntervalMatrixViewXd multiplierValues,
+                    ConstIntervalMatrixViewXd multiplicandValues,
+                    ConstIntervalMatrixViewXd multiplierJacobian,
+                    IntervalMatrixViewXd tempProduct,
+                    IntervalMatrixViewXd results
+                ) {
+                    Interval multiplierValue = multiplierValues.value();
+                    results *= multiplierValue;
+                    tempProduct.setProduct(multiplicandValues, multiplierJacobian);
+                    results += tempProduct;
+                }
+            );
+        }
 
-    ExpressionImplementationPtr
-    ProductExpression::derivativeImpl(int parameterIndex) const {
-        return firstOperand()->derivative(parameterIndex) * secondOperand()
-            + firstOperand() * secondOperand()->derivative(parameterIndex);
-    }
+        ExpressionImplementationPtr
+        ProductExpression::derivativeImpl(int parameterIndex) const {
+            return (
+                firstOperand()->derivative(parameterIndex) * secondOperand()
+                + firstOperand() * secondOperand()->derivative(parameterIndex)
+            );
+        }
 
-    bool
-    ProductExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other, true);
-    }
-    
-    void
-    ProductExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "ProductExpression" << std::endl;
-        firstOperand()->debug(stream, indent + 1);
-        secondOperand()->debug(stream, indent + 1);
-    }
+        bool
+        ProductExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other, true);
+        }
+        
+        void
+        ProductExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "ProductExpression" << std::endl;
+            firstOperand()->debug(stream, indent + 1);
+            secondOperand()->debug(stream, indent + 1);
+        }
 
-    ExpressionImplementationPtr
-    ProductExpression::withNewOperandsImpl(
-        const ExpressionImplementationPtr& newFirstOperand,
-        const ExpressionImplementationPtr& newSecondOperand
-    ) const {
-        return newFirstOperand * newSecondOperand;
-    }
+        ExpressionImplementationPtr
+        ProductExpression::withNewOperandsImpl(
+            const ExpressionImplementationPtr& newFirstOperand,
+            const ExpressionImplementationPtr& newSecondOperand
+        ) const {
+            return newFirstOperand * newSecondOperand;
+        }
 
-    ProductExpression::ProductExpression(
-        const ExpressionImplementationPtr& multiplier,
-        const ExpressionImplementationPtr& multiplicand
-    ) : BinaryOperation(multiplier, multiplicand) {
+        ProductExpression::ProductExpression(
+            const ExpressionImplementationPtr& multiplier,
+            const ExpressionImplementationPtr& multiplicand
+        ) : BinaryOperation(multiplier, multiplicand) {
 
-        assert(multiplier->numDimensions() == 1);
+            assert(multiplier->numDimensions() == 1);
+        }
     }
 }

@@ -52,8 +52,6 @@ namespace opensolid
             VectorBase(TScalar x, TScalar y, TScalar z);
 
             VectorBase(const Matrix<TScalar, iNumDimensions, 1>& components);
-
-            VectorBase(const TScalar* sourcePtr);
         public:
             TScalar
             squaredNorm() const;
@@ -79,10 +77,10 @@ namespace opensolid
             intersection(const Vector<TOtherScalar, iNumDimensions>& other) const;
 
             static const Vector<TScalar, iNumDimensions>
-            Zero();
+            zero();
 
             static const Vector<TScalar, iNumDimensions>
-            Random();
+            random();
         };
     }
 }

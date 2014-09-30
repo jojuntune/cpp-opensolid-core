@@ -28,7 +28,10 @@
 
 namespace opensolid
 {
-    class ExpressionImplementation;
-    
-    typedef boost::intrusive_ptr<const ExpressionImplementation> ExpressionImplementationPtr;
+    namespace detail
+    {
+        class ExpressionImplementation;
+        
+        typedef boost::intrusive_ptr<const ExpressionImplementation> ExpressionImplementationPtr;
+    }
 }

@@ -28,100 +28,129 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 
 namespace opensolid
-{   
-    int
-    SquareRootExpression::numDimensionsImpl() const {
-        return 1;
-    }
-    
-    void
-    SquareRootExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluator.evaluate(operand(), parameterView).map(
-            [] (double value) {
-                if (value < Zero()) {
-                    throw Error(new PlaceholderError());
-                }
-                return value > 0.0 ? sqrt(value) : 0.0;
-            },
-            resultView
-        );
-    }
-    
-    void
-    SquareRootExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluator.evaluate(operand(), parameterView).map(
-            [] (Interval value) {
-                return sqrt(value);
-            },
-            resultView
-        );
-    }
-
-    void
-    SquareRootExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        double operandValue = evaluator.evaluate(operand(), parameterView).value();
-        if (operandValue <= Zero()) {
-            throw Error(new PlaceholderError());
+{ 
+    namespace detail
+    {
+        int
+        SquareRootExpression::numDimensionsImpl() const {
+            return 1;
         }
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView *= 0.5 / sqrt(operandValue);
-    }
-    
-    void
-    SquareRootExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        Interval operandValue = evaluator.evaluate(operand(), parameterView).value();
-        if (operandValue <= Zero()) {
-            throw Error(new PlaceholderError());
-        }
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView *= 0.5 / sqrt(operandValue);
-    }
-
-    ExpressionImplementationPtr
-    SquareRootExpression::derivativeImpl(int parameterIndex) const {
-        return 0.5 * operand()->derivative(parameterIndex) / self();
-    }
-
-    bool
-    SquareRootExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other);
-    }
-    
-    ExpressionImplementationPtr
-    SquareRootExpression::squaredNormImpl() const {
-        return operand();
-    }
-    
-    void
-    SquareRootExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "SquareRootExpression" << std::endl;
-        operand()->debug(stream, indent + 1);
-    }
-
-    ExpressionImplementationPtr
-    SquareRootExpression::withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const {
-        return sqrt(newOperand);
-    }
-
-    SquareRootExpression::SquareRootExpression(const ExpressionImplementationPtr& operand) :
-        UnaryOperation(operand) {
         
-        assert(operand->numDimensions() == 1);
+        void
+        SquareRootExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (double value) {
+                            if (value < Zero()) {
+                                throw Error(new PlaceholderError());
+                            }
+                            return value > 0.0 ? opensolid::sqrt(value) : 0.0;
+                        }
+                    );
+                }
+            );
+        }
+        
+        void
+        SquareRootExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (Interval value) {
+                            return opensolid::sqrt(value);
+                        }
+                    );
+                }
+            );
+        }
+
+        void
+        SquareRootExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
+                    double operandValue = operandValues.value();
+                    if (operandValue <= Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= (0.5 / opensolid::sqrt(operandValue));
+                }
+            );
+        }
+        
+        void
+        SquareRootExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
+                    Interval operandValue = operandValues.value();
+                    if (operandValue.upperBound() <= Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= (0.5 / opensolid::sqrt(operandValue));
+                }
+            );
+        }
+
+        ExpressionImplementationPtr
+        SquareRootExpression::derivativeImpl(int parameterIndex) const {
+            return 0.5 * operand()->derivative(parameterIndex) / self();
+        }
+
+        bool
+        SquareRootExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other);
+        }
+        
+        ExpressionImplementationPtr
+        SquareRootExpression::squaredNormImpl() const {
+            return operand();
+        }
+        
+        void
+        SquareRootExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "SquareRootExpression" << std::endl;
+            operand()->debug(stream, indent + 1);
+        }
+
+        ExpressionImplementationPtr
+        SquareRootExpression::withNewOperandImpl(
+            const ExpressionImplementationPtr& newOperand
+        ) const {
+            return sqrt(newOperand);
+        }
+
+        SquareRootExpression::SquareRootExpression(const ExpressionImplementationPtr& operand) :
+            UnaryOperation(operand) {
+            
+            assert(operand->numDimensions() == 1);
+        }
     }
 }

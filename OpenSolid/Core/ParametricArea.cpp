@@ -44,30 +44,31 @@ namespace opensolid
     }
 
     ParametricArea2d::ParametricArea2d(
-        const ParametricExpression<2, 2>& expression,
+        const ParametricExpression<Point<2>, Point<2>>& expression,
         const BoundedArea2d& domain
     ) : _expression(expression),
         _domain(domain),
-        _bounds(expression.evaluate(domain.bounds().components())) {
+        _bounds(expression.evaluate(domain.bounds())) {
     }
 
     Point2d
-    ParametricArea2d::evaluate(double u, double v) const {
-        return Point2d(expression().evaluate(u, v));
+    ParametricArea2d::evaluate(const Point2d& parameterValues) const {
+        return expression().evaluate(parameterValues);
     }
 
     Box2d
-    ParametricArea2d::evaluate(Interval u, Interval v) const {
-        return Box2d(expression().evaluate(u, v));
+    ParametricArea2d::evaluate(const Box2d& parameterBounds) const {
+        return expression().evaluate(parameterBounds);
     }
 
     ParametricArea2d
     ScalingFunction<ParametricArea2d>::operator()(
         const ParametricArea2d& parametricArea,
+        const Point2d& originPoint,
         double scale
     ) const {
         return ParametricArea2d(
-            scale * parametricArea.expression(),
+            scaled(parametricArea.expression(), originPoint, scale),
             parametricArea.domain()
         );
     }
@@ -78,7 +79,7 @@ namespace opensolid
         const Vector2d& vector
     ) const {
         return ParametricArea2d(
-            parametricArea.expression() + vector.components(),
+            parametricArea.expression() + vector,
             parametricArea.domain()
         );
     }
@@ -86,18 +87,25 @@ namespace opensolid
     ParametricArea2d
     TransformationFunction<ParametricArea2d, 2>::operator()(
         const ParametricArea2d& parametricArea,
-        const Matrix2d& matrix
+        const Point2d& originPoint,
+        const Matrix2d& transformationMatrix,
+        const Point2d& destinationPoint
     ) const {
         return ParametricArea2d(
-            matrix * parametricArea.expression(),
+            transformed(
+                parametricArea.expression(),
+                originPoint,
+                transformationMatrix,
+                destinationPoint
+            ),
             parametricArea.domain()
         );
     }
 
     ParametricArea2d
-    MorphingFunction<ParametricArea2d, 2>::operator()(
+    MorphingFunction<ParametricArea2d, ParametricExpression<Point2d, Point2d>>::operator()(
         const ParametricArea2d& parametricArea,
-        const ParametricExpression<2, 2>& morphingExpression
+        const ParametricExpression<Point2d, Point2d>& morphingExpression
     ) const {
         return ParametricArea2d(
             morphingExpression.composed(parametricArea.expression()),

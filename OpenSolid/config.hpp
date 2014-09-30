@@ -99,6 +99,10 @@ namespace opensolid
     using std::pow;
 }
 
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
 #ifndef INFINITY
     #define INFINITY std::numeric_limits<double>::infinity()
 #endif

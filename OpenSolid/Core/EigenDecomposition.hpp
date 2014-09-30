@@ -36,7 +36,7 @@ namespace opensolid
     inline
     EigenDecomposition1d::EigenDecomposition(const detail::MatrixInterface<TDerived>& matrix) :
         _eigenvalues(matrix),
-        _eigenvectors(Matrix1d::Ones()) {
+        _eigenvectors(1.0) {
     }
 
     inline

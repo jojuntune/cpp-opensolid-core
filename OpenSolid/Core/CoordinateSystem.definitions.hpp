@@ -50,7 +50,10 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
-    struct MorphedType<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
+    struct MorphedType<
+        CoordinateSystem<iNumDimensions, iNumAxes>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         typedef CoordinateSystem<iNumResultDimensions, iNumAxes> Type;
     };
@@ -60,6 +63,9 @@ namespace opensolid
         public Transformable<CoordinateSystem<iNumDimensions, iNumAxes>>,
         public Convertible<CoordinateSystem<iNumDimensions, iNumAxes>>
     {
+    public:
+        static const int NumDimensions = iNumDimensions;
+        static const int NumAxes = iNumAxes;
     private:
         Point<iNumDimensions> _originPoint;
         Matrix<double, iNumDimensions, iNumAxes> _basisMatrix;
@@ -172,7 +178,49 @@ namespace opensolid
         normalized() const;
 
         static const CoordinateSystem<iNumDimensions, iNumAxes>
-        Global();
+        x();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        y();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        z();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        xy();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        xz();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        yx();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        yz();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        zx();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        zy();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        xyz();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        xzy();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        yxz();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        yzx();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        zxy();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        zyx();
     };
 
     typedef CoordinateSystem<1, 1> CoordinateSystem1d;
@@ -184,12 +232,33 @@ namespace opensolid
     typedef CoordinateSystem<3, 2> PlanarCoordinateSystem3d;
     typedef CoordinateSystem<3, 3> CoordinateSystem3d;
 
+    template <class TDerived, int iNumAxes>
+    typename LocalizedType<
+        TDerived,
+        CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>
+    >::Type
+    operator/(
+        const Transformable<TDerived>& transformable,
+        const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
+    );
+
+    template <class TDerived, int iNumDimensions>
+    typename GlobalizedType<
+        TDerived,
+        CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>
+    >::Type
+    operator*(
+        const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem,
+        const Transformable<TDerived>& transformable
+    );
+
     template <int iNumDimensions, int iNumAxes>
     struct ScalingFunction<CoordinateSystem<iNumDimensions, iNumAxes>>
     {
         const CoordinateSystem<iNumDimensions, iNumAxes>
         operator()(
             const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
+            const Point<iNumDimensions>& originPoint,
             double scale
         ) const;
     };
@@ -210,17 +279,25 @@ namespace opensolid
         const CoordinateSystem<iNumResultDimensions, iNumAxes>
         operator()(
             const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+            const Point<iNumResultDimensions>& destinationPoint
         ) const;
     };
 
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
-    struct MorphingFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
+    struct MorphingFunction<
+        CoordinateSystem<iNumDimensions, iNumAxes>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         const CoordinateSystem<iNumResultDimensions, iNumAxes>
         operator()(
             const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+            const ParametricExpression<
+                Point<iNumResultDimensions>,
+                Point<iNumDimensions>
+            >& morphingExpression
         ) const;
     };
 }

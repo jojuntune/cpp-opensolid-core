@@ -33,162 +33,188 @@
 #include <OpenSolid/Core/ParametricExpression/ConstantExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/IdentityExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ParameterExpression.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    ZeroExpressionConstructor<iNumDimensions, iNumParameters>::Zero() {
-        return new ConstantExpression(ColumnMatrixXd::Zero(iNumDimensions), iNumParameters);
-    }
+    namespace detail
+    {
+        template <class TValue, class TParameter>
+        ParametricExpression<TValue, TParameter>
+        ZeroExpressionConstructor<TValue, TParameter>::zero() {
+            return new ConstantExpression(
+                ColumnMatrixXd::zero(NumDimensions<TValue>::Value),
+                NumDimensions<TParameter>::Value
+            );
+        }
 
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    ConstantExpressionConstructor<iNumDimensions, iNumParameters>::Constant(
-        const Matrix<double, iNumDimensions, 1>& columnMatrix
-    ) {
-        return new ConstantExpression(columnMatrix, iNumParameters);
-    }
+        template <class TParameter>
+        ParametricExpression<double, TParameter>
+        ConstantExpressionConstructor<double, TParameter>::constant(double value) {
+            return new ConstantExpression(
+                ColumnMatrixXd::constant(1, value),
+                NumDimensions<TParameter>::Value
+            );
+        }
 
-    template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    ConstantExpressionConstructor<1, iNumParameters>::Constant(double value) {
-        return new ConstantExpression(value, iNumParameters);
-    }
+        template <int iNumDimensions, class TParameter>
+        ParametricExpression<Vector<double, iNumDimensions>, TParameter>
+        ConstantExpressionConstructor<Vector<double, iNumDimensions>, TParameter>::constant(
+            const Vector<double, iNumDimensions>& vector
+        ) {
+            return new ConstantExpression(vector.components(), NumDimensions<TParameter>::Value);
+        }
 
-    template <int iNumDimensions>
-    ParametricExpression<iNumDimensions, iNumDimensions>
-    IdentityExpressionConstructor<iNumDimensions, iNumDimensions>::Identity() {
-        return new IdentityExpression(iNumDimensions);
-    }
+        template <int iNumDimensions, class TParameter>
+        ParametricExpression<Point<iNumDimensions>, TParameter>
+        ConstantExpressionConstructor<Point<iNumDimensions>, TParameter>::constant(
+            const Point<iNumDimensions>& point
+        ) {
+            return new ConstantExpression(point.components(), NumDimensions<TParameter>::Value);
+        }
 
-    template <int iNumParameters>
-    ParametricExpression<2, iNumParameters>
-    FromComponentsExpressionConstructors<2, iNumParameters>::FromComponents(
-        const ParametricExpression<1, iNumParameters>& x,
-        const ParametricExpression<1, iNumParameters>& y
-    ) {
-        return x.concatenated(y);
-    }
+        template <class TValue>
+        ParametricExpression<TValue, TValue>
+        IdentityExpressionConstructor<TValue, TValue>::identity() {
+            return new IdentityExpression(NumDimensions<TValue>::Value);
+        }
 
-    template <int iNumParameters>
-    ParametricExpression<2, iNumParameters>
-    FromComponentsExpressionConstructors<2, iNumParameters>::FromComponents(
-        const ParametricExpression<1, iNumParameters>& x,
-        double y
-    ) {
-        ParametricExpression<1, iNumParameters> yExpression(
-            new ConstantExpression(y, iNumParameters)
-        );
-        return x.concatenated(yExpression);
-    }
+        template <class TValue, class TParameter>
+        ParametricExpression<TValue, TParameter>
+        FromComponentsExpressionConstructors<TValue, 2, TParameter>::fromComponents(
+            const ParametricExpression<double, TParameter>& x,
+            const ParametricExpression<double, TParameter>& y
+        ) {
+            return x.implementation()->concatenated(y.implementation());
+        }
 
-    template <int iNumParameters>
-    ParametricExpression<2, iNumParameters>
-    FromComponentsExpressionConstructors<2, iNumParameters>::FromComponents(
-        double x,
-        const ParametricExpression<1, iNumParameters>& y
-    ) {
-        ParametricExpression<1, iNumParameters> xExpression(
-            new ConstantExpression(x, iNumParameters)
-        );
-        return xExpression.concatenated(y);
-    }
+        template <class TValue, class TParameter>
+        ParametricExpression<TValue, TParameter>
+        FromComponentsExpressionConstructors<TValue, 2, TParameter>::fromComponents(
+            const ParametricExpression<double, TParameter>& x,
+            double y
+        ) {
+            ExpressionImplementationPtr yImplementation(
+                new ConstantExpression(y, NumDimensions<TParameter>::Value)
+            );
+            return x.implementation()->concatenated(yImplementation);
+        }
 
-    template <int iNumParameters>
-    ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
-        const ParametricExpression<1, iNumParameters>& x,
-        const ParametricExpression<1, iNumParameters>& y,
-        const ParametricExpression<1, iNumParameters>& z
-    ) {
-        return x.concatenated(y).concatenated(z);
-    }
+        template <class TValue, class TParameter>
+        ParametricExpression<TValue, TParameter>
+        FromComponentsExpressionConstructors<TValue, 2, TParameter>::fromComponents(
+            double x,
+            const ParametricExpression<double, TParameter>& y
+        ) {
+            ExpressionImplementationPtr xImplementation(
+                new ConstantExpression(x, NumDimensions<TParameter>::Value)
+            );
+            return xImplementation->concatenated(y.implementation());
+        }
 
-    template <int iNumParameters>
-    ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
-        const ParametricExpression<1, iNumParameters>& x,
-        const ParametricExpression<1, iNumParameters>& y,
-        double z
-    ) {
-        ParametricExpression<1, iNumParameters> zExpression(
-            new ConstantExpression(z, iNumParameters)
-        );
-        return x.concatenated(y).concatenated(zExpression);
-    }
-    
-    template <int iNumParameters>
-    ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
-        const ParametricExpression<1, iNumParameters>& x,
-        double y,
-        const ParametricExpression<1, iNumParameters>& z
-    ) {
-        ParametricExpression<1, iNumParameters> yExpression(
-            new ConstantExpression(y, iNumParameters)
-        );
-        return x.concatenated(yExpression).concatenated(z);
-    }
-    
-    template <int iNumParameters>
-    ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
-        double x,
-        const ParametricExpression<1, iNumParameters>& y,
-        const ParametricExpression<1, iNumParameters>& z
-    ) {
-        ParametricExpression<1, iNumParameters> xExpression(
-            new ConstantExpression(x, iNumParameters)
-        );
-        return xExpression.concatenated(y).concatenated(z);
-    }
-    
-    template <int iNumParameters>
-    ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
-        const ParametricExpression<1, iNumParameters>& x,
-        double y,
-        double z
-    ) {
-        ParametricExpression<1, iNumParameters> yExpression(
-            new ConstantExpression(y, iNumParameters)
-        );
-        ParametricExpression<1, iNumParameters> zExpression(
-            new ConstantExpression(z, iNumParameters)
-        );
-        return x.concatenated(yExpression).concatenated(zExpression);
-    }
-    
-    template <int iNumParameters>
-    ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
-        double x,
-        const ParametricExpression<1, iNumParameters>& y,
-        double z
-    ) {
-        ParametricExpression<1, iNumParameters> xExpression(
-            new ConstantExpression(x, iNumParameters)
-        );
-        ParametricExpression<1, iNumParameters> zExpression(
-            new ConstantExpression(z, iNumParameters)
-        );
-        return xExpression.concatenated(y).concatenated(zExpression);
-    }
-    
-    template <int iNumParameters>
-    ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
-        double x,
-        double y,
-        const ParametricExpression<1, iNumParameters>& z
-    ) {
-        ParametricExpression<1, iNumParameters> xExpression(
-            new ConstantExpression(x, iNumParameters)
-        );
-        ParametricExpression<1, iNumParameters> yExpression(
-            new ConstantExpression(y, iNumParameters)
-        );
-        return xExpression.concatenated(yExpression).concatenated(z);
+        template <class TValue, class TParameter>
+        ParametricExpression<TValue, TParameter>
+        FromComponentsExpressionConstructors<TValue, 3, TParameter>::fromComponents(
+            const ParametricExpression<double, TParameter>& x,
+            const ParametricExpression<double, TParameter>& y,
+            const ParametricExpression<double, TParameter>& z
+        ) {
+            return x.implementation()->concatenated(y.implementation())->concatenated(
+                z.implementation()
+            );
+        }
+
+        template <class TValue, class TParameter>
+        ParametricExpression<TValue, TParameter>
+        FromComponentsExpressionConstructors<TValue, 3, TParameter>::fromComponents(
+            const ParametricExpression<double, TParameter>& x,
+            const ParametricExpression<double, TParameter>& y,
+            double z
+        ) {
+            ExpressionImplementationPtr zImplementation(
+                new ConstantExpression(z, NumDimensions<TParameter>::Value)
+            );
+            return x.implementation()->concatenated(y.implementation())->concatenated(
+                zImplementation
+            );
+        }
+        
+        template <class TValue, class TParameter>
+        ParametricExpression<TValue, TParameter>
+        FromComponentsExpressionConstructors<TValue, 3, TParameter>::fromComponents(
+            const ParametricExpression<double, TParameter>& x,
+            double y,
+            const ParametricExpression<double, TParameter>& z
+        ) {
+            ExpressionImplementationPtr yImplementation(
+                new ConstantExpression(y, NumDimensions<TParameter>::Value)
+            );
+            return x.implementation()->concatenated(yImplementation)->concatenated(
+                z.implementation()
+            );
+        }
+        
+        template <class TValue, class TParameter>
+        ParametricExpression<TValue, TParameter>
+        FromComponentsExpressionConstructors<TValue, 3, TParameter>::fromComponents(
+            double x,
+            const ParametricExpression<double, TParameter>& y,
+            const ParametricExpression<double, TParameter>& z
+        ) {
+            ExpressionImplementationPtr xImplementation(
+                new ConstantExpression(x, NumDimensions<TParameter>::Value)
+            );
+            return xImplementation->concatenated(y.implementation())->concatenated(
+                z.implementation()
+            );
+        }
+        
+        template <class TValue, class TParameter>
+        ParametricExpression<TValue, TParameter>
+        FromComponentsExpressionConstructors<TValue, 3, TParameter>::fromComponents(
+            const ParametricExpression<double, TParameter>& x,
+            double y,
+            double z
+        ) {
+            ExpressionImplementationPtr yImplementation(
+                new ConstantExpression(y, NumDimensions<TParameter>::Value)
+            );
+            ExpressionImplementationPtr zImplementation(
+                new ConstantExpression(z, NumDimensions<TParameter>::Value)
+            );
+            return x.implementation()->concatenated(yImplementation)->concatenated(zImplementation);
+        }
+        
+        template <class TValue, class TParameter>
+        ParametricExpression<TValue, TParameter>
+        FromComponentsExpressionConstructors<TValue, 3, TParameter>::fromComponents(
+            double x,
+            const ParametricExpression<double, TParameter>& y,
+            double z
+        ) {
+            ExpressionImplementationPtr xImplementation(
+                new ConstantExpression(x, NumDimensions<TParameter>::Value)
+            );
+            ExpressionImplementationPtr zImplementation(
+                new ConstantExpression(z, NumDimensions<TParameter>::Value)
+            );
+            return xImplementation->concatenated(y.implementation())->concatenated(zImplementation);
+        }
+        
+        template <class TValue, class TParameter>
+        ParametricExpression<TValue, TParameter>
+        FromComponentsExpressionConstructors<TValue, 3, TParameter>::fromComponents(
+            double x,
+            double y,
+            const ParametricExpression<double, TParameter>& z
+        ) {
+            ExpressionImplementationPtr xImplementation(
+                new ConstantExpression(x, NumDimensions<TParameter>::Value)
+            );
+            ExpressionImplementationPtr yImplementation(
+                new ConstantExpression(y, NumDimensions<TParameter>::Value)
+            );
+            return xImplementation->concatenated(yImplementation)->concatenated(z.implementation());
+        }
     }
 }

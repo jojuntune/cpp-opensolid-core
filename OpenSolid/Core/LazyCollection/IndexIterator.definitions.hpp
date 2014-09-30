@@ -71,11 +71,11 @@ namespace opensolid
         public:
             static
             IndexIterator
-            Begin(const TCollection* collection);
+            begin(const TCollection* collection);
 
             static
             IndexIterator
-            End(const TCollection* collection);
+            end(const TCollection* collection);
         };
     }
 }

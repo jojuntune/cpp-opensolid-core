@@ -31,20 +31,23 @@
 
 namespace opensolid
 {
-    class DeduplicationCache
+    namespace detail
     {
-    private:
-        std::vector<ExpressionImplementationPtr> _cache;
+        class DeduplicationCache
+        {
+        private:
+            std::vector<ExpressionImplementationPtr> _cache;
 
-        std::vector<ExpressionImplementationPtr>::iterator
-        begin();
+            std::vector<ExpressionImplementationPtr>::iterator
+            begin();
 
-        std::vector<ExpressionImplementationPtr>::iterator
-        end();
+            std::vector<ExpressionImplementationPtr>::iterator
+            end();
 
-        void
-        add(const ExpressionImplementationPtr& functionImplementation);
+            void
+            add(const ExpressionImplementationPtr& functionImplementation);
 
-        friend class ExpressionImplementation;
-    };
+            friend class ExpressionImplementation;
+        };
+    }
 }

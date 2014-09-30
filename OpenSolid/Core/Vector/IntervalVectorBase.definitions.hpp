@@ -53,8 +53,6 @@ namespace opensolid
             IntervalVectorBase(Interval x, Interval y, Interval z);
 
             IntervalVectorBase(const Matrix<Interval, iNumDimensions, 1>& components);
-
-            IntervalVectorBase(const Interval* sourcePtr);
         public:
             const Vector<Interval, iNumDimensions>
             normalized() const;
@@ -144,13 +142,13 @@ namespace opensolid
             operator-=(const Vector<Interval, iNumDimensions>& other);
 
             static const Vector<Interval, iNumDimensions>
-            Unit();
+            unit();
 
             static const Vector<Interval, iNumDimensions>
-            Empty();
+            empty();
 
             static const Vector<Interval, iNumDimensions>
-            Whole();
+            whole();
         };
     }
 }

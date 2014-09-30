@@ -39,6 +39,6 @@ namespace opensolid
 
         template <class TOther>
         static const TDerived
-        From(const TOther& argument);
+        from(const TOther& argument);
     };
 }

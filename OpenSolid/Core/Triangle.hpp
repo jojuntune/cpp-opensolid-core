@@ -102,21 +102,24 @@ namespace opensolid
         const Triangle<iNumDimensions>& secondTriangle,
         double precision
     ) const {
-        return equalityFunction(firstTriangle.vertex(0), secondTriangle.vertex(0), precision) &&
+        return (
+            equalityFunction(firstTriangle.vertex(0), secondTriangle.vertex(0), precision) &&
             equalityFunction(firstTriangle.vertex(1), secondTriangle.vertex(1), precision) &&
-            equalityFunction(firstTriangle.vertex(2), secondTriangle.vertex(2), precision);
+            equalityFunction(firstTriangle.vertex(2), secondTriangle.vertex(2), precision)
+        );
     }
 
     template <int iNumDimensions>
     Triangle<iNumDimensions>
     ScalingFunction<Triangle<iNumDimensions>>::operator()(
         const Triangle<iNumDimensions>& triangle,
+        const Point<iNumDimensions>& originPoint,
         double scale
     ) const {
         return Triangle<iNumDimensions>(
-            scalingFunction(triangle.vertex(0), scale),
-            scalingFunction(triangle.vertex(1), scale),
-            scalingFunction(triangle.vertex(2), scale)
+            scaled(triangle.vertex(0), originPoint, scale),
+            scaled(triangle.vertex(1), originPoint, scale),
+            scaled(triangle.vertex(2), originPoint, scale)
         );
     }
 
@@ -127,9 +130,9 @@ namespace opensolid
         const Vector<double, iNumDimensions>& vector
     ) const {
         return Triangle<iNumDimensions>(
-            translationFunction(triangle.vertex(0), vector),
-            translationFunction(triangle.vertex(1), vector),
-            translationFunction(triangle.vertex(2), vector)
+            translated(triangle.vertex(0), vector),
+            translated(triangle.vertex(1), vector),
+            translated(triangle.vertex(2), vector)
         );
     }
 
@@ -137,25 +140,33 @@ namespace opensolid
     Triangle<iNumResultDimensions>
     TransformationFunction<Triangle<iNumDimensions>, iNumResultDimensions>::operator()(
         const Triangle<iNumDimensions>& triangle,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
     ) const {
         return Triangle<iNumResultDimensions>(
-            transformationFunction(triangle.vertex(0), matrix),
-            transformationFunction(triangle.vertex(1), matrix),
-            transformationFunction(triangle.vertex(2), matrix)
+            transformed(triangle.vertex(0), originPoint, transformationMatrix, destinationPoint),
+            transformed(triangle.vertex(1), originPoint, transformationMatrix, destinationPoint),
+            transformed(triangle.vertex(2), originPoint, transformationMatrix, destinationPoint)
         );
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
     Triangle<iNumResultDimensions>
-    MorphingFunction<Triangle<iNumDimensions>, iNumResultDimensions>::operator()(
+    MorphingFunction<
+        Triangle<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >::operator()(
         const Triangle<iNumDimensions>& triangle,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        const ParametricExpression<
+            Point<iNumResultDimensions>,
+            Point<iNumDimensions>
+        >& morphingExpression
     ) const {
         return Triangle<iNumResultDimensions>(
-            morphingFunction(triangle.vertex(0), morphingExpression),
-            morphingFunction(triangle.vertex(1), morphingExpression),
-            morphingFunction(triangle.vertex(2), morphingExpression)
+            morphed(triangle.vertex(0), morphingExpression),
+            morphed(triangle.vertex(1), morphingExpression),
+            morphed(triangle.vertex(2), morphingExpression)
         );
     }
 }

@@ -30,51 +30,57 @@
 
 namespace opensolid
 {
-    class UnaryOperation :
-        public ExpressionImplementation
+    namespace detail
     {
-    private:
-        ExpressionImplementationPtr _operand;
-        
-        OPENSOLID_CORE_EXPORT
-        int
-        numParametersImpl() const override;
+        class UnaryOperation :
+            public ExpressionImplementation
+        {
+        private:
+            ExpressionImplementationPtr _operand;
+            
+            OPENSOLID_CORE_EXPORT
+            int
+            numParametersImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        composedImpl(const ExpressionImplementationPtr& innerExpression) const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            composedImpl(const ExpressionImplementationPtr& innerExpression) const override;
 
-        OPENSOLID_CORE_EXPORT
-        virtual ExpressionImplementationPtr
-        withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const = 0;
-    protected:
-        OPENSOLID_CORE_EXPORT
-        bool
-        duplicateOperands(const ExpressionImplementationPtr& other) const;
-    public:
-        OPENSOLID_CORE_EXPORT
-        UnaryOperation(const ExpressionImplementationPtr& operand);
-        
-        const ExpressionImplementationPtr&
-        operand() const;
+            OPENSOLID_CORE_EXPORT
+            virtual ExpressionImplementationPtr
+            withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const = 0;
+        protected:
+            OPENSOLID_CORE_EXPORT
+            bool
+            duplicateOperands(const ExpressionImplementationPtr& other) const;
+        public:
+            OPENSOLID_CORE_EXPORT
+            UnaryOperation(const ExpressionImplementationPtr& operand);
+            
+            const ExpressionImplementationPtr&
+            operand() const;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        withNewOperand(const ExpressionImplementationPtr& newOperand) const;
-    };
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            withNewOperand(const ExpressionImplementationPtr& newOperand) const;
+        };
+    }
 }
 
 ////////// Implementation //////////
 
 namespace opensolid
 {
-    inline
-    const ExpressionImplementationPtr&
-    UnaryOperation::operand() const {
-        return _operand;
+    namespace detail
+    {
+        inline
+        const ExpressionImplementationPtr&
+        UnaryOperation::operand() const {
+            return _operand;
+        }
     }
 }

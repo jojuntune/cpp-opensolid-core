@@ -30,63 +30,66 @@
 
 namespace opensolid
 {
-    class SquaredNormExpression :
-        public UnaryOperation
+    namespace detail
     {
-    private:
-        OPENSOLID_CORE_EXPORT
-        int
-        numDimensionsImpl() const override;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
+        class SquaredNormExpression :
+            public UnaryOperation
+        {
+        private:
+            OPENSOLID_CORE_EXPORT
+            int
+            numDimensionsImpl() const override;
+            
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateImpl(
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultID,
+                ExpressionCompiler<double>& expressionCompiler
+            ) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateImpl(
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultID,
+                ExpressionCompiler<Interval>& expressionCompiler
+            ) const override;
 
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateJacobianImpl(
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultID,
+                ExpressionCompiler<double>& expressionCompiler
+            ) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateJacobianImpl(
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultID,
+                ExpressionCompiler<Interval>& expressionCompiler
+            ) const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        derivativeImpl(int parameterIndex) const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            derivativeImpl(int parameterIndex) const override;
 
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOfImpl(const ExpressionImplementationPtr& other) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        debugImpl(std::ostream& stream, int indent) const override;
+            OPENSOLID_CORE_EXPORT
+            bool
+            isDuplicateOfImpl(const ExpressionImplementationPtr& other) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            void
+            debugImpl(std::ostream& stream, int indent) const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const override;
-    public:
-        OPENSOLID_CORE_EXPORT
-        SquaredNormExpression(const ExpressionImplementationPtr& operand);
-    };
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const override;
+        public:
+            OPENSOLID_CORE_EXPORT
+            SquaredNormExpression(const ExpressionImplementationPtr& operand);
+        };
+    }
 }

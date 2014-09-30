@@ -104,7 +104,7 @@ TEST_CASE("Zero-checking") {
 }
 
 TEST_CASE("Random vector generation") {
-    IntervalVector3d bounds = IntervalVector3d::Random();
+    IntervalVector3d bounds = IntervalVector3d::random();
     REQUIRE(bounds.diagonalVector().components().minComponent() > 0);
     for (int i = 0; i < 10; ++i) {
         Vector3d random = bounds.randomVector();
@@ -114,7 +114,7 @@ TEST_CASE("Random vector generation") {
 
 TEST_CASE("Custom vector type conversion") {
     SECTION("Conversion from custom type") {
-        Vector3d from = Vector3d::From(MyVector(1, 2, 3));
+        Vector3d from = Vector3d::from(MyVector(1, 2, 3));
         REQUIRE(from == Vector3d(1, 2, 3));
     }
 
@@ -174,11 +174,37 @@ TEST_CASE("3D unit orthogonal vector") {
 
 TEST_CASE("Interval vector normalization") {
     for (int i = 0; i < 100; ++i) {
-        IntervalVector3d intervalVector = 5 * IntervalVector3d::Random();
+        IntervalVector3d intervalVector = 5 * IntervalVector3d::random();
         IntervalVector3d normalized = intervalVector.normalized();
         REQUIRE(normalized.contains(intervalVector.centroid().normalized()));
         for (const Vector3d& vertex : intervalVector.vertices()) {
             REQUIRE(normalized.contains(vertex.normalized()));
         }
     }
+}
+
+TEST_CASE("Unit vector translation") {
+    UnitVector3d original = Vector3d(1, 2, 3).normalized();
+    UnitVector3d translated = original.translatedBy(Vector3d(4, 5, 6));
+    REQUIRE(translated == original);
+}
+
+TEST_CASE("Unit vector rotation") {
+    UnitVector2d original = Vector2d(1, 1).normalized();
+    UnitVector2d rotated = original.rotatedAbout(Point2d::origin(), M_PI / 4);
+    REQUIRE((rotated - UnitVector2d::unitY()).isZero());
+}
+
+TEST_CASE("Unit vector mirroring") {
+    UnitVector3d original = Vector3d(4, 5, 6).normalized();
+    UnitVector3d mirrored = original.mirroredAbout(Plane3d::yz());
+    REQUIRE((original.x() + mirrored.x()) == Zero());
+    REQUIRE((original.y() - mirrored.y()) == Zero());
+    REQUIRE((original.z() - mirrored.z()) == Zero());
+}
+
+TEST_CASE("Unit vector projection") {
+    UnitVector3d original = Vector3d(1, 0, 1).normalized();
+    Vector3d projected = original.projectedOnto(Plane3d::xy());
+    REQUIRE((projected - Vector3d(1.0 / sqrt(2.0), 0.0, 0.0)).isZero());
 }

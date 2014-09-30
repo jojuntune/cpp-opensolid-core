@@ -48,6 +48,12 @@ namespace opensolid
         static const int Value = 2;
     };
 
+    template <>
+    struct MorphedType<BoundedArea2d, ParametricExpression<Point<2>, Point<2>>>
+    {
+        typedef BoundedArea2d Type;
+    };
+
     class BoundedArea2d :
         public Transformable<BoundedArea2d>
     {
@@ -84,7 +90,11 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedArea2d
-        operator()(const BoundedArea2d& boundedArea, double scale) const;
+        operator()(
+            const BoundedArea2d& boundedArea,
+            const Point<2>& originPoint,
+            double scale
+        ) const;
     };
 
     template <>
@@ -92,7 +102,7 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedArea2d
-        operator()(const BoundedArea2d& boundedArea, const Vector2d& vector) const;
+        operator()(const BoundedArea2d& boundedArea, const Vector<double, 2>& vector) const;
     };
 
     template <>
@@ -100,17 +110,45 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedArea2d
-        operator()(const BoundedArea2d& boundedArea, const Matrix2d& matrix) const;
+        operator()(
+            const BoundedArea2d& boundedArea,
+            const Point<2>& originPoint,
+            const Matrix<double, 2, 2>& transformationMatrix,
+            const Point<2>& destinationPoint
+        ) const;
     };
 
     template <>
-    struct MorphingFunction<BoundedArea2d, 2>
+    struct MorphingFunction<BoundedArea2d, ParametricExpression<Point<2>, Point<2>>>
     {
         OPENSOLID_CORE_EXPORT
         const BoundedArea2d
         operator()(
             const BoundedArea2d& boundedArea,
-            const ParametricExpression<2, 2>& morphingExpression
+            const ParametricExpression<Point<2>, Point<2>>& morphingExpression
+        ) const;
+    };
+
+    template <>
+    struct MirrorFunction<BoundedArea2d>
+    {
+        OPENSOLID_CORE_EXPORT
+        BoundedArea2d
+        operator()(
+            const BoundedArea2d& boundedArea,
+            const Point<2>& originPoint,
+            const UnitVector<2>& normalVector
+        ) const;
+    };
+
+    template <>
+    struct ProjectionFunction<BoundedArea2d, Axis<2>>
+    {
+        OPENSOLID_CORE_EXPORT
+        BoundedArea2d
+        operator()(
+            const BoundedArea2d& boundedArea,
+            const Axis<2>& axis
         ) const;
     };
 }

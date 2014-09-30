@@ -30,100 +30,106 @@
 
 namespace opensolid
 {
-    class CompositionExpression :
-        public ExpressionImplementation
+    namespace detail
     {
-    private:
-        ExpressionImplementationPtr _outerExpression;
-        ExpressionImplementationPtr _innerExpression;
+        class CompositionExpression :
+            public ExpressionImplementation
+        {
+        private:
+            ExpressionImplementationPtr _outerExpression;
+            ExpressionImplementationPtr _innerExpression;
 
-        OPENSOLID_CORE_EXPORT
-        int
-        numDimensionsImpl() const override;
-        
-        OPENSOLID_CORE_EXPORT
-        int
-        numParametersImpl() const override;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
+            OPENSOLID_CORE_EXPORT
+            int
+            numDimensionsImpl() const override;
+            
+            OPENSOLID_CORE_EXPORT
+            int
+            numParametersImpl() const override;
+            
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateImpl(
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultID,
+                ExpressionCompiler<double>& expressionCompiler
+            ) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateImpl(
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultID,
+                ExpressionCompiler<Interval>& expressionCompiler
+            ) const override;
 
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateJacobianImpl(
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultID,
+                ExpressionCompiler<double>& expressionCompiler
+            ) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateJacobianImpl(
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultID,
+                ExpressionCompiler<Interval>& expressionCompiler
+            ) const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        derivativeImpl(int parameterIndex) const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            derivativeImpl(int parameterIndex) const override;
 
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOfImpl(const ExpressionImplementationPtr& other) const override;
+            OPENSOLID_CORE_EXPORT
+            bool
+            isDuplicateOfImpl(const ExpressionImplementationPtr& other) const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        composedImpl(const ExpressionImplementationPtr& innerExpression) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        debugImpl(std::ostream& stream, int indent) const override;
-    public:
-        OPENSOLID_CORE_EXPORT
-        CompositionExpression(
-            const ExpressionImplementationPtr& outerExpression,
-            const ExpressionImplementationPtr& innerExpression
-        );
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            composedImpl(const ExpressionImplementationPtr& innerExpression) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            void
+            debugImpl(std::ostream& stream, int indent) const override;
+        public:
+            OPENSOLID_CORE_EXPORT
+            CompositionExpression(
+                const ExpressionImplementationPtr& outerExpression,
+                const ExpressionImplementationPtr& innerExpression
+            );
 
-        const ExpressionImplementationPtr&
-        outerExpression() const;
+            const ExpressionImplementationPtr&
+            outerExpression() const;
 
-        const ExpressionImplementationPtr&
-        innerExpression() const;
-    };
+            const ExpressionImplementationPtr&
+            innerExpression() const;
+        };
+    }
 }
 
 ////////// Implementation //////////
 
 namespace opensolid
 {
-    inline
-    const ExpressionImplementationPtr&
-    CompositionExpression::outerExpression() const {
-        return _outerExpression;
-    }
+    namespace detail
+    {
+        inline
+        const ExpressionImplementationPtr&
+        CompositionExpression::outerExpression() const {
+            return _outerExpression;
+        }
 
-    inline
-    const ExpressionImplementationPtr&
-    CompositionExpression::innerExpression() const {
-        return _innerExpression;
+        inline
+        const ExpressionImplementationPtr&
+        CompositionExpression::innerExpression() const {
+            return _innerExpression;
+        }
     }
 }

@@ -30,21 +30,24 @@
 
 namespace opensolid
 {
-    inline
-    std::vector<ExpressionImplementationPtr>::iterator
-    DeduplicationCache::begin() {
-        return _cache.begin();
-    }
+    namespace detail
+    {
+        inline
+        std::vector<ExpressionImplementationPtr>::iterator
+        DeduplicationCache::begin() {
+            return _cache.begin();
+        }
 
-    inline
-    std::vector<ExpressionImplementationPtr>::iterator
-    DeduplicationCache::end() {
-        return _cache.end();
-    }
+        inline
+        std::vector<ExpressionImplementationPtr>::iterator
+        DeduplicationCache::end() {
+            return _cache.end();
+        }
 
-    inline
-    void
-    DeduplicationCache::add(const ExpressionImplementationPtr& functionImplementation) {
-        _cache.push_back(functionImplementation);
+        inline
+        void
+        DeduplicationCache::add(const ExpressionImplementationPtr& functionImplementation) {
+            _cache.push_back(functionImplementation);
+        }
     }
 }

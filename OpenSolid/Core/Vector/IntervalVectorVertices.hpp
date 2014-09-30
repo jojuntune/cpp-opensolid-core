@@ -54,14 +54,14 @@ namespace opensolid
         inline
         IndexIterator<IntervalVectorVertices<iNumDimensions>>
         IntervalVectorVertices<iNumDimensions>::begin() const {
-            return IndexIterator<IntervalVectorVertices<iNumDimensions>>::Begin(this);
+            return IndexIterator<IntervalVectorVertices<iNumDimensions>>::begin(this);
         }
 
         template <int iNumDimensions>
         inline
         IndexIterator<IntervalVectorVertices<iNumDimensions>>
         IntervalVectorVertices<iNumDimensions>::end() const {
-            return IndexIterator<IntervalVectorVertices<iNumDimensions>>::End(this);
+            return IndexIterator<IntervalVectorVertices<iNumDimensions>>::end(this);
         }
 
         template <int iNumDimensions>

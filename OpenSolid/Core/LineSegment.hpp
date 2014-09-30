@@ -196,7 +196,7 @@ namespace opensolid
 
         // Check whether point is located within the segment
         Point1d localCoordinates = point / coordinateSystem();
-        if (!Interval::Unit().contains(localCoordinates.value())) {
+        if (!Interval::unit().contains(localCoordinates.value())) {
             return false;
         }
 
@@ -221,7 +221,7 @@ namespace opensolid
 
         // Check whether point is located within the segment
         Point1d localCoordinates = point / coordinateSystem();
-        if (!Interval::Unit().contains(localCoordinates.value())) {
+        if (!Interval::unit().contains(localCoordinates.value())) {
             return false;
         }
 
@@ -253,11 +253,12 @@ namespace opensolid
     LineSegment<iNumDimensions>
     ScalingFunction<LineSegment<iNumDimensions>>::operator()(
         const LineSegment<iNumDimensions>& lineSegment,
+        const Point<iNumDimensions>& originPoint,
         double scale
     ) const {
         return LineSegment<iNumDimensions>(
-            scalingFunction(lineSegment.startVertex(), scale),
-            scalingFunction(lineSegment.endVertex(), scale)
+            scaled(lineSegment.startVertex(), originPoint, scale),
+            scaled(lineSegment.endVertex(), originPoint, scale)
         );
     }
 
@@ -269,8 +270,8 @@ namespace opensolid
         const Vector<double, iNumDimensions>& vector
     ) const {
         return LineSegment<iNumDimensions>(
-            translationFunction(lineSegment.startVertex(), vector),
-            translationFunction(lineSegment.endVertex(), vector)
+            translated(lineSegment.startVertex(), vector),
+            translated(lineSegment.endVertex(), vector)
         );
     }
 
@@ -279,24 +280,42 @@ namespace opensolid
     LineSegment<iNumResultDimensions>
     TransformationFunction<LineSegment<iNumDimensions>, iNumResultDimensions>::operator()(
         const LineSegment<iNumDimensions>& lineSegment,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
     ) const {
         return LineSegment<iNumResultDimensions>(
-            transformationFunction(lineSegment.startVertex(), matrix),
-            transformationFunction(lineSegment.endVertex(), matrix)
+            transformed(
+                lineSegment.startVertex(),
+                originPoint,
+                transformationMatrix,
+                destinationPoint
+            ),
+            transformed(
+                lineSegment.endVertex(),
+                originPoint,
+                transformationMatrix,
+                destinationPoint
+            )
         );
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
     inline
     LineSegment<iNumResultDimensions>
-    MorphingFunction<LineSegment<iNumDimensions>, iNumResultDimensions>::operator()(
+    MorphingFunction<
+        LineSegment<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >::operator()(
         const LineSegment<iNumDimensions>& lineSegment,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        const ParametricExpression<
+            Point<iNumResultDimensions>,
+            Point<iNumDimensions>
+        >& morphingExpression
     ) const {
         return LineSegment<iNumResultDimensions>(
-            morphingFunction(lineSegment.startVertex(), morphingExpression),
-            morphingFunction(lineSegment.endVertex(), morphingExpression)
+            morphingExpression.evaluate(lineSegment.startVertex()),
+            morphingExpression.evaluate(lineSegment.endVertex())
         );
     }
 }

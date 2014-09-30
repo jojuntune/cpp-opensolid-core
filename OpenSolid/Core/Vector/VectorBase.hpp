@@ -74,12 +74,6 @@ namespace opensolid
 
         template <class TScalar, int iNumDimensions>
         inline
-        VectorBase<TScalar, iNumDimensions>::VectorBase(const TScalar* sourcePtr) :
-            CartesianBase<TScalar, iNumDimensions>(sourcePtr) {
-        }
-
-        template <class TScalar, int iNumDimensions>
-        inline
         TScalar
         VectorBase<TScalar, iNumDimensions>::squaredNorm() const {
             return this->components().cwiseSquared().sum();
@@ -89,7 +83,7 @@ namespace opensolid
         inline
         TScalar
         VectorBase<TScalar, iNumDimensions>::norm() const {
-            return sqrt(squaredNorm());
+            return opensolid::sqrt(squaredNorm());
         }
 
         template <class TScalar, int iNumDimensions>
@@ -142,15 +136,15 @@ namespace opensolid
         template <class TScalar, int iNumDimensions>
         inline
         const Vector<TScalar, iNumDimensions>
-        VectorBase<TScalar, iNumDimensions>::Zero() {
+        VectorBase<TScalar, iNumDimensions>::zero() {
             return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::Zero());
         }
 
         template <class TScalar, int iNumDimensions>
         inline
         const Vector<TScalar, iNumDimensions>
-        VectorBase<TScalar, iNumDimensions>::Random() {
-            return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::Random());
+        VectorBase<TScalar, iNumDimensions>::random() {
+            return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::random());
         }
     }
 }

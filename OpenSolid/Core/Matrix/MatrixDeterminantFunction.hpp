@@ -55,8 +55,10 @@ namespace opensolid
                 return 0.0;
             }
             
-            return matrix.component(0, 0) * matrix.component(1, 1) -
-                matrix.component(1, 0) * matrix.component(0, 1);
+            return (
+                matrix.component(0, 0) * matrix.component(1, 1) -
+                matrix.component(1, 0) * matrix.component(0, 1)
+            );
         }
 
         template <class TDerived>
@@ -78,9 +80,11 @@ namespace opensolid
             double component12 = matrix.component(1, 2);
             double component22 = matrix.component(2, 2);
 
-            return component00 * (component11 * component22 - component12 * component21) +
+            return (
+                component00 * (component11 * component22 - component12 * component21) +
                 component01 * (component12 * component20 - component10 * component22 ) +
-                component02 * (component10 * component21 - component11 * component20);
+                component02 * (component10 * component21 - component11 * component20)
+            );
         }
 
         template <class TDerived>

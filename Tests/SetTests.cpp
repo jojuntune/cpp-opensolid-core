@@ -181,8 +181,12 @@ TEST_CASE("Point set transformation") {
     pointList[2] = Point3d(1, 1, 1);
 
     SpatialSet<Point3d> pointSet(pointList);
-    Axis3d rotationAxis(Point3d(1, 0, 0), UnitVector3d::Z());
-    std::vector<Point3d> rotatedPoints = pointSet.map(Rotation3d(rotationAxis, M_PI / 2));
+    Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::unitZ());
+    std::vector<Point3d> rotatedPoints = pointSet.map(
+        [&rotationAxis] (const Point3d& point) -> Point3d {
+            return point.rotatedAbout(rotationAxis, M_PI / 2);
+        }
+    );
 
     REQUIRE((rotatedPoints[0] - Point3d(2, 0, 1)).isZero());
     REQUIRE((rotatedPoints[1] - Point3d(1, 0, 1)).isZero());
@@ -196,8 +200,12 @@ TEST_CASE("Vector set transformation") {
     vectorList[2] = Vector3d(1, 1, 1);
 
     SpatialSet<Vector3d> vectorSet(vectorList);
-    Axis3d rotationAxis(Point3d(1, 0, 0), UnitVector3d::Z());
-    std::vector<Vector3d> rotatedVectors = vectorSet.map(Rotation3d(rotationAxis, M_PI / 2));
+    Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::unitZ());
+    std::vector<Vector3d> rotatedVectors = vectorSet.map(
+        [&rotationAxis] (const Vector3d& vector) -> Vector3d {
+            return vector.rotatedAbout(rotationAxis, M_PI / 2);
+        }
+    );
 
     REQUIRE((rotatedVectors[0] - Vector3d(1, 1, 1)).isZero());
     REQUIRE((rotatedVectors[1] - Vector3d(0, 1, 1)).isZero());
@@ -224,7 +232,7 @@ TEST_CASE("Swap") {
     REQUIRE(secondSet[0] == 1);
 }
 
-TEST_CASE("R value") {
+TEST_CASE("Rvalue") {
     std::vector<double> values(3);
     values[0] = 1;
     values[1] = 2;
@@ -261,7 +269,7 @@ TEST_CASE("Unique") {
         originalPoints.end(),
         rotatedPoints.begin(),
         [] (const Point2d& point) {
-            return point.rotatedAbout(Point2d::Origin(), 2 * M_PI / 3);
+            return point.rotatedAbout(Point2d::origin(), 2 * M_PI / 3);
         }
     );
     std::transform(
@@ -269,7 +277,7 @@ TEST_CASE("Unique") {
         originalPoints.end(),
         rotatedPoints.begin() + 3,
         [] (const Point2d& point) {
-            return point.rotatedAbout(Point2d::Origin(), -4 * M_PI / 3);
+            return point.rotatedAbout(Point2d::origin(), -4 * M_PI / 3);
         }
     );
 
@@ -279,7 +287,7 @@ TEST_CASE("Unique") {
         rotatedPoints.end(),
         testPoints.begin(),
         [] (const Point2d& point) {
-            return point.rotatedAbout(Point2d::Origin(), 10 * M_PI / 3);
+            return point.rotatedAbout(Point2d::origin(), 10 * M_PI / 3);
         }
     );
     testPoints[6] = Point2d(2 + 1e-14, 2 + 1e-14);

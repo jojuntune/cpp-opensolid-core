@@ -73,6 +73,15 @@ namespace opensolid
 
         explicit
         Vector(const Matrix<double, 1, 1>& components);
+
+        static const UnitVector<1>
+        unitRandom();
+
+        static const UnitVector<1>
+        unit(int index);
+
+        static const UnitVector<1>
+        unitX();
     };
 
     typedef Vector<double, 1> Vector1d;
@@ -93,6 +102,18 @@ namespace opensolid
 
         const UnitVector<2>
         unitOrthogonal() const;
+
+        static const UnitVector<2>
+        unitRandom();
+
+        static const UnitVector<2>
+        unit(int index);
+
+        static const UnitVector<2>
+        unitX();
+
+        static const UnitVector<2>
+        unitY();
     };
 
     typedef Vector<double, 2> Vector2d;
@@ -119,6 +140,21 @@ namespace opensolid
 
         const UnitVector<3>
         unitOrthogonal() const;
+
+        static const UnitVector<3>
+        unitRandom();
+
+        static const UnitVector<3>
+        unit(int index);
+
+        static const UnitVector<3>
+        unitX();
+
+        static const UnitVector<3>
+        unitY();
+
+        static const UnitVector<3>
+        unitZ();
     };
 
     typedef Vector<double, 3> Vector3d;
@@ -181,17 +217,29 @@ namespace opensolid
 
     typedef Vector<Interval, 3> IntervalVector3d;
 
-    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() * TSecondScalar()), iNumDimensions>
-    operator*(TFirstScalar scale, const Vector<TSecondScalar, iNumDimensions>& vector);
+    template <class TScalar, int iNumDimensions>
+    const Vector<TScalar, iNumDimensions>
+    operator*(double scale, const Vector<TScalar, iNumDimensions>& vector);
 
-    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() * TSecondScalar()), iNumDimensions>
-    operator*(const Vector<TFirstScalar, iNumDimensions>& vector, TSecondScalar scale);
+    template <class TScalar, int iNumDimensions>
+    const Vector<Interval, iNumDimensions>
+    operator*(Interval scale, const Vector<TScalar, iNumDimensions>& vector);
 
-    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() / TSecondScalar()), iNumDimensions>
-    operator/(const Vector<TFirstScalar, iNumDimensions>& vector, TSecondScalar divisor);
+    template <class TScalar, int iNumDimensions>
+    const Vector<TScalar, iNumDimensions>
+    operator*(const Vector<TScalar, iNumDimensions>& vector, double scale);
+
+    template <class TScalar, int iNumDimensions>
+    const Vector<Interval, iNumDimensions>
+    operator*(const Vector<TScalar, iNumDimensions>& vector, Interval scale);
+
+    template <class TScalar, int iNumDimensions>
+    const Vector<TScalar, iNumDimensions>
+    operator/(const Vector<TScalar, iNumDimensions>& vector, double divisor);
+
+    template <class TScalar, int iNumDimensions>
+    const Vector<Interval, iNumDimensions>
+    operator/(const Vector<TScalar, iNumDimensions>& vector, Interval divisor);
 
     template <class TScalar, int iNumDimensions>
     const Vector<TScalar, iNumDimensions>
@@ -248,7 +296,11 @@ namespace opensolid
     struct ScalingFunction<Vector<TScalar, iNumDimensions>>
     {
         const Vector<TScalar, iNumDimensions>
-        operator()(const Vector<TScalar, iNumDimensions>& vector, double scale) const;
+        operator()(
+            const Vector<TScalar, iNumDimensions>& vector,
+            const Point<iNumDimensions>& originPoint,
+            double scale
+        ) const;
     };
 
     template <class TScalar, int iNumDimensions>
@@ -267,7 +319,9 @@ namespace opensolid
         const Vector<TScalar, iNumResultDimensions>
         operator()(
             const Vector<TScalar, iNumDimensions>& vector,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+            const Point<iNumResultDimensions>& destinationPoint
         ) const;
     };
 }

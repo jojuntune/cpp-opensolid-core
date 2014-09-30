@@ -30,8 +30,6 @@
 
 #include <OpenSolid/Core/Vector.hpp>
 
-#include <cstdlib>
-
 namespace opensolid
 {
     inline
@@ -54,13 +52,6 @@ namespace opensolid
     }
 
     inline
-    UnitVector1d::UnitVector(const Vector1d& vector) :
-        Vector1d(vector) {
-
-        assert(abs(vector.value()) - 1.0 == opensolid::Zero());
-    }
-
-    inline
     double
     UnitVector1d::norm() {
         return 1.0;
@@ -76,18 +67,6 @@ namespace opensolid
     const UnitVector1d
     UnitVector1d::normalized() const {
         return *this;
-    }
-
-    inline
-    const UnitVector1d
-    UnitVector1d::X() {
-        return UnitVector1d(1.0);
-    }
-
-    inline
-    const UnitVector1d
-    UnitVector1d::Random() {
-        return UnitVector1d(rand() > RAND_MAX / 2 ? 1.0 : -1.0);
     }
 
     inline
@@ -107,13 +86,6 @@ namespace opensolid
         Vector2d(components) {
 
         assert(sqrt(components.cwiseSquared().sum()) - 1.0 == opensolid::Zero());
-    }
-
-    inline
-    UnitVector2d::UnitVector(const Vector2d& vector) :
-        Vector2d(vector) {
-
-        assert(vector.norm() - 1.0 == opensolid::Zero());
     }
 
     inline
@@ -141,33 +113,6 @@ namespace opensolid
     }
 
     inline
-    const UnitVector2d
-    UnitVector2d::X() {
-        return UnitVector2d(1.0, 0.0);
-    }
-
-    inline
-    const UnitVector2d
-    UnitVector2d::Y() {
-        return UnitVector2d(0.0, 1.0);
-    }
-
-    inline
-    const UnitVector2d
-    UnitVector2d::Random() {
-        while (true) {
-            Vector2d candidate(
-                -1.0 + 2.0 * double(rand()) / RAND_MAX,
-                -1.0 + 2.0 * double(rand()) / RAND_MAX
-            );
-            double candidateSquaredNorm = candidate.squaredNorm();
-            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
-                return UnitVector2d(candidate / sqrt(candidateSquaredNorm));
-            }
-        }
-    }
-
-    inline
     UnitVector3d::UnitVector() :
         Vector3d() {
     }
@@ -187,13 +132,6 @@ namespace opensolid
     }
 
     inline
-    UnitVector3d::UnitVector(const Vector3d& vector) :
-        Vector3d(vector) {
-
-        assert(vector.norm() - 1.0 == opensolid::Zero());
-    }
-
-    inline
     double
     UnitVector3d::norm() const {
         return 1.0;
@@ -209,40 +147,6 @@ namespace opensolid
     UnitVector3d
     UnitVector3d::normalized() const {
         return *this;
-    }
-
-    inline
-    const UnitVector3d
-    UnitVector3d::X() {
-        return UnitVector3d(1.0, 0.0, 0.0);
-    }
-
-    inline
-    const UnitVector3d
-    UnitVector3d::Y() {
-        return UnitVector3d(0.0, 1.0, 0.0);
-    }
-
-    inline
-    const UnitVector3d
-    UnitVector3d::Z() {
-        return UnitVector3d(0.0, 0.0, 1.0);
-    }
-
-    inline
-    const UnitVector3d
-    UnitVector3d::Random() {
-        while (true) {
-            Vector3d candidate(
-                -1.0 + 2.0 * double(rand()) / RAND_MAX,
-                -1.0 + 2.0 * double(rand()) / RAND_MAX,
-                -1.0 + 2.0 * double(rand()) / RAND_MAX
-            );
-            double candidateSquaredNorm = candidate.squaredNorm();
-            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
-                return UnitVector3d(candidate / sqrt(candidateSquaredNorm));
-            }
-        }
     }
 
     inline
@@ -286,5 +190,29 @@ namespace opensolid
         const Vector<double, iNumDimensions>& vector
     ) const {
         return unitVector;
+    }
+
+    template <int iNumDimensions>
+    inline
+    UnitVector<iNumDimensions>
+    RotationFunction<UnitVector<iNumDimensions>>::operator()(
+        const UnitVector<iNumDimensions>& unitVector,
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
+    ) const {
+        return UnitVector<iNumDimensions>(rotationMatrix * unitVector.components());
+    }
+
+    template <int iNumDimensions>
+    inline
+    UnitVector<iNumDimensions>
+    MirrorFunction<UnitVector<iNumDimensions>>::operator()(
+        const UnitVector<iNumDimensions>& unitVector,
+        const Point<iNumDimensions>& originPoint,
+        const UnitVector<iNumDimensions>& normalVector
+    ) const {
+        return UnitVector<iNumDimensions>(
+            (unitVector - 2 * (unitVector.dot(normalVector)) * normalVector).components()
+        );
     }
 }

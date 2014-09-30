@@ -28,88 +28,105 @@
 
 namespace opensolid
 {   
-    int
-    TranslationExpression::numDimensionsImpl() const {
-        return int(columnMatrix().numRows());
-    }
-    
-    void
-    TranslationExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluate(operand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            resultView.column(columnIndex) += columnMatrix();
+    namespace detail
+    {
+        int
+        TranslationExpression::numDimensionsImpl() const {
+            return int(columnMatrix().numRows());
         }
-    }
-    
-    void
-    TranslationExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluate(operand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            resultView.column(columnIndex) += columnMatrix();
+        
+        void
+        TranslationExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            ColumnMatrixXd columnMatrix = this->columnMatrix();
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [columnMatrix] (MatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results.column(columnIndex) += columnMatrix;
+                    }
+                }
+            );
         }
-    }
+        
+        void
+        TranslationExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            ColumnMatrixXd columnMatrix = this->columnMatrix();
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [columnMatrix] (IntervalMatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results.column(columnIndex) += columnMatrix;
+                    }
+                }
+            );
+        }
 
-    void
-    TranslationExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-    }
-    
-    void
-    TranslationExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-    }
-    
-    ExpressionImplementationPtr
-    TranslationExpression::derivativeImpl(int parameterIndex) const {
-        return operand()->derivative(parameterIndex);
-    }
+        void
+        TranslationExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+        }
+        
+        void
+        TranslationExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+        }
+        
+        ExpressionImplementationPtr
+        TranslationExpression::derivativeImpl(int parameterIndex) const {
+            return operand()->derivative(parameterIndex);
+        }
 
-    bool
-    TranslationExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other) &&
-            (columnMatrix() - other->cast<TranslationExpression>()->columnMatrix()).isZero();
-    }
+        bool
+        TranslationExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return (
+                duplicateOperands(other) &&
+                (columnMatrix() - other->cast<TranslationExpression>()->columnMatrix()).isZero()
+            );
+        }
 
-    ExpressionImplementationPtr
-    TranslationExpression::translationImpl(const ColumnMatrixXd& columnMatrix) const {
-        return operand() + (this->columnMatrix() + columnMatrix);
-    }
-    
-    void
-    TranslationExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "TranslationExpression" << std::endl;
-        operand()->debug(stream, indent + 1);
-    }
+        ExpressionImplementationPtr
+        TranslationExpression::translationImpl(const ColumnMatrixXd& columnMatrix) const {
+            return operand() + (this->columnMatrix() + columnMatrix);
+        }
+        
+        void
+        TranslationExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "TranslationExpression" << std::endl;
+            operand()->debug(stream, indent + 1);
+        }
 
-    ExpressionImplementationPtr
-    TranslationExpression::withNewOperandImpl(
-        const ExpressionImplementationPtr& newOperand
-    ) const {
-        return newOperand + columnMatrix();
-    }
+        ExpressionImplementationPtr
+        TranslationExpression::withNewOperandImpl(
+            const ExpressionImplementationPtr& newOperand
+        ) const {
+            return newOperand + columnMatrix();
+        }
 
-    TranslationExpression::TranslationExpression(
-        const ExpressionImplementationPtr& operand,
-        const ColumnMatrixXd& columnMatrix
-    ) : UnaryOperation(operand),
-        _columnMatrix(columnMatrix) {
+        TranslationExpression::TranslationExpression(
+            const ExpressionImplementationPtr& operand,
+            const ColumnMatrixXd& columnMatrix
+        ) : UnaryOperation(operand),
+            _columnMatrix(columnMatrix) {
 
-        assert(columnMatrix.size() == operand->numDimensions());
+            assert(columnMatrix.numComponents() == operand->numDimensions());
+        }
     }
 }

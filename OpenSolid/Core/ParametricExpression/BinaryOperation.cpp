@@ -28,64 +28,69 @@
 
 namespace opensolid
 {
-    int
-    BinaryOperation::numParametersImpl() const {
-        return firstOperand()->numParameters();
-    }
-
-    ExpressionImplementationPtr
-    BinaryOperation::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return this->withNewOperands(
-            firstOperand()->deduplicated(deduplicationCache),
-            secondOperand()->deduplicated(deduplicationCache)
-        );
-    }
-
-    ExpressionImplementationPtr
-    BinaryOperation::composedImpl(const ExpressionImplementationPtr& innerExpression) const {
-        return this->withNewOperands(
-            firstOperand()->composed(innerExpression),
-            secondOperand()->composed(innerExpression)
-        );
-    }
-
-    bool
-    BinaryOperation::duplicateOperands(
-        const ExpressionImplementationPtr& other,
-        bool isCommutative
-    ) const {
-        ExpressionImplementationPtr otherFirstOperand =
-            other->cast<BinaryOperation>()->firstOperand();
-        ExpressionImplementationPtr otherSecondOperand =
-            other->cast<BinaryOperation>()->secondOperand();
-
-        bool nonCommutativeCheck = firstOperand()->isDuplicateOf(otherFirstOperand) &&
-            secondOperand()->isDuplicateOf(otherSecondOperand);
-            
-        if (nonCommutativeCheck) {
-            return true;
-        } else if (isCommutative) {
-            return firstOperand()->isDuplicateOf(otherSecondOperand) &&
-                secondOperand()->isDuplicateOf(otherFirstOperand);
-        } else {
-            return false;
+    namespace detail
+    {
+        int
+        BinaryOperation::numParametersImpl() const {
+            return firstOperand()->numParameters();
         }
-    }
 
-    BinaryOperation::BinaryOperation(
-        const ExpressionImplementationPtr& firstOperand,
-        const ExpressionImplementationPtr& secondOperand
-    ) : _firstOperand(firstOperand),
-        _secondOperand(secondOperand) {
-        
-        assert(firstOperand->numParameters() == secondOperand->numParameters());
-    }
+        ExpressionImplementationPtr
+        BinaryOperation::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+            return this->withNewOperands(
+                firstOperand()->deduplicated(deduplicationCache),
+                secondOperand()->deduplicated(deduplicationCache)
+            );
+        }
 
-    ExpressionImplementationPtr
-    BinaryOperation::withNewOperands(
-        const ExpressionImplementationPtr& newFirstOperand,
-        const ExpressionImplementationPtr& newSecondOperand
-    ) const {
-        return withNewOperandsImpl(newFirstOperand, newSecondOperand);
+        ExpressionImplementationPtr
+        BinaryOperation::composedImpl(const ExpressionImplementationPtr& innerExpression) const {
+            return this->withNewOperands(
+                firstOperand()->composed(innerExpression),
+                secondOperand()->composed(innerExpression)
+            );
+        }
+
+        bool
+        BinaryOperation::duplicateOperands(
+            const ExpressionImplementationPtr& other,
+            bool isCommutative
+        ) const {
+            ExpressionImplementationPtr otherFirstOperand =
+                other->cast<BinaryOperation>()->firstOperand();
+            ExpressionImplementationPtr otherSecondOperand =
+                other->cast<BinaryOperation>()->secondOperand();
+
+            bool nonCommutativeCheck = firstOperand()->isDuplicateOf(otherFirstOperand) &&
+                secondOperand()->isDuplicateOf(otherSecondOperand);
+                
+            if (nonCommutativeCheck) {
+                return true;
+            } else if (isCommutative) {
+                return (
+                    firstOperand()->isDuplicateOf(otherSecondOperand) &&
+                    secondOperand()->isDuplicateOf(otherFirstOperand)
+                );
+            } else {
+                return false;
+            }
+        }
+
+        BinaryOperation::BinaryOperation(
+            const ExpressionImplementationPtr& firstOperand,
+            const ExpressionImplementationPtr& secondOperand
+        ) : _firstOperand(firstOperand),
+            _secondOperand(secondOperand) {
+            
+            assert(firstOperand->numParameters() == secondOperand->numParameters());
+        }
+
+        ExpressionImplementationPtr
+        BinaryOperation::withNewOperands(
+            const ExpressionImplementationPtr& newFirstOperand,
+            const ExpressionImplementationPtr& newSecondOperand
+        ) const {
+            return withNewOperandsImpl(newFirstOperand, newSecondOperand);
+        }
     }
 }

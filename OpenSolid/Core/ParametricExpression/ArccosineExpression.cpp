@@ -29,99 +29,128 @@
 
 namespace opensolid
 {
-    int
-    ArccosineExpression::numDimensionsImpl() const {
-        return 1;
-    }
-    
-    void
-    ArccosineExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluator.evaluate(operand(), parameterView).map(
-            [] (double value) {
-                Interval domain(-1, 1);
-                if (!domain.contains(value)) {
-                    throw Error(new PlaceholderError());
-                }
-                return acos(domain.clamp(value));
-            },
-            resultView
-        );
-    }
-    
-    void
-    ArccosineExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluator.evaluate(operand(), parameterView).map(
-            [] (Interval value) {
-                Interval domain(-1, 1);
-                if (!domain.overlaps(value)) {
-                    throw Error(new PlaceholderError());
-                }
-                return acos(domain.clamp(value));
-            },
-            resultView
-        );
-    }
-
-    void
-    ArccosineExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        double operandValue = evaluator.evaluate(operand(), parameterView).value();
-        if (abs(operandValue) - 1 >= Zero()) {
-            throw Error(new PlaceholderError());
+    namespace detail
+    {
+        int
+        ArccosineExpression::numDimensionsImpl() const {
+            return 1;
         }
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView *= -1.0 / sqrt(1 - operandValue * operandValue);
-    }
-    
-    void
-    ArccosineExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        Interval operandValue = evaluator.evaluate(operand(), parameterView).value();
-        if (abs(operandValue).lowerBound() - 1 >= Zero()) {
-            throw Error(new PlaceholderError());
+        
+        void
+        ArccosineExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (double value) {
+                            Interval domain(-1, 1);
+                            if (!domain.contains(value)) {
+                                throw Error(new PlaceholderError());
+                            }
+                            return opensolid::acos(domain.clamp(value));
+                        }
+                    );
+                }
+            );
         }
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView *= -1.0 / sqrt(1 - operandValue.squared());
-    }
-    
-    ExpressionImplementationPtr
-    ArccosineExpression::derivativeImpl(int parameterIndex) const {
-        return -operand()->derivative(parameterIndex) / sqrt(1.0 - operand()->squaredNorm());
-    }
-    
-    bool
-    ArccosineExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other);
-    }
-    
-    void
-    ArccosineExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "ArccosineExpression" << std::endl;
-        operand()->debug(stream, indent + 1);
-    }
+        
+        void
+        ArccosineExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (Interval value) {
+                            Interval domain(-1, 1);
+                            if (!domain.overlaps(value)) {
+                                throw Error(new PlaceholderError());
+                            }
+                            return opensolid::acos(domain.clamp(value));
+                        }
+                    );
+                }
+            );
+        }
 
-    ExpressionImplementationPtr
-    ArccosineExpression::withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const {
-        return acos(newOperand);
-    }
+        void
+        ArccosineExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
+                    double operandValue = operandValues.value();
+                    if (!Interval(-1, 1).strictlyContains(operandValue)) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= -1.0 / opensolid::sqrt(1 - operandValue * operandValue);
+                }
+            );
+        }
+        
+        void
+        ArccosineExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
+                    Interval operandValue = operandValues.value();
+                    if (!Interval(-1, 1).strictlyOverlaps(operandValue)) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= -1.0 / opensolid::sqrt(1 - operandValue.squared());
+                }
+            );
+        }
+        
+        ExpressionImplementationPtr
+        ArccosineExpression::derivativeImpl(int parameterIndex) const {
+            return -operand()->derivative(parameterIndex) / sqrt(1.0 - operand()->squaredNorm());
+        }
+        
+        bool
+        ArccosineExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other);
+        }
+        
+        void
+        ArccosineExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "ArccosineExpression" << std::endl;
+            operand()->debug(stream, indent + 1);
+        }
 
-    ArccosineExpression::ArccosineExpression(const ExpressionImplementationPtr& operand) :
-        UnaryOperation(operand) {
+        ExpressionImplementationPtr
+        ArccosineExpression::withNewOperandImpl(
+            const ExpressionImplementationPtr& newOperand
+        ) const {
+            return acos(newOperand);
+        }
 
-        assert(operand->numDimensions() == 1);
+        ArccosineExpression::ArccosineExpression(const ExpressionImplementationPtr& operand) :
+            UnaryOperation(operand) {
+
+            assert(operand->numDimensions() == 1);
+        }
     }
 }

@@ -29,93 +29,118 @@
 
 namespace opensolid
 {   
-    int
-    TangentExpression::numDimensionsImpl() const {
-        return 1;
-    }
-    
-    void
-    TangentExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluator.evaluate(operand(), parameterView).map(
-            [] (double value) {
-                return tan(value);
-            },
-            resultView
-        );
-    }
-    
-    void
-    TangentExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluator.evaluate(operand(), parameterView).map(
-            [] (Interval value) {
-                return tan(value);
-            },
-            resultView
-        );
-    }
-
-    void
-    TangentExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        double operandValue = evaluator.evaluate(operand(), parameterView).value();
-        double cosine = cos(operandValue);
-        if (cosine == Zero()) {
-            throw Error(new PlaceholderError());
+    namespace detail
+    {
+        int
+        TangentExpression::numDimensionsImpl() const {
+            return 1;
         }
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView /= cosine * cosine;
-    }
-    
-    void
-    TangentExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        Interval operandValue = evaluator.evaluate(operand(), parameterView).value();
-        Interval cosine = cos(operandValue);
-        if (cosine == Zero()) {
-            throw Error(new PlaceholderError());
-        }
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView /= cosine.squared();
-    }
-
-    ExpressionImplementationPtr
-    TangentExpression::derivativeImpl(int parameterIndex) const {
-        return operand()->derivative(parameterIndex) / cos(operand())->squaredNorm();
-    }
-
-    bool
-    TangentExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other);
-    }
-    
-    void
-    TangentExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "TangentExpression" << std::endl;
-        operand()->debug(stream, indent + 1);
-    }
-
-    ExpressionImplementationPtr
-    TangentExpression::withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const {
-        return tan(newOperand);
-    }
-
-    TangentExpression::TangentExpression(const ExpressionImplementationPtr& operand) :
-        UnaryOperation(operand) {
         
-        assert(operand->numDimensions() == 1);
+        void
+        TangentExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (double value) {
+                            return opensolid::tan(value);
+                        }
+                    );
+                }
+            );
+        }
+        
+        void
+        TangentExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (Interval value) {
+                            return opensolid::tan(value);
+                        }
+                    );
+                }
+            );
+        }
+
+        void
+        TangentExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
+                    double cosine = opensolid::cos(operandValues.value());
+                    if (cosine == Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= (1.0 / (cosine * cosine));
+                }
+            );
+        }
+        
+        void
+        TangentExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
+                    Interval cosine = opensolid::cos(operandValues.value());
+                    if (cosine == Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= (1.0 / cosine.squared());
+                }
+            );
+        }
+
+        ExpressionImplementationPtr
+        TangentExpression::derivativeImpl(int parameterIndex) const {
+            return operand()->derivative(parameterIndex) / cos(operand())->squaredNorm();
+        }
+
+        bool
+        TangentExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other);
+        }
+        
+        void
+        TangentExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "TangentExpression" << std::endl;
+            operand()->debug(stream, indent + 1);
+        }
+
+        ExpressionImplementationPtr
+        TangentExpression::withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const {
+            return tan(newOperand);
+        }
+
+        TangentExpression::TangentExpression(const ExpressionImplementationPtr& operand) :
+            UnaryOperation(operand) {
+            
+            assert(operand->numDimensions() == 1);
+        }
     }
 }

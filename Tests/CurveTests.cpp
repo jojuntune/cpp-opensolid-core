@@ -39,9 +39,9 @@ TEST_CASE("Arc") {
     Point3d centerPoint(1, 1, 1);
     Point3d startPoint(3, 1, 1);
     Point3d endPoint(1, -1, 1);
-    ParametricCurve3d arc = ParametricCurve3d::Arc(
+    ParametricCurve3d arc = ParametricCurve3d::arc(
         centerPoint,
-        UnitVector3d::Z(),
+        Vector3d::unitZ(),
         startPoint,
         endPoint
     );
@@ -55,55 +55,56 @@ TEST_CASE("Arc") {
     REQUIRE((arc.evaluate(1.0 / 3.0) - Point3d(1, 3, 1)).isZero());
     REQUIRE((arc.evaluate(1.0) - Point3d(1, -1, 1)).isZero());
     
-    ParametricExpression<3, 1> derivative = arc.expression().derivative();
-    REQUIRE((Vector3d(derivative.evaluate(0)) -  Vector3d(0, 3 * M_PI, 0)).isZero());
-    REQUIRE((Vector3d(derivative.evaluate(1 / 3.0)) - Vector3d(-3 * M_PI, 0, 0)).isZero());
-    REQUIRE((Vector3d(derivative.evaluate(2 / 3.0)) - Vector3d(0, -3 * M_PI, 0)).isZero());
-    REQUIRE((Vector3d(derivative.evaluate(1)) - Vector3d(3 * M_PI, 0, 0)).isZero());
+    ParametricExpression<Vector3d, double> derivative = arc.expression().derivative();
+    REQUIRE((derivative.evaluate(0) -  Vector3d(0, 3 * M_PI, 0)).isZero());
+    REQUIRE((derivative.evaluate(1 / 3.0) - Vector3d(-3 * M_PI, 0, 0)).isZero());
+    REQUIRE((derivative.evaluate(2 / 3.0) - Vector3d(0, -3 * M_PI, 0)).isZero());
+    REQUIRE((derivative.evaluate(1) - Vector3d(3 * M_PI, 0, 0)).isZero());
     
-    ParametricExpression<3, 1> tangent = arc.tangentVector();
-    REQUIRE((Vector3d(tangent.evaluate(0)) - Vector3d(0, 1, 0)).isZero());
-    REQUIRE((Vector3d(tangent.evaluate(1 / 3.0)) - Vector3d(-1, 0, 0)).isZero());
-    REQUIRE((Vector3d(tangent.evaluate(2 / 3.0)) - Vector3d(0, -1, 0)).isZero());
-    REQUIRE((Vector3d(tangent.evaluate(1)) - Vector3d(1, 0, 0)).isZero());
+    ParametricExpression<Vector3d, double> tangent = arc.tangentVector();
+    REQUIRE((tangent.evaluate(0) - Vector3d(0, 1, 0)).isZero());
+    REQUIRE((tangent.evaluate(1 / 3.0) - Vector3d(-1, 0, 0)).isZero());
+    REQUIRE((tangent.evaluate(2 / 3.0) - Vector3d(0, -1, 0)).isZero());
+    REQUIRE((tangent.evaluate(1) - Vector3d(1, 0, 0)).isZero());
     
-    ParametricExpression<3, 1> secondDerivative =
-        arc.expression().derivative().derivative();
+    ParametricExpression<Vector3d, double> secondDerivative = (
+        arc.expression().derivative().derivative()
+    );
     double secondDerivativeMagnitude = 4.5 * M_PI * M_PI;
     Vector3d expectedValue;
     
     expectedValue = Vector3d(-secondDerivativeMagnitude, 0, 0);
-    REQUIRE((Vector3d(secondDerivative.evaluate(0.0)) - expectedValue).isZero());
+    REQUIRE((secondDerivative.evaluate(0.0) - expectedValue).isZero());
     
     expectedValue = Vector3d(0, -secondDerivativeMagnitude, 0);
-    REQUIRE((Vector3d(secondDerivative.evaluate(1.0 / 3.0)) - expectedValue).isZero());
+    REQUIRE((secondDerivative.evaluate(1.0 / 3.0) - expectedValue).isZero());
     
     expectedValue = Vector3d(secondDerivativeMagnitude, 0, 0);
-    REQUIRE((Vector3d(secondDerivative.evaluate(2.0 / 3.0)) - expectedValue).isZero());
+    REQUIRE((secondDerivative.evaluate(2.0 / 3.0) - expectedValue).isZero());
     
     expectedValue = Vector3d(0, secondDerivativeMagnitude, 0);
-    REQUIRE((Vector3d(secondDerivative.evaluate(1.0)) - expectedValue).isZero());
+    REQUIRE((secondDerivative.evaluate(1.0) - expectedValue).isZero());
     
-    ParametricExpression<3, 1> normal = arc.normalVector();
-    REQUIRE((Vector3d(normal.evaluate(0.0)) - Vector3d(-1, 0, 0)).isZero());
-    REQUIRE((Vector3d(normal.evaluate(1.0 / 3.0)) - Vector3d(0, -1, 0)).isZero());
-    REQUIRE((Vector3d(normal.evaluate(2.0 / 3.0)) - Vector3d(1, 0, 0)).isZero());
-    REQUIRE((Vector3d(normal.evaluate(1.0)) - Vector3d(0, 1, 0)).isZero());
+    ParametricExpression<Vector3d, double> normal = arc.normalVector();
+    REQUIRE((normal.evaluate(0.0) - Vector3d(-1, 0, 0)).isZero());
+    REQUIRE((normal.evaluate(1.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
+    REQUIRE((normal.evaluate(2.0 / 3.0) - Vector3d(1, 0, 0)).isZero());
+    REQUIRE((normal.evaluate(1.0) - Vector3d(0, 1, 0)).isZero());
 }
 
 TEST_CASE("Full arc") {
-    Axis3d axis(Point3d(0, 3, 3), UnitVector3d::X());
+    Axis3d axis(Point3d(0, 3, 3), Vector3d::unitX());
     Point3d point(1, 3, 1);
-    ParametricCurve3d arc = ParametricCurve3d::Arc(axis, point, point);
+    ParametricCurve3d arc = ParametricCurve3d::arc(axis, point, point);
 
     REQUIRE((arc.evaluate(0.25) - Point3d(1, 5, 3)).isZero());
     REQUIRE((arc.evaluate(0.75) - Point3d(1, 1, 3)).isZero());
 }
 
 TEST_CASE("2D arc") {
-    ParametricCurve2d arc2d = ParametricCurve2d::Arc(
+    ParametricCurve2d arc2d = ParametricCurve2d::arc(
         Point2d(2, 1),
-        ParametricCurve2d::COUNTERCLOCKWISE,
+        COUNTERCLOCKWISE,
         Point2d(3, 1),
         Point2d(2, 2)
     );
@@ -115,14 +116,15 @@ TEST_CASE("2D arc") {
 
 TEST_CASE("Curve operations") {
     Parameter1d t;
-    ParametricExpression<3, 1> expression =
-        ParametricExpression<3, 1>::FromComponents(t, t.squared(), 0.0);
+    ParametricExpression<Point3d, double> expression = (
+        ParametricExpression<Point3d, double>::fromComponents(t, t.squared(), 0.0)
+    );
     ParametricCurve3d parabola(expression, Interval(-2, 2));
 
-    Vector3d tangentVector(parabola.tangentVector().evaluate(1.0));
-    double curvature = parabola.curvature().evaluate(1.0).value();
-    Vector3d normalVector(parabola.normalVector().evaluate(1.0));
-    Vector3d binormalVector(parabola.binormalVector().evaluate(1.0));
+    Vector3d tangentVector = parabola.tangentVector().evaluate(1.0);
+    double curvature = parabola.curvature().evaluate(1.0);
+    Vector3d normalVector = parabola.normalVector().evaluate(1.0);
+    Vector3d binormalVector = parabola.binormalVector().evaluate(1.0);
 
     REQUIRE((tangentVector - Vector3d(1, 2, 0).normalized()).isZero());
     REQUIRE((curvature - 2 / (5 * sqrt(5.0))) == Zero());
@@ -135,9 +137,9 @@ TEST_CASE("Curve operations") {
 }
 
 TEST_CASE("Multi-evaluation") {
-    ParametricCurve2d arc = ParametricCurve2d::Arc(
-        Point2d::Origin(),
-        ParametricCurve2d::COUNTERCLOCKWISE,
+    ParametricCurve2d arc = ParametricCurve2d::arc(
+        Point2d::origin(),
+        COUNTERCLOCKWISE,
         Point2d(1, 0),
         Point2d(0, 1)
     );

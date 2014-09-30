@@ -28,87 +28,124 @@
 
 namespace opensolid
 {
-    int
-    ParameterExpression::numDimensionsImpl() const {
-        return 1;
-    }
+    namespace detail
+    {
+        int
+        ParameterExpression::numDimensionsImpl() const {
+            return 1;
+        }
 
-    int
-    ParameterExpression::numParametersImpl() const {
-        return _numParameters;
-    }
-    
-    void
-    ParameterExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator&
-    ) const {
-        resultView = parameterView.row(parameterIndex());
-    }
-    
-    void
-    ParameterExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator&
-    ) const {
-        resultView = parameterView.row(parameterIndex());
-    }
+        int
+        ParameterExpression::numParametersImpl() const {
+            return _numParameters;
+        }
+        
+        void
+        ParameterExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            int parameterIndex = this->parameterIndex();
+            expressionCompiler.compute(
+                parameterID,
+                resultID,
+                [parameterIndex] (
+                    ConstMatrixViewXd parameterValues,
+                    MatrixViewXd results
+                ) {
+                    results = parameterValues.row(parameterIndex);
+                }
+            );
+        }
+        
+        void
+        ParameterExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            int parameterIndex = this->parameterIndex();
+            expressionCompiler.compute(
+                parameterID,
+                resultID,
+                [parameterIndex] (
+                    ConstIntervalMatrixViewXd parameterValues,
+                    IntervalMatrixViewXd results
+                ) {
+                    results = parameterValues.row(parameterIndex);
+                }
+            );
+        }
 
-    void
-    ParameterExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView.setZero();
-        resultView(0, parameterIndex()) = 1;
-    }
-    
-    void
-    ParameterExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView.setZero();
-        resultView(0, parameterIndex()) = 1;
-    }
+        void
+        ParameterExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            int parameterIndex = this->parameterIndex();
+            expressionCompiler.compute(
+                resultID,
+                [parameterIndex] (MatrixViewXd results) {
+                    results.setZero();
+                    results(0, parameterIndex) = 1.0;
+                }
+            );
+        }
+        
+        void
+        ParameterExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            int parameterIndex = this->parameterIndex();
+            expressionCompiler.compute(
+                resultID,
+                [parameterIndex] (IntervalMatrixViewXd results) {
+                    results.setZero();
+                    results(0, parameterIndex) = Interval(1.0);
+                }
+            );
+        }
 
-    ExpressionImplementationPtr
-    ParameterExpression::derivativeImpl(int parameterIndex) const {
-        return new ConstantExpression(
-            parameterIndex == this->parameterIndex() ? 1.0 : 0.0,
-            numParameters()
-        );
-    }
+        ExpressionImplementationPtr
+        ParameterExpression::derivativeImpl(int parameterIndex) const {
+            return new ConstantExpression(
+                parameterIndex == this->parameterIndex() ? 1.0 : 0.0,
+                numParameters()
+            );
+        }
 
-    bool
-    ParameterExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return this->parameterIndex() == other->cast<ParameterExpression>()->parameterIndex();
-    }
+        bool
+        ParameterExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return this->parameterIndex() == other->cast<ParameterExpression>()->parameterIndex();
+        }
 
-    ExpressionImplementationPtr
-    ParameterExpression::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return this;
-    }
-    
-    ExpressionImplementationPtr
-    ParameterExpression::composedImpl(const ExpressionImplementationPtr& innerExpression) const {
-        return innerExpression->component(parameterIndex());
-    }
-    
-    void
-    ParameterExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "ParameterExpression: parameter index = " << parameterIndex() << std::endl;
-    }
+        ExpressionImplementationPtr
+        ParameterExpression::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+            return this;
+        }
+        
+        ExpressionImplementationPtr
+        ParameterExpression::composedImpl(
+            const ExpressionImplementationPtr& innerExpression
+        ) const {
+            return innerExpression->component(parameterIndex());
+        }
+        
+        void
+        ParameterExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "ParameterExpression: parameter index = " << parameterIndex() << std::endl;
+        }
 
-    ParameterExpression::ParameterExpression(int numParameters, int parameterIndex) :
-        _numParameters(numParameters),
-        _parameterIndex(parameterIndex) {
+        ParameterExpression::ParameterExpression(int numParameters, int parameterIndex) :
+            _numParameters(numParameters),
+            _parameterIndex(parameterIndex) {
 
-        assert(numParameters > 0);
-        assert(parameterIndex >= 0 && parameterIndex < numParameters);
+            assert(numParameters > 0);
+            assert(parameterIndex >= 0 && parameterIndex < numParameters);
+        }
     }
 }

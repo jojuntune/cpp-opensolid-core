@@ -28,8 +28,11 @@
 
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/ParametricSurface.hpp>
+#include <OpenSolid/Core/Plane.hpp>
+#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 
 namespace opensolid
 {
@@ -55,13 +58,14 @@ namespace opensolid
     const BoundedVolume3d
     ScalingFunction<BoundedVolume3d>::operator()(
         const BoundedVolume3d& boundedVolume,
+        const Point3d& originPoint,
         double scale
     ) const {
         return BoundedVolume3d(
             SpatialSet<ParametricSurface3d>(
                 boundedVolume.boundaries().map(
-                    [scale] (const ParametricSurface3d& surface) {
-                        return scalingFunction(surface, scale);
+                    [&originPoint, scale] (const ParametricSurface3d& surface) {
+                        return scaled(surface, originPoint, scale);
                     }
                 )
             )
@@ -77,7 +81,7 @@ namespace opensolid
             SpatialSet<ParametricSurface3d>(
                 boundedVolume.boundaries().map(
                     [&vector] (const ParametricSurface3d& surface) {
-                        return translationFunction(surface, vector);
+                        return translated(surface, vector);
                     }
                 )
             )
@@ -87,13 +91,20 @@ namespace opensolid
     const BoundedVolume3d
     TransformationFunction<BoundedVolume3d, 3>::operator()(
         const BoundedVolume3d& boundedVolume,
-        const Matrix3d& matrix
+        const Point3d& originPoint,
+        const Matrix3d& transformationMatrix,
+        const Point3d& destinationPoint
     ) const {
         return BoundedVolume3d(
             SpatialSet<ParametricSurface3d>(
                 boundedVolume.boundaries().map(
-                    [&matrix] (const ParametricSurface3d& surface) {
-                        return transformationFunction(surface, matrix);
+                    [&] (const ParametricSurface3d& surface) {
+                        return transformed(
+                            surface,
+                            originPoint,
+                            transformationMatrix,
+                            destinationPoint
+                        );
                     }
                 )
             )
@@ -101,15 +112,48 @@ namespace opensolid
     }
 
     const BoundedVolume3d
-    MorphingFunction<BoundedVolume3d, 3>::operator()(
+    MorphingFunction<BoundedVolume3d, ParametricExpression<Point3d, Point3d>>::operator()(
         const BoundedVolume3d& boundedVolume,
-        const ParametricExpression<3, 3>& morphingExpression
+        const ParametricExpression<Point3d, Point3d>& morphingExpression
     ) const {
         return BoundedVolume3d(
             SpatialSet<ParametricSurface3d>(
                 boundedVolume.boundaries().map(
                     [&morphingExpression] (const ParametricSurface3d& surface) {
-                        return morphingFunction(surface, morphingExpression);
+                        return morphed(surface, morphingExpression);
+                    }
+                )
+            )
+        );
+    }
+
+    BoundedVolume3d
+    MirrorFunction<BoundedVolume3d>::operator()(
+        const BoundedVolume3d& boundedVolume,
+        const Point3d& originPoint,
+        const UnitVector3d& normalVector
+    ) const {
+        return BoundedVolume3d(
+            SpatialSet<ParametricSurface3d>(
+                boundedVolume.boundaries().map(
+                    [&originPoint, &normalVector] (const ParametricSurface3d& surface) {
+                        return mirrored(surface, originPoint, normalVector);
+                    }
+                )
+            )
+        );
+    }
+
+    BoundedVolume3d
+    ProjectionFunction<BoundedVolume3d, Plane3d>::operator()(
+        const BoundedVolume3d& boundedVolume,
+        const Plane3d& plane
+    ) const {
+        return BoundedVolume3d(
+            SpatialSet<ParametricSurface3d>(
+                boundedVolume.boundaries().map(
+                    [&plane] (const ParametricSurface3d& surface) {
+                        return projected(surface, plane);
                     }
                 )
             )

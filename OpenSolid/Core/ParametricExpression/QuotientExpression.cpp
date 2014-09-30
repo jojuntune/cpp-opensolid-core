@@ -28,120 +28,162 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 
 namespace opensolid
-{   
-    int
-    QuotientExpression::numDimensionsImpl() const {
-        return firstOperand()->numDimensions();
-    }
-    
-    void
-    QuotientExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluate(firstOperand(), parameterView);
-        ConstMatrixViewXd divisorValues = evaluator.evaluate(secondOperand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            double divisorValue = divisorValues(0, columnIndex);
-            if (divisorValue == Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            resultView.column(columnIndex) /= divisorValue;
+{  
+    namespace detail
+    {
+        int
+        QuotientExpression::numDimensionsImpl() const {
+            return firstOperand()->numDimensions();
         }
-    }
-    
-    void
-    QuotientExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluate(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXd divisorValues =
-            evaluator.evaluate(secondOperand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            Interval divisorValue = divisorValues(0, columnIndex);
-            if (divisorValue == Zero()) {
-                throw Error(new PlaceholderError());
-            }
-            resultView.column(columnIndex) /= divisorValue;
+        
+        void
+        QuotientExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd divisorValues, MatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        double divisorValue = divisorValues(0, columnIndex);
+                        if (divisorValue == Zero()) {
+                            throw Error(new PlaceholderError());
+                        }
+                        results.column(columnIndex) /= divisorValue;
+                    }
+                }
+            );
         }
-    }
-
-    void
-    QuotientExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        double divisorValue = evaluator.evaluate(secondOperand(), parameterView).value();
-        if (divisorValue == Zero()) {
-            throw Error(new PlaceholderError());
+        
+        void
+        QuotientExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd divisorValues, IntervalMatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        Interval divisorValue = divisorValues(0, columnIndex);
+                        if (divisorValue == Zero()) {
+                            throw Error(new PlaceholderError());
+                        }
+                        results.column(columnIndex) /= divisorValue;
+                    }
+                }
+            );
         }
-        ConstMatrixViewXd dividendValues =
-            evaluator.evaluate(firstOperand(), parameterView);
-        ConstMatrixViewXd dividendJacobian =
-            evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstMatrixViewXd divisorJacobian =
-            evaluator.evaluateJacobian(secondOperand(), parameterView);
-        resultView = (dividendJacobian * divisorValue - dividendValues * divisorJacobian) / 
-            (divisorValue * divisorValue);
-    }
-    
-    void
-    QuotientExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        Interval divisorValue = evaluator.evaluate(secondOperand(), parameterView).value();
-        if (divisorValue == Zero()) {
-            throw Error(new PlaceholderError());
+
+        void
+        QuotientExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                expressionCompiler.createTemporary(numDimensions(), numParameters()),
+                resultID,
+                [] (
+                    ConstMatrixViewXd dividendValues,
+                    ConstMatrixViewXd divisorValues,
+                    ConstMatrixViewXd divisorJacobian,
+                    MatrixViewXd tempProduct,
+                    MatrixViewXd results
+                ) {
+                    double divisorValue = divisorValues.value();
+                    if (divisorValue == Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= divisorValue;
+                    tempProduct.setProduct(dividendValues, divisorJacobian);
+                    results -= tempProduct;
+                    results *= (1.0 / (divisorValue * divisorValue));
+                }
+            );
         }
-        ConstIntervalMatrixViewXd dividendValues =
-            evaluator.evaluate(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXd dividendJacobian =
-            evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXd divisorJacobian =
-            evaluator.evaluateJacobian(secondOperand(), parameterView);
-        resultView = (dividendJacobian * divisorValue - dividendValues * divisorJacobian) / 
-            (divisorValue * divisorValue);
-    }
+        
+        void
+        QuotientExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(firstOperand(), parameterID),
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                expressionCompiler.createTemporary(numDimensions(), numParameters()),
+                resultID,
+                [] (
+                    ConstIntervalMatrixViewXd dividendValues,
+                    ConstIntervalMatrixViewXd divisorValues,
+                    ConstIntervalMatrixViewXd divisorJacobian,
+                    IntervalMatrixViewXd tempProduct,
+                    IntervalMatrixViewXd results
+                ) {
+                    Interval divisorValue = divisorValues.value();
+                    if (divisorValue == Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results *= divisorValue;
+                    tempProduct.setProduct(dividendValues, divisorJacobian);
+                    results -= tempProduct;
+                    results *= (1.0 / divisorValue.squared());
+                }
+            );
+        }
 
-    ExpressionImplementationPtr
-    QuotientExpression::derivativeImpl(int parameterIndex) const {
-        ExpressionImplementationPtr firstDerivative = firstOperand()->derivative(parameterIndex);
-        ExpressionImplementationPtr secondDerivative = secondOperand()->derivative(parameterIndex);
-        return(firstDerivative * secondOperand() - firstOperand() * secondDerivative) /
-            secondOperand()->squaredNorm();
-    }
+        ExpressionImplementationPtr
+        QuotientExpression::derivativeImpl(int parameterIndex) const {
+            ExpressionImplementationPtr firstDerivative = (
+                firstOperand()->derivative(parameterIndex)
+            );
+            ExpressionImplementationPtr secondDerivative = (
+                secondOperand()->derivative(parameterIndex)
+            );
+            return (
+                (firstDerivative * secondOperand() - firstOperand() * secondDerivative) /
+                secondOperand()->squaredNorm()
+            );
+        }
 
-    bool
-    QuotientExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other, false);
-    }
-    
-    void
-    QuotientExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "QuotientExpression" << std::endl;
-        firstOperand()->debug(stream, indent + 1);
-        secondOperand()->debug(stream, indent + 1);
-    }
+        bool
+        QuotientExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other, false);
+        }
+        
+        void
+        QuotientExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "QuotientExpression" << std::endl;
+            firstOperand()->debug(stream, indent + 1);
+            secondOperand()->debug(stream, indent + 1);
+        }
 
-    ExpressionImplementationPtr
-    QuotientExpression::withNewOperandsImpl(
-        const ExpressionImplementationPtr& newFirstOperand,
-        const ExpressionImplementationPtr& newSecondOperand
-    ) const {
-        return newFirstOperand / newSecondOperand;
-    }
+        ExpressionImplementationPtr
+        QuotientExpression::withNewOperandsImpl(
+            const ExpressionImplementationPtr& newFirstOperand,
+            const ExpressionImplementationPtr& newSecondOperand
+        ) const {
+            return newFirstOperand / newSecondOperand;
+        }
 
-    QuotientExpression::QuotientExpression(
-        const ExpressionImplementationPtr& firstOperand,
-        const ExpressionImplementationPtr& secondOperand
-    ) : BinaryOperation(firstOperand, secondOperand) {
+        QuotientExpression::QuotientExpression(
+            const ExpressionImplementationPtr& firstOperand,
+            const ExpressionImplementationPtr& secondOperand
+        ) : BinaryOperation(firstOperand, secondOperand) {
 
-        assert(secondOperand->numDimensions() == 1);
+            assert(secondOperand->numDimensions() == 1);
+        }
     }
 }

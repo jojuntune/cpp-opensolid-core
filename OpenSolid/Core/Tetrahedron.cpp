@@ -32,38 +32,38 @@ namespace opensolid
     LineSegment3d
     Tetrahedron3d::edge(int index) const {
         switch (index) {
-            case 0:
-                return LineSegment3d(vertex(0), vertex(1));
-            case 1:
-                return LineSegment3d(vertex(1), vertex(2));
-            case 2:
-                return LineSegment3d(vertex(0), vertex(2));
-            case 3:
-                return LineSegment3d(vertex(2), vertex(3));
-            case 4:
-                return LineSegment3d(vertex(0), vertex(3));
-            case 5:
-                return LineSegment3d(vertex(3), vertex(1));
-            default:
-                assert(false);
-                return LineSegment3d();
+        case 0:
+            return LineSegment3d(vertex(0), vertex(1));
+        case 1:
+            return LineSegment3d(vertex(1), vertex(2));
+        case 2:
+            return LineSegment3d(vertex(0), vertex(2));
+        case 3:
+            return LineSegment3d(vertex(2), vertex(3));
+        case 4:
+            return LineSegment3d(vertex(0), vertex(3));
+        case 5:
+            return LineSegment3d(vertex(3), vertex(1));
+        default:
+            assert(false);
+            return LineSegment3d();
         }
     }
 
     Triangle3d
     Tetrahedron3d::face(int oppositeIndex) const {
         switch (oppositeIndex) {
-            case 0:
-                return Triangle3d(vertex(1), vertex(2), vertex(3));
-            case 1:
-                return Triangle3d(vertex(0), vertex(3), vertex(2));
-            case 2:
-                return Triangle3d(vertex(3), vertex(0), vertex(1));
-            case 3:
-                return Triangle3d(vertex(2), vertex(1), vertex(0));
-            default:
-                assert(false);
-                return Triangle3d();
+        case 0:
+            return Triangle3d(vertex(1), vertex(2), vertex(3));
+        case 1:
+            return Triangle3d(vertex(0), vertex(3), vertex(2));
+        case 2:
+            return Triangle3d(vertex(3), vertex(0), vertex(1));
+        case 3:
+            return Triangle3d(vertex(2), vertex(1), vertex(0));
+        default:
+            assert(false);
+            return Triangle3d();
         }
     }
 
@@ -79,8 +79,12 @@ namespace opensolid
     Point3d
     Tetrahedron3d::centroid() const {
         return Point3d(
-            (vertex(0).components() + vertex(1).components() +
-                vertex(2).components() + vertex(3).components()) / 4.0
+            (
+                vertex(0).components() +
+                vertex(1).components() +
+                vertex(2).components() +
+                vertex(3).components()
+            ) / 4.0
         );
     }
 
@@ -115,9 +119,9 @@ namespace opensolid
     }
 
     Tetrahedron3d
-    Tetrahedron3d::Unit() {
+    Tetrahedron3d::unit() {
         return Tetrahedron3d(
-            Point3d::Origin(),
+            Point3d::origin(),
             Point3d(1, 0, 0),
             Point3d(0, 1, 0),
             Point3d(0, 0, 1)
@@ -127,13 +131,14 @@ namespace opensolid
     Tetrahedron3d
     ScalingFunction<Tetrahedron3d>::operator()(
         const Tetrahedron3d& tetrahedron,
+        const Point3d& originPoint,
         double scale
     ) const {
         return Tetrahedron3d(
-            scalingFunction(tetrahedron.vertex(0), scale),
-            scalingFunction(tetrahedron.vertex(1), scale),
-            scalingFunction(tetrahedron.vertex(2), scale),
-            scalingFunction(tetrahedron.vertex(3), scale)
+            scaled(tetrahedron.vertex(0), originPoint, scale),
+            scaled(tetrahedron.vertex(1), originPoint, scale),
+            scaled(tetrahedron.vertex(2), originPoint, scale),
+            scaled(tetrahedron.vertex(3), originPoint, scale)
         );
     }
 
@@ -143,36 +148,38 @@ namespace opensolid
         const Vector3d& vector
     ) const {
         return Tetrahedron3d(
-            translationFunction(tetrahedron.vertex(0), vector),
-            translationFunction(tetrahedron.vertex(1), vector),
-            translationFunction(tetrahedron.vertex(2), vector),
-            translationFunction(tetrahedron.vertex(3), vector)
+            translated(tetrahedron.vertex(0), vector),
+            translated(tetrahedron.vertex(1), vector),
+            translated(tetrahedron.vertex(2), vector),
+            translated(tetrahedron.vertex(3), vector)
         );
     }
 
     Tetrahedron3d
     TransformationFunction<Tetrahedron3d, 3>::operator()(
         const Tetrahedron3d& tetrahedron,
-        const Matrix3d& matrix
+        const Point3d& originPoint,
+        const Matrix3d& transformationMatrix,
+        const Point3d& destinationPoint
     ) const {
         return Tetrahedron3d(
-            transformationFunction(tetrahedron.vertex(0), matrix),
-            transformationFunction(tetrahedron.vertex(1), matrix),
-            transformationFunction(tetrahedron.vertex(2), matrix),
-            transformationFunction(tetrahedron.vertex(3), matrix)
+            transformed(tetrahedron.vertex(0), originPoint, transformationMatrix, destinationPoint),
+            transformed(tetrahedron.vertex(1), originPoint, transformationMatrix, destinationPoint),
+            transformed(tetrahedron.vertex(2), originPoint, transformationMatrix, destinationPoint),
+            transformed(tetrahedron.vertex(3), originPoint, transformationMatrix, destinationPoint)
         );
     }
 
     Tetrahedron3d
-    MorphingFunction<Tetrahedron3d, 3>::operator()(
+    MorphingFunction<Tetrahedron3d, ParametricExpression<Point3d, Point3d>>::operator()(
         const Tetrahedron3d& tetrahedron,
-        const ParametricExpression<3, 3>& morphingExpression
+        const ParametricExpression<Point3d, Point3d>& morphingExpression
     ) const {
         return Tetrahedron3d(
-            morphingFunction(tetrahedron.vertex(0), morphingExpression),
-            morphingFunction(tetrahedron.vertex(1), morphingExpression),
-            morphingFunction(tetrahedron.vertex(2), morphingExpression),
-            morphingFunction(tetrahedron.vertex(3), morphingExpression)
+            morphed(tetrahedron.vertex(0), morphingExpression),
+            morphed(tetrahedron.vertex(1), morphingExpression),
+            morphed(tetrahedron.vertex(2), morphingExpression),
+            morphed(tetrahedron.vertex(3), morphingExpression)
         );
     }
 }

@@ -61,11 +61,6 @@ namespace opensolid
     }
 
     inline
-    Point1d::Point(const double* sourcePtr) :
-        detail::PointBase<1>(sourcePtr) {
-    }
-
-    inline
     Point2d::Point() {
     }
 
@@ -85,11 +80,6 @@ namespace opensolid
     }
 
     inline
-    Point2d::Point(const double* sourcePtr) :
-        detail::PointBase<2>(sourcePtr) {
-    }
-
-    inline
     double
     Point2d::distanceTo(const Axis2d& axis) const {
         return (*this - axis.originPoint()).dot(axis.normalVector());
@@ -97,7 +87,7 @@ namespace opensolid
 
     inline
     const Point2d
-    Point2d::Polar(double radius, double angle) {
+    Point2d::polar(double radius, double angle) {
         return Point2d(radius * cos(angle), radius * sin(angle));
     }
 
@@ -121,11 +111,6 @@ namespace opensolid
     }
 
     inline
-    Point3d::Point(const double* sourcePtr) :
-        detail::PointBase<3>(sourcePtr) {
-    }
-
-    inline
     double
     Point3d::squaredDistanceTo(const Axis3d& axis) const {
         return (*this - this->projectedOnto(axis)).squaredNorm();
@@ -145,13 +130,13 @@ namespace opensolid
 
     inline
     const Point3d
-    Point3d::Cylindrical(double radius, double angle, double height) {
+    Point3d::cylindrical(double radius, double angle, double height) {
         return Point3d(radius * cos(angle), radius * sin(angle), height);
     }
 
     inline
     const Point3d
-    Point3d::Spherical(double radius, double polarAngle, double elevationAngle) {
+    Point3d::spherical(double radius, double polarAngle, double elevationAngle) {
         double sinElevation = sin(elevationAngle);
         double cosElevation = cos(elevationAngle);
         double sinPolar = sin(polarAngle);
@@ -228,9 +213,12 @@ namespace opensolid
     const Point<iNumDimensions>
     ScalingFunction<Point<iNumDimensions>>::operator()(
         const Point<iNumDimensions>& point,
+        const Point<iNumDimensions>& originPoint,
         double scale
     ) const {
-        return Point<iNumDimensions>(scale * point.components());
+        return Point<iNumDimensions>(
+            originPoint.components() + scale * (point.components() - originPoint.components())
+        );
     }
 
     template <int iNumDimensions>
@@ -248,18 +236,14 @@ namespace opensolid
     const Point<iNumResultDimensions>
     TransformationFunction<Point<iNumDimensions>, iNumResultDimensions>::operator()(
         const Point<iNumDimensions>& point,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
     ) const {
-        return Point<iNumResultDimensions>(matrix * point.components());
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    inline
-    const Point<iNumResultDimensions>
-    MorphingFunction<Point<iNumDimensions>, iNumResultDimensions>::operator()(
-        const Point<iNumDimensions>& point,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-    ) const {
-        return Point<iNumResultDimensions>(morphingExpression.evaluate(point.components()));
+        return Point<iNumResultDimensions>(
+            destinationPoint.components() + (
+                transformationMatrix * (point.components() - originPoint.components())
+            )
+        );
     }
 }

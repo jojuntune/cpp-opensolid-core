@@ -44,24 +44,24 @@ namespace opensolid
     }
 
     ParametricSurface3d::ParametricSurface3d(
-        const ParametricExpression<3, 2>& expression,
+        const ParametricExpression<Point3d, Point2d>& expression,
         const BoundedArea2d& domain
     ) : _expression(expression),
         _domain(domain),
-        _bounds(expression.evaluate(domain.bounds().components())) {
+        _bounds(expression.evaluate(domain.bounds())) {
     }
 
     Point3d
-    ParametricSurface3d::evaluate(double u, double v) const {
-        return Point3d(expression().evaluate(u, v));
+    ParametricSurface3d::evaluate(const Point2d& parameterValues) const {
+        return expression().evaluate(parameterValues);
     }
 
     Box3d
-    ParametricSurface3d::evaluate(Interval u, Interval v) const {
-        return Box3d(expression().evaluate(u, v));
+    ParametricSurface3d::evaluate(const Box2d& parameterBounds) const {
+        return expression().evaluate(parameterBounds);
     }
 
-    ParametricExpression<3, 2>
+    ParametricExpression<Vector3d, Point2d>
     ParametricSurface3d::normalVector() const {
         return expression().derivative(0).cross(expression().derivative(1)).normalized();
     }
@@ -69,10 +69,11 @@ namespace opensolid
     ParametricSurface3d
     ScalingFunction<ParametricSurface3d>::operator()(
         const ParametricSurface3d& surface,
+        const Point3d& originPoint,
         double scale
     ) const {
         return ParametricSurface3d(
-            scale * surface.expression(),
+            scaled(surface.expression(), originPoint, scale),
             surface.domain()
         );
     }
@@ -82,27 +83,26 @@ namespace opensolid
         const ParametricSurface3d& surface,
         const Vector3d& vector
     ) const {
-        return ParametricSurface3d(
-            surface.expression() + vector.components(),
-            surface.domain()
-        );
+        return ParametricSurface3d(surface.expression() + vector, surface.domain());
     }
 
     ParametricSurface3d
     TransformationFunction<ParametricSurface3d, 3>::operator()(
         const ParametricSurface3d& surface,
-        const Matrix3d& matrix
+        const Point3d& originPoint,
+        const Matrix3d& transformationMatrix,
+        const Point3d& destinationPoint
     ) const {
         return ParametricSurface3d(
-            matrix * surface.expression(),
+            transformed(surface.expression(), originPoint, transformationMatrix, destinationPoint),
             surface.domain()
         );
     }
 
     ParametricSurface3d
-    MorphingFunction<ParametricSurface3d, 3>::operator()(
+    MorphingFunction<ParametricSurface3d, ParametricExpression<Point3d, Point3d>>::operator()(
         const ParametricSurface3d& surface,
-        const ParametricExpression<3, 3>& morphingExpression
+        const ParametricExpression<Point3d, Point3d>& morphingExpression
     ) const {
         return ParametricSurface3d(
             morphingExpression.composed(surface.expression()),

@@ -30,177 +30,183 @@
 
 namespace opensolid
 {
-    class ConstantExpression :
-        public ExpressionImplementation
+    namespace detail
     {
-    private:
-        ColumnMatrixXd _columnMatrix;
-        IntervalColumnMatrixXd _intervalColumnMatrix;
-        int _numParameters;
+        class ConstantExpression :
+            public ExpressionImplementation
+        {
+        private:
+            ColumnMatrixXd _columnMatrix;
+            IntervalColumnMatrixXd _intervalColumnMatrix;
+            int _numParameters;
 
-        OPENSOLID_CORE_EXPORT
-        int
-        numDimensionsImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            int
+            numDimensionsImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        int
-        numParametersImpl() const override;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
+            OPENSOLID_CORE_EXPORT
+            int
+            numParametersImpl() const override;
+            
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateImpl(
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultID,
+                ExpressionCompiler<double>& expressionCompiler
+            ) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateImpl(
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultID,
+                ExpressionCompiler<Interval>& expressionCompiler
+            ) const override;
 
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        derivativeImpl(int index) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOfImpl(const ExpressionImplementationPtr& other) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateJacobianImpl(
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultID,
+                ExpressionCompiler<double>& expressionCompiler
+            ) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateJacobianImpl(
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultID,
+                ExpressionCompiler<Interval>& expressionCompiler
+            ) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            derivativeImpl(int index) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            bool
+            isDuplicateOfImpl(const ExpressionImplementationPtr& other) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        composedImpl(const ExpressionImplementationPtr& innerExpression) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        componentsImpl(int startIndex, int numComponents) const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            composedImpl(const ExpressionImplementationPtr& innerExpression) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            componentsImpl(int startIndex, int numComponents) const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        scalingImpl(double scale) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        translationImpl(const ColumnMatrixXd& columnMatrix) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        transformationImpl(const MatrixXd& matrix) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        normImpl() const override;
-        
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        normalizedImpl() const override;
-        
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        squaredNormImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            scalingImpl(double scale) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            translationImpl(const ColumnMatrixXd& columnMatrix) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            transformationImpl(const MatrixXd& matrix) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            normImpl() const override;
+            
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            normalizedImpl() const override;
+            
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            squaredNormImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        sqrtImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            sqrtImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        sinImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            sinImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        cosImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            cosImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        tanImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            tanImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        acosImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            acosImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        asinImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            asinImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        expImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            expImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        logImpl() const override;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        debugImpl(std::ostream& stream, int indent) const override;
-    public:
-        OPENSOLID_CORE_EXPORT
-        ConstantExpression(const ColumnMatrixXd& columnMatrix, int numParameters);
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            logImpl() const override;
+            
+            OPENSOLID_CORE_EXPORT
+            void
+            debugImpl(std::ostream& stream, int indent) const override;
+        public:
+            OPENSOLID_CORE_EXPORT
+            ConstantExpression(const ColumnMatrixXd& columnMatrix, int numParameters);
 
-        OPENSOLID_CORE_EXPORT
-        ConstantExpression(double value, int numParameters);
-        
-        const ColumnMatrixXd&
-        columnMatrix() const;
+            OPENSOLID_CORE_EXPORT
+            ConstantExpression(double value, int numParameters);
+            
+            const ColumnMatrixXd&
+            columnMatrix() const;
 
-        double
-        value() const;
-        
-        const IntervalColumnMatrixXd&
-        intervalColumnMatrix() const;
+            double
+            value() const;
+            
+            const IntervalColumnMatrixXd&
+            intervalColumnMatrix() const;
 
-        bool
-        isZero(double tolerance = 1e-12) const;
-    };
+            bool
+            isZero(double tolerance = 1e-12) const;
+        };
+    }
 }
 
 namespace opensolid
 {
-    inline
-    const ColumnMatrixXd&
-    ConstantExpression::columnMatrix() const {
-        return _columnMatrix;
-    }
+    namespace detail
+    {
+        inline
+        const ColumnMatrixXd&
+        ConstantExpression::columnMatrix() const {
+            return _columnMatrix;
+        }
 
-    inline
-    double
-    ConstantExpression::value() const {
-        return columnMatrix().value();
-    }
+        inline
+        double
+        ConstantExpression::value() const {
+            return columnMatrix().value();
+        }
 
-    inline
-    const IntervalColumnMatrixXd&
-    ConstantExpression::intervalColumnMatrix() const {
-        return _intervalColumnMatrix;
-    }
+        inline
+        const IntervalColumnMatrixXd&
+        ConstantExpression::intervalColumnMatrix() const {
+            return _intervalColumnMatrix;
+        }
 
-    inline
-    bool
-    ConstantExpression::isZero(double tolerance) const {
-        return columnMatrix().isZero(tolerance);
+        inline
+        bool
+        ConstantExpression::isZero(double tolerance) const {
+            return columnMatrix().isZero(tolerance);
+        }
     }
 }

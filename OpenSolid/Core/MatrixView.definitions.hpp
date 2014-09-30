@@ -34,30 +34,74 @@
 
 namespace opensolid
 {
-    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStrideInBytes>
     class MatrixView :
-        public detail::MatrixInterface<MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>>
+        public detail::MatrixInterface<
+            MatrixView<TScalar, iNumRows, iNumColumns, iColumnStrideInBytes>
+        >
     {
     private:
         TScalar* _data;
         int _numRows;
         int _numColumns;
-        int _size;
-        int _columnStride;
+        int _numComponents;
+        int _columnStrideInBytes;
     public:
         MatrixView(TScalar* sourcePtr);
 
-        MatrixView(TScalar* sourcePtr, int size);
+        MatrixView(TScalar* sourcePtr, int numComponents);
 
         MatrixView(TScalar* sourcePtr, int numRows, int numColumns);
 
-        MatrixView(TScalar* sourcePtr, int numRows, int numColumns, int columnStride);
+        MatrixView(TScalar* sourcePtr, int numRows, int numColumns, int columnStrideInBytes);
 
-        template <int iOtherRows, int iOtherCols, int iOtherColStride>
-        MatrixView(const MatrixView<TScalar, iOtherRows, iOtherCols, iOtherColStride>& other);
+        template <
+            class TOtherScalar,
+            int iOtherNumRows,
+            int iOtherNumColumns, 
+            int iOtherColumnStrideInBytes
+        >
+        MatrixView(
+            const MatrixView<
+                TOtherScalar,
+                iOtherNumRows,
+                iOtherNumColumns,
+                iOtherColumnStrideInBytes
+            >& other
+        );
+
+        template <
+            class TOtherScalar,
+            int iOtherNumRows,
+            int iOtherNumColumns,
+            int iOtherColumnStrideInBytes
+        >
+        MatrixView(
+            MatrixView<
+                TOtherScalar,
+                iOtherNumRows,
+                iOtherNumColumns,
+                iOtherColumnStrideInBytes
+            >& other
+        );
+
+        template <
+            class TOtherScalar,
+            int iOtherNumRows,
+            int iOtherNumColumns,
+            int iOtherColumnStrideInBytes
+        >
+        MatrixView(
+            MatrixView<
+                TOtherScalar,
+                iOtherNumRows,
+                iOtherNumColumns,
+                iOtherColumnStrideInBytes
+            >&& other
+        );
 
         void
-        operator=(const MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>& other);
+        operator=(const MatrixView<TScalar, iNumRows, iNumColumns, iColumnStrideInBytes>& other);
 
         template <class TOtherDerived>
         void
@@ -76,10 +120,10 @@ namespace opensolid
         numColumns() const;
 
         int
-        size() const;
+        numComponents() const;
 
         int
-        columnStride() const;
+        columnStrideInBytes() const;
     };
 
     typedef MatrixView<double, -1, -1, -1> MatrixViewXd;
@@ -87,13 +131,14 @@ namespace opensolid
     typedef MatrixView<Interval, -1, -1, -1> IntervalMatrixViewXd;
     typedef MatrixView<const Interval, -1, -1, -1> ConstIntervalMatrixViewXd;
 
-    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
-    struct MatrixTraits<MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStrideInBytes>
+    struct MatrixTraits<MatrixView<TScalar, iNumRows, iNumColumns, iColumnStrideInBytes>>
     {
         typedef TScalar Scalar;
-        typedef typename std::remove_cv<TScalar>::type PlainScalar;
+        typedef typename std::remove_const<TScalar>::type PlainScalar;
+        typedef const PlainScalar ConstScalar;
         static const int NumRows = iNumRows;
         static const int NumColumns = iNumColumns;
-        static const int ColumnStride = iColumnStride;
+        static const int ColumnStrideInBytes = iColumnStrideInBytes;
     };
 }

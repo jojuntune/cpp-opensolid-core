@@ -38,7 +38,7 @@
 namespace opensolid
 {
     inline
-    const ParametricExpression<3, 3>&
+    const ParametricExpression<Point3d, Point3d>&
     ParametricVolume3d::expression() const {
         return _expression;
     }

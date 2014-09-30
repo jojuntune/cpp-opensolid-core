@@ -33,6 +33,7 @@
 #include <OpenSolid/Core/Cartesian/CartesianBase.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
+#include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/UnitVector.hpp>
 #include <OpenSolid/Core/Vector/DoubleVectorBase.hpp>
@@ -58,6 +59,28 @@ namespace opensolid
     }
 
     inline
+    const UnitVector1d
+    Vector1d::unit(int index) {
+        if (index == 0) {
+            return UnitVector1d(1.0);
+        } else {
+            throw Error(new PlaceholderError());
+        }
+    }
+
+    inline
+    const UnitVector1d
+    Vector1d::unitX() {
+        return UnitVector1d(1.0);
+    }
+
+    inline
+    const UnitVector1d
+    Vector1d::unitRandom() {
+        return UnitVector1d(rand() > RAND_MAX / 2 ? 1.0 : -1.0);
+    }
+
+    inline
     Vector2d::Vector() :
         detail::DoubleVectorBase<2>() {
     }
@@ -80,6 +103,43 @@ namespace opensolid
             return UnitVector2d();
         } else {
             return Vector2d(-y(), x()).normalized();
+        }
+    }
+
+    inline
+    const UnitVector2d
+    Vector2d::unit(int index) {
+        switch (index) {
+            case 0: return UnitVector2d(1.0, 0.0);
+            case 1: return UnitVector2d(0.0, 1.0);
+            default: throw Error(new PlaceholderError());
+        }
+    }
+
+    inline
+    const UnitVector2d
+    Vector2d::unitX() {
+        return UnitVector2d(1.0, 0.0);
+    }
+
+    inline
+    const UnitVector2d
+    Vector2d::unitY() {
+        return UnitVector2d(0.0, 1.0);
+    }
+
+    inline
+    const UnitVector2d
+    Vector2d::unitRandom() {
+        while (true) {
+            Vector2d candidate(
+                -1.0 + 2.0 * double(rand()) / RAND_MAX,
+                -1.0 + 2.0 * double(rand()) / RAND_MAX
+            );
+            double candidateSquaredNorm = candidate.squaredNorm();
+            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
+                return UnitVector2d((candidate / sqrt(candidateSquaredNorm)).components());
+            }
         }
     }
 
@@ -130,16 +190,61 @@ namespace opensolid
             double absZ = abs(z());
             if (absX <= absY) {
                 if (absX <= absZ) {
-                    return UnitVector3d::X().cross(*this).normalized();
+                    return Vector3d::unitX().cross(*this).normalized();
                 } else {
-                    return UnitVector3d::Z().cross(*this).normalized();
+                    return Vector3d::unitZ().cross(*this).normalized();
                 }
             } else {
                 if (absY <= absZ) {
-                    return UnitVector3d::Y().cross(*this).normalized();
+                    return Vector3d::unitY().cross(*this).normalized();
                 } else {
-                    return UnitVector3d::Z().cross(*this).normalized();
+                    return Vector3d::unitZ().cross(*this).normalized();
                 }
+            }
+        }
+    }
+
+    inline
+    const UnitVector3d
+    Vector3d::unit(int index) {
+        switch (index) {
+            case 0: return UnitVector3d(1.0, 0.0, 0.0);
+            case 1: return UnitVector3d(0.0, 1.0, 0.0);
+            case 2: return UnitVector3d(0.0, 0.0, 1.0);
+            default: throw Error(new PlaceholderError());
+        }
+    }
+
+    inline
+    const UnitVector3d
+    Vector3d::unitX() {
+        return UnitVector3d(1.0, 0.0, 0.0);
+    }
+
+    inline
+    const UnitVector3d
+    Vector3d::unitY() {
+        return UnitVector3d(0.0, 1.0, 0.0);
+    }
+
+    inline
+    const UnitVector3d
+    Vector3d::unitZ() {
+        return UnitVector3d(0.0, 0.0, 1.0);
+    }
+
+    inline
+    const UnitVector3d
+    Vector3d::unitRandom() {
+        while (true) {
+            Vector3d candidate(
+                -1.0 + 2.0 * double(rand()) / RAND_MAX,
+                -1.0 + 2.0 * double(rand()) / RAND_MAX,
+                -1.0 + 2.0 * double(rand()) / RAND_MAX
+            );
+            double candidateSquaredNorm = candidate.squaredNorm();
+            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
+                return UnitVector3d((candidate / sqrt(candidateSquaredNorm)).components());
             }
         }
     }
@@ -209,39 +314,72 @@ namespace opensolid
         );
     }
 
-    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() * TSecondScalar()), iNumDimensions>
-    operator*(TFirstScalar scale, const Vector<TSecondScalar, iNumDimensions>& vector) {
-        typedef decltype(TFirstScalar() * TSecondScalar()) ResultScalarType;
-        return Vector<ResultScalarType, iNumDimensions>(
+    template <class TScalar, int iNumDimensions>
+    const Vector<TScalar, iNumDimensions>
+    operator*(double scale, const Vector<TScalar, iNumDimensions>& vector) {
+        return Vector<TScalar, iNumDimensions>(
             vector.components().map(
-                [scale] (TSecondScalar component) -> ResultScalarType {
+                [scale] (TScalar component) -> TScalar {
                     return scale * component;
                 }
             )
         );
     }
 
-    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() * TSecondScalar()), iNumDimensions>
-    operator*(const Vector<TFirstScalar, iNumDimensions>& vector, TSecondScalar scale) {
-        typedef decltype(TFirstScalar() * TSecondScalar()) ResultScalarType;
-        return Vector<ResultScalarType, iNumDimensions>(
+    template <class TScalar, int iNumDimensions>
+    const Vector<Interval, iNumDimensions>
+    operator*(Interval scale, const Vector<TScalar, iNumDimensions>& vector) {
+        return Vector<Interval, iNumDimensions>(
             vector.components().map(
-                [scale] (TFirstScalar component) -> ResultScalarType {
+                [scale] (TScalar component) -> Interval {
+                    return scale * component;
+                }
+            )
+        );
+    }
+
+    template <class TScalar, int iNumDimensions>
+    const Vector<TScalar, iNumDimensions>
+    operator*(const Vector<TScalar, iNumDimensions>& vector, double scale) {
+        return Vector<TScalar, iNumDimensions>(
+            vector.components().map(
+                [scale] (TScalar component) -> TScalar {
                     return component * scale;
                 }
             )
         );
     }
 
-    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() / TSecondScalar()), iNumDimensions>
-    operator/(const Vector<TFirstScalar, iNumDimensions>& vector, TSecondScalar divisor) {
-        typedef decltype(TFirstScalar() / TSecondScalar()) ResultScalarType;
-        return Vector<ResultScalarType, iNumDimensions>(
+    template <class TScalar, int iNumDimensions>
+    const Vector<Interval, iNumDimensions>
+    operator*(const Vector<TScalar, iNumDimensions>& vector, Interval scale) {
+        return Vector<Interval, iNumDimensions>(
             vector.components().map(
-                [divisor] (TFirstScalar component) -> ResultScalarType {
+                [scale] (TScalar component) -> Interval {
+                    return component * scale;
+                }
+            )
+        );
+    }
+
+    template <class TScalar, int iNumDimensions>
+    const Vector<TScalar, iNumDimensions>
+    operator/(const Vector<TScalar, iNumDimensions>& vector, double divisor) {
+        return Vector<TScalar, iNumDimensions>(
+            vector.components().map(
+                [divisor] (TScalar component) -> TScalar {
+                    return component / divisor;
+                }
+            )
+        );
+    }
+
+    template <class TScalar, int iNumDimensions>
+    const Vector<Interval, iNumDimensions>
+    operator/(const Vector<TScalar, iNumDimensions>& vector, Interval divisor) {
+        return Vector<Interval, iNumDimensions>(
+            vector.components().map(
+                [divisor] (TScalar component) -> Interval {
                     return component / divisor;
                 }
             )
@@ -370,6 +508,7 @@ namespace opensolid
     const Vector<TScalar, iNumDimensions>
     ScalingFunction<Vector<TScalar, iNumDimensions>>::operator()(
         const Vector<TScalar, iNumDimensions>& vector,
+        const Point<iNumDimensions>& originPoint,
         double scale
     ) const {
         return scale * vector;
@@ -390,8 +529,10 @@ namespace opensolid
     const Vector<TScalar, iNumResultDimensions>
     TransformationFunction<Vector<TScalar, iNumDimensions>, iNumResultDimensions>::operator()(
         const Vector<TScalar, iNumDimensions>& vector,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
     ) const {
-        return Vector<TScalar, iNumResultDimensions>(matrix * vector.components());
+        return Vector<TScalar, iNumResultDimensions>(transformationMatrix * vector.components());
     }
 }

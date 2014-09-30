@@ -44,64 +44,72 @@ namespace opensolid
     }
 
     ParametricVolume3d::ParametricVolume3d(
-        const ParametricExpression<3, 3>& expression,
+        const ParametricExpression<Point3d, Point3d>& expression,
         const BoundedVolume3d& domain
     ) : _expression(expression),
         _domain(domain),
-        _bounds(expression.evaluate(domain.bounds().components())) {
+        _bounds(expression.evaluate(domain.bounds())) {
     }
 
     Point3d
-    ParametricVolume3d::evaluate(double u, double v, double w) const {
-        return Point3d(expression().evaluate(u, v, w));
+    ParametricVolume3d::evaluate(const Point3d& parameterValues) const {
+        return expression().evaluate(parameterValues);
     }
 
     Box3d
-    ParametricVolume3d::evaluate(Interval u, Interval v, Interval w) const {
-        return Box3d(expression().evaluate(u, v, w));
+    ParametricVolume3d::evaluate(const Box3d& parameterBounds) const {
+        return expression().evaluate(parameterBounds);
     }
 
     ParametricVolume3d
     ScalingFunction<ParametricVolume3d>::operator()(
-        const ParametricVolume3d& parametricArea,
+        const ParametricVolume3d& parametricVolume,
+        const Point3d& originPoint,
         double scale
     ) const {
         return ParametricVolume3d(
-            scale * parametricArea.expression(),
-            parametricArea.domain()
+            scaled(parametricVolume.expression(), originPoint, scale),
+            parametricVolume.domain()
         );
     }
 
     ParametricVolume3d
     TranslationFunction<ParametricVolume3d>::operator()(
-        const ParametricVolume3d& parametricArea,
+        const ParametricVolume3d& parametricVolume,
         const Vector3d& vector
     ) const {
         return ParametricVolume3d(
-            parametricArea.expression() + vector.components(),
-            parametricArea.domain()
+            parametricVolume.expression() + vector,
+            parametricVolume.domain()
         );
     }
 
     ParametricVolume3d
     TransformationFunction<ParametricVolume3d, 3>::operator()(
-        const ParametricVolume3d& parametricArea,
-        const Matrix3d& matrix
+        const ParametricVolume3d& parametricVolume,
+        const Point3d& originPoint,
+        const Matrix3d& transformationMatrix,
+        const Point3d& destinationPoint
     ) const {
         return ParametricVolume3d(
-            matrix * parametricArea.expression(),
-            parametricArea.domain()
+            transformed(
+                parametricVolume.expression(),
+                originPoint,
+                transformationMatrix,
+                destinationPoint
+            ),
+            parametricVolume.domain()
         );
     }
 
     ParametricVolume3d
-    MorphingFunction<ParametricVolume3d, 3>::operator()(
-        const ParametricVolume3d& parametricArea,
-        const ParametricExpression<3, 3>& morphingExpression
+    MorphingFunction<ParametricVolume3d, ParametricExpression<Point3d, Point3d>>::operator()(
+        const ParametricVolume3d& parametricVolume,
+        const ParametricExpression<Point3d, Point3d>& morphingExpression
     ) const {
         return ParametricVolume3d(
-            morphingExpression.composed(parametricArea.expression()),
-            parametricArea.domain()
+            morphingExpression.composed(parametricVolume.expression()),
+            parametricVolume.domain()
         );
     }
 }

@@ -29,133 +29,449 @@
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 
 #include <OpenSolid/Core/Interval.definitions.hpp>
-#include <OpenSolid/Core/Matrix/MatrixBase.definitions.hpp>
+#include <OpenSolid/Core/Matrix/MatrixInterface.definitions.hpp>
 
-#include <ostream>
+#include <array>
+#include <vector>
 
 namespace opensolid
 {
     template <class TScalar, int iNumRows, int iNumColumns>
     class Matrix :
-        public detail::MatrixBase<TScalar, iNumRows, iNumColumns>
+        public detail::MatrixInterface<Matrix<TScalar, iNumRows, iNumColumns>>
     {
+    private:
+        std::array<TScalar, iNumRows * iNumColumns>  _data;
+
+        template <class TOtherScalar, int iOtherNumRows, int iOtherNumColumns> friend class Matrix;
+
+        Matrix(bool);
     public:
+        static_assert(iNumRows > 0, "Matrices must have at least one row");
+        static_assert(iNumColumns > 0, "Matrices must have at least one column");
+
         Matrix();
 
-        Matrix(int size);
+        Matrix(const std::pair<int, int>& dimensions);
 
-        Matrix(int numRows, int numColumns);
+        Matrix(const Matrix<TScalar, iNumRows, iNumColumns>& other);
 
-        Matrix(const TScalar* sourcePtr);
+        Matrix(const Matrix<TScalar, -1, iNumColumns>& other);
 
-        Matrix(const TScalar* sourcePtr, int size);
+        Matrix(const Matrix<TScalar, iNumRows, -1>& other);
 
-        Matrix(const TScalar* sourcePtr, int numRows, int numColumns);
-
+        Matrix(const Matrix<TScalar, -1, -1>& other);
+       
         template <class TOtherDerived>
         Matrix(const detail::MatrixInterface<TOtherDerived>& other);
+        
+        Matrix(
+            TScalar firstComponent,
+            TScalar secondComponent
+        );
+        
+        Matrix(
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent
+        );
+        
+        Matrix(
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent,
+            TScalar fourthComponent
+        );
+        
+        Matrix(
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent,
+            TScalar fourthComponent,
+            TScalar fifthComponent
+        );
+        
+        Matrix(
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent,
+            TScalar fourthComponent,
+            TScalar fifthComponent,
+            TScalar sixthComponent
+        );
 
-        void
-        operator=(const Matrix<TScalar, iNumRows, iNumColumns>& other);
+        Matrix(
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent,
+            TScalar fourthComponent,
+            TScalar fifthComponent,
+            TScalar sixthComponent,
+            TScalar seventhComponent
+        );
+        
+        Matrix(
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent,
+            TScalar fourthComponent,
+            TScalar fifthComponent,
+            TScalar sixthComponent,
+            TScalar seventhComponent,
+            TScalar eighthComponent
+        );
+        
+        Matrix(
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent,
+            TScalar fourthComponent,
+            TScalar fifthComponent,
+            TScalar sixthComponent,
+            TScalar seventhComponent,
+            TScalar eighthComponent,
+            TScalar ninthComponent
+        );
+
+        const TScalar*
+        data() const;
+
+        TScalar*
+        data();
+
+        int
+        numRows() const;
+
+        int
+        numColumns() const;
+
+        int
+        numComponents() const;
+
+        int
+        columnStrideInBytes() const;
 
         template <class TOtherDerived>
         void
         operator=(const detail::MatrixInterface<TOtherDerived>& other);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Constant(TScalar value);
+        constant(TScalar value);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Constant(int size, TScalar value);
+        zero();
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Constant(int numRows, int numColumns, TScalar value);
+        ones();
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Zero();
+        identity();
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Zero(int size);
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
-        Zero(int numRows, int numColumns);
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
-        Ones();
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
-        Ones(int size);
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
-        Ones(int numRows, int numColumns);
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
-        Identity();
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
-        Identity(int size);
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
-        Identity(int numRows, int numColumns);
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
-        Random();
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
-        Random(int size);
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
-        Random(int numRows, int numColumns);
+        random();
     };
 
-    typedef Matrix<double, 1, 1> Matrix1d;
     typedef Matrix<double, 2, 1> ColumnMatrix2d;
     typedef Matrix<double, 3, 1> ColumnMatrix3d;
-    typedef Matrix<double, -1, 1> ColumnMatrixXd;
-
     typedef Matrix<double, 1, 2> RowMatrix2d;
     typedef Matrix<double, 2, 2> Matrix2d;
     typedef Matrix<double, 3, 2> Matrix3x2;
-    typedef Matrix<double, -1, 2> MatrixXx2;
-
     typedef Matrix<double, 1, 3> RowMatrix3d;
     typedef Matrix<double, 2, 3> Matrix2x3;
     typedef Matrix<double, 3, 3> Matrix3d;
+
+    typedef Matrix<Interval, 2, 1> IntervalColumnMatrix2d;
+    typedef Matrix<Interval, 3, 1> IntervalColumnMatrix3d;
+    typedef Matrix<Interval, 1, 2> IntervalRowMatrix2d;
+    typedef Matrix<Interval, 2, 2> IntervalMatrix2d;
+    typedef Matrix<Interval, 3, 2> IntervalMatrix3x2;
+    typedef Matrix<Interval, 1, 3> IntervalRowMatrix3d;
+    typedef Matrix<Interval, 2, 3> IntervalMatrix2x3;
+    typedef Matrix<Interval, 3, 3> IntervalMatrix3d;
+
+    template <class TScalar>
+    class Matrix<TScalar, 1, 1> :
+        public detail::MatrixInterface<Matrix<TScalar, 1, 1>>
+    {
+    private:
+        TScalar _value;
+    public:
+        Matrix();
+
+        Matrix(const std::pair<int, int>& dimensions);
+
+        Matrix(TScalar value);
+       
+        template <class TOtherDerived>
+        Matrix(const detail::MatrixInterface<TOtherDerived>& other);
+
+        const TScalar*
+        data() const;
+
+        TScalar*
+        data();
+
+        int
+        numRows() const;
+
+        int
+        numColumns() const;
+
+        int
+        numComponents() const;
+
+        int
+        columnStrideInBytes() const;
+
+        template <class TOtherDerived>
+        void
+        operator=(const detail::MatrixInterface<TOtherDerived>& other);
+
+        operator TScalar() const;
+
+        static const Matrix<TScalar, 1, 1>
+        constant(TScalar value);
+
+        static const Matrix<TScalar, 1, 1>
+        zero();
+
+        static const Matrix<TScalar, 1, 1>
+        ones();
+
+        static const Matrix<TScalar, 1, 1>
+        identity();
+
+        static const Matrix<TScalar, 1, 1>
+        random();
+    };
+
+    typedef Matrix<double, 1, 1> Matrix1d;
+    typedef Matrix<Interval, 1, 1> IntervalMatrix1d;
+
+    template <class TScalar, int iNumColumns>
+    class Matrix<TScalar, -1, iNumColumns> :
+        public detail::MatrixInterface<Matrix<TScalar, -1, iNumColumns>>
+    {
+    private:
+        std::vector<TScalar> _data;
+        int _numRows;
+
+        template <class TOtherScalar, int iOtherNumRows, int iOtherNumColumns> friend class Matrix;
+    public:
+        static_assert(iNumColumns > 0, "Matrices must have at least one column");
+
+        Matrix(int numRows);
+
+        Matrix(const std::pair<int, int>& dimensions);
+       
+        template <class TOtherDerived>
+        Matrix(const detail::MatrixInterface<TOtherDerived>& other);
+        
+        Matrix(const Matrix<TScalar, -1, iNumColumns>& other);
+
+        Matrix(Matrix<TScalar, -1, iNumColumns>&& other);
+
+        Matrix(Matrix<TScalar, -1, -1>&& other);
+
+        const TScalar*
+        data() const;
+
+        TScalar*
+        data();
+
+        int
+        numRows() const;
+
+        int
+        numColumns() const;
+
+        int
+        numComponents() const;
+
+        int
+        columnStrideInBytes() const;
+
+        template <class TOtherDerived>
+        void
+        operator=(const detail::MatrixInterface<TOtherDerived>& other);
+
+        static const Matrix<TScalar, -1, iNumColumns>
+        constant(int numRows, TScalar value);
+
+        static const Matrix<TScalar, -1, iNumColumns>
+        zero(int numRows);
+
+        static const Matrix<TScalar, -1, iNumColumns>
+        ones(int numRows);
+
+        static const Matrix<TScalar, -1, iNumColumns>
+        identity(int numRows);
+
+        static const Matrix<TScalar, -1, iNumColumns>
+        random(int numRows);
+    };
+
+    typedef Matrix<double, -1, 1> ColumnMatrixXd;
+    typedef Matrix<double, -1, 2> MatrixXx2;
     typedef Matrix<double, -1, 3> MatrixXx3;
+
+    typedef Matrix<Interval, -1, 1> IntervalColumnMatrixXd;
+    typedef Matrix<Interval, -1, 2> IntervalMatrixXx2;
+    typedef Matrix<Interval, -1, 3> IntervalMatrixXx3;
+
+    template <class TScalar, int iNumRows>
+    class Matrix<TScalar, iNumRows, -1> :
+        public detail::MatrixInterface<Matrix<TScalar, iNumRows, -1>>
+    {
+    private:
+        std::vector<TScalar> _data;
+        int _numColumns;
+
+        template <class TOtherScalar, int iOtherNumRows, int iOtherNumColumns> friend class Matrix;
+    public:
+        static_assert(iNumRows > 0, "Matrices must have at least one row");
+
+        Matrix(int numColumns);
+
+        Matrix(const std::pair<int, int>& dimensions);
+       
+        template <class TOtherDerived>
+        Matrix(const detail::MatrixInterface<TOtherDerived>& other);
+        
+        Matrix(const Matrix<TScalar, iNumRows, -1>& other);
+
+        Matrix(Matrix<TScalar, iNumRows, -1>&& other);
+
+        Matrix(Matrix<TScalar, -1, -1>&& other);
+
+        const TScalar*
+        data() const;
+
+        TScalar*
+        data();
+
+        int
+        numRows() const;
+
+        int
+        numColumns() const;
+
+        int
+        numComponents() const;
+
+        int
+        columnStrideInBytes() const;
+
+        template <class TOtherDerived>
+        void
+        operator=(const detail::MatrixInterface<TOtherDerived>& other);
+
+        static const Matrix<TScalar, iNumRows, -1>
+        constant(int numColumns, TScalar value);
+
+        static const Matrix<TScalar, iNumRows, -1>
+        zero(int numColumns);
+
+        static const Matrix<TScalar, iNumRows, -1>
+        ones(int numColumns);
+
+        static const Matrix<TScalar, iNumRows, -1>
+        identity(int numColumns);
+
+        static const Matrix<TScalar, iNumRows, -1>
+        random(int numColumns);
+    };
 
     typedef Matrix<double, 1, -1> RowMatrixXd;
     typedef Matrix<double, 2, -1> Matrix2xX;
     typedef Matrix<double, 3, -1> Matrix3xX;
-    typedef Matrix<double, -1, -1> MatrixXd;
-
-    typedef Matrix<Interval, 1, 1> IntervalMatrix1d;
-    typedef Matrix<Interval, 2, 1> IntervalColumnMatrix2d;
-    typedef Matrix<Interval, 3, 1> IntervalColumnMatrix3d;
-    typedef Matrix<Interval, -1, 1> IntervalColumnMatrixXd;
-
-    typedef Matrix<Interval, 1, 2> IntervalRowMatrix2d;
-    typedef Matrix<Interval, 2, 2> IntervalMatrix2d;
-    typedef Matrix<Interval, 3, 2> IntervalMatrix3x2;
-    typedef Matrix<Interval, -1, 2> IntervalMatrixXx2;
-
-    typedef Matrix<Interval, 1, 3> IntervalRowMatrix3d;
-    typedef Matrix<Interval, 2, 3> IntervalMatrix2x3;
-    typedef Matrix<Interval, 3, 3> IntervalMatrix3d;
-    typedef Matrix<Interval, -1, 3> IntervalMatrixXx3;
 
     typedef Matrix<Interval, 1, -1> IntervalRowMatrixXd;
     typedef Matrix<Interval, 2, -1> IntervalMatrix2xX;
     typedef Matrix<Interval, 3, -1> IntervalMatrix3xX;
+
+    template <class TScalar>
+    class Matrix<TScalar, -1, -1> :
+        public detail::MatrixInterface<Matrix<TScalar, -1, -1>>
+    {
+    private:
+        std::vector<TScalar> _data;
+        int _numRows;
+        int _numColumns;
+
+        template <class TOtherScalar, int iOtherNumRows, int iOtherNumColumns> friend class Matrix;
+    public:
+        Matrix(int numRows, int numColumns);
+
+        Matrix(const std::pair<int, int>& dimensions);
+
+        template <class TOtherDerived>
+        Matrix(const detail::MatrixInterface<TOtherDerived>& other);
+        
+        Matrix(const Matrix<TScalar, -1, -1>& other);
+
+        Matrix(Matrix<TScalar, -1, -1>&& other);
+
+        template <int iNumRows>
+        Matrix(Matrix<TScalar, iNumRows, -1>&& other);
+
+        template <int iNumColumns>
+        Matrix(Matrix<TScalar, -1, iNumColumns>&& other);
+
+        const TScalar*
+        data() const;
+
+        TScalar*
+        data();
+
+        int
+        numRows() const;
+
+        int
+        numColumns() const;
+
+        int
+        numComponents() const;
+
+        int
+        columnStrideInBytes() const;
+
+        template <class TOtherDerived>
+        void
+        operator=(const detail::MatrixInterface<TOtherDerived>& other);
+
+        static const Matrix<TScalar, -1, -1>
+        constant(int numRows, int numColumns, TScalar value);
+
+        static const Matrix<TScalar, -1, -1>
+        zero(int numRows, int numColumns);
+
+        static const Matrix<TScalar, -1, -1>
+        ones(int numRows, int numColumns);
+
+        static const Matrix<TScalar, -1, -1>
+        identity(int numRows, int numColumns);
+
+        static const Matrix<TScalar, -1, -1>
+        random(int numRows, int numColumns);
+    };
+
+    typedef Matrix<double, -1, -1> MatrixXd;
     typedef Matrix<Interval, -1, -1> IntervalMatrixXd;
 
     template <class TScalar, int iNumRows, int iNumColumns>
     struct MatrixTraits<Matrix<TScalar, iNumRows, iNumColumns>>
     {
         typedef TScalar Scalar;
-        typedef TScalar PlainScalar;
+        typedef typename std::remove_const<TScalar>::type PlainScalar;
+        typedef const PlainScalar ConstScalar;
         static const int NumRows = iNumRows;
         static const int NumColumns = iNumColumns;
-        static const int ColumnStride = iNumRows;
+        static const int ColumnStrideInBytes = (
+            iNumRows == -1 ?
+            -1 :
+            iNumRows * int(sizeof(TScalar))
+        );
     };
 
     template <class TScalar, int iNumRows, int iNumColumns>

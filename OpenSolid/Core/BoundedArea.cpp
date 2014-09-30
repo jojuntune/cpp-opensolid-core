@@ -26,10 +26,13 @@
 
 #include <OpenSolid/Core/BoundedArea.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/ParametricCurve.hpp>
+#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 
 namespace opensolid
 {
@@ -55,13 +58,14 @@ namespace opensolid
     const BoundedArea2d
     ScalingFunction<BoundedArea2d>::operator()(
         const BoundedArea2d& boundedArea,
+        const Point2d& originPoint,
         double scale
     ) const {
         return BoundedArea2d(
             SpatialSet<ParametricCurve2d>(
                 boundedArea.boundaries().map(
-                    [scale] (const ParametricCurve2d& curve) {
-                        return scalingFunction(curve, scale);
+                    [&originPoint, scale] (const ParametricCurve2d& curve) {
+                        return scaled(curve, originPoint, scale);
                     }
                 )
             )
@@ -77,7 +81,7 @@ namespace opensolid
             SpatialSet<ParametricCurve2d>(
                 boundedArea.boundaries().map(
                     [&vector] (const ParametricCurve2d& curve) {
-                        return translationFunction(curve, vector);
+                        return translated(curve, vector);
                     }
                 )
             )
@@ -87,13 +91,20 @@ namespace opensolid
     const BoundedArea2d
     TransformationFunction<BoundedArea2d, 2>::operator()(
         const BoundedArea2d& boundedArea,
-        const Matrix2d& matrix
+        const Point2d& originPoint,
+        const Matrix2d& transformationMatrix,
+        const Point2d& destinationPoint
     ) const {
         return BoundedArea2d(
             SpatialSet<ParametricCurve2d>(
                 boundedArea.boundaries().map(
-                    [&matrix] (const ParametricCurve2d& curve) {
-                        return transformationFunction(curve, matrix);
+                    [&] (const ParametricCurve2d& curve) {
+                        return transformed(
+                            curve,
+                            originPoint,
+                            transformationMatrix,
+                            destinationPoint
+                        );
                     }
                 )
             )
@@ -101,15 +112,48 @@ namespace opensolid
     }
 
     const BoundedArea2d
-    MorphingFunction<BoundedArea2d, 2>::operator()(
+    MorphingFunction<BoundedArea2d, ParametricExpression<Point2d, Point2d>>::operator()(
         const BoundedArea2d& boundedArea,
-        const ParametricExpression<2, 2>& morphingExpression
+        const ParametricExpression<Point2d, Point2d>& morphingExpression
     ) const {
         return BoundedArea2d(
             SpatialSet<ParametricCurve2d>(
                 boundedArea.boundaries().map(
                     [&morphingExpression] (const ParametricCurve2d& curve) {
-                        return morphingFunction(curve, morphingExpression);
+                        return morphed(curve, morphingExpression);
+                    }
+                )
+            )
+        );
+    }
+
+    BoundedArea2d
+    MirrorFunction<BoundedArea2d>::operator()(
+        const BoundedArea2d& boundedArea,
+        const Point2d& originPoint,
+        const UnitVector2d& normalVector
+    ) const {
+        return BoundedArea2d(
+            SpatialSet<ParametricCurve2d>(
+                boundedArea.boundaries().map(
+                    [&originPoint, &normalVector] (const ParametricCurve2d& curve) {
+                        return mirrored(curve, originPoint, normalVector);
+                    }
+                )
+            )
+        );
+    }
+
+    BoundedArea2d
+    ProjectionFunction<BoundedArea2d, Axis<2>>::operator()(
+        const BoundedArea2d& boundedArea,
+        const Axis2d& axis
+    ) const {
+        return BoundedArea2d(
+            SpatialSet<ParametricCurve2d>(
+                boundedArea.boundaries().map(
+                    [&axis] (const ParametricCurve2d& curve) {
+                        return projected(curve, axis);
                     }
                 )
             )

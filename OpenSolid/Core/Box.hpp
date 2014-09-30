@@ -58,11 +58,6 @@ namespace opensolid
     }
 
     inline
-    Box1d::Box(const Interval* sourcePtr) :
-        detail::BoxBase<1>(sourcePtr) {
-    }
-
-    inline
     const Point1d
     Box1d::interpolated(double xValue) const {
         return minVertex() + Vector1d(xValue * x().width());
@@ -94,11 +89,6 @@ namespace opensolid
     }
 
     inline
-    Box2d::Box(const Interval* sourcePtr) :
-        detail::BoxBase<2>(sourcePtr) {
-    }
-
-    inline
     const Point2d
     Box2d::interpolated(double xValue, double yValue) const {
         return minVertex() + Vector2d(xValue * x().width(), yValue * y().width());
@@ -127,11 +117,6 @@ namespace opensolid
     inline
     Box3d::Box(const IntervalColumnMatrix3d& components) :
         detail::BoxBase<3>(components) {
-    }
-
-    inline
-    Box3d::Box(const Interval* sourcePtr) :
-        detail::BoxBase<3>(sourcePtr) {
     }
 
     inline
@@ -242,9 +227,12 @@ namespace opensolid
     const Box<iNumDimensions>
     ScalingFunction<Box<iNumDimensions>>::operator()(
         const Box<iNumDimensions>& box,
+        const Point<iNumDimensions>& originPoint,
         double scale
     ) const {
-        return Box<iNumDimensions>(box.components() * scale);
+        return Box<iNumDimensions>(
+            originPoint.components() + scale * (box.components() - originPoint.components())
+        );
     }
 
     template <int iNumDimensions>
@@ -261,18 +249,28 @@ namespace opensolid
     const Box<iNumResultDimensions>
     TransformationFunction<Box<iNumDimensions>, iNumResultDimensions>::operator()(
         const Box<iNumDimensions>& box,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
+        const Point<iNumResultDimensions>& destinationPoint
     ) const {
-        return Box<iNumResultDimensions>(matrix * box.components());
+        return Box<iNumResultDimensions>(
+            destinationPoint.components() + matrix * (box.components() - originPoint.components())
+        );
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
     inline
     const Box<iNumResultDimensions>
-    MorphingFunction<Box<iNumDimensions>, iNumResultDimensions>::operator()(
+    MorphingFunction<
+        Box<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >::operator()(
         const Box<iNumDimensions>& box,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        const ParametricExpression<
+            Point<iNumResultDimensions>,
+            Point<iNumDimensions>
+        >& morphingExpression
     ) const {
-        return Box<iNumResultDimensions>(morphingExpression.evaluate(box.components()));
+        return morphingExpression.evaluate(box);
     }
 }

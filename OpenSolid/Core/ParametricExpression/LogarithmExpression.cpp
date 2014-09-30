@@ -28,92 +28,121 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 
 namespace opensolid
-{       
-    int
-    LogarithmExpression::numDimensionsImpl() const {
-        return 1;
-    }
-
-    bool
-    LogarithmExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other);
-    }
-        
-    void
-    LogarithmExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluator.evaluate(operand(), parameterView).map(
-            [] (double value) {
-                return log(value);
-            },
-            resultView
-        );
-    }
-
-    void
-    LogarithmExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluator.evaluate(operand(), parameterView).map(
-            [] (Interval value) {
-                return log(value);
-            },
-            resultView
-        );
-    }
-
-    void
-    LogarithmExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        double operandValue = evaluator.evaluate(operand(), parameterView).value();
-        if (operandValue <= Zero()) {
-            throw Error(new PlaceholderError());
+{    
+    namespace detail
+    {
+        int
+        LogarithmExpression::numDimensionsImpl() const {
+            return 1;
         }
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView /= operandValue;
-    }
-    
-    void
-    LogarithmExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        Interval operandBounds = evaluator.evaluate(operand(), parameterView).value();
-        if (operandBounds.upperBound() <= Zero()) {
-            throw Error(new PlaceholderError());
+
+        bool
+        LogarithmExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other);
         }
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView /= operandBounds;
-    }
+            
+        void
+        LogarithmExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (double value) {
+                            return opensolid::log(value);
+                        }
+                    );
+                }
+            );
+        }
 
-    ExpressionImplementationPtr
-    LogarithmExpression::derivativeImpl(int parameterIndex) const {
-        return operand()->derivative(parameterIndex) / operand();
-    }
+        void
+        LogarithmExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (Interval value) {
+                            return opensolid::log(value);
+                        }
+                    );
+                }
+            );
+        }
+
+        void
+        LogarithmExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
+                    double operandValue = operandValues.value();
+                    if (operandValue <= Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results /= operandValue;
+                }
+            );
+        }
         
-    void
-    LogarithmExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "LogarithmExpression" << std::endl;
-        operand()->debug(stream, indent + 1);
-    }
+        void
+        LogarithmExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
+                    Interval operandValue = operandValues.value();
+                    if (operandValue.upperBound() <= Zero()) {
+                        throw Error(new PlaceholderError());
+                    }
+                    results /= operandValue;
+                }
+            );
+        }
 
-    ExpressionImplementationPtr
-    LogarithmExpression::withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const {
-        return log(newOperand);
-    }
+        ExpressionImplementationPtr
+        LogarithmExpression::derivativeImpl(int parameterIndex) const {
+            return operand()->derivative(parameterIndex) / operand();
+        }
+            
+        void
+        LogarithmExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "LogarithmExpression" << std::endl;
+            operand()->debug(stream, indent + 1);
+        }
 
-    LogarithmExpression::LogarithmExpression(const ExpressionImplementationPtr& operand) :
-        UnaryOperation(operand) {
-        
-        assert(operand->numDimensions() == 1);
+        ExpressionImplementationPtr
+        LogarithmExpression::withNewOperandImpl(
+            const ExpressionImplementationPtr& newOperand
+        ) const {
+            return log(newOperand);
+        }
+
+        LogarithmExpression::LogarithmExpression(const ExpressionImplementationPtr& operand) :
+            UnaryOperation(operand) {
+            
+            assert(operand->numDimensions() == 1);
+        }
     }
 }

@@ -28,83 +28,110 @@
 
 namespace opensolid
 {   
-    int
-    SineExpression::numDimensionsImpl() const {
-        return 1;
-    }
+    namespace detail
+    {
+        int
+        SineExpression::numDimensionsImpl() const {
+            return 1;
+        }
 
-    bool
-    SineExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other);
-    }
-    
-    void
-    SineExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluator.evaluate(operand(), parameterView).map(
-            [] (double value) {
-                return sin(value);
-            },
-            resultView
-        );
-    }
-    
-    void
-    SineExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluator.evaluate(operand(), parameterView).map(
-            [] (Interval value) {
-                return sin(value);
-            },
-            resultView
-        );
-    }
-
-    void
-    SineExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView *= cos(evaluator.evaluate(operand(), parameterView).value());
-    }
-    
-    void
-    SineExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView *= cos(evaluator.evaluate(operand(), parameterView).value());
-    }
-
-    ExpressionImplementationPtr
-    SineExpression::derivativeImpl(int parameterIndex) const {
-        return cos(operand()) * operand()->derivative(parameterIndex);
-    }
-    
-    void
-    SineExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "SineExpression" << std::endl;
-        operand()->debug(stream, indent + 1);
-    }
-
-    ExpressionImplementationPtr
-    SineExpression::withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const {
-        return sin(newOperand);
-    }
-
-    SineExpression::SineExpression(const ExpressionImplementationPtr& operand) :
-        UnaryOperation(operand) {
+        bool
+        SineExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other);
+        }
         
-        assert(operand->numDimensions() == 1);
+        void
+        SineExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (double value) {
+                            return opensolid::sin(value);
+                        }
+                    );
+                }
+            );
+        }
+        
+        void
+        SineExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (Interval value) {
+                            return opensolid::sin(value);
+                        }
+                    );
+                }
+            );
+        }
+
+        void
+        SineExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
+                    results *= opensolid::cos(operandValues.value());
+                }
+            );
+        }
+        
+        void
+        SineExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
+                    results *= opensolid::cos(operandValues.value());
+                }
+            );
+        }
+
+        ExpressionImplementationPtr
+        SineExpression::derivativeImpl(int parameterIndex) const {
+            return cos(operand()) * operand()->derivative(parameterIndex);
+        }
+        
+        void
+        SineExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "SineExpression" << std::endl;
+            operand()->debug(stream, indent + 1);
+        }
+
+        ExpressionImplementationPtr
+        SineExpression::withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const {
+            return sin(newOperand);
+        }
+
+        SineExpression::SineExpression(const ExpressionImplementationPtr& operand) :
+            UnaryOperation(operand) {
+            
+            assert(operand->numDimensions() == 1);
+        }
     }
 }

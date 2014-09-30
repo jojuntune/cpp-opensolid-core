@@ -30,111 +30,114 @@
 
 namespace opensolid
 {
-    class NegatedExpression :
-        public UnaryOperation
+    namespace detail
     {
-    private:
-        OPENSOLID_CORE_EXPORT
-        int
-        numDimensionsImpl() const override;
+        class NegatedExpression :
+            public UnaryOperation
+        {
+        private:
+            OPENSOLID_CORE_EXPORT
+            int
+            numDimensionsImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateImpl(
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultID,
+                ExpressionCompiler<double>& expressionCompiler
+            ) const override;
 
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateImpl(
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultID,
+                ExpressionCompiler<Interval>& expressionCompiler
+            ) const override;
 
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateJacobianImpl(
-            const ConstMatrixViewXd& parameterView,
-            MatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXd& parameterView,
-            IntervalMatrixViewXd& resultView,
-            Evaluator& evaluator
-        ) const override;
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateJacobianImpl(
+                const MatrixID<const double>& parameterID,
+                const MatrixID<double>& resultID,
+                ExpressionCompiler<double>& expressionCompiler
+            ) const override;
+            
+            OPENSOLID_CORE_EXPORT
+            void
+            evaluateJacobianImpl(
+                const MatrixID<const Interval>& parameterID,
+                const MatrixID<Interval>& resultID,
+                ExpressionCompiler<Interval>& expressionCompiler
+            ) const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        derivativeImpl(int parameterIndex) const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            derivativeImpl(int parameterIndex) const override;
 
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOfImpl(const ExpressionImplementationPtr& other) const override;
+            OPENSOLID_CORE_EXPORT
+            bool
+            isDuplicateOfImpl(const ExpressionImplementationPtr& other) const override;
 
-        OPENSOLID_CORE_EXPORT 
-        ExpressionImplementationPtr
-        componentsImpl(int startIndex, int numComponents) const override;
+            OPENSOLID_CORE_EXPORT 
+            ExpressionImplementationPtr
+            componentsImpl(int startIndex, int numComponents) const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        scalingImpl(double scale) const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            scalingImpl(double scale) const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        transformationImpl(const MatrixXd& matrix) const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            transformationImpl(const MatrixXd& matrix) const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        normImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            normImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        normalizedImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            normalizedImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        squaredNormImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            squaredNormImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        negatedImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            negatedImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        sinImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            sinImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        cosImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            cosImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        tanImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            tanImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        acosImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            acosImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        asinImpl() const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            asinImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        void
-        debugImpl(std::ostream& stream, int indent) const override;
+            OPENSOLID_CORE_EXPORT
+            void
+            debugImpl(std::ostream& stream, int indent) const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const override;
-    public:
-        OPENSOLID_CORE_EXPORT
-        NegatedExpression(const ExpressionImplementationPtr& operand);
-    };
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const override;
+        public:
+            OPENSOLID_CORE_EXPORT
+            NegatedExpression(const ExpressionImplementationPtr& operand);
+        };
+    }
 }

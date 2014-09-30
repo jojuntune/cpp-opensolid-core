@@ -102,7 +102,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     inline
     CoordinateSystem<iNumDimensions, iNumAxes>::CoordinateSystem() :
-        _originPoint(Point<iNumDimensions>::Origin()) {
+        _originPoint(Point<iNumDimensions>::origin()) {
 
         _basisMatrix.setIdentity();
         _inverseMatrix.setIdentity();
@@ -477,8 +477,10 @@ namespace opensolid
                 Vector<double, iNumDimensions> normalizedBasisVector(
                     resultBasisMatrix.column(normalizedColumnIndex)
                 );
-                resultBasisVector = resultBasisVector -
-                    resultBasisVector.dot(normalizedBasisVector) * normalizedBasisVector;
+                resultBasisVector = (
+                    resultBasisVector -
+                    resultBasisVector.dot(normalizedBasisVector) * normalizedBasisVector
+                );
             }
             if (resultBasisVector.isZero()) {
                 // Cannot normalize: basis matrix does not have full rank
@@ -492,18 +494,257 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline
     const CoordinateSystem<iNumDimensions, iNumAxes>
-    CoordinateSystem<iNumDimensions, iNumAxes>::Global() {
+    CoordinateSystem<iNumDimensions, iNumAxes>::x() {
         static_assert(
-            iNumDimensions == iNumAxes,
-            "Global coordinate system always has equal number of dimensions and axes"
+            iNumAxes == 1,
+            "Invalid number of axes/dimensions"
         );
-        
+
         return CoordinateSystem(
-            Point<iNumDimensions>::Origin(),
-            Matrix<double, iNumDimensions, iNumAxes>::Identity()
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitX()
         );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::y() {
+        static_assert(
+            iNumDimensions >= 2 && iNumAxes == 1,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitY()
+        );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::z() {
+        static_assert(
+            iNumDimensions >= 3 && iNumAxes == 1,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitZ()
+        );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::xy() {
+        static_assert(
+            iNumDimensions >= 2 && iNumAxes == 2,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitX(),
+            Vector<double, iNumDimensions>::unitY()
+        );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::xz() {
+        static_assert(
+            iNumDimensions >= 3 && iNumAxes == 2,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitX(),
+            Vector<double, iNumDimensions>::unitZ()
+        );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::yx() {
+        static_assert(
+            iNumDimensions >= 2 && iNumAxes == 2,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitY(),
+            Vector<double, iNumDimensions>::unitX()
+        );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::yz() {
+        static_assert(
+            iNumDimensions >= 3 && iNumAxes == 2,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitY(),
+            Vector<double, iNumDimensions>::unitZ()
+        );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::zx() {
+        static_assert(
+            iNumDimensions >= 3 && iNumAxes == 2,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitZ(),
+            Vector<double, iNumDimensions>::unitX()
+        );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::zy() {
+        static_assert(
+            iNumDimensions >= 3 && iNumAxes == 2,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitZ(),
+            Vector<double, iNumDimensions>::unitY()
+        );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::xyz() {
+        static_assert(
+            iNumDimensions >= 3 && iNumAxes == 3,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitX(),
+            Vector<double, iNumDimensions>::unitY(),
+            Vector<double, iNumDimensions>::unitZ()
+        );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::xzy() {
+        static_assert(
+            iNumDimensions >= 3 && iNumAxes == 3,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitX(),
+            Vector<double, iNumDimensions>::unitZ(),
+            Vector<double, iNumDimensions>::unitY()
+        );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::yxz() {
+        static_assert(
+            iNumDimensions >= 3 && iNumAxes == 3,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitY(),
+            Vector<double, iNumDimensions>::unitX(),
+            Vector<double, iNumDimensions>::unitZ()
+        );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::yzx() {
+        static_assert(
+            iNumDimensions >= 3 && iNumAxes == 3,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitY(),
+            Vector<double, iNumDimensions>::unitZ(),
+            Vector<double, iNumDimensions>::unitX()
+        );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::zxy() {
+        static_assert(
+            iNumDimensions >= 3 && iNumAxes == 3,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitZ(),
+            Vector<double, iNumDimensions>::unitX(),
+            Vector<double, iNumDimensions>::unitY()
+        );
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
+    CoordinateSystem<iNumDimensions, iNumAxes>::zyx() {
+        static_assert(
+            iNumDimensions >= 3 && iNumAxes == 3,
+            "Invalid number of axes/dimensions"
+        );
+
+        return CoordinateSystem(
+            Point<iNumDimensions>::origin(),
+            Vector<double, iNumDimensions>::unitZ(),
+            Vector<double, iNumDimensions>::unitY(),
+            Vector<double, iNumDimensions>::unitX()
+        );
+    }
+
+    template <class TDerived, int iNumAxes>
+    inline
+    typename LocalizedType<
+        TDerived,
+        CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>
+    >::Type
+    operator/(
+        const Transformable<TDerived>& transformable,
+        const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
+    ) {
+        return localized(transformable.derived(), coordinateSystem);
+    }
+
+    template <class TDerived, int iNumDimensions>
+    inline
+    typename GlobalizedType<
+        TDerived,
+        CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>
+    >::Type
+    operator*(
+        const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem,
+        const Transformable<TDerived>& transformable
+    ) {
+        return globalized(transformable.derived(), coordinateSystem);
     }
 
     template <int iNumDimensions, int iNumAxes>
@@ -511,10 +752,11 @@ namespace opensolid
     const CoordinateSystem<iNumDimensions, iNumAxes>
     ScalingFunction<CoordinateSystem<iNumDimensions, iNumAxes>>::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
+        const Point<iNumDimensions>& originPoint,
         double scale
     ) const {
         return CoordinateSystem<iNumDimensions, iNumAxes>(
-            scalingFunction(coordinateSystem.originPoint(), scale),
+            scaled(coordinateSystem.originPoint(), originPoint, scale),
             scale * coordinateSystem.basisMatrix()
         );
     }
@@ -527,7 +769,7 @@ namespace opensolid
         const Vector<double, iNumDimensions>& vector
     ) const {
         return CoordinateSystem<iNumDimensions, iNumAxes>(
-            translationFunction(coordinateSystem.originPoint(), vector),
+            translated(coordinateSystem.originPoint(), vector),
             coordinateSystem.basisMatrix()
         );
     }
@@ -539,25 +781,40 @@ namespace opensolid
         iNumResultDimensions
     >::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
     ) const {
         return CoordinateSystem<iNumResultDimensions, iNumAxes>(
-            transformationFunction(coordinateSystem.originPoint(), matrix),
-            matrix * coordinateSystem.basisMatrix()
+            transformed(
+                coordinateSystem.originPoint(),
+                originPoint,
+                transformationMatrix,
+                destinationPoint
+            ),
+            transformationMatrix * coordinateSystem.basisMatrix()
         );
     }
 
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
     inline
     const CoordinateSystem<iNumResultDimensions, iNumAxes>
-    MorphingFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>::operator()(
+    MorphingFunction<
+        CoordinateSystem<iNumDimensions, iNumAxes>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        const ParametricExpression<
+            Point<iNumResultDimensions>,
+            Point<iNumDimensions>
+        >& morphingExpression
     ) const {
         return CoordinateSystem<iNumResultDimensions, iNumAxes>(
-            morphingFunction(coordinateSystem.originPoint(), morphingExpression),
-            morphingExpression.jacobian(coordinateSystem.originPoint().components()) *
+            morphingExpression.evaluate(coordinateSystem.originPoint()),
+            (
+                morphingExpression.jacobian(coordinateSystem.originPoint()) *
                 coordinateSystem.basisMatrix()
+            )
         );
     }
 }

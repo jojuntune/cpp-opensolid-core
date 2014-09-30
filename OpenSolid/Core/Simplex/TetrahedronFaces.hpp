@@ -51,13 +51,13 @@ namespace opensolid
         inline
         IndexIterator<TetrahedronFaces>
         TetrahedronFaces::begin() const {
-            return IndexIterator<TetrahedronFaces>::Begin(this);
+            return IndexIterator<TetrahedronFaces>::begin(this);
         }
 
         inline
         IndexIterator<TetrahedronFaces>
         TetrahedronFaces::end() const {
-            return IndexIterator<TetrahedronFaces>::End(this);
+            return IndexIterator<TetrahedronFaces>::end(this);
         }
 
         inline

@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ConstantExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ParameterExpression.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
@@ -52,35 +53,30 @@ namespace opensolid
         }
     }
 
-    template <int iNumParameters>
+    template <class TParameter>
     inline
-    Parameter<iNumParameters>::Parameter(int parameterIndex) :
-        ParametricExpression<1, iNumParameters>(
-            detail::parameterExpression(iNumParameters, parameterIndex)
+    Parameter<TParameter>::Parameter(int parameterIndex) :
+        ParametricExpression<double, TParameter>(
+            detail::parameterExpression(NumDimensions<TParameter>::Value, parameterIndex)
         ),
         _parameterIndex(parameterIndex) {
     }
 
-    template <int iNumParameters>
+    template <class TParameter>
     inline
     int
-    Parameter<iNumParameters>::parameterIndex() const {
+    Parameter<TParameter>::parameterIndex() const {
         return _parameterIndex;
     }
 
     inline
-    Parameter<1>::Parameter() :
-        ParametricExpression<1, 1>(new ParameterExpression(1, 0)) {
-    }
-
-    inline
-    Parameter<1>::Parameter(int parameterIndex) :
-        ParametricExpression<1, 1>(detail::parameterExpression(1, parameterIndex)) {
+    Parameter<double>::Parameter() :
+        ParametricExpression<double, double>(new detail::ParameterExpression(1, 0)) {
     }
 
     inline
     int
-    Parameter<1>::parameterIndex() const {
+    Parameter<double>::parameterIndex() const {
         return 0;
     }
 }

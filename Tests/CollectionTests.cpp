@@ -94,7 +94,7 @@ TEST_CASE("Every") {
             }
         )
     );
-    IntervalVector2d testBounds(Interval(1), Interval::Whole());
+    IntervalVector2d testBounds(Interval(1), Interval::whole());
     REQUIRE(vectorSet().overlapping(testBounds).size() == 2u);
     REQUIRE(
         vectorSet().overlapping(testBounds).all(

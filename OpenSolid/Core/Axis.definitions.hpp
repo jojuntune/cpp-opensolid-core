@@ -53,7 +53,10 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<Axis<iNumDimensions>, iNumResultDimensions>
+    struct MorphedType<
+        Axis<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         typedef Axis<iNumResultDimensions> Type;
     };
@@ -90,10 +93,10 @@ namespace opensolid
         coordinateSystem() const;
 
         static const Axis<2>
-        X();
+        x();    
 
         static const Axis<2>
-        Y();
+        y();
         
         bool
         contains(const Point<2>& point, double precision = 1e-12) const;
@@ -136,13 +139,13 @@ namespace opensolid
         intersection(const Triangle<3>& triangle, double precision = 1e-12) const;
 
         static const Axis<3>
-        X();
+        x();
 
         static const Axis<3>
-        Y();
+        y();
 
         static const Axis<3>
-        Z();
+        z();
         
         bool
         contains(const Point<3>& point, double precision = 1e-12) const;
@@ -154,7 +157,11 @@ namespace opensolid
     struct ScalingFunction<Axis<iNumDimensions>>
     {
         const Axis<iNumDimensions>
-        operator()(const Axis<iNumDimensions>& axis, double scale) const;
+        operator()(
+            const Axis<iNumDimensions>& axis,
+            const Point<iNumDimensions>& originPoint,
+            double scale
+        ) const;
     };
 
     template <int iNumDimensions>
@@ -173,17 +180,50 @@ namespace opensolid
         const Axis<iNumResultDimensions>
         operator()(
             const Axis<iNumDimensions>& axis,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
+            const Point<iNumResultDimensions>& destinationPoint
         ) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<Axis<iNumDimensions>, iNumResultDimensions>
+    struct MorphingFunction<
+        Axis<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >
     {
         const Axis<iNumResultDimensions>
         operator()(
             const Axis<iNumDimensions>& axis,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+            const ParametricExpression<
+                Point<iNumResultDimensions>,
+                Point<iNumDimensions>
+            >& morphingExpression
         ) const;
+    };
+
+    template <int iNumDimensions>
+    struct MirrorFunction<Axis<iNumDimensions>>
+    {
+        Axis<iNumDimensions>
+        operator()(
+            const Axis<iNumDimensions>& axis,
+            const Point<iNumDimensions>& originPoint,
+            const UnitVector<iNumDimensions>& normalVector
+        ) const;
+    };
+
+    template <>
+    struct ProjectionFunction<Axis<2>, Axis<2>>
+    {
+        Axis<2>
+        operator()(const Axis<2>& axis, const Axis<2>& mirrorAxis) const;
+    };
+
+    template <>
+    struct ProjectionFunction<Axis<3>, Plane3d>
+    {
+        Axis<3>
+        operator()(const Axis<3>& axis, const Plane3d& plane) const;
     };
 }

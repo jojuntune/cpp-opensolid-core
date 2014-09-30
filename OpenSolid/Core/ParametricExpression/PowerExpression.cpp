@@ -29,228 +29,329 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 
 namespace opensolid
-{       
-    int
-    PowerExpression::numDimensionsImpl() const {
-        return 1;
-    }
-
-    bool
-    PowerExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other, false);
-    }
-
-    struct IntegerPower
+{
+    namespace detail
     {
-        int exponent;
-
-        inline
-        IntegerPower(int exponent_) :
-            exponent(exponent_) {
+        int
+        PowerExpression::numDimensionsImpl() const {
+            return 1;
         }
 
-        inline
-        double
-        operator()(double base) const {
-            return std::pow(base, exponent);
+        bool
+        PowerExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other, false);
         }
 
-        inline
-        Interval
-        operator()(const Interval& base) const {
-            return pow(base, exponent);
-        }
-    };
+        struct IntegerPower
+        {
+            int exponent;
 
-    struct ConstantPower
-    {
-        double exponent;
+            inline
+            IntegerPower(int exponent_) :
+                exponent(exponent_) {
+            }
 
-        inline
-        ConstantPower(double exponent_) :
-            exponent(exponent_) {
+            inline
+            double
+            operator()(double base) const {
+                return std::pow(base, exponent);
+            }
+
+            inline
+            Interval
+            operator()(const Interval& base) const {
+                return pow(base, exponent);
+            }
+        };
+
+        struct ConstantPower
+        {
+            double exponent;
+
+            inline
+            ConstantPower(double exponent_) :
+                exponent(exponent_) {
+            }
+
+            inline
+            Interval
+            operator()(const Interval& base) const {
+                return pow(base, exponent);
+            }
+        };
+
+        struct Power
+        {
+            inline
+            double
+            operator()(double base, double exponent) const {
+                return opensolid::pow(base, exponent);
+            }
+
+            inline
+            Interval
+            operator()(const Interval& base, const Interval& exponent) const {
+                return opensolid::pow(base, exponent);
+            }
+        };
+            
+        void
+        PowerExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
+            if (_exponentIsInteger) {
+                int integerExponent = _integerExponent;
+                expressionCompiler.compute(
+                    resultID,
+                    [integerExponent] (MatrixViewXd results) {
+                        results.setMap(
+                            results,
+                            [integerExponent] (double baseValue) {
+                                return opensolid::pow(baseValue, integerExponent);
+                            }
+                        );
+                    }
+                );
+            } else if (_exponentIsConstant) {
+                double constantExponent = _constantExponent;
+                expressionCompiler.compute(
+                    resultID,
+                    [constantExponent] (MatrixViewXd results) {
+                        results.setMap(
+                            results,
+                            [constantExponent] (double baseValue) {
+                                return opensolid::pow(baseValue, constantExponent);
+                            }
+                        );
+                    }
+                );
+            } else {
+                expressionCompiler.compute(
+                    expressionCompiler.evaluate(secondOperand(), parameterID),
+                    resultID,
+                    [] (ConstMatrixViewXd exponentValues, MatrixViewXd results) {
+                        results.setBinaryMap(
+                            results,
+                            exponentValues,
+                            [] (double baseValue, double exponentValue) {
+                                return opensolid::pow(baseValue, exponentValue);
+                            }
+                        );
+                    }
+                );
+            }
         }
 
-        inline
-        Interval
-        operator()(const Interval& base) const {
-            return pow(base, exponent);
+        void
+        PowerExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
+            if (_exponentIsInteger) {
+                int integerExponent = _integerExponent;
+                expressionCompiler.compute(
+                    resultID,
+                    [integerExponent] (IntervalMatrixViewXd results) {
+                        results.setMap(
+                            results,
+                            [integerExponent] (Interval baseValue) {
+                                return opensolid::pow(baseValue, integerExponent);
+                            }
+                        );
+                    }
+                );
+            } else if (_exponentIsConstant) {
+                double constantExponent = _constantExponent;
+                expressionCompiler.compute(
+                    resultID,
+                    [constantExponent] (IntervalMatrixViewXd results) {
+                        results.setMap(
+                            results,
+                            [constantExponent] (Interval baseValue) {
+                                return opensolid::pow(baseValue, constantExponent);
+                            }
+                        );
+                    }
+                );
+            } else {
+                expressionCompiler.compute(
+                    expressionCompiler.evaluate(secondOperand(), parameterID),
+                    resultID,
+                    [] (ConstIntervalMatrixViewXd exponentValues, IntervalMatrixViewXd results) {
+                        results.setBinaryMap(
+                            results,
+                            exponentValues,
+                            [] (Interval baseValue, Interval exponentValue) {
+                                return opensolid::pow(baseValue, exponentValue);
+                            }
+                        );
+                    }
+                );
+            }
         }
-    };
 
-    struct Power
-    {
-        inline
-        double
-        operator()(double base, double exponent) const {
-            return pow(base, exponent);
+        void
+        PowerExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
+            if (_exponentIsConstant) {
+                double constantExponent = _constantExponent;
+                expressionCompiler.compute(
+                    expressionCompiler.evaluate(firstOperand(), parameterID),
+                    resultID,
+                    [constantExponent] (
+                        ConstMatrixViewXd baseValues,
+                        MatrixViewXd results
+                    ) {
+                        double baseValue = baseValues.value();
+                        if (baseValue <= Zero()) {
+                            throw Error(new PlaceholderError());
+                        }
+                        results *= (
+                            constantExponent * opensolid::pow(baseValue, constantExponent - 1.0)
+                        );
+                    }
+                );
+            } else {
+                expressionCompiler.compute(
+                    expressionCompiler.evaluate(firstOperand(), parameterID),
+                    expressionCompiler.evaluate(secondOperand(), parameterID),
+                    expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                    expressionCompiler.createTemporary(numDimensions(), numParameters()),
+                    resultID,
+                    [] (
+                        ConstMatrixViewXd baseValues,
+                        ConstMatrixViewXd exponentValues,
+                        ConstMatrixViewXd exponentJacobian,
+                        MatrixViewXd scaledExponentJacobian,
+                        MatrixViewXd results
+                    ) {
+                        double baseValue = baseValues.value();
+                        if (baseValue <= Zero()) {
+                            throw Error(new PlaceholderError());
+                        }
+                        double exponentValue = exponentValues.value();
+                        scaledExponentJacobian = exponentJacobian;
+                        scaledExponentJacobian *= opensolid::log(baseValue);
+                        results *= (exponentValue / baseValue);
+                        results += scaledExponentJacobian;
+                        results *= opensolid::pow(baseValue, exponentValue);
+                    }
+                );
+            }
         }
-
-        inline
-        Interval
-        operator()(const Interval& base, const Interval& exponent) const {
-            return pow(base, exponent);
-        }
-    };
         
-    void
-    PowerExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        ConstMatrixViewXd baseValues = evaluator.evaluate(firstOperand(), parameterView);
-        if (_exponentIsInteger) {
-            baseValues.map(
-                [this] (double baseValue) {
-                    return pow(baseValue, _integerExponent);
-                },
-                resultView
-            );
-        } else if (_exponentIsConstant) {
-            baseValues.map(
-                [this] (double baseValue) {
-                    return pow(baseValue, _constantExponent);
-                },
-                resultView
-            );
-        } else {
-            ConstMatrixViewXd exponentValues = evaluator.evaluate(secondOperand(), parameterView);
-            baseValues.binaryMap(
-                exponentValues,
-                [] (double baseValue, double exponentValue) {
-                    return pow(baseValue, exponentValue);
-                },
-                resultView
-            );
+        void
+        PowerExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
+            if (_exponentIsConstant) {
+                double constantExponent = _constantExponent;
+                expressionCompiler.compute(
+                    expressionCompiler.evaluate(firstOperand(), parameterID),
+                    resultID,
+                    [constantExponent] (
+                        ConstIntervalMatrixViewXd baseValues,
+                        IntervalMatrixViewXd results
+                    ) {
+                        Interval baseValue = baseValues.value();
+                        if (baseValue <= Zero()) {
+                            throw Error(new PlaceholderError());
+                        }
+                        results *= (
+                            constantExponent * opensolid::pow(baseValue, constantExponent - 1.0)
+                        );
+                    }
+                );
+            } else {
+                expressionCompiler.compute(
+                    expressionCompiler.evaluate(firstOperand(), parameterID),
+                    expressionCompiler.evaluate(secondOperand(), parameterID),
+                    expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                    expressionCompiler.createTemporary(numDimensions(), numParameters()),
+                    resultID,
+                    [] (
+                        ConstIntervalMatrixViewXd baseValues,
+                        ConstIntervalMatrixViewXd exponentValues,
+                        ConstIntervalMatrixViewXd exponentJacobian,
+                        IntervalMatrixViewXd scaledExponentJacobian,
+                        IntervalMatrixViewXd results
+                    ) {
+                        Interval baseValue = baseValues.value();
+                        if (baseValue.upperBound() <= Zero()) {
+                            throw Error(new PlaceholderError());
+                        }
+                        Interval exponentValue = exponentValues.value();
+                        scaledExponentJacobian = exponentJacobian;
+                        scaledExponentJacobian *= opensolid::log(baseValue);
+                        results *= (exponentValue / baseValue);
+                        results += scaledExponentJacobian;
+                        results *= opensolid::pow(baseValue, exponentValue);
+                    }
+                );
+            }
         }
-    }
 
-    void
-    PowerExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        ConstIntervalMatrixViewXd baseValues = evaluator.evaluate(firstOperand(), parameterView);
-        if (_exponentIsInteger) {
-            baseValues.map(
-                [this] (Interval baseValue) {
-                    return pow(baseValue, _integerExponent);
-                },
-                resultView
-            );
-        } else if (_exponentIsConstant) {
-            baseValues.map(
-                [this] (Interval baseValue) {
-                    return pow(baseValue, _constantExponent);
-                },
-                resultView
-            );
-        } else {
-            ConstIntervalMatrixViewXd exponentValues =
-                evaluator.evaluate(secondOperand(), parameterView);
-            baseValues.binaryMap(
-                exponentValues,
-                [] (Interval baseValue, Interval exponentValue) {
-                    return pow(baseValue, exponentValue);
-                },
-                resultView
-            );
+        ExpressionImplementationPtr
+        PowerExpression::derivativeImpl(int parameterIndex) const {
+            if (_exponentIsConstant) {
+                return (
+                    _constantExponent *  pow(firstOperand(), secondOperand() - 1) *
+                    firstOperand()->derivative(parameterIndex)
+                );
+            } else {
+                return (
+                    secondOperand()->derivative(parameterIndex) * log(firstOperand()) +
+                    secondOperand() * firstOperand()->derivative(parameterIndex) / firstOperand()
+                ) * self();
+            }
         }
-    }
-
-    void
-    PowerExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        double baseValue = evaluator.evaluate(firstOperand(), parameterView).value();
-        if (baseValue <= Zero()) {
-            throw Error(new PlaceholderError());
+            
+        void
+        PowerExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "PowerExpression" << std::endl;
+            firstOperand()->debug(stream, indent + 1);
+            secondOperand()->debug(stream, indent + 1);
         }
-        ConstMatrixViewXd baseJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
-        if (_exponentIsConstant) {
-            resultView = _constantExponent * pow(baseValue, _constantExponent - 1) * baseJacobian;
-        } else {
-            double exponentValue = evaluator.evaluate(secondOperand(), parameterView).value();
-            ConstMatrixViewXd exponentJacobian =
-                evaluator.evaluateJacobian(secondOperand(), parameterView);
-            resultView = pow(baseValue, exponentValue) *
-                (log(baseValue) * exponentJacobian + exponentValue * baseJacobian / baseValue);
+
+        ExpressionImplementationPtr
+        PowerExpression::withNewOperandsImpl(
+            const ExpressionImplementationPtr& newFirstOperand,
+            const ExpressionImplementationPtr& newSecondOperand
+        ) const {
+            return pow(newFirstOperand, newSecondOperand);
         }
-    }
-    
-    void
-    PowerExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        Interval baseValue = evaluator.evaluate(firstOperand(), parameterView).value();
-        if (baseValue.upperBound() <= Zero()) {
-            throw Error(new PlaceholderError());
-        }
-        ConstIntervalMatrixViewXd baseJacobian =
-            evaluator.evaluateJacobian(firstOperand(), parameterView);
-        if (_exponentIsConstant) {
-            resultView = _constantExponent * pow(baseValue, _constantExponent - 1) * baseJacobian;
-        } else {
-            Interval exponentValue = evaluator.evaluate(secondOperand(), parameterView).value();
-            ConstIntervalMatrixViewXd exponentJacobian =
-                evaluator.evaluateJacobian(secondOperand(), parameterView);
-            resultView = pow(baseValue, exponentValue) *
-                (log(baseValue) * exponentJacobian + exponentValue * baseJacobian / baseValue);
-        }
-    }
 
-    ExpressionImplementationPtr
-    PowerExpression::derivativeImpl(int parameterIndex) const {
-        if (_exponentIsConstant) {
-            return _constantExponent *  pow(firstOperand(), secondOperand() - 1) *
-                firstOperand()->derivative(parameterIndex);
-        } else {
-            return (
-                secondOperand()->derivative(parameterIndex) * log(firstOperand()) +
-                secondOperand() * firstOperand()->derivative(parameterIndex) / firstOperand()
-            ) * self();
-        }
-    }
-        
-    void
-    PowerExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "PowerExpression" << std::endl;
-        firstOperand()->debug(stream, indent + 1);
-        secondOperand()->debug(stream, indent + 1);
-    }
+        PowerExpression::PowerExpression(
+            const ExpressionImplementationPtr& baseExpression,
+            const ExpressionImplementationPtr& exponentExpression
+        ) : BinaryOperation(baseExpression, exponentExpression) {
 
-    ExpressionImplementationPtr
-    PowerExpression::withNewOperandsImpl(
-        const ExpressionImplementationPtr& newFirstOperand,
-        const ExpressionImplementationPtr& newSecondOperand
-    ) const {
-        return pow(newFirstOperand, newSecondOperand);
-    }
+            assert(baseExpression->numDimensions() == 1);
+            assert(exponentExpression->numDimensions() == 1);
 
-    PowerExpression::PowerExpression(
-        const ExpressionImplementationPtr& baseExpression,
-        const ExpressionImplementationPtr& exponentExpression
-    ) : BinaryOperation(baseExpression, exponentExpression) {
-
-        assert(baseExpression->numDimensions() == 1);
-        assert(exponentExpression->numDimensions() == 1);
-
-        if (exponentExpression->isConstantExpression()) {
-            _exponentIsConstant = true;
-            _constantExponent = exponentExpression->cast<ConstantExpression>()->value();
-            _integerExponent = int(floor(_constantExponent + 0.5));
-            _exponentIsInteger = (_constantExponent - _integerExponent == Zero());
-        } else {
-            _exponentIsConstant = false;
-            _exponentIsInteger = false;
-            _constantExponent = 0.0;
-            _integerExponent = 0;
+            if (exponentExpression->isConstantExpression()) {
+                _exponentIsConstant = true;
+                _constantExponent = exponentExpression->cast<ConstantExpression>()->value();
+                _integerExponent = int(floor(_constantExponent + 0.5));
+                _exponentIsInteger = (_constantExponent - _integerExponent == Zero());
+            } else {
+                _exponentIsConstant = false;
+                _exponentIsInteger = false;
+                _constantExponent = 0.0;
+                _integerExponent = 0;
+            }
         }
     }
 }

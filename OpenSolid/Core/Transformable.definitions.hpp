@@ -30,27 +30,18 @@
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
-#include <OpenSolid/Core/Globalization.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
-#include <OpenSolid/Core/LinearTransformation.declarations.hpp>
-#include <OpenSolid/Core/Localization.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
-#include <OpenSolid/Core/Transplant.declarations.hpp>
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
 #include <OpenSolid/Core/Vector.declarations.hpp>
 
 namespace opensolid
 {
     template <>
     struct NumDimensions<int>
-    {
-        static const int Value = 1;
-    };
-
-    template <>
-    struct NumDimensions<unsigned>
     {
         static const int Value = 1;
     };
@@ -91,69 +82,54 @@ namespace opensolid
         typedef TTransformable Type;
     };
 
-    template <class TTransformable, int iNumResultDimensions>
-    struct MorphedType
+    template <class TTransformable, class TResult>
+    struct MorphedType<TTransformable, ParametricExpression<TResult, TTransformable>>
     {
-        static_assert(
-            iNumResultDimensions == NumDimensions<TTransformable>::Value,
-            "Must specialize MorphedType<TTransformable, iNumResultDimensions> "
-            "when morphing into a different number of dimensions"
-        );
-
-        typedef TTransformable Type;
+        typedef TResult Type;
     };
 
     template <class TTransformable>
-    struct ScaledAboutPointType
+    struct RotatedType
     {
-        typedef typename TranslatedType<
-            typename ScaledType<
-                typename TranslatedType<
-                    TTransformable
-                >::Type
-            >::Type
+        typedef typename TransformedType<
+            TTransformable,
+            NumDimensions<TTransformable>::Value
         >::Type Type;
     };
 
     template <class TTransformable>
-    struct TransformedAboutPointType
+    struct MirroredType
     {
-        typedef typename TranslatedType<
-            typename TransformedType<
-                typename TranslatedType<TTransformable>::Type,
-                NumDimensions<TTransformable>::Value
-            >::Type
+        typedef typename TransformedType<
+            TTransformable,
+            NumDimensions<TTransformable>::Value
         >::Type Type;
     };
 
-    template <class TTransformable, int iNumResultDimensions>
+    template <class TTransformable, class TDatum>
+    struct ProjectedType
+    {
+        typedef typename TransformedType<
+            TTransformable,
+            NumDimensions<TTransformable>::Value
+        >::Type Type;
+    };
+
+    template <class TTransformable, class TCoordinateSystem>
     struct LocalizedType
     {
         typedef typename TransformedType<
-            typename TranslatedType<TTransformable>::Type,
-            iNumResultDimensions
+            TTransformable,
+            TCoordinateSystem::NumAxes
         >::Type Type;
     };
 
-    template <class TTransformable, int iNumResultDimensions>
+    template <class TTransformable, class TCoordinateSystem>
     struct GlobalizedType
     {
-        typedef typename TranslatedType<
-            typename TransformedType<
-                TTransformable,
-                iNumResultDimensions
-            >::Type
-        >::Type Type;
-    };
-
-    template <class TTransformable, int iNumResultDimensions>
-    struct TransplantedType
-    {
-        typedef typename TranslatedType<
-            typename TransformedType<
-                typename TranslatedType<TTransformable>::Type,
-                iNumResultDimensions
-            >::Type
+        typedef typename TransformedType<
+            TTransformable,
+            TCoordinateSystem::NumDimensions
         >::Type Type;
     };
 
@@ -164,7 +140,7 @@ namespace opensolid
         const TDerived&
         derived() const;
 
-        typename ScaledAboutPointType<TDerived>::Type
+        typename ScaledType<TDerived>::Type
         scaledAbout(const Point<NumDimensions<TDerived>::Value>& originPoint, double scale) const;
 
         typename TranslatedType<TDerived>::Type
@@ -176,100 +152,185 @@ namespace opensolid
             double distance
         ) const;
 
-        typename TransformedAboutPointType<TDerived>::Type
+        typename RotatedType<TDerived>::Type
         rotatedAbout(const Point<2>& originPoint, double angle) const;
 
-        typename TransformedAboutPointType<TDerived>::Type
+        typename RotatedType<TDerived>::Type
         rotatedAbout(const Axis<3>& axis, double angle) const;
 
-        typename TransformedAboutPointType<TDerived>::Type
+        typename MirroredType<TDerived>::Type
         mirroredAbout(const Axis<2>& axis) const;
 
-        typename TransformedAboutPointType<TDerived>::Type
+        typename MirroredType<TDerived>::Type
         mirroredAbout(const Plane3d& plane) const;
 
-        typename TransformedAboutPointType<TDerived>::Type
-        projectedOnto(const Axis<2>& axis) const;
+        typename ProjectedType<TDerived, Axis<NumDimensions<TDerived>::Value>>::Type
+        projectedOnto(const Axis<NumDimensions<TDerived>::Value>& axis) const;
 
-        typename TransformedAboutPointType<TDerived>::Type
-        projectedOnto(const Axis<3>& axis) const;
-
-        typename TransformedAboutPointType<TDerived>::Type
+        typename ProjectedType<TDerived, Plane3d>::Type
         projectedOnto(const Plane3d& plane) const;
 
-        typename TransformedAboutPointType<TDerived>::Type
-        transformedBy(
-            const LinearTransformation<NumDimensions<TDerived>::Value>& transformation
-        ) const;
-
-        template <int iNumResultDimensions, int iNumAxes>
-        typename TransplantedType<TDerived, iNumResultDimensions>::Type
-        transplanted(
-            const CoordinateSystem<
-                NumDimensions<TDerived>::Value,
-                iNumAxes
-            >& sourceCoordinateSystem,
-            const CoordinateSystem<
-                iNumResultDimensions,
-                iNumAxes
-            >& destinationCoordinateSystem
-        ) const;
-
         template <int iNumResultDimensions>
-        typename TransplantedType<TDerived, iNumResultDimensions>::Type
-        transplanted(
-            const Transplant<NumDimensions<TDerived>::Value, iNumResultDimensions>& transplant
-        ) const;
-
-        template <int iNumResultDimensions>
-        typename MorphedType<TDerived, iNumResultDimensions>::Type
-        morphedBy(
-            const ParametricExpression<
+        typename TransformedType<TDerived, iNumResultDimensions>::Type
+        transformed(
+            const Point<NumDimensions<TDerived>::Value>& originPoint,
+            const Matrix<
+                double,
                 iNumResultDimensions,
                 NumDimensions<TDerived>::Value
-            >& morphingExpression
+            >& transformationMatrix,
+            const Point<iNumResultDimensions>& destinationPoint
+        ) const;
+
+        template <class TValue, class TParameter>
+        typename MorphedType<TDerived, ParametricExpression<TValue, TParameter>>::Type
+        morphedBy(const ParametricExpression<TValue, TParameter>& morphingExpression) const;
+    };
+
+    template <class TTransformable, class TResult>
+    struct MorphingFunction<TTransformable, ParametricExpression<TResult, TTransformable>>
+    {
+        TResult
+        operator()(
+            const TTransformable& transformable,
+            const ParametricExpression<TResult, TTransformable>& morphingExpression
+        ) const;
+    };
+
+    template <class TTransformable>
+    struct RotationFunction
+    {
+        typename RotatedType<TTransformable>::Type
+        operator()(
+            const TTransformable& transformable,
+            const Point<NumDimensions<TTransformable>::Value>& originPoint,
+            const Matrix<
+                double,
+                NumDimensions<TTransformable>::Value,
+                NumDimensions<TTransformable>::Value
+            >& rotationMatrix
+        ) const;
+    };
+
+    template <class TTransformable>
+    struct MirrorFunction
+    {
+        typename MirroredType<TTransformable>::Type
+        operator()(
+            const TTransformable& transformable,
+            const Point<NumDimensions<TTransformable>::Value>& originPoint,
+            const UnitVector<NumDimensions<TTransformable>::Value>& normalVector
+        ) const;
+    };
+
+    template <class TTransformable>
+    struct ProjectionFunction<TTransformable, Axis<NumDimensions<TTransformable>::Value>>
+    {
+        typename ProjectedType<TTransformable, Axis<NumDimensions<TTransformable>::Value>>::Type
+        operator()(
+            const TTransformable& transformable,
+            const Axis<NumDimensions<TTransformable>::Value>& axis
+        ) const;
+    };
+
+    template <class TTransformable>
+    struct ProjectionFunction<TTransformable, Plane3d>
+    {
+        typename ProjectedType<TTransformable, Plane3d>::Type
+        operator()(const TTransformable& transformable, const Plane3d& plane) const;
+    };
+
+    template <class TTransformable, class TCoordinateSystem>
+    struct LocalizationFunction
+    {
+        typename LocalizedType<TTransformable, TCoordinateSystem>::Type
+        operator()(
+            const TTransformable& transformable,
+            const TCoordinateSystem& coordinateSystem
+        ) const;
+    };
+
+    template <class TTransformable, class TCoordinateSystem>
+    struct GlobalizationFunction
+    {
+        typename GlobalizedType<TTransformable, TCoordinateSystem>::Type
+        operator()(
+            const TTransformable& transformable,
+            const TCoordinateSystem& coordinateSystem
         ) const;
     };
 
     template <class TTransformable>
     typename ScaledType<TTransformable>::Type
-    scalingFunction(const TTransformable& transformable, double scale);
+    scaled(
+        const TTransformable& transformable,
+        const Point<NumDimensions<TTransformable>::Value>& originPoint,
+        double scale
+    );
 
     template <class TTransformable>
     typename TranslatedType<TTransformable>::Type
-    translationFunction(
+    translated(
         const TTransformable& transformable,
         const Vector<double, NumDimensions<TTransformable>::Value>& vector
     );
 
     template <class TTransformable, int iNumResultDimensions>
     typename TransformedType<TTransformable, iNumResultDimensions>::Type
-    transformationFunction(
+    transformed(
         const TTransformable& transformable,
-        const Matrix<double, iNumResultDimensions, NumDimensions<TTransformable>::Value>& matrix
-    );
-
-    template <class TTransformable, int iNumResultDimensions>
-    typename MorphedType<TTransformable, iNumResultDimensions>::Type
-    morphingFunction(
-        const TTransformable& transformable,
-        const ParametricExpression<
+        const Point<NumDimensions<TTransformable>::Value>& originPoint,
+        const Matrix<
+            double,
             iNumResultDimensions,
             NumDimensions<TTransformable>::Value
-        >& morphingExpression
+        >& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
     );
 
-    template <class TDerived, int iNumAxes>
-    typename LocalizedType<TDerived, iNumAxes>::Type
-    operator/(
-        const Transformable<TDerived>& transformable,
-        const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
+    template <class TTransformable, class TValue, class TParameter>
+    typename MorphedType<TTransformable, ParametricExpression<TValue, TParameter>>::Type
+    morphed(
+        const TTransformable& transformable,
+        const ParametricExpression<TValue, TParameter>& morphingExpression
     );
 
-    template <class TDerived, int iNumDimensions>
-    typename GlobalizedType<TDerived, iNumDimensions>::Type
-    operator*(
-        const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem,
-        const Transformable<TDerived>& transformable
+    template <class TTransformable>
+    typename RotatedType<TTransformable>::Type
+    rotated(
+        const TTransformable& transformable,
+        const Point<NumDimensions<TTransformable>::Value>& originPoint,
+        const Matrix<
+            double,
+            NumDimensions<TTransformable>::Value,
+            NumDimensions<TTransformable>::Value
+        >& rotationMatrix
     );
+
+    template <class TTransformable>
+    typename MirroredType<TTransformable>::Type
+    mirrored(
+        const TTransformable& transformable,
+        const Point<NumDimensions<TTransformable>::Value>& originPoint,
+        const UnitVector<NumDimensions<TTransformable>::Value>& normalVector
+    );
+
+    template <class TTransformable>
+    typename ProjectedType<TTransformable, Axis<NumDimensions<TTransformable>::Value>>::Type
+    projected(
+        const TTransformable& transformable,
+        const Axis<NumDimensions<TTransformable>::Value>& axis
+    );
+
+    template <class TTransformable>
+    typename ProjectedType<TTransformable, Plane3d>::Type
+    projected(const TTransformable& transformable, const Plane3d& plane);
+
+    template <class TTransformable, class TCoordinateSystem>
+    typename LocalizedType<TTransformable, TCoordinateSystem>::Type
+    localized(const TTransformable& transformable, const TCoordinateSystem& coordinateSystem);
+
+    template <class TTransformable, class TCoordinateSystem>
+    typename GlobalizedType<TTransformable, TCoordinateSystem>::Type
+    globalized(const TTransformable& transformable, const TCoordinateSystem& coordinateSystem);
 }

@@ -32,6 +32,72 @@
 
 using namespace opensolid;
 
+class MyMatrix2d
+{
+private:
+    double _components[4];
+public:
+    MyMatrix2d(double a, double b, double c, double d) {
+        _components[0] = a;
+        _components[2] = b;
+        _components[1] = c;
+        _components[3] = d;
+    }
+
+    double
+    a() const {
+        return _components[0];
+    }
+
+    double
+    b() const {
+        return _components[2];
+    }
+
+    double
+    c() const {
+        return _components[1];
+    }
+
+    double 
+    d() const {
+        return _components[3];
+    }
+
+    MyMatrix2d
+    inverse() const {
+        double determinant = a() * d() - b() * c();
+
+        return MyMatrix2d(
+            d() / determinant,
+            -b() / determinant,
+            -c() / determinant,
+            a() / determinant
+        );
+    }
+};
+
+namespace opensolid
+{
+    template <>
+    struct ConversionFunction<Matrix2d, MyMatrix2d>
+    {
+        MyMatrix2d
+        operator()(const Matrix2d& matrix) const {
+            return MyMatrix2d(matrix(0, 0), matrix(0, 1), matrix(1, 0), matrix(1, 1));
+        }
+    };
+
+    template <>
+    struct ConversionFunction<MyMatrix2d, Matrix2d>
+    {
+        Matrix2d
+        operator()(const MyMatrix2d& matrix) const {
+            return Matrix2d(matrix.a(), matrix.c(), matrix.b(), matrix.d());
+        }
+    };
+}
+
 TEST_CASE("Compact layout") {
     static_assert(sizeof(Matrix1d) == sizeof(double), "Matrix1d is not compact");
     static_assert(sizeof(RowMatrix3d) == 3 * sizeof(double), "RowMatrix3d is not compact");
@@ -58,9 +124,11 @@ TEST_CASE("Compact layout") {
 
 TEST_CASE("2D matrix inversion") {
     for (int i = 0; i < 100; ++i) {
-        Matrix2d matrix = Matrix2d::Random();
+        Matrix2d matrix = Matrix2d::random();
+
         if (matrix.determinant() != Zero(1e-3)) {
             Matrix2d inverse = matrix.inverse();
+
             REQUIRE((matrix * inverse).isIdentity());
             REQUIRE((inverse * matrix).isIdentity());
         }
@@ -69,9 +137,11 @@ TEST_CASE("2D matrix inversion") {
 
 TEST_CASE("3D matrix inversion") {
     for (int i = 0; i < 100; ++i) {
-        Matrix3d matrix = Matrix3d::Random();
+        Matrix3d matrix = Matrix3d::random();
+
         if (matrix.determinant() != Zero(1e-3)) {
             Matrix3d inverse = matrix.inverse();
+
             REQUIRE((matrix * inverse).isIdentity());
             REQUIRE((inverse * matrix).isIdentity());
         }
@@ -80,35 +150,40 @@ TEST_CASE("3D matrix inversion") {
 
 TEST_CASE("2D Interval matrix inversion") {
     for (int i = 0; i < 100; ++i) {
-        IntervalMatrix2d matrix = IntervalMatrix2d::Random();
+        IntervalMatrix2d matrix = IntervalMatrix2d::random();
         IntervalMatrix2d inverse = matrix.inverse();
+
         auto containsFunction = [] (Interval testComponent, double identityComponent) -> bool {
             return testComponent.contains(identityComponent);
         };
-        REQUIRE((matrix * inverse).binaryAll(Matrix2d::Identity(), containsFunction));
-        REQUIRE((inverse * matrix).binaryAll(Matrix2d::Identity(), containsFunction));
+
+        REQUIRE((matrix * inverse).binaryAll(Matrix2d::identity(), containsFunction));
+        REQUIRE((inverse * matrix).binaryAll(Matrix2d::identity(), containsFunction));
     }
 }
 
 TEST_CASE("3D Interval matrix inversion") {
     for (int i = 0; i < 100; ++i) {
-        IntervalMatrix3d matrix = IntervalMatrix3d::Random();
+        IntervalMatrix3d matrix = IntervalMatrix3d::random();
         IntervalMatrix3d inverse = matrix.inverse();
+
         auto containsFunction = [] (Interval testComponent, double identityComponent) -> bool {
             return testComponent.contains(identityComponent);
         };
-        REQUIRE((matrix * inverse).binaryAll(Matrix3d::Identity(), containsFunction));
-        REQUIRE((inverse * matrix).binaryAll(Matrix3d::Identity(), containsFunction));
+
+        REQUIRE((matrix * inverse).binaryAll(Matrix3d::identity(), containsFunction));
+        REQUIRE((inverse * matrix).binaryAll(Matrix3d::identity(), containsFunction));
     }
 }
 
 TEST_CASE("Min component") {
     SECTION("Square matrices") {
         for (int i = 0; i < 100; ++i) {
-            Matrix3d matrix = Matrix3d::Random();
+            Matrix3d matrix = Matrix3d::random();
             int rowIndex = 0;
             int columnIndex = 0;
             double minComponent = matrix.minComponent(&rowIndex, &columnIndex);
+
             REQUIRE(matrix(rowIndex, columnIndex) == minComponent);
             REQUIRE(
                 matrix.all(
@@ -121,9 +196,10 @@ TEST_CASE("Min component") {
     }
     SECTION("Row matrices") {
         for (int i = 0; i < 100; ++i) {
-            RowMatrix3d matrix = RowMatrix3d::Random();
+            RowMatrix3d matrix = RowMatrix3d::random();
             int index = 0;
             double minComponent = matrix.minComponent(&index);
+
             REQUIRE(matrix(index) == minComponent);
             REQUIRE(
                 matrix.all(
@@ -139,10 +215,11 @@ TEST_CASE("Min component") {
 TEST_CASE("Max component") {
     SECTION("Square matrices") {
         for (int i = 0; i < 100; ++i) {
-            Matrix3d matrix = Matrix3d::Random();
+            Matrix3d matrix = Matrix3d::random();
             int rowIndex = 0;
             int columnIndex = 0;
             double maxComponent = matrix.maxComponent(&rowIndex, &columnIndex);
+
             REQUIRE(matrix(rowIndex, columnIndex) == maxComponent);
             REQUIRE(
                 matrix.all(
@@ -155,9 +232,10 @@ TEST_CASE("Max component") {
     }
     SECTION("Row matrices") {
         for (int i = 0; i < 100; ++i) {
-            RowMatrix3d matrix = RowMatrix3d::Random();
+            RowMatrix3d matrix = RowMatrix3d::random();
             int index = 0;
             double maxComponent = matrix.maxComponent(&index);
+
             REQUIRE(matrix(index) == maxComponent);
             REQUIRE(
                 matrix.all(
@@ -171,10 +249,7 @@ TEST_CASE("Max component") {
 }
 
 TEST_CASE("Matrix folding") {
-    ColumnMatrix3d values;
-    values(0) = 3;
-    values(1) = 4;
-    values(2) = 5;
+    ColumnMatrix3d values(3.0, 4.0, 5.0);
 
     double product = values.fold(
         1.0,
@@ -182,20 +257,18 @@ TEST_CASE("Matrix folding") {
             return result * value;
         }
     );
+
     REQUIRE(product == 60);
     REQUIRE(product == values.product());
 }
 
 TEST_CASE("Binary matrix folding") {
-    ColumnMatrix3d values;
-    values(0) = 10;
-    values(1) = 20;
-    values(2) = 30;
-
-    IntervalColumnMatrix3d intervals;
-    intervals(0) = Interval(9, 11);
-    intervals(1) = Interval(18, 19);
-    intervals(2) = Interval(29, 31);
+    ColumnMatrix3d values(10.0, 20.0, 30.0);
+    IntervalColumnMatrix3d intervals(
+        Interval(9.0, 11.0),
+        Interval(18.0, 19.0),
+        Interval(29.0, 31.0)
+    );
     
     int containmentCount = intervals.binaryFold(
         values,
@@ -204,26 +277,23 @@ TEST_CASE("Binary matrix folding") {
             return result + (interval.contains(value) ? 1 : 0);
         }
     );
+
     REQUIRE(containmentCount == 2);
 }
 
 TEST_CASE("Coefficient-wise squaring") {
     SECTION("Double matrices") {  
-        ColumnMatrix2d matrix;
-        matrix(0) = -1;
-        matrix(1) = 3;
-
+        ColumnMatrix2d matrix(-1.0, 3.0);
         ColumnMatrix2d squaredComponents = matrix.cwiseSquared();
+
         REQUIRE(squaredComponents(0) == 1);
         REQUIRE(squaredComponents(1) == 9);
     }
 
     SECTION("Interval matrices") {
-        IntervalColumnMatrix2d matrix;
-        matrix(0) = Interval(2, 3);
-        matrix(1) = Interval(-1, 1);
-
+        IntervalColumnMatrix2d matrix(Interval(2.0, 3.0), Interval(-1.0, 1.0));
         IntervalColumnMatrix2d squaredComponents = matrix.cwiseSquared();
+
         REQUIRE(squaredComponents(0).lowerBound() == 4);
         REQUIRE(squaredComponents(0).upperBound() == 9);
         REQUIRE(squaredComponents(1).lowerBound() == 0);
@@ -233,23 +303,22 @@ TEST_CASE("Coefficient-wise squaring") {
 
 TEST_CASE("Coefficient-wise absolute value") {
     SECTION("Double matrices") {  
-        ColumnMatrix2d matrix;
-        matrix(0) = -1;
-        matrix(1) = 3;
-
+        ColumnMatrix2d matrix(-1.0, 3.0);
         ColumnMatrix2d absoluteComponents = matrix.cwiseAbs();
+
         REQUIRE(absoluteComponents(0) == 1);
         REQUIRE(absoluteComponents(1) == 3);
     }
 
     SECTION("Interval matrices") {
-        Matrix<Interval, 4, 1> matrix;
-        matrix(0) = Interval(2, 3);
-        matrix(1) = Interval(-1, 2);
-        matrix(2) = Interval(-3, 1);
-        matrix(3) = Interval(-4, -3);
-
+        Matrix<Interval, 4, 1> matrix(
+            Interval(2.0, 3.0),
+            Interval(-1.0, 2.0),
+            Interval(-3.0, 1.0),
+            Interval(-4.0, -3.0)
+        );
         Matrix<Interval, 4, 1> absoluteComponents = matrix.cwiseAbs();
+
         REQUIRE(absoluteComponents(0).lowerBound() == 2);
         REQUIRE(absoluteComponents(0).upperBound() == 3);
         REQUIRE(absoluteComponents(1).lowerBound() == 0);
@@ -262,15 +331,10 @@ TEST_CASE("Coefficient-wise absolute value") {
 }
 
 TEST_CASE("Coefficient-wise quotient") {
-    RowMatrix2d doubleMatrix;
-    doubleMatrix(0) = 1;
-    doubleMatrix(1) = 2;
-
-    IntervalRowMatrix2d intervalMatrix;
-    intervalMatrix(0) = Interval(2, 3);
-    intervalMatrix(1) = Interval(4, 5);
-    
+    RowMatrix2d doubleMatrix(1.0, 2.0);
+    IntervalRowMatrix2d intervalMatrix(Interval(2.0, 3.0), Interval(4.0, 5.0));
     IntervalRowMatrix2d quotients = doubleMatrix.cwiseQuotient(intervalMatrix);
+
     REQUIRE((quotients(0).lowerBound() - 1.0 / 3.0) == Zero());
     REQUIRE((quotients(0).upperBound() - 1.0 / 2.0) == Zero());
     REQUIRE((quotients(1).lowerBound() - 2.0 / 5.0) == Zero());
@@ -444,7 +508,7 @@ TEST_CASE("Dynamic matrix product") {
 
 TEST_CASE("Block assignment") {
     Matrix3d matrix;
-    matrix.block<2, 2>(1, 1) = Matrix2d::Ones();
+    matrix.block<2, 2>(1, 1) = Matrix2d::ones();
     REQUIRE(matrix(0, 0) == 0);
     REQUIRE(matrix(1, 0) == 0);
     REQUIRE(matrix(2, 0) == 0);
@@ -472,7 +536,7 @@ TEST_CASE("Dynamic matrix block assignment") {
 
 TEST_CASE("Block-to-block assignment") {
     Matrix3d matrix;
-    matrix.block<2, 2>(0, 1) = Matrix3d::Identity().block(1, 0, 2, 2);
+    matrix.block<2, 2>(0, 1) = Matrix3d::identity().block(1, 0, 2, 2);
     for (int columnIndex = 0; columnIndex < 3; ++columnIndex) {
         for (int rowIndex = 0; rowIndex < 3; ++rowIndex) {
             if (rowIndex == 0 && columnIndex == 2) {
@@ -485,7 +549,7 @@ TEST_CASE("Block-to-block assignment") {
 }
 
 TEST_CASE("Same-type view assignment") {
-    Matrix3d matrix = Matrix3d::Identity();
+    Matrix3d matrix = Matrix3d::identity();
     auto column0 = matrix.column(0);
     auto column1 = matrix.column(1);
     auto column2 = matrix.column(2);
@@ -521,7 +585,7 @@ TEST_CASE("Stream output") {
         checkTypeName(stream.str(), "IntervalMatrix3d");
     }
     SECTION("MatrixXd") {
-        MatrixXd matrix(3,3);
+        MatrixXd matrix(3, 3);
         stream << matrix;
         checkTypeName(stream.str(), "MatrixXd");
     }
@@ -529,7 +593,7 @@ TEST_CASE("Stream output") {
 
 TEST_CASE("2D Eigen decomposition") {
     for (int i = 0; i < 100; ++i) {
-        Matrix2d randomMatrix = Matrix2d::Random();
+        Matrix2d randomMatrix = Matrix2d::random();
         Matrix2d symmetricMatrix = 0.5 * (randomMatrix + randomMatrix.transpose());
 
         CAPTURE(symmetricMatrix);
@@ -557,7 +621,7 @@ TEST_CASE("2D Eigen decomposition") {
 
 TEST_CASE("3D Eigen decomposition") {
     for (int i = 0; i < 100; ++i) {
-        Matrix3d randomMatrix = Matrix3d::Random();
+        Matrix3d randomMatrix = Matrix3d::random();
         Matrix3d symmetricMatrix = 0.5 * (randomMatrix + randomMatrix.transpose());
 
         CAPTURE(symmetricMatrix);
@@ -581,4 +645,18 @@ TEST_CASE("3D Eigen decomposition") {
             REQUIRE((symmetricMatrix * eigenvector - eigenvalue * eigenvector).isZero());
         }
     }
+}
+
+TEST_CASE("Conversion") {
+    Matrix2d initial(1.0, 3.0, 2.0, 4.0);
+    Matrix2d inverse = initial.inverse();
+    MyMatrix2d converted = initial.to<MyMatrix2d>();
+    MyMatrix2d convertedInverse = converted.inverse();
+    Matrix2d inverseFromConverted = Matrix2d::from(convertedInverse);
+    CAPTURE(initial);
+    CAPTURE(inverse);
+    CAPTURE(inverseFromConverted);
+    CAPTURE(inverse * initial);
+    CAPTURE(inverseFromConverted * initial);
+    REQUIRE((inverse - inverseFromConverted).isZero());
 }

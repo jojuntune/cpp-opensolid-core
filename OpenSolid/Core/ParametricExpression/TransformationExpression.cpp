@@ -28,89 +28,132 @@
 
 namespace opensolid
 {
-    int
-    TransformationExpression::numDimensionsImpl() const {
-        return int(matrix().numRows());
-    }
-    
-    void
-    TransformationExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = matrix() * evaluator.evaluate(operand(), parameterView);
-    }
-    
-    void
-    TransformationExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = matrix() * evaluator.evaluate(operand(), parameterView);
-    }
+    namespace detail
+    {
+        int
+        TransformationExpression::numDimensionsImpl() const {
+            return int(matrix().numRows());
+        }
+        
+        void
+        TransformationExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            MatrixXd transformationMatrix = this->matrix();
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [transformationMatrix] (
+                    ConstMatrixViewXd operandValues,
+                    MatrixViewXd results
+                ) {
+                    results.setProduct(transformationMatrix, operandValues);
+                }
+            );
+        }
+        
+        void
+        TransformationExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            MatrixXd transformationMatrix = this->matrix();
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [transformationMatrix] (
+                    ConstIntervalMatrixViewXd operandValues,
+                    IntervalMatrixViewXd results
+                ) {
+                    results.setProduct(transformationMatrix, operandValues);
+                }
+            );
+        }
 
-    void
-    TransformationExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = matrix() * evaluator.evaluateJacobian(operand(), parameterView);
-    }
-    
-    void
-    TransformationExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = matrix() * evaluator.evaluateJacobian(operand(), parameterView);
-    }
-    
-    ExpressionImplementationPtr
-    TransformationExpression::derivativeImpl(int parameterIndex) const {
-        return matrix() * operand()->derivative(parameterIndex);
-    }
+        void
+        TransformationExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            MatrixXd transformationMatrix = this->matrix();
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(operand(), parameterID),
+                resultID,
+                [transformationMatrix] (
+                    ConstMatrixViewXd operandJacobian,
+                    MatrixViewXd results
+                ) {
+                    results.setProduct(transformationMatrix, operandJacobian);
+                }
+            );
+        }
+        
+        void
+        TransformationExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            MatrixXd transformationMatrix = this->matrix();
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(operand(), parameterID),
+                resultID,
+                [transformationMatrix] (
+                    ConstIntervalMatrixViewXd operandJacobian,
+                    IntervalMatrixViewXd results
+                ) {
+                    results.setProduct(transformationMatrix, operandJacobian);
+                }
+            );
+        }
+        
+        ExpressionImplementationPtr
+        TransformationExpression::derivativeImpl(int parameterIndex) const {
+            return matrix() * operand()->derivative(parameterIndex);
+        }
 
-    bool
-    TransformationExpression::isDuplicateOfImpl(
-        const ExpressionImplementationPtr& other
-    ) const {
-        MatrixXd otherMatrix = other->cast<TransformationExpression>()->matrix();
-        return duplicateOperands(other) && (matrix() - otherMatrix).isZero();
-    }
+        bool
+        TransformationExpression::isDuplicateOfImpl(
+            const ExpressionImplementationPtr& other
+        ) const {
+            MatrixXd otherMatrix = other->cast<TransformationExpression>()->matrix();
+            return duplicateOperands(other) && (matrix() - otherMatrix).isZero();
+        }
 
-    ExpressionImplementationPtr
-    TransformationExpression::scalingImpl(double scale) const {
-        return (scale * matrix()) * operand();
-    }
+        ExpressionImplementationPtr
+        TransformationExpression::scalingImpl(double scale) const {
+            return (scale * matrix()) * operand();
+        }
 
-    ExpressionImplementationPtr
-    TransformationExpression::transformationImpl(const MatrixXd& matrix) const {
-        return (matrix * this->matrix()) * operand();
-    }
-    
-    void
-    TransformationExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "TransformationExpression" << std::endl;
-        operand()->debug(stream, indent + 1);
-    }
+        ExpressionImplementationPtr
+        TransformationExpression::transformationImpl(const MatrixXd& matrix) const {
+            return (matrix * this->matrix()) * operand();
+        }
+        
+        void
+        TransformationExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "TransformationExpression" << std::endl;
+            operand()->debug(stream, indent + 1);
+        }
 
-    ExpressionImplementationPtr
-    TransformationExpression::withNewOperandImpl(
-        const ExpressionImplementationPtr& newOperand
-    ) const {
-        return matrix() * newOperand;
-    }
+        ExpressionImplementationPtr
+        TransformationExpression::withNewOperandImpl(
+            const ExpressionImplementationPtr& newOperand
+        ) const {
+            return matrix() * newOperand;
+        }
 
-    TransformationExpression::TransformationExpression(
-        const MatrixXd& matrix,
-        const ExpressionImplementationPtr& operand
-    ) : UnaryOperation(operand),
-        _matrix(matrix) {
+        TransformationExpression::TransformationExpression(
+            const MatrixXd& matrix,
+            const ExpressionImplementationPtr& operand
+        ) : UnaryOperation(operand),
+            _matrix(matrix) {
 
-        assert(matrix.numColumns() == operand->numDimensions());
+            assert(matrix.numColumns() == operand->numDimensions());
+        }
     }
 }

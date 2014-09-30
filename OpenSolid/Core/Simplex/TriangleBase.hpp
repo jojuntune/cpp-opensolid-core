@@ -134,9 +134,11 @@ namespace opensolid
         inline
         bool
         TriangleBase<iNumDimensions>::operator==(const Triangle<iNumDimensions>& other) const {
-            return vertex(0) == other.vertex(0) &&
+            return (
+                vertex(0) == other.vertex(0) &&
                 vertex(1) == other.vertex(1) &&
-                vertex(2) == other.vertex(2);
+                vertex(2) == other.vertex(2)
+            );
         }
     }
 }

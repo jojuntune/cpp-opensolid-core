@@ -42,8 +42,6 @@ namespace opensolid
         protected:
             CartesianBase();
 
-            CartesianBase(const TScalar* sourcePtr);
-
             CartesianBase(TScalar value);
 
             CartesianBase(TScalar x, TScalar y);

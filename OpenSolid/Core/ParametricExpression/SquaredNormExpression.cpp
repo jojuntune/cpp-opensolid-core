@@ -28,90 +28,124 @@
 
 namespace opensolid
 {   
-    int
-    SquaredNormExpression::numDimensionsImpl() const {
-        return 1;
-    }
-    
-    void
-    SquaredNormExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        ConstMatrixViewXd operandValues = evaluator.evaluate(operand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            resultView(0, columnIndex) = operandValues.column(columnIndex).fold(
-                0.0,
-                [] (double result, double value) {
-                    return result + value * value;
+    namespace detail
+    {
+        int
+        SquaredNormExpression::numDimensionsImpl() const {
+            return 1;
+        }
+        
+        void
+        SquaredNormExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results(0, columnIndex) = operandValues.column(columnIndex).fold(
+                            0.0,
+                            [] (double result, double value) {
+                                return result + value * value;
+                            }
+                        );
+                    }
                 }
             );
         }
-    }
-    
-    void
-    SquaredNormExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        ConstIntervalMatrixViewXd operandValues = evaluator.evaluate(operand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            resultView(0, columnIndex) = operandValues.column(columnIndex).fold(
-                Interval(0.0),
-                [] (Interval result, Interval value) {
-                    return result + value.squared();
+        
+        void
+        SquaredNormExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
+                    for (int columnIndex = 0; columnIndex < results.numColumns(); ++columnIndex) {
+                        results(0, columnIndex) = operandValues.column(columnIndex).fold(
+                            Interval(0.0),
+                            [] (Interval result, Interval value) {
+                                return result + value * value;
+                            }
+                        );
+                    }
                 }
             );
         }
-    }
 
-    void
-    SquaredNormExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        ConstMatrixViewXd operandValue = evaluator.evaluate(operand(), parameterView);
-        ConstMatrixViewXd operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView = 2.0 * operandValue.transpose() * operandJacobian;
-    }
-    
-    void
-    SquaredNormExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        ConstIntervalMatrixViewXd operandBounds = evaluator.evaluate(operand(), parameterView);
-        ConstIntervalMatrixViewXd operandJacobian =
-            evaluator.evaluateJacobian(operand(), parameterView);
-        resultView = 2.0 * operandBounds.transpose() * operandJacobian;
-    }
+        void
+        SquaredNormExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                expressionCompiler.evaluateJacobian(operand(), parameterID),
+                resultID,
+                [] (
+                    ConstMatrixViewXd operandValues,
+                    ConstMatrixViewXd operandJacobian,
+                    MatrixViewXd results
+                ) {
+                    results.setTransposeProduct(operandValues, operandJacobian);
+                    results *= 2.0;
+                }
+            );
+        }
+        
+        void
+        SquaredNormExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                expressionCompiler.evaluateJacobian(operand(), parameterID),
+                resultID,
+                [] (
+                    ConstIntervalMatrixViewXd operandValues,
+                    ConstIntervalMatrixViewXd operandJacobian,
+                    IntervalMatrixViewXd results
+                ) {
+                    results.setTransposeProduct(operandValues, operandJacobian);
+                    results *= 2.0;
+                }
+            );
+        }
 
-    ExpressionImplementationPtr
-    SquaredNormExpression::derivativeImpl(int parameterIndex) const {
-        return 2.0 * operand()->dot(operand()->derivative(parameterIndex));
-    }
+        ExpressionImplementationPtr
+        SquaredNormExpression::derivativeImpl(int parameterIndex) const {
+            return 2.0 * operand()->dot(operand()->derivative(parameterIndex));
+        }
 
-    bool
-    SquaredNormExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other);
-    }
-    
-    void
-    SquaredNormExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "SquaredNormExpression" << std::endl;
-        operand()->debug(stream, indent + 1);
-    }
+        bool
+        SquaredNormExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other);
+        }
+        
+        void
+        SquaredNormExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "SquaredNormExpression" << std::endl;
+            operand()->debug(stream, indent + 1);
+        }
 
-    ExpressionImplementationPtr
-    SquaredNormExpression::withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const {
-        return newOperand->squaredNorm();
-    }
+        ExpressionImplementationPtr
+        SquaredNormExpression::withNewOperandImpl(
+            const ExpressionImplementationPtr& newOperand
+        ) const {
+            return newOperand->squaredNorm();
+        }
 
-    SquaredNormExpression::SquaredNormExpression(const ExpressionImplementationPtr& operand) :
-        UnaryOperation(operand) {
+        SquaredNormExpression::SquaredNormExpression(const ExpressionImplementationPtr& operand) :
+            UnaryOperation(operand) {
+        }
     }
 }

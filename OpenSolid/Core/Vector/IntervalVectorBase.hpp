@@ -75,19 +75,13 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        IntervalVectorBase<iNumDimensions>::IntervalVectorBase(const Interval* sourcePtr) :
-            VectorBase<Interval, iNumDimensions>(sourcePtr) {
-        }
-
-        template <int iNumDimensions>
-        inline
         const Vector<Interval, iNumDimensions>
         IntervalVectorBase<iNumDimensions>::normalized() const {
             Interval norm = this->norm();
             if (norm == opensolid::Zero()) {
                 assert(false);
                 return Vector<Interval, iNumDimensions>(
-                    Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Empty())
+                    Matrix<Interval, iNumDimensions, 1>::constant(Interval::empty())
                 );
             }
             return Vector<Interval, iNumDimensions>((1.0 / norm) * this->components());
@@ -342,27 +336,27 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Vector<Interval, iNumDimensions>
-        IntervalVectorBase<iNumDimensions>::Unit() {
+        IntervalVectorBase<iNumDimensions>::unit() {
             return Vector<Interval, iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Unit())
+                Matrix<Interval, iNumDimensions, 1>::constant(Interval::unit())
             );
         }
 
         template <int iNumDimensions>
         inline
         const Vector<Interval, iNumDimensions>
-        IntervalVectorBase<iNumDimensions>::Empty() {
+        IntervalVectorBase<iNumDimensions>::empty() {
             return Vector<Interval, iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Empty())
+                Matrix<Interval, iNumDimensions, 1>::constant(Interval::empty())
             );
         }
 
         template <int iNumDimensions>
         inline
         const Vector<Interval, iNumDimensions>
-        IntervalVectorBase<iNumDimensions>::Whole() {
+        IntervalVectorBase<iNumDimensions>::whole() {
             return Vector<Interval, iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Whole())
+                Matrix<Interval, iNumDimensions, 1>::constant(Interval::whole())
             );
         }
     }

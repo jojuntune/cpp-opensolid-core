@@ -27,84 +27,113 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 
 namespace opensolid
-{       
-    int 
-    ExponentialExpression::numDimensionsImpl() const {
-        return 1;
-    }
+{  
+    namespace detail
+    {
+        int 
+        ExponentialExpression::numDimensionsImpl() const {
+            return 1;
+        }
 
-    bool
-    ExponentialExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other);
-    }
+        bool
+        ExponentialExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other);
+        }
+            
+        void
+        ExponentialExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (double value) {
+                            return opensolid::exp(value);
+                        }
+                    );
+                }
+            );
+        }
+
+        void
+        ExponentialExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results.setMap(
+                        results,
+                        [] (Interval value) {
+                            return opensolid::exp(value);
+                        }
+                    );
+                }
+            );
+        }
+
+        void
+        ExponentialExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
+                    results *= opensolid::exp(operandValues.value());
+                }
+            );
+        }
         
-    void
-    ExponentialExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluator.evaluate(operand(), parameterView).map(
-            [] (double value) {
-                return exp(value);
-            },
-            resultView
-        );
-    }
+        void
+        ExponentialExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(operand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
+                    results *= opensolid::exp(operandValues.value());
+                }
+            );
+        }
 
-    void
-    ExponentialExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluator.evaluate(operand(), parameterView).map(
-            [] (Interval value) {
-                return exp(value);
-            },
-            resultView
-        );
-    }
+        ExpressionImplementationPtr
+        ExponentialExpression::derivativeImpl(int parameterIndex) const {
+            return operand()->derivative(parameterIndex) * self();
+        }
+            
+        void
+        ExponentialExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "ExponentialExpression" << std::endl;
+            operand()->debug(stream, indent + 1);
+        }
 
-    void
-    ExponentialExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView *= exp(evaluator.evaluate(operand(), parameterView).value());
-    }
-    
-    void
-    ExponentialExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView *= exp(evaluator.evaluate(operand(), parameterView).value());
-    }
+        ExpressionImplementationPtr
+        ExponentialExpression::withNewOperandImpl(
+            const ExpressionImplementationPtr& newOperand
+        ) const {
+            return exp(newOperand);
+        }
 
-    ExpressionImplementationPtr
-    ExponentialExpression::derivativeImpl(int parameterIndex) const {
-        return operand()->derivative(parameterIndex) * self();
-    }
-        
-    void
-    ExponentialExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "ExponentialExpression" << std::endl;
-        operand()->debug(stream, indent + 1);
-    }
-
-    ExpressionImplementationPtr
-    ExponentialExpression::withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const {
-        return exp(newOperand);
-    }
-
-    ExponentialExpression::ExponentialExpression(const ExpressionImplementationPtr& operand) :
-        UnaryOperation(operand) {
-        
-        assert(operand->numDimensions() == 1);
+        ExponentialExpression::ExponentialExpression(const ExpressionImplementationPtr& operand) :
+            UnaryOperation(operand) {
+            
+            assert(operand->numDimensions() == 1);
+        }
     }
 }

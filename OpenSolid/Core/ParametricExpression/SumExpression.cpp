@@ -28,82 +28,111 @@
 
 namespace opensolid
 {   
-    int
-    SumExpression::numDimensionsImpl() const {
-        return firstOperand()->numDimensions();
-    }
-    
-    void
-    SumExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluate(firstOperand(), parameterView);
-        resultView += evaluator.evaluate(secondOperand(), parameterView);
-    }
-    
-    void
-    SumExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluate(firstOperand(), parameterView);
-        resultView += evaluator.evaluate(secondOperand(), parameterView);
-    }
+    namespace detail
+    {
+        int
+        SumExpression::numDimensionsImpl() const {
+            return firstOperand()->numDimensions();
+        }
+        
+        void
+        SumExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd secondValues, MatrixViewXd results) {
+                    results += secondValues;
+                }
+            );
+        }
+        
+        void
+        SumExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd secondValues, IntervalMatrixViewXd results) {
+                    results += secondValues;
+                }
+            );
+        }
 
-    void
-    SumExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(firstOperand(), parameterView);
-        resultView += evaluator.evaluateJacobian(secondOperand(), parameterView);
-    }
-    
-    void
-    SumExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(firstOperand(), parameterView);
-        resultView += evaluator.evaluateJacobian(secondOperand(), parameterView);
-    }
+        void
+        SumExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd secondJacobian, MatrixViewXd results) {
+                    results += secondJacobian;
+                }
+            );
+        }
+        
+        void
+        SumExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd secondJacobian, IntervalMatrixViewXd results) {
+                    results += secondJacobian;
+                }
+            );
+        }
 
-    ExpressionImplementationPtr
-    SumExpression::derivativeImpl(int parameterIndex) const {
-        return firstOperand()->derivative(parameterIndex) +
-            secondOperand()->derivative(parameterIndex);
-    }
+        ExpressionImplementationPtr
+        SumExpression::derivativeImpl(int parameterIndex) const {
+            return (
+                firstOperand()->derivative(parameterIndex) +
+                secondOperand()->derivative(parameterIndex)
+            );
+        }
 
-    bool
-    SumExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other, true);
-    }
-    
-    void
-    SumExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "SumExpression" << std::endl;
-        firstOperand()->debug(stream, indent + 1);
-        secondOperand()->debug(stream, indent + 1);
-    }
+        bool
+        SumExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other, true);
+        }
+        
+        void
+        SumExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "SumExpression" << std::endl;
+            firstOperand()->debug(stream, indent + 1);
+            secondOperand()->debug(stream, indent + 1);
+        }
 
-    ExpressionImplementationPtr
-    SumExpression::withNewOperandsImpl(
-        const ExpressionImplementationPtr& newFirstOperand,
-        const ExpressionImplementationPtr& newSecondOperand
-    ) const {
-        return newFirstOperand + newSecondOperand;
-    }
+        ExpressionImplementationPtr
+        SumExpression::withNewOperandsImpl(
+            const ExpressionImplementationPtr& newFirstOperand,
+            const ExpressionImplementationPtr& newSecondOperand
+        ) const {
+            return newFirstOperand + newSecondOperand;
+        }
 
-    SumExpression::SumExpression(
-        const ExpressionImplementationPtr& firstOperand,
-        const ExpressionImplementationPtr& secondOperand
-    ) : BinaryOperation(firstOperand, secondOperand) {
+        SumExpression::SumExpression(
+            const ExpressionImplementationPtr& firstOperand,
+            const ExpressionImplementationPtr& secondOperand
+        ) : BinaryOperation(firstOperand, secondOperand) {
 
-        assert(firstOperand->numDimensions() == secondOperand->numDimensions());
+            assert(firstOperand->numDimensions() == secondOperand->numDimensions());
+        }
     }
 }

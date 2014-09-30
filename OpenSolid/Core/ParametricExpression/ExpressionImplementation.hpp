@@ -30,93 +30,105 @@
 
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/MatrixView.hpp>
+#include <OpenSolid/Core/ParametricExpression/ComponentsExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ConstantExpression.hpp>
-#include <OpenSolid/Core/ParametricExpression/Evaluator.hpp>
+#include <OpenSolid/Core/ParametricExpression/ExpressionCompiler.hpp>
 #include <OpenSolid/Core/ParametricExpression/IdentityExpression.hpp>
+#include <OpenSolid/Core/ParametricExpression/MatrixID.hpp>
 #include <OpenSolid/Core/ParametricExpression/ParameterExpression.hpp>
 
 namespace opensolid
 {
-    inline
-    ExpressionImplementationPtr
-    ExpressionImplementation::self() const {
-        return this;
-    }
+    namespace detail
+    {
+        inline
+        ExpressionImplementationPtr
+        ExpressionImplementation::self() const {
+            return this;
+        }
 
-    inline
-    bool
-    ExpressionImplementation::isConstantExpression() const {
-        return typeid(*this) == typeid(ConstantExpression);
-    }
-    
-    inline
-    bool
-    ExpressionImplementation::isIdentityExpression() const {
-        return typeid(*this) == typeid(IdentityExpression);
-    }
-    
-    inline
-    bool
-    ExpressionImplementation::isParameterExpression() const {
-        return typeid(*this) == typeid(ParameterExpression);
-    }
-    
-    template <class TExpressionImplementation>
-    const TExpressionImplementation*
-    ExpressionImplementation::cast() const {
-        assert(dynamic_cast<const TExpressionImplementation*>(this));
-        return static_cast<const TExpressionImplementation*>(this);
-    }
+        inline
+        bool
+        ExpressionImplementation::isConstantExpression() const {
+            return typeid(*this) == typeid(ConstantExpression);
+        }
+        
+        inline
+        bool
+        ExpressionImplementation::isIdentityExpression() const {
+            return typeid(*this) == typeid(IdentityExpression);
+        }
+        
+        inline
+        bool
+        ExpressionImplementation::isParameterExpression() const {
+            return typeid(*this) == typeid(ParameterExpression);
+        }
+        
+        inline
+        bool
+        ExpressionImplementation::isComponentsExpression() const {
+            return typeid(*this) == typeid(ComponentsExpression);
+        }
+        
+        template <class TExpressionImplementation>
+        inline
+        const TExpressionImplementation*
+        ExpressionImplementation::cast() const {
+            assert(dynamic_cast<const TExpressionImplementation*>(this));
+            return static_cast<const TExpressionImplementation*>(this);
+        }
 
-    inline
-    int
-    ExpressionImplementation::numDimensions() const {
-        return numDimensionsImpl();
-    }
-    
-    inline
-    int
-    ExpressionImplementation::numParameters() const {
-        return numParametersImpl();
-    }
-    
-    inline
-    void
-    ExpressionImplementation::evaluate(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluateImpl(parameterView, resultView, evaluator);
-    }
-    
-    inline
-    void
-    ExpressionImplementation::evaluate(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluateImpl(parameterView, resultView, evaluator);
-    }
-    
-    inline
-    void
-    ExpressionImplementation::evaluateJacobian(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluateJacobianImpl(parameterView, resultView, evaluator);
-    }
+        inline
+        int
+        ExpressionImplementation::numDimensions() const {
+            return numDimensionsImpl();
+        }
+        
+        inline
+        int
+        ExpressionImplementation::numParameters() const {
+            return numParametersImpl();
+        }
+        
+        inline
+        void
+        ExpressionImplementation::evaluate(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            evaluateImpl(parameterID, resultID, expressionCompiler);
+        }
+        
+        inline
+        void
+        ExpressionImplementation::evaluate(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            evaluateImpl(parameterID, resultID, expressionCompiler);
+        }
+        
+        inline
+        void
+        ExpressionImplementation::evaluateJacobian(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            evaluateJacobianImpl(parameterID, resultID, expressionCompiler);
+        }
 
-    inline
-    void
-    ExpressionImplementation::evaluateJacobian(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        evaluateJacobianImpl(parameterView, resultView, evaluator);
+        inline
+        void
+        ExpressionImplementation::evaluateJacobian(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            evaluateJacobianImpl(parameterID, resultID, expressionCompiler);
+        }
     }
 }

@@ -32,6 +32,7 @@
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/ParametricCurve.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
 
 namespace opensolid
 {
@@ -41,7 +42,7 @@ namespace opensolid
         class ParametricCurveBase
         {
         private:
-            ParametricExpression<iNumDimensions, 1> _expression;
+            ParametricExpression<Point<iNumDimensions>, double> _expression;
             Interval _domain;
             Box<iNumDimensions> _bounds;
         protected:
@@ -52,11 +53,11 @@ namespace opensolid
             ParametricCurveBase(ParametricCurveBase<iNumDimensions>&& other);
 
             ParametricCurveBase(
-                const ParametricExpression<iNumDimensions, 1>& expression,
+                const ParametricExpression<Point<iNumDimensions>, double>& expression,
                 Interval domain
             );
         public:
-            const ParametricExpression<iNumDimensions, 1>&
+            const ParametricExpression<Point<iNumDimensions>, double>&
             expression() const;
 
             Interval
@@ -86,16 +87,16 @@ namespace opensolid
             ParametricCurve<iNumDimensions>
             reversed() const;
 
-            ParametricExpression<iNumDimensions, 1>
+            ParametricExpression<Vector<double, iNumDimensions>, double>
             tangentVector() const;
 
-            ParametricExpression<iNumDimensions, 1>
+            ParametricExpression<Vector<double, iNumDimensions>, double>
             normalVector() const;
 
-            ParametricExpression<iNumDimensions, 1>
+            ParametricExpression<Vector<double, iNumDimensions>, double>
             binormalVector() const;
 
-            ParametricExpression<1, 1>
+            ParametricExpression<double, double>
             curvature() const;
         };
     }

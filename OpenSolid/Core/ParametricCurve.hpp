@@ -58,7 +58,7 @@ namespace opensolid
 
     inline
     ParametricCurve2d::ParametricCurve(
-        const ParametricExpression<2, 1>& expression,
+        const ParametricExpression<Point2d, double>& expression,
         Interval domain
     ) : ParametricCurveBase<2>(expression, domain) {
     }
@@ -79,7 +79,7 @@ namespace opensolid
 
     inline
     ParametricCurve3d::ParametricCurve(
-        const ParametricExpression<3, 1>& expression,
+        const ParametricExpression<Point3d, double>& expression,
         Interval domain
     ) : ParametricCurveBase<3>(expression, domain) {
     }
@@ -88,10 +88,11 @@ namespace opensolid
     ParametricCurve<iNumDimensions>
     ScalingFunction<ParametricCurve<iNumDimensions>>::operator()(
         const ParametricCurve<iNumDimensions>& curve,
+        const Point<iNumDimensions>& originPoint,
         double scale
     ) const {
         return ParametricCurve<iNumDimensions>(
-            scale * curve.expression(),
+            scaled(curve.expression(), originPoint, scale),
             curve.domain()
         );
     }
@@ -103,7 +104,7 @@ namespace opensolid
         const Vector<double, iNumDimensions>& vector
     ) const {
         return ParametricCurve<iNumDimensions>(
-            curve.expression() + vector.components(),
+            curve.expression() + vector,
             curve.domain()
         );
     }
@@ -112,19 +113,27 @@ namespace opensolid
     ParametricCurve<iNumResultDimensions>
     TransformationFunction<ParametricCurve<iNumDimensions>, iNumResultDimensions>::operator()(
         const ParametricCurve<iNumDimensions>& curve,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
     ) const {
         return ParametricCurve<iNumResultDimensions>(
-            matrix * curve.expression(),
+            transformed(curve.expression(), originPoint, transformationMatrix, destinationPoint),
             curve.domain()
         );
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
     ParametricCurve<iNumResultDimensions>
-    MorphingFunction<ParametricCurve<iNumDimensions>, iNumResultDimensions>::operator()(
+    MorphingFunction<
+        ParametricCurve<iNumDimensions>,
+        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
+    >::operator()(
         const ParametricCurve<iNumDimensions>& curve,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        const ParametricExpression<
+            Point<iNumResultDimensions>,
+            Point<iNumDimensions>
+        >& morphingExpression
     ) const {
         return ParametricCurve<iNumResultDimensions>(
             morphingExpression.composed(curve.expression()),

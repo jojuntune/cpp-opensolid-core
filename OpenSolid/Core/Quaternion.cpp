@@ -28,34 +28,57 @@
 
 namespace opensolid
 {
+    namespace
+    {
+        template <int iNumDimensions>
+        inline
+        Quaternion<iNumDimensions>
+        computeSlerp(
+            const Quaternion<iNumDimensions>& startQuaternion,
+            const Quaternion<iNumDimensions>& endQuaternion,
+            double parameterValue
+        ) {
+            double dotProduct = startQuaternion.dot(endQuaternion);
+            double angle = acos(Interval(-1, 1).clamp(dotProduct));
+            double sinAngle = sin(angle);
+            double startCoefficient = 0.0;
+            double endCoefficient = 0.0;
+            if (sinAngle == Zero()) {
+                // Use linear interpolation for almost-parallel quaternions
+                startCoefficient = 1 - parameterValue;
+                endCoefficient = parameterValue;
+            } else {
+                startCoefficient = sin((1 - parameterValue) * angle) / sinAngle;
+                endCoefficient = sin(parameterValue * angle) / sinAngle;
+            }
+            auto slerpedComponents =
+                startCoefficient * startQuaternion.components() +
+                endCoefficient * endQuaternion.components();
+            double squaredNorm = slerpedComponents.cwiseSquared().sum();
+            if (squaredNorm == Zero()) {
+                return Quaternion<iNumDimensions>::identity();
+            } else {
+                slerpedComponents /= sqrt(squaredNorm);
+                return Quaternion<iNumDimensions>(slerpedComponents);
+            }
+        }
+    }
+
+    const Quaternion2d
+    Quaternion2d::slerp(
+        const Quaternion2d& startQuaternion,
+        const Quaternion2d& endQuaternion,
+        double parameterValue
+    ) {
+        return computeSlerp(startQuaternion, endQuaternion, parameterValue);
+    }
+
     const Quaternion3d
-    Quaternion3d::Slerp(
+    Quaternion3d::slerp(
         const Quaternion3d& startQuaternion,
         const Quaternion3d& endQuaternion,
         double parameterValue
     ) {
-        double angle = acos(Interval(-1, 1).clamp(startQuaternion.dot(endQuaternion)));
-        double startCoefficient = 0.0;
-        double endCoefficient = 0.0;
-        double sinAngle = sin(angle);
-        if (sinAngle == Zero()) {
-            // Use linear interpolation for almost-parallel quaternions
-            startCoefficient = 1 - parameterValue;
-            endCoefficient = parameterValue;
-        } else {
-            startCoefficient = sin((1 - parameterValue) * angle) / sinAngle;
-            endCoefficient = sin(parameterValue * angle) / sinAngle;
-        }
-
-        Matrix<double, 4, 1> slerpedComponents =
-            startCoefficient * startQuaternion.components() +
-            endCoefficient * endQuaternion.components();
-        double squaredNorm = slerpedComponents.cwiseSquared().sum();
-        if (squaredNorm == Zero()) {
-            return Quaternion3d::Identity();
-        } else {
-            slerpedComponents /= sqrt(squaredNorm);
-            return Quaternion3d(slerpedComponents);
-        }
+        return computeSlerp(startQuaternion, endQuaternion, parameterValue);
     }
 }

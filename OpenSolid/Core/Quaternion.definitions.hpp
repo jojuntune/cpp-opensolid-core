@@ -34,20 +34,75 @@
 
 namespace opensolid
 {
-    class Quaternion3d :
-        public Convertible<Quaternion3d>
+    template <>
+    class Quaternion<2> :
+        public Convertible<Quaternion<2>>
+    {
+    private:
+        Matrix<double, 2, 1> _components;
+    public:
+        Quaternion();
+
+        explicit
+        Quaternion(const Matrix<double, 2, 1>& components);
+
+        Quaternion(double cosAngle, double sinAngle);
+
+        Quaternion(double angle);
+
+        const Matrix<double, 2, 1>&
+        components() const;
+
+        double
+        cosAngle() const;
+
+        double
+        sinAngle() const;
+
+        double
+        angle() const;
+
+        double
+        dot(const Quaternion<2>& other) const;
+
+        const Quaternion<2>
+        inverse() const;
+
+        const Matrix<double, 2, 2>
+        rotationMatrix() const;
+
+        const Quaternion<2>
+        operator*(const Quaternion<2>& other) const;
+
+        static const Quaternion<2>
+        identity();
+
+        OPENSOLID_CORE_EXPORT
+        static const Quaternion<2>
+        slerp(
+            const Quaternion<2>& startQuaternion,
+            const Quaternion<2>& endQuaternion,
+            double parameterValue
+        );
+    };
+
+    typedef Quaternion<2> Quaternion2d;
+
+    template <>
+    class Quaternion<3> :
+        public Convertible<Quaternion<3>>
     {
     private:
         Matrix<double, 4, 1> _components;
     public:
-        Quaternion3d();
+        Quaternion();
 
         explicit
-        Quaternion3d(const Matrix<double, 4, 1>& components);
+        Quaternion(const Matrix<double, 4, 1>& components);
 
-        Quaternion3d(double x, double y, double z, double w);
+        Quaternion(double x, double y, double z, double w);
 
-        Quaternion3d(const UnitVector<3>& unitVector, double angle);
+        Quaternion(const UnitVector<3>& unitVector, double angle);
 
         const Matrix<double, 4, 1>&
         components() const;
@@ -71,26 +126,28 @@ namespace opensolid
         angle() const;
 
         double
-        dot(const Quaternion3d& other) const;
+        dot(const Quaternion<3>& other) const;
 
-        const Quaternion3d
+        const Quaternion<3>
         inverse() const;
 
         const Matrix<double, 3, 3>
         rotationMatrix() const;
 
-        Quaternion3d
-        operator*(const Quaternion3d& other) const;
+        Quaternion<3>
+        operator*(const Quaternion<3>& other) const;
 
-        static const Quaternion3d
-        Identity();
+        static const Quaternion<3>
+        identity();
 
         OPENSOLID_CORE_EXPORT
-        static const Quaternion3d
-        Slerp(
-            const Quaternion3d& startQuaternion,
-            const Quaternion3d& endQuaternion,
+        static const Quaternion<3>
+        slerp(
+            const Quaternion<3>& startQuaternion,
+            const Quaternion<3>& endQuaternion,
             double parameterValue
         );
     };
+
+    typedef Quaternion<3> Quaternion3d;
 }

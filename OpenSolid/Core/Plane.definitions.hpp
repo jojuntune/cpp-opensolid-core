@@ -44,6 +44,12 @@ namespace opensolid
         static const int Value = 3;
     };
 
+    template <>
+    struct MorphedType<Plane3d, ParametricExpression<Point<3>, Point<3>>>
+    {
+        typedef Plane3d Type;
+    };
+
     class Plane3d :
         public Convertible<Plane3d>,
         public Transformable<Plane3d>
@@ -60,7 +66,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        ThroughPoints(
+        throughPoints(
             const Point<3>& firstPoint,
             const Point<3>& secondPoint,
             const Point<3>& thirdPoint
@@ -68,43 +74,43 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        Midplane(const Point<3>& pointBelow, const Point<3>& pointAbove);
+        midplane(const Point<3>& pointBelow, const Point<3>& pointAbove);
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        Midplane(const Plane3d& planeBelow, const Plane3d& planeAbove);
+        midplane(const Plane3d& planeBelow, const Plane3d& planeAbove);
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        ThroughAxisAndPoint(const Axis<3>& axis, const Point<3>& point);
+        throughAxisAndPoint(const Axis<3>& axis, const Point<3>& point);
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        ThroughAxis(const Axis<3>& axis);
+        throughAxis(const Axis<3>& axis);
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        XY();
+        xy();
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        XZ();
+        xz();
         
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        YX();
+        yx();
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        YZ();
+        yz();
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        ZX();
+        zx();
         
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        ZY();
+        zy();
 
         const Point<3>&
         originPoint() const;
@@ -136,7 +142,7 @@ namespace opensolid
     struct ScalingFunction<Plane3d>
     {
         Plane3d
-        operator()(const Plane3d& plane, double scale) const;
+        operator()(const Plane3d& plane, const Point<3>& originPoint, double scale) const;
     };
 
     template <>
@@ -151,17 +157,22 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         Plane3d
-        operator()(const Plane3d& plane, const Matrix<double, 3, 3>& matrix) const;
+        operator()(
+            const Plane3d& plane,
+            const Point<3>& originPoint,
+            const Matrix<double, 3, 3>& transformationMatrix,
+            const Point<3>& destinationPoint
+        ) const;
     };
 
     template <>
-    struct MorphingFunction<Plane3d, 3>
+    struct MorphingFunction<Plane3d, ParametricExpression<Point<3>, Point<3>>>
     {
         OPENSOLID_CORE_EXPORT
         Plane3d
         operator()(
             const Plane3d& plane,
-            const ParametricExpression<3, 3>& morphingExpression
+            const ParametricExpression<Point<3>, Point<3>>& morphingExpression
         ) const;
     };
 }

@@ -28,83 +28,108 @@
 
 namespace opensolid
 {
-    int
-    IdentityExpression::numDimensionsImpl() const {
-        return _numDimensions;
-    }
+    namespace detail
+    {
+        int
+        IdentityExpression::numDimensionsImpl() const {
+            return _numDimensions;
+        }
 
-    int
-    IdentityExpression::numParametersImpl() const {
-        return _numDimensions;
-    }
-    
-    void
-    IdentityExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator&
-    ) const {
-        resultView = parameterView;
-    }
-    
-    void
-    IdentityExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator&
-    ) const {
-        resultView = parameterView;
-    }
+        int
+        IdentityExpression::numParametersImpl() const {
+            return _numDimensions;
+        }
+        
+        void
+        IdentityExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.compute(
+                parameterID,
+                resultID,
+                [] (ConstMatrixViewXd parameterValues, MatrixViewXd results) {
+                    results = parameterValues;
+                }
+            );
+        }
+        
+        void
+        IdentityExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.compute(
+                parameterID,
+                resultID,
+                [] (ConstIntervalMatrixViewXd parameterValues, IntervalMatrixViewXd results) {
+                    results = parameterValues;
+                }
+            );
+        }
 
-    void
-    IdentityExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView.setIdentity();
-    }
-    
-    void
-    IdentityExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView.setIdentity();
-    }
+        void
+        IdentityExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results.setIdentity();
+                }
+            );
+        }
+        
+        void
+        IdentityExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results.setIdentity();
+                }
+            );
+        }
 
-    ExpressionImplementationPtr
-    IdentityExpression::derivativeImpl(int parameterIndex) const {
-        ColumnMatrixXd result(numDimensions());
-        result(parameterIndex) = 1.0;
-        return new ConstantExpression(result, numDimensions());
-    }
+        ExpressionImplementationPtr
+        IdentityExpression::derivativeImpl(int parameterIndex) const {
+            ColumnMatrixXd result(numDimensions());
+            result(parameterIndex) = 1.0;
+            return new ConstantExpression(result, numDimensions());
+        }
 
-    bool
-    IdentityExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        // ExpressionImplementation already checks that numbers of parameters/dimensions are equal
-        return true;
-    }
+        bool
+        IdentityExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            // ExpressionImplementation already checks that numbers of parameters/dimensions are equal
+            return true;
+        }
 
-    ExpressionImplementationPtr
-    IdentityExpression::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return this;
-    }
-    
-    ExpressionImplementationPtr
-    IdentityExpression::composedImpl(const ExpressionImplementationPtr& innerExpression) const {
-        return innerExpression;
-    }
-    
-    void
-    IdentityExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "IdentityExpression" << std::endl;
-    }
+        ExpressionImplementationPtr
+        IdentityExpression::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+            return this;
+        }
+        
+        ExpressionImplementationPtr
+        IdentityExpression::composedImpl(const ExpressionImplementationPtr& innerExpression) const {
+            return innerExpression;
+        }
+        
+        void
+        IdentityExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "IdentityExpression" << std::endl;
+        }
 
-    IdentityExpression::IdentityExpression(int numDimensions) :
-        _numDimensions(numDimensions) {
+        IdentityExpression::IdentityExpression(int numDimensions) :
+            _numDimensions(numDimensions) {
 
-        assert(numDimensions > 0);
+            assert(numDimensions > 0);
+        }
     }
 }

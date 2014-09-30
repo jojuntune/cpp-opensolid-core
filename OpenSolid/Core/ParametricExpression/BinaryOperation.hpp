@@ -30,70 +30,76 @@
 
 namespace opensolid
 {
-    class BinaryOperation :
-        public ExpressionImplementation
+    namespace detail
     {
-    private:
-        ExpressionImplementationPtr _firstOperand;
-        ExpressionImplementationPtr _secondOperand;
-        
-        OPENSOLID_CORE_EXPORT
-        int
-        numParametersImpl() const override;
+        class BinaryOperation :
+            public ExpressionImplementation
+        {
+        private:
+            ExpressionImplementationPtr _firstOperand;
+            ExpressionImplementationPtr _secondOperand;
+            
+            OPENSOLID_CORE_EXPORT
+            int
+            numParametersImpl() const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        composedImpl(const ExpressionImplementationPtr& innerExpression) const override;
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            composedImpl(const ExpressionImplementationPtr& innerExpression) const override;
 
-        OPENSOLID_CORE_EXPORT
-        virtual ExpressionImplementationPtr
-        withNewOperandsImpl(
-            const ExpressionImplementationPtr& newFirstOperand,
-            const ExpressionImplementationPtr& newSecondOperand
-        ) const = 0;
-    protected:
-        OPENSOLID_CORE_EXPORT
-        bool
-        duplicateOperands(const ExpressionImplementationPtr& other, bool isCommutative) const;
-    public:
-        OPENSOLID_CORE_EXPORT
-        BinaryOperation(
-            const ExpressionImplementationPtr& firstOperand,
-            const ExpressionImplementationPtr& secondOperand
-        );
-        
-        const ExpressionImplementationPtr&
-        firstOperand() const;
-        
-        const ExpressionImplementationPtr&
-        secondOperand() const;
+            OPENSOLID_CORE_EXPORT
+            virtual ExpressionImplementationPtr
+            withNewOperandsImpl(
+                const ExpressionImplementationPtr& newFirstOperand,
+                const ExpressionImplementationPtr& newSecondOperand
+            ) const = 0;
+        protected:
+            OPENSOLID_CORE_EXPORT
+            bool
+            duplicateOperands(const ExpressionImplementationPtr& other, bool isCommutative) const;
+        public:
+            OPENSOLID_CORE_EXPORT
+            BinaryOperation(
+                const ExpressionImplementationPtr& firstOperand,
+                const ExpressionImplementationPtr& secondOperand
+            );
+            
+            const ExpressionImplementationPtr&
+            firstOperand() const;
+            
+            const ExpressionImplementationPtr&
+            secondOperand() const;
 
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        withNewOperands(
-            const ExpressionImplementationPtr& newFirstOperand,
-            const ExpressionImplementationPtr& newSecondOperand
-        ) const;
-    };
+            OPENSOLID_CORE_EXPORT
+            ExpressionImplementationPtr
+            withNewOperands(
+                const ExpressionImplementationPtr& newFirstOperand,
+                const ExpressionImplementationPtr& newSecondOperand
+            ) const;
+        };
+    }
 }
 
 ////////// Implementation //////////
 
 namespace opensolid
 {
-    inline
-    const ExpressionImplementationPtr&
-    BinaryOperation::firstOperand() const {
-        return _firstOperand;
-    }
-    
-    inline
-    const ExpressionImplementationPtr&
-    BinaryOperation::secondOperand() const {
-        return _secondOperand;
+    namespace detail
+    {
+        inline
+        const ExpressionImplementationPtr&
+        BinaryOperation::firstOperand() const {
+            return _firstOperand;
+        }
+        
+        inline
+        const ExpressionImplementationPtr&
+        BinaryOperation::secondOperand() const {
+            return _secondOperand;
+        }
     }
 }

@@ -28,32 +28,35 @@
 
 namespace opensolid
 {
-    int
-    UnaryOperation::numParametersImpl() const {
-        return operand()->numParameters();
-    }
+    namespace detail
+    {
+        int
+        UnaryOperation::numParametersImpl() const {
+            return operand()->numParameters();
+        }
 
-    ExpressionImplementationPtr
-    UnaryOperation::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return this->withNewOperand(operand()->deduplicated(deduplicationCache));
-    }
+        ExpressionImplementationPtr
+        UnaryOperation::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+            return this->withNewOperand(operand()->deduplicated(deduplicationCache));
+        }
 
-    ExpressionImplementationPtr
-    UnaryOperation::composedImpl(const ExpressionImplementationPtr& innerExpression) const {
-        return this->withNewOperand(operand()->composed(innerExpression));
-    }
+        ExpressionImplementationPtr
+        UnaryOperation::composedImpl(const ExpressionImplementationPtr& innerExpression) const {
+            return this->withNewOperand(operand()->composed(innerExpression));
+        }
 
-    bool
-    UnaryOperation::duplicateOperands(const ExpressionImplementationPtr& other) const {
-        return this->operand()->isDuplicateOf(other->cast<UnaryOperation>()->operand());
-    }
-    
-    UnaryOperation::UnaryOperation(const ExpressionImplementationPtr& operand) :
-        _operand(operand) {
-    }
+        bool
+        UnaryOperation::duplicateOperands(const ExpressionImplementationPtr& other) const {
+            return this->operand()->isDuplicateOf(other->cast<UnaryOperation>()->operand());
+        }
+        
+        UnaryOperation::UnaryOperation(const ExpressionImplementationPtr& operand) :
+            _operand(operand) {
+        }
 
-    ExpressionImplementationPtr
-    UnaryOperation::withNewOperand(const ExpressionImplementationPtr& newOperand) const {
-        return withNewOperandImpl(newOperand);
+        ExpressionImplementationPtr
+        UnaryOperation::withNewOperand(const ExpressionImplementationPtr& newOperand) const {
+            return withNewOperandImpl(newOperand);
+        }
     }
 }

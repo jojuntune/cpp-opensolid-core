@@ -28,82 +28,111 @@
 
 namespace opensolid
 {   
-    int
-    DifferenceExpression::numDimensionsImpl() const {
-        return firstOperand()->numDimensions();
-    }
-    
-    void
-    DifferenceExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluate(firstOperand(), parameterView);
-        resultView -= evaluator.evaluate(secondOperand(), parameterView);
-    }
-    
-    void
-    DifferenceExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluate(firstOperand(), parameterView);
-        resultView -= evaluator.evaluate(secondOperand(), parameterView);
-    }
+    namespace detail
+    {
+        int
+        DifferenceExpression::numDimensionsImpl() const {
+            return firstOperand()->numDimensions();
+        }
+        
+        void
+        DifferenceExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd secondValues, MatrixViewXd results) {
+                    results -= secondValues;
+                }
+            );
+        }
+        
+        void
+        DifferenceExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluate(secondOperand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd secondValues, IntervalMatrixViewXd results) {
+                    results -= secondValues;
+                }
+            );
+        }
 
-    void
-    DifferenceExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(firstOperand(), parameterView);
-        resultView -= evaluator.evaluateJacobian(secondOperand(), parameterView);
-    }
-    
-    void
-    DifferenceExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(firstOperand(), parameterView);
-        resultView -= evaluator.evaluateJacobian(secondOperand(), parameterView);
-    }
+        void
+        DifferenceExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                resultID,
+                [] (ConstMatrixViewXd secondJacobian, MatrixViewXd results) {
+                    results -= secondJacobian;
+                }
+            );
+        }
+        
+        void
+        DifferenceExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(firstOperand(), parameterID, resultID);
+            expressionCompiler.compute(
+                expressionCompiler.evaluateJacobian(secondOperand(), parameterID),
+                resultID,
+                [] (ConstIntervalMatrixViewXd secondJacobian, IntervalMatrixViewXd results) {
+                    results -= secondJacobian;
+                }
+            );
+        }
 
-    ExpressionImplementationPtr
-    DifferenceExpression::derivativeImpl(int parameterIndex) const {
-        return firstOperand()->derivative(parameterIndex) -
-            secondOperand()->derivative(parameterIndex);
-    }
+        ExpressionImplementationPtr
+        DifferenceExpression::derivativeImpl(int parameterIndex) const {
+            return (
+                firstOperand()->derivative(parameterIndex) -
+                secondOperand()->derivative(parameterIndex)
+            );
+        }
 
-    bool
-    DifferenceExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other, false);
-    }
-    
-    void
-    DifferenceExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "DifferenceExpression" << std::endl;
-        firstOperand()->debug(stream, indent + 1);
-        secondOperand()->debug(stream, indent + 1);
-    }
+        bool
+        DifferenceExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other, false);
+        }
+        
+        void
+        DifferenceExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "DifferenceExpression" << std::endl;
+            firstOperand()->debug(stream, indent + 1);
+            secondOperand()->debug(stream, indent + 1);
+        }
 
-    ExpressionImplementationPtr
-    DifferenceExpression::withNewOperandsImpl(
-        const ExpressionImplementationPtr& newFirstOperand,
-        const ExpressionImplementationPtr& newSecondOperand
-    ) const {
-        return newFirstOperand - newSecondOperand;
-    }
+        ExpressionImplementationPtr
+        DifferenceExpression::withNewOperandsImpl(
+            const ExpressionImplementationPtr& newFirstOperand,
+            const ExpressionImplementationPtr& newSecondOperand
+        ) const {
+            return newFirstOperand - newSecondOperand;
+        }
 
-    DifferenceExpression::DifferenceExpression(
-        const ExpressionImplementationPtr& firstOperand,
-        const ExpressionImplementationPtr& secondOperand
-    ) : BinaryOperation(firstOperand, secondOperand) {
+        DifferenceExpression::DifferenceExpression(
+            const ExpressionImplementationPtr& firstOperand,
+            const ExpressionImplementationPtr& secondOperand
+        ) : BinaryOperation(firstOperand, secondOperand) {
 
-        assert(firstOperand->numDimensions() == secondOperand->numDimensions());
+            assert(firstOperand->numDimensions() == secondOperand->numDimensions());
+        }
     }
 }

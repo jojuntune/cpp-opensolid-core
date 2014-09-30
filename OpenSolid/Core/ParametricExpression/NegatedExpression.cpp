@@ -28,133 +28,156 @@
 
 namespace opensolid
 {
-    int
-    NegatedExpression::numDimensionsImpl() const {
-        return operand()->numDimensions();
-    }
+    namespace detail
+    {
+        int
+        NegatedExpression::numDimensionsImpl() const {
+            return operand()->numDimensions();
+        }
 
-    void
-    NegatedExpression::evaluateImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluate(operand(), parameterView);
-        resultView *= -1.0;
-    }
+        void
+        NegatedExpression::evaluateImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results *= -1.0;
+                }
+            );
+        }
 
-    void
-    NegatedExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluate(operand(), parameterView);
-        resultView *= -1.0;
-    }
+        void
+        NegatedExpression::evaluateImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluate(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results *= -1.0;
+                }
+            );
+        }
 
-    void
-    NegatedExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXd& parameterView,
-        MatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView *= -1.0;
-    }
-    
-    void
-    NegatedExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXd& parameterView,
-        IntervalMatrixViewXd& resultView,
-        Evaluator& evaluator
-    ) const {
-        resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView *= -1.0;
-    }
+        void
+        NegatedExpression::evaluateJacobianImpl(
+            const MatrixID<const double>& parameterID,
+            const MatrixID<double>& resultID,
+            ExpressionCompiler<double>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (MatrixViewXd results) {
+                    results *= -1.0;
+                }
+            );
+        }
+        
+        void
+        NegatedExpression::evaluateJacobianImpl(
+            const MatrixID<const Interval>& parameterID,
+            const MatrixID<Interval>& resultID,
+            ExpressionCompiler<Interval>& expressionCompiler
+        ) const {
+            expressionCompiler.evaluateJacobian(operand(), parameterID, resultID);
+            expressionCompiler.compute(
+                resultID,
+                [] (IntervalMatrixViewXd results) {
+                    results *= -1.0;
+                }
+            );
+        }
 
-    ExpressionImplementationPtr
-    NegatedExpression::derivativeImpl(int parameterIndex) const {
-        return -operand()->derivative(parameterIndex);
-    }
+        ExpressionImplementationPtr
+        NegatedExpression::derivativeImpl(int parameterIndex) const {
+            return -operand()->derivative(parameterIndex);
+        }
 
-    bool
-    NegatedExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return duplicateOperands(other);
-    }
- 
-    ExpressionImplementationPtr
-    NegatedExpression::componentsImpl(int startIndex, int numComponents) const {
-        return -operand()->components(startIndex, numComponents);
-    }
+        bool
+        NegatedExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+            return duplicateOperands(other);
+        }
+     
+        ExpressionImplementationPtr
+        NegatedExpression::componentsImpl(int startIndex, int numComponents) const {
+            return -operand()->components(startIndex, numComponents);
+        }
 
-    ExpressionImplementationPtr
-    NegatedExpression::scalingImpl(double scale) const {
-        return (-scale) * operand();
-    }
+        ExpressionImplementationPtr
+        NegatedExpression::scalingImpl(double scale) const {
+            return (-scale) * operand();
+        }
 
-    ExpressionImplementationPtr
-    NegatedExpression::transformationImpl(const MatrixXd& matrix) const {
-        return (-matrix) * operand();
-    }
+        ExpressionImplementationPtr
+        NegatedExpression::transformationImpl(const MatrixXd& matrix) const {
+            return (-matrix) * operand();
+        }
 
-    ExpressionImplementationPtr
-    NegatedExpression::normImpl() const {
-        return operand()->norm();
-    }
+        ExpressionImplementationPtr
+        NegatedExpression::normImpl() const {
+            return operand()->norm();
+        }
 
-    ExpressionImplementationPtr
-    NegatedExpression::normalizedImpl() const {
-        return -operand()->normalized();
-    }
+        ExpressionImplementationPtr
+        NegatedExpression::normalizedImpl() const {
+            return -operand()->normalized();
+        }
 
-    ExpressionImplementationPtr
-    NegatedExpression::squaredNormImpl() const {
-        return operand()->squaredNorm();
-    }
+        ExpressionImplementationPtr
+        NegatedExpression::squaredNormImpl() const {
+            return operand()->squaredNorm();
+        }
 
-    ExpressionImplementationPtr
-    NegatedExpression::negatedImpl() const {
-        return operand();
-    }
+        ExpressionImplementationPtr
+        NegatedExpression::negatedImpl() const {
+            return operand();
+        }
 
-    ExpressionImplementationPtr
-    NegatedExpression::sinImpl() const {
-        return -sin(operand());
-    }
+        ExpressionImplementationPtr
+        NegatedExpression::sinImpl() const {
+            return -sin(operand());
+        }
 
-    ExpressionImplementationPtr
-    NegatedExpression::cosImpl() const {
-        return cos(operand());
-    }
+        ExpressionImplementationPtr
+        NegatedExpression::cosImpl() const {
+            return cos(operand());
+        }
 
-    ExpressionImplementationPtr
-    NegatedExpression::tanImpl() const {
-        return -tan(operand());
-    }
+        ExpressionImplementationPtr
+        NegatedExpression::tanImpl() const {
+            return -tan(operand());
+        }
 
-    ExpressionImplementationPtr
-    NegatedExpression::acosImpl() const {
-        return M_PI - acos(operand());
-    }
+        ExpressionImplementationPtr
+        NegatedExpression::acosImpl() const {
+            return M_PI - acos(operand());
+        }
 
-    ExpressionImplementationPtr
-    NegatedExpression::asinImpl() const {
-        return -asin(operand());
-    }
+        ExpressionImplementationPtr
+        NegatedExpression::asinImpl() const {
+            return -asin(operand());
+        }
 
-    void
-    NegatedExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "NegatedExpression" << std::endl;
-        operand()->debug(stream, indent + 1);
-    }
+        void
+        NegatedExpression::debugImpl(std::ostream& stream, int indent) const {
+            stream << "NegatedExpression" << std::endl;
+            operand()->debug(stream, indent + 1);
+        }
 
-    ExpressionImplementationPtr
-    NegatedExpression::withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const {
-        return -newOperand;
-    }
+        ExpressionImplementationPtr
+        NegatedExpression::withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const {
+            return -newOperand;
+        }
 
-    NegatedExpression::NegatedExpression(const ExpressionImplementationPtr& operand) :
-        UnaryOperation(operand) {
+        NegatedExpression::NegatedExpression(const ExpressionImplementationPtr& operand) :
+            UnaryOperation(operand) {
+        }
     }
 }

@@ -77,12 +77,6 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        BoxBase<iNumDimensions>::BoxBase(const Interval* sourcePtr) :
-            CartesianBase<Interval, iNumDimensions>(sourcePtr) {
-        }
-
-        template <int iNumDimensions>
-        inline
         bool
         BoxBase<iNumDimensions>::isEmpty() const {
             return this->components().any(
@@ -308,27 +302,27 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Box<iNumDimensions>
-        BoxBase<iNumDimensions>::Unit() {
+        BoxBase<iNumDimensions>::unit() {
             return Box<iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Unit())
+                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::unit())
             );
         }
 
         template <int iNumDimensions>
         inline
         const Box<iNumDimensions>
-        BoxBase<iNumDimensions>::Empty() {
+        BoxBase<iNumDimensions>::empty() {
             return Box<iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Empty())
+                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::empty())
             );
         }
 
         template <int iNumDimensions>
         inline
         const Box<iNumDimensions>
-        BoxBase<iNumDimensions>::Whole() {
+        BoxBase<iNumDimensions>::whole() {
             return Box<iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Whole())
+                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::whole())
             );
         }
     }
