@@ -66,7 +66,7 @@ namespace opensolid
             operator()(const MatrixInterface<TDerived>& matrix) const;
         };
         
-        template <class TDerived, class TScalar = MatrixTraits<TDerived>::PlainScalar>
+        template <class TDerived, class TScalar = typename MatrixTraits<TDerived>::PlainScalar>
         struct CheckIdentity;
 
         template <class TDerived>
