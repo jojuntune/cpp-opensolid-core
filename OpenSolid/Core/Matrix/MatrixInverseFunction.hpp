@@ -46,13 +46,16 @@ namespace opensolid
             }
 
             ScalarType value = matrix.value();
-            if (value == Zero()) {
+            if (value == 0.0) {
                 assert(false);
                 return Matrix<ScalarType, 1, 1>::Zero();
             }
 
             Matrix<ScalarType, 1, 1> result;
             result.value() = 1.0 / value;
+
+            assert(checkIdentity(result * matrix));
+
             return result;
         }
 
@@ -72,7 +75,7 @@ namespace opensolid
             ScalarType component11 = matrix.component(1, 1);
 
             ScalarType determinant = component00 * component11 - component01 * component10;
-            if (determinant == Zero()) {
+            if (determinant == 0.0) {
                 assert(false);
                 return Matrix<ScalarType, 2, 2>::Zero();
             }
@@ -83,6 +86,9 @@ namespace opensolid
             result.component(1, 0) = -inverseDeterminant * component10;
             result.component(0, 1) = -inverseDeterminant * component01;
             result.component(1, 1) = inverseDeterminant * component00;
+
+            assert(checkIdentity(result * matrix));
+
             return result;
         }
 
@@ -112,7 +118,7 @@ namespace opensolid
 
             ScalarType determinant = component00 * cofactor00 + component01 * cofactor01 +
                 component02 * cofactor02;
-            if (determinant == Zero()) {
+            if (determinant == 0.0) {
                 assert(false);
                 return Matrix<ScalarType, 3, 3>::Zero();
             }
@@ -134,6 +140,9 @@ namespace opensolid
                 (component02 * component10 - component00 * component12);
             result.component(2, 2) = inverseDeterminant *
                 (component00 * component11 - component01 * component10);
+
+            assert(checkIdentity(result * matrix));
+
             return result;
         }
 
@@ -153,6 +162,39 @@ namespace opensolid
                     matrix.numColumns()
                 );
             }
+        }
+        
+        template <class TDerived>
+        inline
+        bool
+        CheckIdentity<TDerived, double>::operator()(
+            const MatrixInterface<TDerived>& matrix
+        ) const {
+            return matrix.isIdentity();
+        }
+
+        template <class TDerived>
+        inline
+        bool
+        CheckIdentity<TDerived, Interval>::operator()(
+            const MatrixInterface<TDerived>& matrix
+        ) const {
+            for (int columnIndex = 0; columnIndex < matrix.numColumns(); ++columnIndex) {
+                for (int rowIndex = 0; rowIndex < matrix.numRows(); ++rowIndex) {
+                    double expected = double(rowIndex == columnIndex);
+                    if (!matrix.component(rowIndex, columnIndex).contains(expected)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        template <class TDerived>
+        inline
+        bool
+        checkIdentity(const MatrixInterface<TDerived>& matrix) {
+            return CheckIdentity<TDerived>()(matrix);
         }
     }
 }
