@@ -27,8 +27,12 @@
 #include <OpenSolid/Core/Circle.definitions.hpp>
 
 #include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/BoundsFunction.hpp>
+#include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Triangle.definitions.hpp>
 #include <OpenSolid/Core/UnitVector.hpp>
 #include <OpenSolid/Core/Zero.hpp>
@@ -135,5 +139,81 @@ namespace opensolid
     Circle3d
     Circle3d::circumcircle(const Triangle3d& triangle) {
         return Circle3d(triangle.vertex(0), triangle.vertex(1), triangle.vertex(2));
+    }
+
+    inline
+    Circle2d
+    TranslationFunction<Circle2d>::operator()(
+        const Circle2d& circle,
+        const Vector2d& vector
+    ) const {
+        return Circle2d(translated(circle.centerPoint(), vector), circle.radius());
+    }
+
+    inline
+    Circle3d
+    TranslationFunction<Circle3d>::operator()(
+        const Circle3d& circle,
+        const Vector3d& vector
+    ) const {
+        return Circle3d(
+            translated(circle.centerPoint(), vector),
+            circle.normalVector(),
+            circle.radius()
+        );
+    }
+
+    inline
+    Circle2d
+    ScalingFunction<Circle2d>::operator()(
+        const Circle2d& circle,
+        const Point2d& originPoint,
+        double scale
+    ) const {
+        return Circle2d(
+            scaled(circle.centerPoint(), originPoint, scale),
+            circle.radius() * scale
+        );
+    }
+
+    inline
+    Circle3d
+    ScalingFunction<Circle3d>::operator()(
+        const Circle3d& circle,
+        const Point3d& originPoint,
+        double scale
+    ) const {
+        return Circle3d(
+            scaled(circle.centerPoint(), originPoint, scale),
+            scale >= 0.0 ? circle.normalVector() : -circle.normalVector(),
+            circle.radius() * scale
+        );
+    }
+
+    inline
+    Circle2d
+    RotationFunction<Circle2d>::operator()(
+        const Circle2d& circle,
+        const Point2d& originPoint,
+        const Matrix<double, 2, 2>& rotationMatrix
+    ) const {
+        return Circle2d(
+            rotated(circle.centerPoint(), originPoint, rotationMatrix),
+            circle.radius()
+        );
+    }
+
+    inline
+    Circle3d
+    RotationFunction<Circle3d>::operator()(
+        const Circle3d& circle,
+        const Point3d& originPoint,
+        const Matrix<double, 3, 3>& rotationMatrix
+    ) const {
+        return Circle3d(
+            rotated(circle.centerPoint(), originPoint, rotationMatrix),
+            rotated(circle.normalVector(), originPoint, rotationMatrix),
+            circle.radius()
+        );
     }
 }

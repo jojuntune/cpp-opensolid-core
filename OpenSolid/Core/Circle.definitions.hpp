@@ -27,16 +27,34 @@
 #include <OpenSolid/Core/Circle.declarations.hpp>
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
+#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
 #include <OpenSolid/Core/UnitVector.definitions.hpp>
 #include <OpenSolid/Core/WindingDirection.definitions.hpp>
 
 namespace opensolid
 {
+    template <int iNumDimensions>
+    struct BoundsType<Circle<iNumDimensions>>
+    {
+        typedef Box<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct NumDimensions<Circle<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
     template <>
-    class Circle<2>
+    class Circle<2> :
+        public Transformable<Circle<2>>,
+        public Convertible<Circle<2>>
     {
     private:
         Point<2> _centerPoint;
@@ -74,7 +92,9 @@ namespace opensolid
     typedef Circle<2> Circle2d;
 
     template <>
-    class Circle<3>
+    class Circle<3> :
+        public Transformable<Circle<3>>,
+        public Convertible<Circle<3>>
     {
     private:
         Point<3> _centerPoint;
@@ -124,4 +144,54 @@ namespace opensolid
     };
 
     typedef Circle<3> Circle3d;
+
+    template <>
+    struct TranslationFunction<Circle<2>>
+    {
+        Circle<2>
+        operator()(const Circle<2>& circle, const Vector<double, 2>& vector) const;
+    };
+
+    template <>
+    struct TranslationFunction<Circle<3>>
+    {
+        Circle<3>
+        operator()(const Circle<3>& circle, const Vector<double, 3>& vector) const;
+    };
+
+    template <>
+    struct ScalingFunction<Circle<2>>
+    {
+        Circle<2>
+        operator()(const Circle<2>& circle, const Point<2>& originPoint, double scale) const;
+    };
+
+    template <>
+    struct ScalingFunction<Circle<3>>
+    {
+        Circle<3>
+        operator()(const Circle<3>& circle, const Point<3>& originPoint, double scale) const;
+    };
+
+    template <>
+    struct RotationFunction<Circle<2>>
+    {
+        Circle<2>
+        operator()(
+            const Circle<2>& circle,
+            const Point<2>& originPoint,
+            const Matrix<double, 2, 2>& rotationMatrix
+        ) const;
+    };
+
+    template <>
+    struct RotationFunction<Circle<3>>
+    {
+        Circle<3>
+        operator()(
+            const Circle<3>& circle,
+            const Point<3>& originPoint,
+            const Matrix<double, 3, 3>& rotationMatrix
+        ) const;
+    };
 }

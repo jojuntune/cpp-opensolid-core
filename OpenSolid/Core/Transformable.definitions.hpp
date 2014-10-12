@@ -91,19 +91,13 @@ namespace opensolid
     template <class TTransformable>
     struct RotatedType
     {
-        typedef typename TransformedType<
-            TTransformable,
-            NumDimensions<TTransformable>::Value
-        >::Type Type;
+        typedef TTransformable Type;
     };
 
     template <class TTransformable>
     struct MirroredType
     {
-        typedef typename TransformedType<
-            TTransformable,
-            NumDimensions<TTransformable>::Value
-        >::Type Type;
+        typedef TTransformable Type;
     };
 
     template <class TTransformable, class TDatum>
