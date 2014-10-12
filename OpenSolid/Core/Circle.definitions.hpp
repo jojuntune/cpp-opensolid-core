@@ -194,4 +194,26 @@ namespace opensolid
             const Matrix<double, 3, 3>& rotationMatrix
         ) const;
     };
+
+    template <>
+    struct MirrorFunction<Circle<2>>
+    {
+        Circle<2>
+        operator()(
+            const Circle<2>& circle,
+            const Point<2>& originPoint,
+            const UnitVector<2>& normalVector
+        ) const;
+    };
+
+    template <>
+    struct MirrorFunction<Circle<3>>
+    {
+        Circle<3>
+        operator()(
+            const Circle<3>& circle,
+            const Point<3>& originPoint,
+            const UnitVector<3>& normalVector
+        ) const;
+    };
 }

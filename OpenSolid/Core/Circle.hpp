@@ -216,4 +216,28 @@ namespace opensolid
             circle.radius()
         );
     }
+
+    inline
+    Circle2d
+    MirrorFunction<Circle2d>::operator()(
+        const Circle2d& circle,
+        const Point2d& originPoint,
+        const UnitVector2d& normalVector
+    ) const {
+        return Circle2d(mirrored(circle.centerPoint(), originPoint, normalVector), circle.radius());
+    }
+
+    inline
+    Circle3d
+    MirrorFunction<Circle3d>::operator()(
+        const Circle3d& circle,
+        const Point3d& originPoint,
+        const UnitVector3d& normalVector
+    ) const {
+        return Circle3d(
+            mirrored(circle.centerPoint(), originPoint, normalVector),
+            mirrored(circle.normalVector(), originPoint, normalVector),
+            circle.radius()
+        );
+    }
 }
