@@ -42,6 +42,7 @@
     add_simple_test(ParametricExpressionTests ParametricExpressionTests.cpp OpenSolidCore) 
     add_simple_test(SetTests SetTests.cpp OpenSolidCore)
     add_simple_test(CircleTests CircleTests.cpp OpenSolidCore)
+    add_simple_test(SphereTests SphereTests.cpp OpenSolidCore)
     
     add_to_global_source_list(
         IntervalTests.cpp
@@ -56,6 +57,7 @@
         CollectionTests.cpp
         DatumTests.cpp
         CircleTests.cpp
+        SphereTests.cpp
     )
     
 ########## Graph library tests ##########

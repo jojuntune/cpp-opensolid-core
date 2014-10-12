@@ -125,7 +125,7 @@ namespace opensolid
         const Matrix3d& rotationMatrix
     ) const {
         return Sphere3d(
-            rotated(sphere.centerPoint(), originPoint, transformationMatrix),
+            rotated(sphere.centerPoint(), originPoint, rotationMatrix),
             sphere.radius()
         );
     }

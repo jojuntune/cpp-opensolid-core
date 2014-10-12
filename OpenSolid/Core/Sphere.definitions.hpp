@@ -145,7 +145,6 @@ namespace opensolid
     template <>
     struct ProjectionFunction<Sphere3d, Plane3d>
     {
-        OPENSOLID_CORE_EXPORT
         Circle<3>
         operator()(const Sphere3d& sphere, const Plane3d& plane) const;
     };
@@ -153,7 +152,6 @@ namespace opensolid
     template <>
     struct ProjectionFunction<Sphere3d, Axis<3>>
     {
-        OPENSOLID_CORE_EXPORT
         LineSegment<3>
         operator()(const Sphere3d& sphere, const Axis<3>& axis) const;
     };
