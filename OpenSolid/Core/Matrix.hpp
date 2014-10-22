@@ -334,6 +334,40 @@ namespace opensolid
         return result;
     }
 
+    template <class TScalar, int iNumRows, int iNumColumns>
+    template <class TFirstDerived, class TSecondDerived>
+    inline
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::fromColumns(
+        const detail::MatrixInterface<TFirstDerived>& firstColumn,
+        const detail::MatrixInterface<TSecondDerived>& secondColumn
+    ) {
+        static_assert(iNumColumns == 2, "Incorrect number of columns");
+
+        Matrix<TScalar, iNumRows, iNumColumns> result(false);
+        result.column(0) = firstColumn;
+        result.column(1) = secondColumn;
+        return result;
+    }
+
+    template <class TScalar, int iNumRows, int iNumColumns>
+    template <class TFirstDerived, class TSecondDerived, class TThirdDerived>
+    inline
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::fromColumns(
+        const detail::MatrixInterface<TFirstDerived>& firstColumn,
+        const detail::MatrixInterface<TSecondDerived>& secondColumn,
+        const detail::MatrixInterface<TThirdDerived>& thirdColumn
+    ) {
+        static_assert(iNumColumns == 3, "Incorrect number of columns");
+
+        Matrix<TScalar, iNumRows, iNumColumns> result(false);
+        result.column(0) = firstColumn;
+        result.column(1) = secondColumn;
+        result.column(2) = thirdColumn;
+        return result;
+    }
+
     template <class TScalar>
     inline
     Matrix<TScalar, 1, 1>::Matrix() :
@@ -609,6 +643,40 @@ namespace opensolid
         return result;
     }
 
+    template <class TScalar, int iNumColumns>
+    template <class TFirstDerived, class TSecondDerived>
+    inline
+    const Matrix<TScalar, -1, iNumColumns>
+    Matrix<TScalar, -1, iNumColumns>::fromColumns(
+        const detail::MatrixInterface<TFirstDerived>& firstColumn,
+        const detail::MatrixInterface<TSecondDerived>& secondColumn
+    ) {
+        static_assert(iNumColumns == 2, "Incorrect number of columns");
+
+        Matrix<TScalar, -1, iNumColumns> result(firstColumn.numRows());
+        result.column(0) = firstColumn;
+        result.column(1) = secondColumn;
+        return result;
+    }
+
+    template <class TScalar, int iNumColumns>
+    template <class TFirstDerived, class TSecondDerived, class TThirdDerived>
+    inline
+    const Matrix<TScalar, -1, iNumColumns>
+    Matrix<TScalar, -1, iNumColumns>::fromColumns(
+        const detail::MatrixInterface<TFirstDerived>& firstColumn,
+        const detail::MatrixInterface<TSecondDerived>& secondColumn,
+        const detail::MatrixInterface<TThirdDerived>& thirdColumn
+    ) {
+        static_assert(iNumColumns == 3, "Incorrect number of columns");
+
+        Matrix<TScalar, -1, iNumColumns> result(firstColumn.numRows());
+        result.column(0) = firstColumn;
+        result.column(1) = secondColumn;
+        result.column(2) = thirdColumn;
+        return result;
+    }
+
     template <class TScalar, int iNumRows>
     inline
     Matrix<TScalar, iNumRows, -1>::Matrix(int numColumns) :
@@ -754,6 +822,36 @@ namespace opensolid
     Matrix<TScalar, iNumRows, -1>::random(int numColumns) {
         Matrix<TScalar, iNumRows, -1> result(numColumns);
         result.setRandom();
+        return result;
+    }
+
+    template <class TScalar, int iNumRows>
+    template <class TFirstDerived, class TSecondDerived>
+    inline
+    const Matrix<TScalar, iNumRows, -1>
+    Matrix<TScalar, iNumRows, -1>::fromColumns(
+        const detail::MatrixInterface<TFirstDerived>& firstColumn,
+        const detail::MatrixInterface<TSecondDerived>& secondColumn
+    ) {
+        Matrix<TScalar, iNumRows, -1> result(2);
+        result.column(0) = firstColumn;
+        result.column(1) = secondColumn;
+        return result;
+    }
+
+    template <class TScalar, int iNumRows>
+    template <class TFirstDerived, class TSecondDerived, class TThirdDerived>
+    inline
+    const Matrix<TScalar, iNumRows, -1>
+    Matrix<TScalar, iNumRows, -1>::fromColumns(
+        const detail::MatrixInterface<TFirstDerived>& firstColumn,
+        const detail::MatrixInterface<TSecondDerived>& secondColumn,
+        const detail::MatrixInterface<TThirdDerived>& thirdColumn
+    ) {
+        Matrix<TScalar, iNumRows, -1> result(3);
+        result.column(0) = firstColumn;
+        result.column(1) = secondColumn;
+        result.column(2) = thirdColumn;
         return result;
     }
 
@@ -917,6 +1015,36 @@ namespace opensolid
     Matrix<TScalar, -1, -1>::random(int numRows, int numColumns) {
         Matrix<TScalar, -1, -1> result(numRows, numColumns);
         result.setRandom();
+        return result;
+    }
+
+    template <class TScalar>
+    template <class TFirstDerived, class TSecondDerived>
+    inline
+    const Matrix<TScalar, -1, -1>
+    Matrix<TScalar, -1, -1>::fromColumns(
+        const detail::MatrixInterface<TFirstDerived>& firstColumn,
+        const detail::MatrixInterface<TSecondDerived>& secondColumn
+    ) {
+        Matrix<TScalar, -1, -1> result(firstColumn.numRows(), 2);
+        result.column(0) = firstColumn;
+        result.column(1) = secondColumn;
+        return result;
+    }
+
+    template <class TScalar>
+    template <class TFirstDerived, class TSecondDerived, class TThirdDerived>
+    inline
+    const Matrix<TScalar, -1, -1>
+    Matrix<TScalar, -1, -1>::fromColumns(
+        const detail::MatrixInterface<TFirstDerived>& firstColumn,
+        const detail::MatrixInterface<TSecondDerived>& secondColumn,
+        const detail::MatrixInterface<TThirdDerived>& thirdColumn
+    ) {
+        Matrix<TScalar, -1, -1> result(firstColumn.numRows(), 3);
+        result.column(0) = firstColumn;
+        result.column(1) = secondColumn;
+        result.column(2) = thirdColumn;
         return result;
     }
 

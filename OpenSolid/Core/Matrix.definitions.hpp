@@ -169,6 +169,21 @@ namespace opensolid
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         random();
+
+        template <class TFirstDerived, class TSecondDerived>
+        static const Matrix<TScalar, iNumRows, iNumColumns>
+        fromColumns(
+            const detail::MatrixInterface<TFirstDerived>& firstColumn,
+            const detail::MatrixInterface<TSecondDerived>& secondColumn
+        );
+
+        template <class TFirstDerived, class TSecondDerived, class TThirdDerived>
+        static const Matrix<TScalar, iNumRows, iNumColumns>
+        fromColumns(
+            const detail::MatrixInterface<TFirstDerived>& firstColumn,
+            const detail::MatrixInterface<TSecondDerived>& secondColumn,
+            const detail::MatrixInterface<TThirdDerived>& thirdColumn
+        );
     };
 
     typedef Matrix<double, 2, 1> ColumnMatrix2d;
@@ -309,6 +324,21 @@ namespace opensolid
 
         static const Matrix<TScalar, -1, iNumColumns>
         random(int numRows);
+
+        template <class TFirstDerived, class TSecondDerived>
+        static const Matrix<TScalar, -1, iNumColumns>
+        fromColumns(
+            const detail::MatrixInterface<TFirstDerived>& firstColumn,
+            const detail::MatrixInterface<TSecondDerived>& secondColumn
+        );
+
+        template <class TFirstDerived, class TSecondDerived, class TThirdDerived>
+        static const Matrix<TScalar, -1, iNumColumns>
+        fromColumns(
+            const detail::MatrixInterface<TFirstDerived>& firstColumn,
+            const detail::MatrixInterface<TSecondDerived>& secondColumn,
+            const detail::MatrixInterface<TThirdDerived>& thirdColumn
+        );
     };
 
     typedef Matrix<double, -1, 1> ColumnMatrixXd;
@@ -380,6 +410,21 @@ namespace opensolid
 
         static const Matrix<TScalar, iNumRows, -1>
         random(int numColumns);
+
+        template <class TFirstDerived, class TSecondDerived>
+        static const Matrix<TScalar, iNumRows, -1>
+        fromColumns(
+            const detail::MatrixInterface<TFirstDerived>& firstColumn,
+            const detail::MatrixInterface<TSecondDerived>& secondColumn
+        );
+
+        template <class TFirstDerived, class TSecondDerived, class TThirdDerived>
+        static const Matrix<TScalar, iNumRows, -1>
+        fromColumns(
+            const detail::MatrixInterface<TFirstDerived>& firstColumn,
+            const detail::MatrixInterface<TSecondDerived>& secondColumn,
+            const detail::MatrixInterface<TThirdDerived>& thirdColumn
+        );
     };
 
     typedef Matrix<double, 1, -1> RowMatrixXd;
@@ -454,6 +499,21 @@ namespace opensolid
 
         static const Matrix<TScalar, -1, -1>
         random(int numRows, int numColumns);
+
+        template <class TFirstDerived, class TSecondDerived>
+        static const Matrix<TScalar, -1, -1>
+        fromColumns(
+            const detail::MatrixInterface<TFirstDerived>& firstColumn,
+            const detail::MatrixInterface<TSecondDerived>& secondColumn
+        );
+
+        template <class TFirstDerived, class TSecondDerived, class TThirdDerived>
+        static const Matrix<TScalar, -1, -1>
+        fromColumns(
+            const detail::MatrixInterface<TFirstDerived>& firstColumn,
+            const detail::MatrixInterface<TSecondDerived>& secondColumn,
+            const detail::MatrixInterface<TThirdDerived>& thirdColumn
+        );
     };
 
     typedef Matrix<double, -1, -1> MatrixXd;

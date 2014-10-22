@@ -24,6 +24,7 @@
 
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 
 #include <catch/catch.hpp>
 
@@ -659,4 +660,57 @@ TEST_CASE("Conversion") {
     CAPTURE(inverse * initial);
     CAPTURE(inverseFromConverted * initial);
     REQUIRE((inverse - inverseFromConverted).isZero());
+}
+
+TEST_CASE("Construction from columns") {
+    SECTION("2D") {
+        Matrix2d matrix = Matrix2d::fromColumns(ColumnMatrix2d(1.0, 2.0), ColumnMatrix2d(3.0, 4.0));
+        REQUIRE(matrix.component(0, 0) == 1.0);
+        REQUIRE(matrix.component(1, 0) == 2.0);
+        REQUIRE(matrix.component(0, 1) == 3.0);
+        REQUIRE(matrix.component(1, 1) == 4.0);
+    }
+
+    SECTION("3D") {
+        Matrix3d matrix = Matrix3d::fromColumns(
+            Vector3d::unitX().components(),
+            Vector3d::unitY().components(),
+            Vector3d::unitZ().components()
+        );
+        REQUIRE(matrix.isIdentity());
+    }
+
+    SECTION("Dynamic rows") {
+        MatrixXx2 matrix = MatrixXx2::fromColumns(
+            ColumnMatrix3d(1.0, 2.0, 3.0),
+            Vector3d(4.0, 5.0, 6.0).components()
+        );
+        REQUIRE(matrix.numRows() == 3);
+        REQUIRE(matrix.numColumns() == 2);
+        REQUIRE(matrix.component(0, 0) == 1.0);
+        REQUIRE(matrix.component(2, 0) == 3.0);
+        REQUIRE(matrix.component(0, 1) == 4.0);
+        REQUIRE(matrix.component(2, 1) == 6.0);
+    }
+
+    SECTION("Dynamic columns") {
+        Matrix2xX matrix = Matrix2xX::fromColumns(
+            ColumnMatrix2d(1.0, 0.0),
+            ColumnMatrix2d(0.0, 1.0),
+            ColumnMatrix2d::zero()
+        );
+        REQUIRE(matrix.numRows() == 2);
+        REQUIRE(matrix.numColumns() == 3);
+        REQUIRE(matrix.isIdentity());
+    }
+
+    SECTION("Dynamic size") {
+        MatrixXd matrix = MatrixXd::fromColumns(
+            ColumnMatrix2d(1.0, 0.0),
+            ColumnMatrix2d(0.0, 1.0)
+        );
+        REQUIRE(matrix.numRows() == 2);
+        REQUIRE(matrix.numColumns() == 2);
+        REQUIRE(matrix.isIdentity());
+    }
 }
