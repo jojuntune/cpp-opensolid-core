@@ -5,7 +5,6 @@ import sys
 errorFound = False
 
 singleLineTerms = []
-singleLineTerms.append('inline')
 singleLineTerms.append('OPENSOLID_CORE_EXPORT')
 singleLineTerms.append('OPENSOLID_IO_EXPORT')
 singleLineTerms.append('OPENSOLID_PYTHON_EXPORT')
@@ -125,7 +124,7 @@ for path, directories, files in os.walk(sys.argv[1]):
     i = 0
     while i < len(directories):
         directory = directories[i]
-        if directory in ['External', 'IO', 'Python', 'UI', '.hg'] or directory.lower().startswith('build'):
+        if directory in ['Bindings', 'External', 'IO', 'Python', 'UI', '.hg'] or directory.lower().startswith('build'):
             del directories[i]
         else:
             i = i + 1

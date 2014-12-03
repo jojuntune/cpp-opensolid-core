@@ -60,6 +60,29 @@
         SphereTests.cpp
     )
     
+########## .NET binding tests ##########
+    
+    file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CSharpTests.cs CSHARP_TEST_NATIVE_PATH)
+
+    if(${BUILD_DOTNET_BINDINGS})
+        add_custom_target(
+            CSharpTests ALL
+            ${CSHARP_COMPILER}
+            /r:OpenSolid.dll
+            /out:${EXECUTABLE_OUTPUT_PATH}/${CMAKE_CFG_INTDIR}/CSharpTests.exe
+            ${CSHARP_TEST_NATIVE_PATH}
+            WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/${CMAKE_CFG_INTDIR}
+        )
+        add_dependencies(CSharpTests OpenSolidDotNet)
+    endif()
+    
+########## Java binding tests ##########
+
+    if(${BUILD_JAVA_BINDINGS})
+        set(CMAKE_JAVA_JAR_ENTRY_POINT ca/ianmackenzie/tests/JavaTests)
+        add_jar(opensolid-tests SOURCES JavaTests.java INCLUDE_JARS opensolid)
+    endif()
+    
 ########## Graph library tests ##########
 
     if(${BUILD_UI})
