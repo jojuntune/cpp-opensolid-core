@@ -1,5 +1,3 @@
-# Overview
-
 OpenSolid is a free, open source (LGPL) C++ library for the representation and manipulation of geometric objects such as points, bounding boxes, triangles, axes, planes, curves, surfaces, and volumes. Key features include:
 
 - Modern object-oriented design
@@ -55,4 +53,3 @@ Interested in helping with OpenSolid development? Great! Once you have successfu
     assert(lineSegment.length() - 3 * sqrt(3) == Zero());
     Triangle3d triangle(Point3d::origin(), Point3d(1, 0, 0), Point3d(0, 1, 0));
     assert((triangle.centroid() - Point3d(1.0 / 3.0, 1.0 / 3.0, 0.0)).isZero());
-    
