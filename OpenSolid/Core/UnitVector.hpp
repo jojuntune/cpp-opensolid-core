@@ -28,6 +28,8 @@
 
 #include <OpenSolid/Core/UnitVector.definitions.hpp>
 
+#include <OpenSolid/Core/Convertible.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Vector.hpp>
 
 namespace opensolid

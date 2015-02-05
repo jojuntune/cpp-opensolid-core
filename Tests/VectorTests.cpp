@@ -24,6 +24,7 @@
 
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Vector.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 
 #include <catch/catch.hpp>
 
@@ -57,6 +58,14 @@ namespace opensolid
     {
         MyVector operator()(const Vector3d& argument) const {
             return MyVector(argument.x(), argument.y(), argument.z());
+        }
+    };
+
+    template <>
+    struct ConversionFunction<MyVector, UnitVector3d>
+    {
+        UnitVector3d operator()(const MyVector& argument) const {
+            return Vector3d(argument.x, argument.y, argument.z).normalized();
         }
     };
 }
@@ -207,4 +216,18 @@ TEST_CASE("Unit vector projection") {
     UnitVector3d original = Vector3d(1, 0, 1).normalized();
     Vector3d projected = original.projectedOnto(Plane3d::xy());
     REQUIRE((projected - Vector3d(1.0 / sqrt(2.0), 0.0, 0.0)).isZero());
+}
+
+TEST_CASE("Unit vector conversion") {
+    SECTION("Conversion from custom type") {
+        UnitVector3d from = UnitVector3d::from(MyVector(1, 2, 3));
+        REQUIRE((from - Vector3d(1, 2, 3).normalized()).isZero());
+    }
+
+    SECTION("Conversion to custom type") {
+        MyVector to = Vector3d(1, 1, 1).normalized().to<MyVector>();
+        REQUIRE((to.x - 1.0 / sqrt(3.0)) == Zero());
+        REQUIRE((to.y - 1.0 / sqrt(3.0)) == Zero());
+        REQUIRE((to.z - 1.0 / sqrt(3.0)) == Zero());
+    }
 }

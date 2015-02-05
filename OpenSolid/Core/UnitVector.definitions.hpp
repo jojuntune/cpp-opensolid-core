@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
 
+#include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Vector.definitions.hpp>
 
@@ -78,7 +79,8 @@ namespace opensolid
     template <>
     class UnitVector<1> :
         public Vector<double, 1>,
-        public Transformable<UnitVector<1>>
+        public Transformable<UnitVector<1>>,
+        public Convertible<UnitVector<1>>
     {
     public:
         UnitVector();
@@ -105,6 +107,8 @@ namespace opensolid
         using Transformable<UnitVector<1>>::mirroredAbout;
         using Transformable<UnitVector<1>>::projectedOnto;
         using Transformable<UnitVector<1>>::transformed;
+        using Convertible<UnitVector<1>>::to;
+        using Convertible<UnitVector<1>>::from;
     };
 
     typedef UnitVector<1> UnitVector1d;
@@ -112,7 +116,8 @@ namespace opensolid
     template <>
     class UnitVector<2> :
         public Vector<double, 2>,
-        public Transformable<UnitVector<2>>
+        public Transformable<UnitVector<2>>,
+        public Convertible<UnitVector<2>>
     {
     public:
         UnitVector();
@@ -141,6 +146,8 @@ namespace opensolid
         using Transformable<UnitVector<2>>::mirroredAbout;
         using Transformable<UnitVector<2>>::projectedOnto;
         using Transformable<UnitVector<2>>::transformed;
+        using Convertible<UnitVector<2>>::to;
+        using Convertible<UnitVector<2>>::from;
     };
 
     typedef UnitVector<2> UnitVector2d;
@@ -148,7 +155,8 @@ namespace opensolid
     template <>
     class UnitVector<3> :
         public Vector<double, 3>,
-        public Transformable<UnitVector<3>>
+        public Transformable<UnitVector<3>>,
+        public Convertible<UnitVector<3>>
     {
     public:
         UnitVector();
@@ -174,6 +182,8 @@ namespace opensolid
         using Transformable<UnitVector<3>>::mirroredAbout;
         using Transformable<UnitVector<3>>::projectedOnto;
         using Transformable<UnitVector<3>>::transformed;
+        using Convertible<UnitVector<3>>::to;
+        using Convertible<UnitVector<3>>::from;
     };
 
     typedef UnitVector<3> UnitVector3d;
@@ -239,5 +249,11 @@ namespace opensolid
             const Point<iNumDimensions>& originPoint,
             const UnitVector<iNumDimensions>& normalVector
         ) const;
+    };
+
+    template <int iNumDimensions, class TTo>
+    struct ConversionFunction<UnitVector<iNumDimensions>, TTo> :
+        public ConversionFunction<Vector<double, iNumDimensions>, TTo>
+    {
     };
 }
