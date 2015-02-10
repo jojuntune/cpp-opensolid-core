@@ -69,6 +69,9 @@ namespace opensolid
         std::size_t
         sizeDefaultImpl() const;
     public:
+        typedef typename IteratorType<TDerived>::Type iterator;
+        typedef typename IteratorType<TDerived>::Type const_iterator;
+
         const TDerived&
         derived() const;
 
