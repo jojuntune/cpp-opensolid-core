@@ -68,6 +68,20 @@ namespace opensolid
         wrenFreeVM(_wrenVM);
     }
 
+    ScriptEngine::ScriptEngine(ScriptEngine&& other) :
+        _wrenVM(other._wrenVM) {
+
+        other._wrenVM = nullptr;
+    }
+
+    ScriptEngine&
+    ScriptEngine::operator=(ScriptEngine&& other) {
+        wrenFreeVM(_wrenVM);
+        _wrenVM = other._wrenVM;
+        other._wrenVM = nullptr;
+        return *this;
+    }
+
     void
     ScriptEngine::run(const std::string& script) {
         wrenInterpret(_wrenVM, "run()", script.c_str());

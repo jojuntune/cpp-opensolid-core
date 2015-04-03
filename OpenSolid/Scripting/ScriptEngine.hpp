@@ -36,18 +36,14 @@ namespace opensolid
     {
     private:
         WrenVM* _wrenVM;
-
-        void
-        init();
     public:
         ScriptEngine();
+        ScriptEngine(const ScriptEngine& other) = delete;
+        ScriptEngine(ScriptEngine&& other);
         ~ScriptEngine();
 
-        ScriptEngine(const ScriptEngine& other) = delete;
-        ScriptEngine(ScriptEngine&& other) = default;
-
         ScriptEngine& operator=(const ScriptEngine& other) = delete;
-        ScriptEngine& operator=(ScriptEngine&& other) = default;
+        ScriptEngine& operator=(ScriptEngine&& other);
 
         void
         run(const std::string& script);
