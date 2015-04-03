@@ -5,9 +5,11 @@
     # CMake 2.8.3 or later is required for CMAKE_CURRENT_LIST_DIR variable
     cmake_minimum_required(VERSION 2.8.3)
 
-    # Indicate that new CMake policy of not implicitly dereferencing variables in strings is
-    # appropriate
-    cmake_policy(SET CMP0054 NEW)
+    # Indicate that new CMake 3.1 policy of not implicitly dereferencing variables in strings is
+    # appropriate; avoids warnings when compiling in newer CMake versions
+    if(POLICY CMP0054)
+        cmake_policy(SET CMP0054 NEW)
+    endif()
 
     # Include macros for generating Visual Studio source groups
     include(CreateSourceGroups.cmake)
