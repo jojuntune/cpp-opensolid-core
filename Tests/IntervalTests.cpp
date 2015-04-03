@@ -134,8 +134,3 @@ TEST_CASE("Random generation") {
         REQUIRE(random <= interval.upperBound());
     }
 }
-
-TEST_CASE("INFINITY macro") {
-    REQUIRE(std::numeric_limits<double>::infinity() == INFINITY);
-    REQUIRE(-std::numeric_limits<double>::infinity() == -INFINITY);
-}

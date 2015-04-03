@@ -29,6 +29,7 @@
 #include <catch/catch.hpp>
 
 #include <algorithm>
+#include <limits>
 
 using namespace opensolid;
 
@@ -120,7 +121,7 @@ TEST_CASE("Fold") {
 
 TEST_CASE("For each") {
     double product = 1;
-    valueSet().overlapping(Interval(3, INFINITY)).forEach(
+    valueSet().overlapping(Interval(3, std::numeric_limits<double>::infinity())).forEach(
         [&product] (double value) {
             product *= value;
         }
