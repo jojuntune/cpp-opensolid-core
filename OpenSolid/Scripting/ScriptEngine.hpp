@@ -24,77 +24,32 @@
 
 #pragma once
 
-#include <algorithm>
-#include <cmath>
+#include <OpenSolid/config.hpp>
 
-// Create DLL import/export declaration macros for core module
-#ifdef _WIN32
-    #ifdef OPENSOLID_STATIC_LIBS
-        #define OPENSOLID_CORE_EXPORT
-    #else
-        #ifdef OpenSolidCore_EXPORTS
-            #define OPENSOLID_CORE_EXPORT __declspec(dllexport)
-        #else
-            #define OPENSOLID_CORE_EXPORT __declspec(dllimport)
-        #endif
-    #endif
-#else
-    #define OPENSOLID_CORE_EXPORT
-#endif
+#include <string>
 
-// Create DLL import/export declaration macros for I/O module
-#ifdef _WIN32
-    #ifdef OPENSOLID_STATIC_LIBS
-        #define OPENSOLID_IO_EXPORT
-    #else
-        #ifdef OpenSolidIO_EXPORTS
-            #define OPENSOLID_IO_EXPORT __declspec(dllexport)
-        #else
-            #define OPENSOLID_IO_EXPORT __declspec(dllimport)
-        #endif
-    #endif
-#else
-    #define OPENSOLID_IO_EXPORT
-#endif
+struct WrenVM;
 
-// Create DLL import/export declaration macros for scripting module
-#ifdef _WIN32
-    #ifdef OPENSOLID_STATIC_LIBS
-        #define OPENSOLID_SCRIPTING_EXPORT
-    #else
-        #ifdef OpenSolidScripting_EXPORTS
-            #define OPENSOLID_SCRIPTING_EXPORT __declspec(dllexport)
-        #else
-            #define OPENSOLID_SCRIPTING_EXPORT __declspec(dllimport)
-        #endif
-    #endif
-#else
-    #define OPENSOLID_SCRIPTING_EXPORT
-#endif
-
-// Explicitly use math functions from C++ standard library
 namespace opensolid
 {
-    using std::min;
-    using std::max;
-    using std::abs;
-    using std::sqrt;
-    using std::sin;
-    using std::cos;
-    using std::tan;
-    using std::asin;
-    using std::acos;
-    using std::atan;
-    using std::atan2;
-    using std::exp;
-    using std::log;
-    using std::pow;
+    class ScriptEngine
+    {
+    private:
+        WrenVM* _wrenVM;
+
+        void
+        init();
+    public:
+        ScriptEngine();
+        ~ScriptEngine();
+
+        ScriptEngine(const ScriptEngine& other) = delete;
+        ScriptEngine(ScriptEngine&& other) = default;
+
+        ScriptEngine& operator=(const ScriptEngine& other) = delete;
+        ScriptEngine& operator=(ScriptEngine&& other) = default;
+
+        void
+        run(const std::string& script);
+    };
 }
-
-#ifndef M_PI
-    #define M_PI 3.14159265358979323846
-#endif
-
-#ifndef INFINITY
-    #define INFINITY std::numeric_limits<double>::infinity()
-#endif

@@ -22,79 +22,54 @@
 *                                                                                   *
 ************************************************************************************/
 
-#pragma once
+#include <OpenSolid/Scripting/ScriptEngine.hpp>
 
-#include <algorithm>
-#include <cmath>
-
-// Create DLL import/export declaration macros for core module
-#ifdef _WIN32
-    #ifdef OPENSOLID_STATIC_LIBS
-        #define OPENSOLID_CORE_EXPORT
-    #else
-        #ifdef OpenSolidCore_EXPORTS
-            #define OPENSOLID_CORE_EXPORT __declspec(dllexport)
-        #else
-            #define OPENSOLID_CORE_EXPORT __declspec(dllimport)
-        #endif
-    #endif
-#else
-    #define OPENSOLID_CORE_EXPORT
-#endif
-
-// Create DLL import/export declaration macros for I/O module
-#ifdef _WIN32
-    #ifdef OPENSOLID_STATIC_LIBS
-        #define OPENSOLID_IO_EXPORT
-    #else
-        #ifdef OpenSolidIO_EXPORTS
-            #define OPENSOLID_IO_EXPORT __declspec(dllexport)
-        #else
-            #define OPENSOLID_IO_EXPORT __declspec(dllimport)
-        #endif
-    #endif
-#else
-    #define OPENSOLID_IO_EXPORT
-#endif
-
-// Create DLL import/export declaration macros for scripting module
-#ifdef _WIN32
-    #ifdef OPENSOLID_STATIC_LIBS
-        #define OPENSOLID_SCRIPTING_EXPORT
-    #else
-        #ifdef OpenSolidScripting_EXPORTS
-            #define OPENSOLID_SCRIPTING_EXPORT __declspec(dllexport)
-        #else
-            #define OPENSOLID_SCRIPTING_EXPORT __declspec(dllimport)
-        #endif
-    #endif
-#else
-    #define OPENSOLID_SCRIPTING_EXPORT
-#endif
-
-// Explicitly use math functions from C++ standard library
-namespace opensolid
+extern "C"
 {
-    using std::min;
-    using std::max;
-    using std::abs;
-    using std::sqrt;
-    using std::sin;
-    using std::cos;
-    using std::tan;
-    using std::asin;
-    using std::acos;
-    using std::atan;
-    using std::atan2;
-    using std::exp;
-    using std::log;
-    using std::pow;
+#include <wren.h>
 }
 
-#ifndef M_PI
-    #define M_PI 3.14159265358979323846
-#endif
+namespace opensolid
+{
+    char*
+    loadModule(WrenVM* wrenVM, const char* moduleName) {
+        // TODO
+        return nullptr;
+    }
 
-#ifndef INFINITY
-    #define INFINITY std::numeric_limits<double>::infinity()
-#endif
+    WrenForeignMethodFn
+    bindForeignMethod(
+        WrenVM* wrenVM,
+        const char* module,
+        const char* className,
+        bool isStatic,
+        const char* signature
+    ) {
+        // TODO
+        return nullptr;
+    }
+
+    ScriptEngine::ScriptEngine() :
+        _wrenVM(nullptr) {
+
+        WrenConfiguration config;
+
+        config.reallocateFn = nullptr;
+        config.loadModuleFn = loadModule;
+        config.bindForeignMethodFn = bindForeignMethod;
+        config.initialHeapSize = 0;
+        config.minHeapSize = 0;
+        config.heapGrowthPercent = 0;
+
+        _wrenVM = wrenNewVM(&config);
+    }
+
+    ScriptEngine::~ScriptEngine() {
+        wrenFreeVM(_wrenVM);
+    }
+
+    void
+    ScriptEngine::run(const std::string& script) {
+        wrenInterpret(_wrenVM, "run()", script.c_str());
+    }
+}

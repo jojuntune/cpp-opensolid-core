@@ -12,6 +12,7 @@
 
     set(BUILD_STATIC_LIBS OFF CACHE BOOL "Build static libraries")
     set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
+    set(BUILD_SCRIPTING_MODULE OFF CACHE BOOL "Build scripting module")
     set(BUILD_JAVA_BINDINGS OFF CACHE BOOL "Build Java bindings (requires SWIG, Java compiler)")
     set(BUILD_DOTNET_BINDINGS OFF CACHE BOOL "Build .NET bindings (requires SWIG, C# compiler)")
     set(BUILD_TESTS OFF CACHE BOOL "Build tests for all enabled modules")
@@ -19,7 +20,7 @@
     set(BUILD_SANDBOX_EXECUTABLES OFF CACHE BOOL "Build sandbox executables (only useful for OpenSolid developers)")
 
     set(BUILD_BINDINGS OFF)
-    if (${BUILD_JAVA_BINDINGS} OR ${BUILD_DOTNET_BINDINGS})
+    if(${BUILD_JAVA_BINDINGS} OR ${BUILD_DOTNET_BINDINGS})
         SET(BUILD_BINDINGS ON)
     endif()
     
@@ -34,7 +35,7 @@
 
     # Add preprocessor definition for dynamic libraries to enable propery setup
     # of dllimport/dllexport in MSVC builds
-    if (${BUILD_STATIC_LIBS})
+    if(${BUILD_STATIC_LIBS})
         add_definitions(-DOPENSOLID_STATIC_LIBS)
     endif()
 
@@ -159,18 +160,24 @@
         add_subdirectory(OpenSolid/IO)
     endif()
 
+    # Build scripting module if selected
+    if(${BUILD_SCRIPTING_MODULE})
+        include_directories(${WREN_INCLUDE_DIR})
+        add_subdirectory(OpenSolid/Scripting)
+    endif()
+
     if(${BUILD_DOTNET_BINDINGS})
         find_program(CSHARP_COMPILER NAMES mcs dmcs csc)
     endif()
 
-    if (${BUILD_JAVA_BINDINGS})
+    if(${BUILD_JAVA_BINDINGS})
         find_package(Java REQUIRED COMPONENTS Runtime Development)
         find_package(JNI REQUIRED)
         include(UseJava)
         set(CMAKE_JAVA_TARGET_OUTPUT_DIR ${LIBRARY_OUTPUT_PATH}/${CMAKE_CFG_INTDIR})
     endif()
 
-    if (${BUILD_BINDINGS})
+    if(${BUILD_BINDINGS})
         add_subdirectory(Bindings)
     endif()
     
