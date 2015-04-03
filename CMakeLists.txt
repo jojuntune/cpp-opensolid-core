@@ -47,6 +47,9 @@
 
         # Enable C++11 support
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+        # Enable C99 support (necessary for Wren)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
         
         # Set up warnings
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
