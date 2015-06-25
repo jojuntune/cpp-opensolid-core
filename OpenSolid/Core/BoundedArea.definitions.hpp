@@ -31,6 +31,8 @@
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/ParametricCurve.definitions.hpp>
+#include <OpenSolid/Core/ParametricSurface.declarations.hpp>
+#include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
@@ -48,14 +50,8 @@ namespace opensolid
         static const int Value = 2;
     };
 
-    template <>
-    struct MorphedType<BoundedArea2d, ParametricExpression<Point<2>, Point<2>>>
-    {
-        typedef BoundedArea2d Type;
-    };
-
     class BoundedArea2d :
-        public Transformable<BoundedArea2d>
+        public Transformable<BoundedArea2d, 2>
     {
     private:
         SpatialSet<ParametricCurve2d> _boundaries;
@@ -81,74 +77,36 @@ namespace opensolid
         bool
         isEmpty() const;
 
-        const Box<2>
+        Box<2>
         bounds() const;
-    };
-    
-    template <>
-    struct ScalingFunction<BoundedArea2d>
-    {
-        OPENSOLID_CORE_EXPORT
-        const BoundedArea2d
-        operator()(
-            const BoundedArea2d& boundedArea,
-            const Point<2>& originPoint,
-            double scale
-        ) const;
-    };
 
-    template <>
-    struct TranslationFunction<BoundedArea2d>
-    {
-        OPENSOLID_CORE_EXPORT
-        const BoundedArea2d
-        operator()(const BoundedArea2d& boundedArea, const Vector<double, 2>& vector) const;
-    };
-
-    template <>
-    struct TransformationFunction<BoundedArea2d, 2>
-    {
-        OPENSOLID_CORE_EXPORT
-        const BoundedArea2d
-        operator()(
-            const BoundedArea2d& boundedArea,
-            const Point<2>& originPoint,
-            const Matrix<double, 2, 2>& transformationMatrix,
-            const Point<2>& destinationPoint
-        ) const;
-    };
-
-    template <>
-    struct MorphingFunction<BoundedArea2d, ParametricExpression<Point<2>, Point<2>>>
-    {
-        OPENSOLID_CORE_EXPORT
-        const BoundedArea2d
-        operator()(
-            const BoundedArea2d& boundedArea,
-            const ParametricExpression<Point<2>, Point<2>>& morphingExpression
-        ) const;
-    };
-
-    template <>
-    struct MirrorFunction<BoundedArea2d>
-    {
-        OPENSOLID_CORE_EXPORT
         BoundedArea2d
-        operator()(
-            const BoundedArea2d& boundedArea,
-            const Point<2>& originPoint,
-            const UnitVector<2>& normalVector
-        ) const;
-    };
+        scaledAbout(const Point<2>& point, double scale) const;
 
-    template <>
-    struct ProjectionFunction<BoundedArea2d, Axis<2>>
-    {
-        OPENSOLID_CORE_EXPORT
         BoundedArea2d
-        operator()(
-            const BoundedArea2d& boundedArea,
-            const Axis<2>& axis
-        ) const;
+        rotatedAbout(const Point<2>& point, const Matrix<double, 2, 2>& rotationMatrix) const;
+
+        using Transformable<BoundedArea2d, 2>::rotatedAbout;
+
+        BoundedArea2d
+        translatedBy(const Vector<double, 2>& vector) const;
+
+        BoundedArea2d
+        toLocalIn(const Frame<2>& frame) const;
+
+        BoundedArea2d
+        toGlobalFrom(const Frame<2>& frame) const;
+
+        ParametricSurface3d
+        toGlobalFrom(const Plane3d& plane) const;
+
+        BoundedArea2d
+        mirroredAbout(const Point<2>& point, const UnitVector<2>& directionVector) const;
+
+        using Transformable<BoundedArea2d, 2>::mirroredAbout;
+
+        // TODO:
+        // const LineSegment<2>
+        // projectedOnto(const Axis<2>& axis) const;
     };
 }

@@ -36,7 +36,7 @@ namespace opensolid
     template <class TBounded>
     struct BoundsFunction
     {
-        const typename BoundsType<TBounded>::Type
+        typename BoundsType<TBounded>::Type
         operator()(const TBounded& argument) const;
     };
     

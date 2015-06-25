@@ -108,6 +108,11 @@ namespace opensolid
         }
     }
 
+    ParametricCurve3d
+    ParametricCurve2d::toGlobalFrom(const Plane3d& plane) const {
+        return ParametricCurve3d(expression().toGlobalFrom(plane), domain());
+    }
+
     ParametricCurve2d
     ParametricCurve2d::arc(
         const Point2d& centerPoint,
@@ -269,6 +274,16 @@ namespace opensolid
         return circle(triangle.vertex(0), triangle.vertex(1), triangle.vertex(2));
     }
 
+    ParametricCurve2d
+    ParametricCurve3d::toLocalIn(const Plane3d& plane) const {
+        return ParametricCurve2d(expression().toLocalIn(plane), domain());
+    }
+
+    ParametricCurve3d
+    ParametricCurve3d::projectedOnto(const Plane3d& plane) const {
+        return ParametricCurve3d(expression().projectedOnto(plane), domain());
+    }
+
     ParametricCurve3d
     ParametricCurve3d::arc(
         const Point3d& centerPoint,
@@ -290,17 +305,18 @@ namespace opensolid
             // Start and end points are different distances from the center
             throw Error(new PlaceholderError());
         }
-        PlanarCoordinateSystem3d planarCoordinateSystem(
+        Plane3d plane(
             centerPoint,
             startRadialVector.normalized(),
-            normalVector.cross(startRadialVector).normalized()
+            normalVector.cross(startRadialVector).normalized(),
+            normalVector
         );
-        return planarCoordinateSystem * ParametricCurve2d::arc(
+        return ParametricCurve2d::arc(
             Point2d::origin(),
             COUNTERCLOCKWISE,
-            startPoint / planarCoordinateSystem,
-            endPoint / planarCoordinateSystem
-        );
+            startPoint.toLocalIn(plane),
+            endPoint.toLocalIn(plane)
+        ).toGlobalFrom(plane);
     }
 
     ParametricCurve3d
@@ -363,17 +379,18 @@ namespace opensolid
             throw Error(new PlaceholderError());
         }
         Point3d midpoint = startPoint + displacementVector / 2.0;
-        PlanarCoordinateSystem3d planarCoordinateSystem(
+        Plane3d plane(
             midpoint,
             displacementVector.cross(normalVector).normalized(),
-            displacementVector.normalized()
+            displacementVector.normalized(),
+            normalVector
         );
-        return planarCoordinateSystem * ParametricCurve2d::arc(
+        return ParametricCurve2d::arc(
             radius,
             COUNTERCLOCKWISE,
-            startPoint / planarCoordinateSystem,
-            endPoint / planarCoordinateSystem
-        );
+            startPoint.toLocalIn(plane),
+            endPoint.toLocalIn(plane)
+        ).toGlobalFrom(plane);
     }
 
     ParametricCurve3d
@@ -389,12 +406,11 @@ namespace opensolid
             throw Error(new PlaceholderError());
         }
         Plane3d plane(innerPoint, normalVector);
-        PlanarCoordinateSystem3d planarCoordinateSystem = plane.coordinateSystem();
-        return planarCoordinateSystem * ParametricCurve2d::arc(
-            startPoint / planarCoordinateSystem,
-            innerPoint / planarCoordinateSystem,
-            endPoint / planarCoordinateSystem
-        );
+        return ParametricCurve2d::arc(
+            startPoint.toLocalIn(plane),
+            innerPoint.toLocalIn(plane),
+            endPoint.toLocalIn(plane)
+        ).toGlobalFrom(plane);
     }
 
     ParametricCurve3d
@@ -463,17 +479,18 @@ namespace opensolid
             throw Error(new PlaceholderError());
         }
         Point3d midpoint = startPoint + displacementVector / 2;
-        PlanarCoordinateSystem3d planarCoordinateSystem(
+        Plane3d plane(
             midpoint,
             displacementVector.cross(normalVector).normalized(),
-            displacementVector.normalized()
+            displacementVector.normalized(),
+            normalVector
         );
-        return planarCoordinateSystem * ParametricCurve2d::circle(
+        return ParametricCurve2d::circle(
             radius,
             COUNTERCLOCKWISE,
-            startPoint / planarCoordinateSystem,
-            secondPoint / planarCoordinateSystem
-        );   
+            startPoint.toLocalIn(plane),
+            secondPoint.toLocalIn(plane)
+        ).toGlobalFrom(plane);   
     }
 
     ParametricCurve3d
@@ -489,12 +506,11 @@ namespace opensolid
             throw Error(new PlaceholderError());
         }
         Plane3d plane(secondPoint, normalVector);
-        PlanarCoordinateSystem3d planarCoordinateSystem = plane.coordinateSystem();
-        return planarCoordinateSystem * ParametricCurve2d::arc(
-            startPoint / planarCoordinateSystem,
-            secondPoint / planarCoordinateSystem,
-            thirdPoint / planarCoordinateSystem
-        );
+        return ParametricCurve2d::arc(
+            startPoint.toLocalIn(plane),
+            secondPoint.toLocalIn(plane),
+            thirdPoint.toLocalIn(plane)
+        ).toGlobalFrom(plane);
     }
 
     ParametricCurve3d

@@ -36,7 +36,6 @@
 #include <OpenSolid/Core/ParametricCurve/ParametricCurveBase.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
 #include <OpenSolid/Core/UnitVector.hpp>
 
@@ -82,62 +81,5 @@ namespace opensolid
         const ParametricExpression<Point3d, double>& expression,
         Interval domain
     ) : ParametricCurveBase<3>(expression, domain) {
-    }
-
-    template <int iNumDimensions>
-    ParametricCurve<iNumDimensions>
-    ScalingFunction<ParametricCurve<iNumDimensions>>::operator()(
-        const ParametricCurve<iNumDimensions>& curve,
-        const Point<iNumDimensions>& originPoint,
-        double scale
-    ) const {
-        return ParametricCurve<iNumDimensions>(
-            scaled(curve.expression(), originPoint, scale),
-            curve.domain()
-        );
-    }
-
-    template <int iNumDimensions>
-    ParametricCurve<iNumDimensions>
-    TranslationFunction<ParametricCurve<iNumDimensions>>::operator()(
-        const ParametricCurve<iNumDimensions>& curve,
-        const Vector<double, iNumDimensions>& vector
-    ) const {
-        return ParametricCurve<iNumDimensions>(
-            curve.expression() + vector,
-            curve.domain()
-        );
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    ParametricCurve<iNumResultDimensions>
-    TransformationFunction<ParametricCurve<iNumDimensions>, iNumResultDimensions>::operator()(
-        const ParametricCurve<iNumDimensions>& curve,
-        const Point<iNumDimensions>& originPoint,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
-        const Point<iNumResultDimensions>& destinationPoint
-    ) const {
-        return ParametricCurve<iNumResultDimensions>(
-            transformed(curve.expression(), originPoint, transformationMatrix, destinationPoint),
-            curve.domain()
-        );
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    ParametricCurve<iNumResultDimensions>
-    MorphingFunction<
-        ParametricCurve<iNumDimensions>,
-        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
-    >::operator()(
-        const ParametricCurve<iNumDimensions>& curve,
-        const ParametricExpression<
-            Point<iNumResultDimensions>,
-            Point<iNumDimensions>
-        >& morphingExpression
-    ) const {
-        return ParametricCurve<iNumResultDimensions>(
-            morphingExpression.composed(curve.expression()),
-            curve.domain()
-        );
     }
 }

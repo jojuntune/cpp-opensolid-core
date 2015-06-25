@@ -36,7 +36,6 @@
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Simplex/TriangleBase.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
-#include <OpenSolid/Core/UnitVector.declarations.hpp>
 
 namespace opensolid
 {
@@ -52,44 +51,10 @@ namespace opensolid
         static const int Value = iNumDimensions;
     };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<Triangle<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef Triangle<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<
-        Triangle<iNumDimensions>,
-        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
-    >
-    {
-        typedef Triangle<iNumResultDimensions> Type;
-    };
-
-    template <>
-    class Triangle<1> :
-        public detail::TriangleBase<1>,
-        public Convertible<Triangle<1>>,
-        public Transformable<Triangle<1>>
-    {
-    public:
-        Triangle();
-
-        Triangle(
-            const Point<1>& firstVertex,
-            const Point<1>& secondVertex,
-            const Point<1>& thirdVertex
-        );
-    };
-
-    typedef Triangle<1> Triangle1d;
-
     template <>
     class Triangle<2> :
         public detail::TriangleBase<2>,
-        public Convertible<Triangle<2>>,
-        public Transformable<Triangle<2>>
+        public Convertible<Triangle<2>>
     {
     public:
         Triangle();
@@ -105,10 +70,12 @@ namespace opensolid
         area() const;
 
         bool
-        contains(const Point<2>& point, double precision = 1e-12) const;
+        contains(const Point<2>& point, double tolerance = 1e-12) const;
 
-        bool
-        strictlyContains(const Point<2>& point, double precision = 1e-12) const;
+        Triangle<3>
+        toGlobalFrom(const Plane3d& plane) const;
+
+        using detail::TriangleBase<2>::toGlobalFrom;
 
         OPENSOLID_CORE_EXPORT
         static Triangle<2>
@@ -120,8 +87,7 @@ namespace opensolid
     template <>
     class Triangle<3> :
         public detail::TriangleBase<3>,
-        public Convertible<Triangle<3>>,
-        public Transformable<Triangle<3>>
+        public Convertible<Triangle<3>>
     {
     public:
         Triangle();
@@ -132,7 +98,6 @@ namespace opensolid
             const Point<3>& thirdVertex
         );
 
-        OPENSOLID_CORE_EXPORT
         double
         area() const;
 
@@ -143,10 +108,14 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         Plane3d
         plane() const;
-        
-        OPENSOLID_CORE_EXPORT
-        bool
-        contains(const Point<3>& point, double precision = 1e-12) const;
+
+        Triangle<2>
+        toLocalIn(const Plane3d& plane) const;
+
+        using detail::TriangleBase<3>::toLocalIn;
+
+        Triangle<3>
+        projectedOnto(const Plane3d& plane) const;
     };
 
     typedef Triangle<3> Triangle3d;
@@ -159,55 +128,6 @@ namespace opensolid
             const Triangle<iNumDimensions>& firstTriangle,
             const Triangle<iNumDimensions>& secondTriangle,
             double precision
-        ) const;
-    };
-
-    template <int iNumDimensions>
-    struct ScalingFunction<Triangle<iNumDimensions>>
-    {
-        Triangle<iNumDimensions>
-        operator()(
-            const Triangle<iNumDimensions>& triangle,
-            const Point<iNumDimensions>& originPoint,
-            double scale
-        ) const;
-    };
-
-    template <int iNumDimensions>
-    struct TranslationFunction<Triangle<iNumDimensions>>
-    {
-        Triangle<iNumDimensions>
-        operator()(
-            const Triangle<iNumDimensions>& triangle,
-            const Vector<double, iNumDimensions>& vector
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformationFunction<Triangle<iNumDimensions>, iNumResultDimensions>
-    {
-        Triangle<iNumResultDimensions>
-        operator()(
-            const Triangle<iNumDimensions>& triangle,
-            const Point<iNumDimensions>& originPoint,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
-            const Point<iNumResultDimensions>& destinationPoint
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<
-        Triangle<iNumDimensions>,
-        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
-    >
-    {
-        Triangle<iNumResultDimensions>
-        operator()(
-            const Triangle<iNumDimensions>& triangle,
-            const ParametricExpression<
-                Point<iNumResultDimensions>,
-                Point<iNumDimensions>
-            >& morphingExpression
         ) const;
     };
 }

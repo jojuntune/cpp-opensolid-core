@@ -24,9 +24,6 @@
 
 #include <OpenSolid/Core/Tetrahedron.hpp>
 
-#include <OpenSolid/Core/ParametricExpression.hpp>
-#include <OpenSolid/Core/Triangle.hpp>
-
 namespace opensolid
 {
     LineSegment3d
@@ -78,44 +75,78 @@ namespace opensolid
 
     Point3d
     Tetrahedron3d::centroid() const {
-        return Point3d(
-            (
-                vertex(0).components() +
-                vertex(1).components() +
-                vertex(2).components() +
-                vertex(3).components()
-            ) / 4.0
-        );
-    }
-
-    CoordinateSystem3d
-    Tetrahedron3d::coordinateSystem() const {
-        return CoordinateSystem3d(
-            vertex(0),
-            vertex(1) - vertex(0),
-            vertex(2) - vertex(0),
-            vertex(3) - vertex(0)
+        return vertex(0) + 0.25 * (
+            (vertex(1) - vertex(0)) +
+            (vertex(2) - vertex(0)) +
+            (vertex(3) - vertex(0))
         );
     }
 
     bool
     Tetrahedron3d::contains(const Point3d& point, double precision) const {
-        Point3d localCoordinates = point / coordinateSystem();
-        double a = localCoordinates.x();
-        double b = localCoordinates.y();
-        double c = localCoordinates.z();
-        Zero zero(precision);
-        return a >= zero && b >= zero && c >= zero && 1 - a - b - c >= zero;
+        // TODO
+        return false;
     }
 
-    bool
-    Tetrahedron3d::strictlyContains(const Point3d& point, double precision) const {
-        Point3d localCoordinates = point / coordinateSystem();
-        double a = localCoordinates.x();
-        double b = localCoordinates.y();
-        double c = localCoordinates.z();
-        Zero zero(precision);
-        return a > zero && b > zero && c > zero && 1 - a - b - c > zero;
+    Tetrahedron3d
+    Tetrahedron3d::scaledAbout(const Point3d& point, double scale) const {
+        return Tetrahedron3d(
+            vertex(0).scaledAbout(point, scale),
+            vertex(1).scaledAbout(point, scale),
+            vertex(2).scaledAbout(point, scale),
+            vertex(3).scaledAbout(point, scale)
+        );
+    }
+
+    Tetrahedron3d
+    Tetrahedron3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
+        return Tetrahedron3d(
+            vertex(0).rotatedAbout(point, rotationMatrix),
+            vertex(1).rotatedAbout(point, rotationMatrix),
+            vertex(2).rotatedAbout(point, rotationMatrix),
+            vertex(3).rotatedAbout(point, rotationMatrix)
+        );
+
+    }
+
+    Tetrahedron3d
+    Tetrahedron3d::translatedBy(const Vector3d& vector) const {
+        return Tetrahedron3d(
+            vertex(0).translatedBy(vector),
+            vertex(1).translatedBy(vector),
+            vertex(2).translatedBy(vector),
+            vertex(3).translatedBy(vector)
+        );
+    }
+
+    Tetrahedron3d
+    Tetrahedron3d::toLocalIn(const Frame3d& frame) const {
+        return Tetrahedron3d(
+            vertex(0).toLocalIn(frame),
+            vertex(1).toLocalIn(frame),
+            vertex(2).toLocalIn(frame),
+            vertex(3).toLocalIn(frame)
+        );
+    }
+
+    Tetrahedron3d
+    Tetrahedron3d::toGlobalFrom(const Frame3d& frame) const {
+        return Tetrahedron3d(
+            vertex(0).toGlobalFrom(frame),
+            vertex(1).toGlobalFrom(frame),
+            vertex(2).toGlobalFrom(frame),
+            vertex(3).toGlobalFrom(frame)
+        );
+    }
+
+    Tetrahedron3d
+    Tetrahedron3d::mirroredAbout(const Point3d& point, const UnitVector3d& mirrorDirection) const {
+        return Tetrahedron3d(
+            vertex(0).mirroredAbout(point, mirrorDirection),
+            vertex(1).mirroredAbout(point, mirrorDirection),
+            vertex(2).mirroredAbout(point, mirrorDirection),
+            vertex(3).mirroredAbout(point, mirrorDirection)
+        );
     }
 
     Tetrahedron3d
@@ -125,61 +156,6 @@ namespace opensolid
             Point3d(1, 0, 0),
             Point3d(0, 1, 0),
             Point3d(0, 0, 1)
-        );
-    }
-
-    Tetrahedron3d
-    ScalingFunction<Tetrahedron3d>::operator()(
-        const Tetrahedron3d& tetrahedron,
-        const Point3d& originPoint,
-        double scale
-    ) const {
-        return Tetrahedron3d(
-            scaled(tetrahedron.vertex(0), originPoint, scale),
-            scaled(tetrahedron.vertex(1), originPoint, scale),
-            scaled(tetrahedron.vertex(2), originPoint, scale),
-            scaled(tetrahedron.vertex(3), originPoint, scale)
-        );
-    }
-
-    Tetrahedron3d
-    TranslationFunction<Tetrahedron3d>::operator()(
-        const Tetrahedron3d& tetrahedron,
-        const Vector3d& vector
-    ) const {
-        return Tetrahedron3d(
-            translated(tetrahedron.vertex(0), vector),
-            translated(tetrahedron.vertex(1), vector),
-            translated(tetrahedron.vertex(2), vector),
-            translated(tetrahedron.vertex(3), vector)
-        );
-    }
-
-    Tetrahedron3d
-    TransformationFunction<Tetrahedron3d, 3>::operator()(
-        const Tetrahedron3d& tetrahedron,
-        const Point3d& originPoint,
-        const Matrix3d& transformationMatrix,
-        const Point3d& destinationPoint
-    ) const {
-        return Tetrahedron3d(
-            transformed(tetrahedron.vertex(0), originPoint, transformationMatrix, destinationPoint),
-            transformed(tetrahedron.vertex(1), originPoint, transformationMatrix, destinationPoint),
-            transformed(tetrahedron.vertex(2), originPoint, transformationMatrix, destinationPoint),
-            transformed(tetrahedron.vertex(3), originPoint, transformationMatrix, destinationPoint)
-        );
-    }
-
-    Tetrahedron3d
-    MorphingFunction<Tetrahedron3d, ParametricExpression<Point3d, Point3d>>::operator()(
-        const Tetrahedron3d& tetrahedron,
-        const ParametricExpression<Point3d, Point3d>& morphingExpression
-    ) const {
-        return Tetrahedron3d(
-            morphed(tetrahedron.vertex(0), morphingExpression),
-            morphed(tetrahedron.vertex(1), morphingExpression),
-            morphed(tetrahedron.vertex(2), morphingExpression),
-            morphed(tetrahedron.vertex(3), morphingExpression)
         );
     }
 }

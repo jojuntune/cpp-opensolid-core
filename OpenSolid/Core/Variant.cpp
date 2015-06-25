@@ -207,31 +207,6 @@ namespace opensolid
         return _valuePtr->toPlane3d();
     }
 
-    const AxialCoordinateSystem2d&
-    Variant::toAxialCoordinateSystem2d() const {
-        return _valuePtr->toAxialCoordinateSystem2d();
-    }
-
-    const AxialCoordinateSystem3d&
-    Variant::toAxialCoordinateSystem3d() const {
-        return _valuePtr->toAxialCoordinateSystem3d();
-    }
-
-    const PlanarCoordinateSystem3d&
-    Variant::toPlanarCoordinateSystem3d() const {
-        return _valuePtr->toPlanarCoordinateSystem3d();
-    }
-
-    const CoordinateSystem2d&
-    Variant::toCoordinateSystem2d() const {
-        return _valuePtr->toCoordinateSystem2d();
-    }
-
-    const CoordinateSystem3d&
-    Variant::toCoordinateSystem3d() const {
-        return _valuePtr->toCoordinateSystem3d();
-    }
-
     const LineSegment2d&
     Variant::toLineSegment2d() const {
         return _valuePtr->toLineSegment2d();

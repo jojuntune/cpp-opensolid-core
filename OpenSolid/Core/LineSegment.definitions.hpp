@@ -33,14 +33,13 @@
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
-#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Intersection.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Plane.definitions.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Simplex/LineSegmentBase.definitions.hpp>
 #include <OpenSolid/Core/Simplex/SimplexVertices.declarations.hpp>
-#include <OpenSolid/Core/Transformable.definitions.hpp>
 
 namespace opensolid
 {
@@ -55,97 +54,47 @@ namespace opensolid
     {
         static const int Value = iNumDimensions;
     };
-    
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<LineSegment<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef LineSegment<iNumResultDimensions> Type;
-    };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<
-        LineSegment<iNumDimensions>,
-        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
-    >
+    template <>
+    class LineSegment<2> :
+        public detail::LineSegmentBase<2>,
+        public Convertible<LineSegment<2>>
     {
-        typedef LineSegment<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    class LineSegment :
-        public Convertible<LineSegment<iNumDimensions>>,
-        public Transformable<LineSegment<iNumDimensions>>
-    {
-    private:
-        Point<iNumDimensions> _vertices[2];
     public:
         LineSegment();
 
-        LineSegment(
-            const Point<iNumDimensions>& startVertex,
-            const Point<iNumDimensions>& endVertex
-        );
+        LineSegment(const Point<2>& startVertex, const Point<2>& endVertex);
 
-        const Point<iNumDimensions>&
-        startVertex() const;
+        LineSegment<3>
+        toGlobalFrom(const Plane3d& plane) const;
 
-        Point<iNumDimensions>&
-        startVertex();
+        using detail::LineSegmentBase<2>::toGlobalFrom;
+    };
+    
+    typedef LineSegment<2> LineSegment2d;
 
-        const Point<iNumDimensions>&
-        endVertex() const;
+    template <>
+    class LineSegment<3> :
+        public detail::LineSegmentBase<3>,
+        public Convertible<LineSegment<3>>
+    {
+    public:
+        LineSegment();
 
-        Point<iNumDimensions>&
-        endVertex();
-
-        const Point<iNumDimensions>&
-        vertex(int index) const;
-
-        Point<iNumDimensions>&
-        vertex(int index);
-
-        detail::SimplexVertices<LineSegment<iNumDimensions>, 2>
-        vertices() const;
-
-        Point<iNumDimensions>
-        centroid() const;
-
-        double
-        length() const;
-
-        double
-        squaredLength() const;
-
-        Vector<double, iNumDimensions>
-        vector() const;
-
-        UnitVector<iNumDimensions>
-        normalVector() const;
-
-        CoordinateSystem<iNumDimensions, 1>
-        coordinateSystem() const;
-
-        Axis<iNumDimensions>
-        axis() const;
-
-        Box<iNumDimensions>
-        bounds() const;
-
-        bool
-        operator==(const LineSegment<iNumDimensions>& other) const;
+        LineSegment(const Point<3>& startVertex, const Point<3>& endVertex);
 
         Intersection<LineSegment<3>, Plane3d>
         intersection(const Plane3d& plane, double precision = 1e-12) const;
-        
-        bool
-        contains(const Point<2>& point, double precision = 1e-12) const;
-        
-        bool
-        contains(const Point<3>& point, double precision = 1e-12) const;
+
+        LineSegment<2>
+        toLocalIn(const Plane3d& plane) const;
+
+        using detail::LineSegmentBase<3>::toLocalIn;
+
+        LineSegment<3>
+        projectedOnto(const Plane3d& plane) const;
     };
 
-    typedef LineSegment<1> LineSegment1d;
-    typedef LineSegment<2> LineSegment2d;
     typedef LineSegment<3> LineSegment3d;
 
     template <int iNumDimensions>
@@ -156,55 +105,6 @@ namespace opensolid
             const LineSegment<iNumDimensions>& firstLineSegment,
             const LineSegment<iNumDimensions>& secondLineSegment,
             double precision
-        ) const;
-    };
-    
-    template <int iNumDimensions>
-    struct ScalingFunction<LineSegment<iNumDimensions>>
-    {
-        LineSegment<iNumDimensions>
-        operator()(
-            const LineSegment<iNumDimensions>& lineSegment,
-            const Point<iNumDimensions>& originPoint,
-            double scale
-        ) const;
-    };
-
-    template <int iNumDimensions>
-    struct TranslationFunction<LineSegment<iNumDimensions>>
-    {
-        LineSegment<iNumDimensions>
-        operator()(
-            const LineSegment<iNumDimensions>& lineSegment,
-            const Vector<double, iNumDimensions>& vector
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformationFunction<LineSegment<iNumDimensions>, iNumResultDimensions>
-    {
-        LineSegment<iNumResultDimensions>
-        operator()(
-            const LineSegment<iNumDimensions>& lineSegment,
-            const Point<iNumDimensions>& originPoint,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
-            const Point<iNumResultDimensions>& destinationPoint
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<
-        LineSegment<iNumDimensions>,
-        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
-    >
-    {
-        LineSegment<iNumResultDimensions>
-        operator()(
-            const LineSegment<iNumDimensions>& lineSegment,
-            const ParametricExpression<
-                Point<iNumResultDimensions>,
-                Point<iNumDimensions>
-            >& morphingExpression
         ) const;
     };
 }

@@ -28,19 +28,23 @@
 
 #include <OpenSolid/Core/Tetrahedron.declarations.hpp>
 
+#include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
-#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
+#include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
+#include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/LazyCollection.definitions.hpp>
+#include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Simplex/SimplexVertices.declarations.hpp>
 #include <OpenSolid/Core/Simplex/TetrahedronEdges.declarations.hpp>
 #include <OpenSolid/Core/Simplex/TetrahedronFaces.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
 #include <OpenSolid/Core/Vector.declarations.hpp>
 
 namespace opensolid
@@ -57,15 +61,9 @@ namespace opensolid
         static const int Value = 3;
     };
 
-    template <>
-    struct MorphedType<Tetrahedron3d, ParametricExpression<Point<3>, Point<3>>>
-    {
-        typedef Tetrahedron3d Type;
-    };
-
     class Tetrahedron3d :
         public Convertible<Tetrahedron3d>,
-        public Transformable<Tetrahedron3d>
+        public Transformable<Tetrahedron3d, 3>
     {
     private:
         Point<3> _vertices[4];
@@ -111,22 +109,42 @@ namespace opensolid
         centroid() const;
 
         OPENSOLID_CORE_EXPORT
-        CoordinateSystem<3, 3>
-        coordinateSystem() const;
-
-        OPENSOLID_CORE_EXPORT
         bool
         contains(const Point<3>& point, double precision = 1e-12) const;
-
-        OPENSOLID_CORE_EXPORT
-        bool
-        strictlyContains(const Point<3>& point, double precision = 1e-12) const;
 
         Box<3>
         bounds() const;
 
         bool
         operator==(const Tetrahedron3d& other) const;
+
+        OPENSOLID_CORE_EXPORT
+        Tetrahedron3d
+        scaledAbout(const Point<3>& point, double scale) const;
+
+        OPENSOLID_CORE_EXPORT
+        Tetrahedron3d
+        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
+
+        using Transformable<Tetrahedron3d, 3>::rotatedAbout;
+
+        OPENSOLID_CORE_EXPORT
+        Tetrahedron3d
+        translatedBy(const Vector<double, 3>& vector) const;
+
+        OPENSOLID_CORE_EXPORT
+        Tetrahedron3d
+        toLocalIn(const Frame<3>& frame) const;
+
+        OPENSOLID_CORE_EXPORT
+        Tetrahedron3d
+        toGlobalFrom(const Frame<3>& frame) const;
+
+        OPENSOLID_CORE_EXPORT
+        Tetrahedron3d
+        mirroredAbout(const Point<3>& point, const UnitVector<3>& mirrorDirection) const;
+
+        using Transformable<Tetrahedron3d, 3>::mirroredAbout;
 
         OPENSOLID_CORE_EXPORT
         static Tetrahedron3d
@@ -141,50 +159,6 @@ namespace opensolid
             const Tetrahedron3d& firstTetrahedron,
             const Tetrahedron3d& secondTetrahedron,
             double precision
-        ) const;
-    };
-
-    template <>
-    struct ScalingFunction<Tetrahedron3d>
-    {
-        OPENSOLID_CORE_EXPORT
-        Tetrahedron3d
-        operator()(
-            const Tetrahedron3d& tetrahedron,
-            const Point<3>& originPoint,
-            double scale
-        ) const;
-    };
-
-    template <>
-    struct TranslationFunction<Tetrahedron3d>
-    {
-        OPENSOLID_CORE_EXPORT
-        Tetrahedron3d
-        operator()(const Tetrahedron3d& tetrahedron, const Vector<double, 3>& vector) const;
-    };
-
-    template <>
-    struct TransformationFunction<Tetrahedron3d, 3>
-    {
-        OPENSOLID_CORE_EXPORT
-        Tetrahedron3d
-        operator()(
-            const Tetrahedron3d& tetrahedron,
-            const Point<3>& originPoint,
-            const Matrix<double, 3, 3>& transformationMatrix,
-            const Point<3>& destinationPoint
-        ) const;
-    };
-
-    template <>
-    struct MorphingFunction<Tetrahedron3d, ParametricExpression<Point<3>, Point<3>>>
-    {
-        OPENSOLID_CORE_EXPORT
-        Tetrahedron3d
-        operator()(
-            const Tetrahedron3d& tetrahedron,
-            const ParametricExpression<Point<3>, Point<3>>& morphingExpression
         ) const;
     };
 }

@@ -48,6 +48,7 @@ namespace opensolid
 
         Quaternion(double cosAngle, double sinAngle);
 
+        explicit
         Quaternion(double angle);
 
         const Matrix<double, 2, 1>&

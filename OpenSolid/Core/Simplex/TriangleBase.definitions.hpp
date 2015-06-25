@@ -27,19 +27,24 @@
 #include <OpenSolid/Core/Simplex/TriangleBase.declarations.hpp>
 
 #include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
+#include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
+#include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Simplex/SimplexVertices.declarations.hpp>
 #include <OpenSolid/Core/Simplex/TriangleEdges.declarations.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
+#include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/Vector.declarations.hpp>
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
 
 namespace opensolid
 {
     namespace detail
     {
         template <int iNumDimensions>
-        class TriangleBase
+        class TriangleBase :
+            public Transformable<Triangle<iNumDimensions>, iNumDimensions>
         {
         private:
             Point<iNumDimensions> _vertices[3];
@@ -58,9 +63,6 @@ namespace opensolid
             const Point<iNumDimensions>&
             vertex(int index) const;
 
-            Point<iNumDimensions>&
-            vertex(int index);
-
             SimplexVertices<Triangle<iNumDimensions>, 3>
             vertices() const;
 
@@ -73,11 +75,36 @@ namespace opensolid
             TriangleEdges<iNumDimensions>
             edges() const;
 
-            CoordinateSystem<iNumDimensions, 2>
-            coordinateSystem() const;
-
             Box<iNumDimensions>
             bounds() const;
+
+            Triangle<iNumDimensions>
+            scaledAbout(const Point<iNumDimensions>& point, double scale) const;
+
+            Triangle<iNumDimensions>
+            rotatedAbout(
+                const Point<iNumDimensions>& point,
+                const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
+            ) const;
+
+            using Transformable<Triangle<iNumDimensions>, iNumDimensions>::rotatedAbout;
+
+            Triangle<iNumDimensions>
+            translatedBy(const Vector<double, iNumDimensions>& vector) const;
+
+            Triangle<iNumDimensions>
+            toLocalIn(const Frame<iNumDimensions>& frame) const;
+
+            Triangle<iNumDimensions>
+            toGlobalFrom(const Frame<iNumDimensions>& frame) const;
+
+            Triangle<iNumDimensions>
+            mirroredAbout(
+                const Point<iNumDimensions>& point,
+                const UnitVector<iNumDimensions>& mirrorDirection
+            ) const;
+
+            using Transformable<Triangle<iNumDimensions>, iNumDimensions>::mirroredAbout;
 
             bool
             operator==(const Triangle<iNumDimensions>& other) const;

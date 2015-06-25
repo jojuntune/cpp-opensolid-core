@@ -30,7 +30,6 @@
 
 #include <OpenSolid/Core/BoundsType.definitions.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
-#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Matrix/MatrixInterface.definitions.hpp>
@@ -38,8 +37,10 @@
 #include <OpenSolid/Core/ParametricExpression/CompiledExpression.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.declarations.hpp>
+#include <OpenSolid/Core/ParametricExpression/TransformableExpression.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
 #include <OpenSolid/Core/Vector.declarations.hpp>
 
 #include <typeinfo>
@@ -54,29 +55,11 @@ namespace opensolid
         static const int Value = NumDimensions<TValue>::Value;
     };
 
-    template <class TValue, class TParameter, int iNumResultDimensions>
-    struct TransformedType<ParametricExpression<TValue, TParameter>, iNumResultDimensions>
-    {
-        typedef ParametricExpression<
-            typename TransformedType<TValue, iNumResultDimensions>::Type,
-            TParameter
-        > Type;
-    };
-
-    template <class TValue, class TParameter, class TResultValue>
-    struct MorphedType<
-        ParametricExpression<TValue, TParameter>,
-        ParametricExpression<TResultValue, TValue>
-    >
-    {
-        typedef ParametricExpression<TResultValue, TParameter> Type;
-    };
-
     template <class TValue, class TParameter>
     class ParametricExpression :
         public detail::ExpressionConstructors<TValue, TParameter>,
         public Convertible<ParametricExpression<TValue, TParameter>>,
-        public Transformable<ParametricExpression<TValue, TParameter>>
+        public detail::TransformableExpression<TValue, TParameter>
     {
     private:
         detail::CompiledExpressionPtr _compiledExpressionPtr;
@@ -102,10 +85,10 @@ namespace opensolid
         std::vector<typename BoundsType<TValue>::Type>
         evaluate(const std::vector<typename BoundsType<TParameter>::Type>& parameterBounds) const;
         
-        const Matrix<double, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value>
+        Matrix<double, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value>
         jacobian(const TParameter& parameterValue) const;
         
-        const Matrix<Interval, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value>
+        Matrix<Interval, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value>
         jacobian(const typename BoundsType<TParameter>::Type& parameterBounds) const;
         
         template <class TInnerParameter>
@@ -307,6 +290,12 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
+    struct DerivativeType<UnitVector<iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
     struct DerivativeType<Point<iNumDimensions>>
     {
         typedef Vector<double, iNumDimensions> Type;
@@ -324,6 +313,12 @@ namespace opensolid
         typedef Vector<double, iNumDimensions> Type;
     };
 
+    template <int iNumDimensions>
+    struct NegatedType<UnitVector<iNumDimensions>>
+    {
+        typedef UnitVector<iNumDimensions> Type;
+    };
+
     template <>
     struct SumType<double, double>
     {
@@ -337,7 +332,31 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
+    struct SumType<Vector<double, iNumDimensions>, UnitVector<iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct SumType<UnitVector<iNumDimensions>, Vector<double, iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct SumType<UnitVector<iNumDimensions>, UnitVector<iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
     struct SumType<Point<iNumDimensions>, Vector<double, iNumDimensions>>
+    {
+        typedef Point<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct SumType<Point<iNumDimensions>, UnitVector<iNumDimensions>>
     {
         typedef Point<iNumDimensions> Type;
     };
@@ -355,7 +374,31 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
+    struct DifferenceType<Vector<double, iNumDimensions>, UnitVector<iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct DifferenceType<UnitVector<iNumDimensions>, Vector<double, iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct DifferenceType<UnitVector<iNumDimensions>, UnitVector<iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
     struct DifferenceType<Point<iNumDimensions>, Vector<double, iNumDimensions>>
+    {
+        typedef Point<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct DifferenceType<Point<iNumDimensions>, UnitVector<iNumDimensions>>
     {
         typedef Point<iNumDimensions> Type;
     };
@@ -379,7 +422,19 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
+    struct ProductType<double, UnitVector<iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
     struct ProductType<Vector<double, iNumDimensions>, double>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct ProductType<UnitVector<iNumDimensions>, double>
     {
         typedef Vector<double, iNumDimensions> Type;
     };
@@ -396,88 +451,9 @@ namespace opensolid
         typedef Vector<double, iNumDimensions> Type;
     };
 
-    template <int iNumDimensions, class TParameter>
-    struct ScalingFunction<ParametricExpression<Vector<double, iNumDimensions>, TParameter>>
+    template <int iNumDimensions>
+    struct QuotientType<UnitVector<iNumDimensions>, double>
     {
-        ParametricExpression<Vector<double, iNumDimensions>, TParameter>
-        operator()(
-            const ParametricExpression<Vector<double, iNumDimensions>, TParameter>& expression,
-            const Point<iNumDimensions>& originPoint,
-            double scale
-        ) const;
-    };
-
-    template <int iNumDimensions, class TParameter>
-    struct ScalingFunction<ParametricExpression<Point<iNumDimensions>, TParameter>>
-    {
-        ParametricExpression<Point<iNumDimensions>, TParameter>
-        operator()(
-            const ParametricExpression<Point<iNumDimensions>, TParameter>& expression,
-            const Point<iNumDimensions>& originPoint,
-            double scale
-        ) const;
-    };
-
-    template <int iNumDimensions, class TParameter>
-    struct TranslationFunction<ParametricExpression<Vector<double, iNumDimensions>, TParameter>>
-    {
-        ParametricExpression<Vector<double, iNumDimensions>, TParameter>
-        operator()(
-            const ParametricExpression<Vector<double, iNumDimensions>, TParameter>& expression,
-            const Vector<double, iNumDimensions>& vector
-        ) const;
-    };
-
-    template <int iNumDimensions, class TParameter>
-    struct TranslationFunction<ParametricExpression<Point<iNumDimensions>, TParameter>>
-    {
-        ParametricExpression<Point<iNumDimensions>, TParameter>
-        operator()(
-            const ParametricExpression<Point<iNumDimensions>, TParameter>& expression,
-            const Vector<double, iNumDimensions>& vector
-        ) const;
-    };
-
-    template <int iNumDimensions, class TParameter, int iNumResultDimensions>
-    struct TransformationFunction<
-        ParametricExpression<Vector<double, iNumDimensions>, TParameter>,
-        iNumResultDimensions
-    >
-    {
-        ParametricExpression<Vector<double, iNumResultDimensions>, TParameter>
-        operator()(
-            const ParametricExpression<Vector<double, iNumDimensions>, TParameter>& expression,
-            const Point<iNumDimensions>& originPoint,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
-            const Point<iNumResultDimensions>& destinationPoint
-        ) const;
-    };
-
-    template <int iNumDimensions, class TParameter, int iNumResultDimensions>
-    struct TransformationFunction<
-        ParametricExpression<Point<iNumDimensions>, TParameter>,
-        iNumResultDimensions
-    >
-    {
-        ParametricExpression<Point<iNumResultDimensions>, TParameter>
-        operator()(
-            const ParametricExpression<Point<iNumDimensions>, TParameter>& expression,
-            const Point<iNumDimensions>& originPoint,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
-            const Point<iNumResultDimensions>& destinationPoint
-        ) const;
-    };
-
-    template <class TValue, class TParameter, class TResultValue>
-    struct MorphingFunction<
-        ParametricExpression<TValue, TParameter>,
-        ParametricExpression<TResultValue, TValue>
-    >
-    {
-        ParametricExpression<TResultValue, TParameter>
-        operator()(
-            const ParametricExpression<TValue, TParameter>& expression,
-            const ParametricExpression<TResultValue, TValue>& morphingExpression
-        ) const;
+        typedef Vector<double, iNumDimensions> Type;
     };
 }

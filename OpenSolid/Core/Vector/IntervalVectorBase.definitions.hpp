@@ -46,39 +46,37 @@ namespace opensolid
         protected:
             IntervalVectorBase();
 
-            IntervalVectorBase(Interval value);
-
             IntervalVectorBase(Interval x, Interval y);
 
             IntervalVectorBase(Interval x, Interval y, Interval z);
 
             IntervalVectorBase(const Matrix<Interval, iNumDimensions, 1>& components);
         public:
-            const Vector<Interval, iNumDimensions>
+            Vector<Interval, iNumDimensions>
             normalized() const;
 
             bool
             isEmpty() const;
 
-            const Vector<double, iNumDimensions>
+            Vector<double, iNumDimensions>
             minVertex() const;
             
-            const Vector<double, iNumDimensions>
+            Vector<double, iNumDimensions>
             maxVertex() const;
 
-            const Vector<double, iNumDimensions>
+            Vector<double, iNumDimensions>
             vertex(int index) const;
 
-            const IntervalVectorVertices<iNumDimensions>
+            IntervalVectorVertices<iNumDimensions>
             vertices() const;
             
-            const Vector<double, iNumDimensions>
+            Vector<double, iNumDimensions>
             centroid() const;
             
-            const Vector<double, iNumDimensions>
+            Vector<double, iNumDimensions>
             randomVector() const;
 
-            const Vector<double, iNumDimensions>
+            Vector<double, iNumDimensions>
             diagonalVector() const;
 
             bool
@@ -141,13 +139,13 @@ namespace opensolid
             void
             operator-=(const Vector<Interval, iNumDimensions>& other);
 
-            static const Vector<Interval, iNumDimensions>
+            static Vector<Interval, iNumDimensions>
             unit();
 
-            static const Vector<Interval, iNumDimensions>
+            static Vector<Interval, iNumDimensions>
             empty();
 
-            static const Vector<Interval, iNumDimensions>
+            static Vector<Interval, iNumDimensions>
             whole();
         };
     }

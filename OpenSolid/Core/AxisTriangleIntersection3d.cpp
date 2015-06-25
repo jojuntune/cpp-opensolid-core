@@ -26,7 +26,6 @@
 
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/AxisPlaneIntersection3d.hpp>
-#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Intersection/XAxisTriangleIntersection2d.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
@@ -40,47 +39,48 @@ namespace opensolid
         double precision
     ) : _type(NONE) {
 
-        Plane3d plane = triangle.plane();
-        Intersection<Axis3d, Plane3d> axisPlaneIntersection = axis.intersection(plane, precision);
-        if (axisPlaneIntersection.exists()) {
-            if (axisPlaneIntersection.isPoint()) {
-                Point3d intersectionPoint = axisPlaneIntersection.point();
-                if ((intersectionPoint - triangle.vertex(0)).isZero(precision)) {
-                    _type = POINT;
-                    _point = triangle.vertex(0);
-                } else if ((intersectionPoint - triangle.vertex(1)).isZero(precision)) {
-                    _type = POINT;
-                    _point = triangle.vertex(1);
-                } else if ((intersectionPoint - triangle.vertex(2)).isZero(precision)) {
-                    _type = POINT;
-                    _point = triangle.vertex(2);
-                } else {
-                    Point2d triangleCoordinates = intersectionPoint / triangle.coordinateSystem();
-                    if (
-                        triangleCoordinates.x() >= Zero(precision) &&
-                        triangleCoordinates.y() >= Zero(precision) &&
-                        triangleCoordinates.x() + triangleCoordinates.y() - 1 <= Zero(precision)
-                    ) {
-                        _type = POINT;
-                        _point = intersectionPoint;
-                    }
-                }
-            } else { // Axis is coincident with triangle plane: cast into 2D
-                PlanarCoordinateSystem3d planarCoordinateSystem(
-                    axis.originPoint(),
-                    axis.directionVector(),
-                    plane.normalVector().cross(axis.directionVector())
-                );
-                Triangle2d triangle2d = triangle / planarCoordinateSystem;
-                detail::XAxisTriangleIntersection2d intersection2d(triangle2d, precision);
-                if (intersection2d.isPoint()) {
-                    _type = POINT;
-                    _point = planarCoordinateSystem * intersection2d.point();
-                } else if (intersection2d.isLineSegment()) {
-                    _type = LINE_SEGMENT;
-                    _lineSegment = planarCoordinateSystem * intersection2d.lineSegment();
-                }
-            }
-        }
+        // TODO
+        // Plane3d plane = triangle.plane();
+        // Intersection<Axis3d, Plane3d> axisPlaneIntersection = axis.intersection(plane, precision);
+        // if (axisPlaneIntersection.exists()) {
+        //     if (axisPlaneIntersection.isPoint()) {
+        //         Point3d intersectionPoint = axisPlaneIntersection.point();
+        //         if ((intersectionPoint - triangle.vertex(0)).isZero(precision)) {
+        //             _type = POINT;
+        //             _point = triangle.vertex(0);
+        //         } else if ((intersectionPoint - triangle.vertex(1)).isZero(precision)) {
+        //             _type = POINT;
+        //             _point = triangle.vertex(1);
+        //         } else if ((intersectionPoint - triangle.vertex(2)).isZero(precision)) {
+        //             _type = POINT;
+        //             _point = triangle.vertex(2);
+        //         } else {
+        //             Point2d triangleCoordinates = intersectionPoint / triangle.coordinateSystem();
+        //             if (
+        //                 triangleCoordinates.x() >= Zero(precision) &&
+        //                 triangleCoordinates.y() >= Zero(precision) &&
+        //                 triangleCoordinates.x() + triangleCoordinates.y() - 1 <= Zero(precision)
+        //             ) {
+        //                 _type = POINT;
+        //                 _point = intersectionPoint;
+        //             }
+        //         }
+        //     } else { // Axis is coincident with triangle plane: cast into 2D
+        //         PlanarCoordinateSystem3d planarCoordinateSystem(
+        //             axis.originPoint(),
+        //             axis.directionVector(),
+        //             plane.normalVector().cross(axis.directionVector())
+        //         );
+        //         Triangle2d triangle2d = triangle / planarCoordinateSystem;
+        //         detail::XAxisTriangleIntersection2d intersection2d(triangle2d, precision);
+        //         if (intersection2d.isPoint()) {
+        //             _type = POINT;
+        //             _point = planarCoordinateSystem * intersection2d.point();
+        //         } else if (intersection2d.isLineSegment()) {
+        //             _type = LINE_SEGMENT;
+        //             _lineSegment = planarCoordinateSystem * intersection2d.lineSegment();
+        //         }
+        //     }
+        // }
     }
 }

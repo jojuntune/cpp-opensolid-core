@@ -62,54 +62,35 @@ namespace opensolid
     }
 
     ParametricVolume3d
-    ScalingFunction<ParametricVolume3d>::operator()(
-        const ParametricVolume3d& parametricVolume,
-        const Point3d& originPoint,
-        double scale
-    ) const {
-        return ParametricVolume3d(
-            scaled(parametricVolume.expression(), originPoint, scale),
-            parametricVolume.domain()
-        );
+    ParametricVolume3d::scaledAbout(const Point3d& point, double scale) const {
+        return ParametricVolume3d(expression().scaledAbout(point, scale), domain());
     }
 
     ParametricVolume3d
-    TranslationFunction<ParametricVolume3d>::operator()(
-        const ParametricVolume3d& parametricVolume,
-        const Vector3d& vector
-    ) const {
-        return ParametricVolume3d(
-            parametricVolume.expression() + vector,
-            parametricVolume.domain()
-        );
+    ParametricVolume3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
+        return ParametricVolume3d(expression().rotatedAbout(point, rotationMatrix), domain());
     }
 
     ParametricVolume3d
-    TransformationFunction<ParametricVolume3d, 3>::operator()(
-        const ParametricVolume3d& parametricVolume,
-        const Point3d& originPoint,
-        const Matrix3d& transformationMatrix,
-        const Point3d& destinationPoint
-    ) const {
-        return ParametricVolume3d(
-            transformed(
-                parametricVolume.expression(),
-                originPoint,
-                transformationMatrix,
-                destinationPoint
-            ),
-            parametricVolume.domain()
-        );
+    ParametricVolume3d::translatedBy(const Vector3d& vector) const {
+        return ParametricVolume3d(expression().translatedBy(vector), domain());
     }
 
     ParametricVolume3d
-    MorphingFunction<ParametricVolume3d, ParametricExpression<Point3d, Point3d>>::operator()(
-        const ParametricVolume3d& parametricVolume,
-        const ParametricExpression<Point3d, Point3d>& morphingExpression
+    ParametricVolume3d::toLocalIn(const Frame3d& frame) const {
+        return ParametricVolume3d(expression().toLocalIn(frame), domain());
+    }
+
+    ParametricVolume3d
+    ParametricVolume3d::toGlobalFrom(const Frame3d& frame) const {
+        return ParametricVolume3d(expression().toGlobalFrom(frame), domain());
+    }
+
+    ParametricVolume3d
+    ParametricVolume3d::mirroredAbout(
+        const Point3d& point,
+        const UnitVector3d& mirrorDirection
     ) const {
-        return ParametricVolume3d(
-            morphingExpression.composed(parametricVolume.expression()),
-            parametricVolume.domain()
-        );
+        return ParametricVolume3d(expression().mirroredAbout(point, mirrorDirection), domain());
     }
 }

@@ -28,12 +28,14 @@
 
 #include <OpenSolid/Core/Tetrahedron.definitions.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
+#include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Simplex/SimplexVertices.hpp>
 #include <OpenSolid/Core/Simplex/TetrahedronEdges.hpp>
@@ -41,6 +43,8 @@
 #include <OpenSolid/Core/LazyCollection.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 
 namespace opensolid
 {

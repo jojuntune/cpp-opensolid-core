@@ -26,17 +26,162 @@
 
 #include <OpenSolid/Core/Triangle.hpp>
 
-#include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/UnitVector.hpp>
+
+#include <iostream>
 
 namespace opensolid
 {
-    double
-    Triangle2d::area() const {
-        Matrix2d matrix;
-        matrix.column(0) = vertex(1).components() - vertex(0).components();
-        matrix.column(1) = vertex(2).components() - vertex(0).components();
-        return matrix.determinant() / 2.0;
+    namespace detail
+    {
+        class EdgeMetrics2d
+        {
+        public:
+            EdgeMetrics2d(
+                const Point2d& startVertex,
+                const Point2d& point,
+                const Point2d& endVertex,
+                double squaredTolerance
+            );
+
+            bool
+            isPositive() const;
+
+            bool
+            isStrictlyPositive() const;
+
+            bool
+            isNegative() const;
+
+            bool
+            isStrictlyNegative() const;
+
+            bool
+            isBetweenEndpoints() const;
+        private:
+            double _squaredLength;
+            double _crossProduct;
+            double _perpendicularMetric;
+            double _perpendicularCutoff;
+            double _parallelDotProduct;
+        };
+
+        inline
+        EdgeMetrics2d::EdgeMetrics2d(
+            const Point2d& startVertex,
+            const Point2d& point,
+            const Point2d& endVertex,
+            double squaredTolerance
+        ) {
+            double a1 = point.x() - startVertex.x();
+            double a2 = point.y() - startVertex.y();
+            double b1 = endVertex.x() - startVertex.x();
+            double b2 = endVertex.y() - startVertex.y();
+            _squaredLength = b1 * b1 + b2 * b2;
+            _crossProduct = a1 * b2 - a2 * b1;
+            _perpendicularMetric = _crossProduct * _crossProduct;
+            _perpendicularCutoff = _squaredLength * squaredTolerance;
+            _parallelDotProduct = a1 * b1 + a2 * b2;
+        }
+
+        inline
+        bool
+        EdgeMetrics2d::isPositive() const {
+            return _crossProduct > 0.0;
+        }
+
+        inline
+        bool
+        EdgeMetrics2d::isStrictlyPositive() const {
+            return _crossProduct > 0.0 && _perpendicularMetric > _perpendicularCutoff;
+        }
+
+        inline
+        bool
+        EdgeMetrics2d::isNegative() const {
+            return _crossProduct < 0.0;
+        }
+
+        inline
+        bool
+        EdgeMetrics2d::isStrictlyNegative() const {
+            return _crossProduct < 0.0 && _perpendicularMetric > _perpendicularCutoff;
+        }
+
+        inline
+        bool
+        EdgeMetrics2d::isBetweenEndpoints() const {
+            return _parallelDotProduct >= 0.0 && _parallelDotProduct <= _squaredLength;
+        }
+    }
+
+    bool
+    Triangle2d::contains(const Point2d& point, double tolerance) const {
+        if (tolerance == 0.0) {
+            return (
+                detail::crossProduct2d(vertex(0), point, vertex(1)) <= 0.0 &&
+                detail::crossProduct2d(vertex(1), point, vertex(2)) <= 0.0 &&
+                detail::crossProduct2d(vertex(2), point, vertex(0)) <= 0.0
+            );
+        } else if (tolerance > 0.0) {        
+            double squaredTolerance = tolerance * tolerance;
+            detail::EdgeMetrics2d firstMetrics(vertex(0), point, vertex(1), squaredTolerance);
+            if (firstMetrics.isStrictlyPositive()) {
+                std::cout << "first metrics strictly positive" << std::endl;
+                return false;
+            }
+            detail::EdgeMetrics2d secondMetrics(vertex(1), point, vertex(2), squaredTolerance);
+            if (secondMetrics.isStrictlyPositive()) {
+                std::cout << "second metrics strictly positive" << std::endl;
+                return false;
+            }
+            detail::EdgeMetrics2d thirdMetrics(vertex(2), point, vertex(0), squaredTolerance);
+            if (thirdMetrics.isStrictlyPositive()) {
+                std::cout << "third metrics strictly positive" << std::endl;
+                return false;
+            }
+            if (
+                firstMetrics.isNegative() &&
+                secondMetrics.isNegative() &&
+                thirdMetrics.isNegative()
+            ) {
+                return true;
+            }
+            if (
+                ( firstMetrics.isPositive() && firstMetrics.isBetweenEndpoints()) ||
+                (secondMetrics.isPositive() && secondMetrics.isBetweenEndpoints()) ||
+                (thirdMetrics.isPositive() && thirdMetrics.isBetweenEndpoints())
+            ) {
+                return true;
+            }
+            return (
+                (point - vertex(0)).squaredNorm() <= squaredTolerance ||
+                (point - vertex(1)).squaredNorm() <= squaredTolerance ||
+                (point - vertex(2)).squaredNorm() <= squaredTolerance
+            );
+        } else {
+            double squaredTolerance = tolerance * tolerance;
+            return (
+                detail::EdgeMetrics2d(
+                    vertex(0),
+                    point,
+                    vertex(1),
+                    squaredTolerance
+                ).isStrictlyNegative() &&
+                detail::EdgeMetrics2d(
+                    vertex(1),
+                    point,
+                    vertex(2),
+                    squaredTolerance
+                ).isStrictlyNegative() &&
+                detail::EdgeMetrics2d(
+                    vertex(2),
+                    point,
+                    vertex(0),
+                    squaredTolerance
+                ).isStrictlyNegative()
+            );
+        }
     }
 
     Triangle2d
@@ -51,46 +196,31 @@ namespace opensolid
 
     UnitVector3d
     Triangle3d::normalVector() const {
-        return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).normalized();
+        static const double epsilon = std::numeric_limits<double>::epsilon();
+        Vector3d vector1 = vertex(1) - vertex(0);
+        Vector3d vector2 = vertex(2) - vertex(0);
+        Vector3d crossProduct = vector1.cross(vector2);
+        double squaredNorm1 = vector1.squaredNorm();
+        double squaredNorm2 = vector2.squaredNorm();
+        double crossProductSquaredNorm = crossProduct.squaredNorm();
+        if (crossProductSquaredNorm > epsilon * squaredNorm1 * squaredNorm2) {
+            // Cross product is (reasonably) well conditioned - use it to
+            // compute the normal vector
+            return UnitVector3d((crossProduct / sqrt(crossProductSquaredNorm)).components());
+        } else {
+            // Cross product is poorly conditioned (i.e., triangle is degenerate
+            // or nearly so) - instead of cross product, compute a unit vector
+            // perpendicular to the longest of the two edges
+            if (squaredNorm1 >= squaredNorm2) {
+                return vector1.unitOrthogonal();
+            } else {
+                return vector2.unitOrthogonal();
+            }
+        }
     }
 
     Plane3d
     Triangle3d::plane() const {
         return Plane3d(vertex(0), normalVector());
-    }
-    
-    bool
-    Triangle3d::contains(const Point3d& point, double precision) const {
-        Point3d firstVertex = vertex(0);
-        Vector3d firstEdgeVector = vertex(1) - firstVertex;
-        Vector3d secondEdgeVector = vertex(2) - firstVertex;
-        
-        // Check whether the point is on the plane defined by the triangle
-        Vector3d perpendicularVector = firstEdgeVector.cross(secondEdgeVector);
-        double perpendicularSquaredLength = perpendicularVector.squaredNorm();
-        Vector3d displacement = point - firstVertex;
-        double perpendicularDotProduct = displacement.dot(perpendicularVector);
-        double perpendicularMetric = perpendicularDotProduct * perpendicularDotProduct;
-        Zero perpendicularZero(perpendicularSquaredLength * precision * precision);
-        if (perpendicularMetric > perpendicularZero) {
-            return false;
-        }
-
-        // Check whether the point is within the triangle
-        PlanarCoordinateSystem3d triangleCoordinateSystem(
-            firstVertex,
-            firstEdgeVector,
-            secondEdgeVector
-        );
-        Point2d triangleCoordinates = point / triangleCoordinateSystem;
-        double a = triangleCoordinates.x();
-        double b = triangleCoordinates.y();
-        Zero coordinateZero(precision);
-        if (a < coordinateZero || b < coordinateZero || 1 - a - b < coordinateZero) {
-            return false;
-        }
-        
-        // Passed both checks
-        return true;
     }
 }

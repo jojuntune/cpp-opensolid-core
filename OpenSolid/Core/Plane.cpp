@@ -24,16 +24,72 @@
 
 #include <OpenSolid/Core/Plane.hpp>
 
+#include <OpenSolid/Core/Error.hpp>
+#include <OpenSolid/Core/Parameter.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
 
 namespace opensolid
 {
-    Plane3d::Plane3d() {
+    Plane3d::Plane3d() :
+        _handedness(Handedness::rightHanded()) {
+    }
+
+    Plane3d::Plane3d(
+        const Point3d& originPoint,
+        const UnitVector3d& xDirectionVector,
+        const UnitVector3d& yDirectionVector
+    ) : FrameBase<3, 2>(
+            originPoint,
+            Matrix<double, 3, 2>::fromColumns(
+                xDirectionVector.components(),
+                yDirectionVector.components()
+            )
+        ),
+        _normalVector(xDirectionVector.cross(yDirectionVector).components()),
+        _handedness(Handedness::rightHanded()) {
+
+        assert(xDirectionVector.dot(yDirectionVector) == Zero());
+    }
+
+    Plane3d::Plane3d(
+        const Point3d& originPoint,
+        const UnitVector3d& xDirectionVector,
+        const UnitVector3d& yDirectionVector,
+        const UnitVector3d& normalVector,
+        Handedness handedness
+    ) : FrameBase<3, 2>(
+            originPoint,
+            Matrix<double, 3, 2>::fromColumns(
+                xDirectionVector.components(),
+                yDirectionVector.components()
+            )
+        ),
+        _normalVector(normalVector),
+        _handedness(handedness) {
+
+        assert(xDirectionVector.dot(yDirectionVector) == Zero());
+        assert(
+            xDirectionVector.cross(yDirectionVector).dot(normalVector) - handedness.sign() == Zero()
+        );
+    }
+
+    namespace
+    {
+        inline
+        Matrix<double, 3, 2>
+        normalBasisMatrix(const UnitVector3d& normalVector) {
+            UnitVector3d xDirectionVector = normalVector.unitOrthogonal();
+            return Matrix<double, 3, 2>::fromColumns(
+                xDirectionVector.components(),
+                (normalVector.cross(xDirectionVector).components())
+            );
+        }
     }
 
     Plane3d::Plane3d(const Point3d& originPoint, const UnitVector3d& normalVector) :
-        _originPoint(originPoint),
-        _normalVector(normalVector) {
+        FrameBase<3, 2>(originPoint, normalBasisMatrix(normalVector)),
+        _normalVector(normalVector),
+        _handedness(Handedness::rightHanded()) {
     }
 
     Plane3d
@@ -42,10 +98,12 @@ namespace opensolid
         const Point3d& secondPoint,
         const Point3d& thirdPoint
     ) {
-        return Plane3d(
-            firstPoint,
-            (secondPoint - firstPoint).cross(thirdPoint - firstPoint).normalized()
-        );
+        Vector3d firstLeg = secondPoint - firstPoint;
+        Vector3d secondLeg = thirdPoint - firstPoint;
+        UnitVector3d xDirectionVector = firstLeg.normalized();
+        UnitVector3d normalVector = firstLeg.cross(secondLeg).normalized();
+        UnitVector3d yDirectionVector(normalVector.cross(xDirectionVector).components());
+        return Plane3d(firstPoint, xDirectionVector, yDirectionVector, normalVector);
     }
 
     Plane3d
@@ -92,122 +150,158 @@ namespace opensolid
 
     Plane3d
     Plane3d::throughAxisAndPoint(const Axis3d& axis, const Point3d& point) {
-        Vector3d normalVector = (point - axis.originPoint()).cross(axis.directionVector());
-        if (normalVector.isZero()) {
+        Vector3d crossProduct = (point - axis.originPoint()).cross(axis.directionVector());
+        if (crossProduct.isZero()) {
             // Point is on axis
             throw Error(new PlaceholderError());
         }
-        return Plane3d(axis.originPoint(), normalVector.normalized());
+        UnitVector3d normalVector = crossProduct.normalized();
+        return Plane3d(
+            axis.originPoint(),
+            axis.directionVector(),
+            UnitVector3d(normalVector.cross(axis.directionVector()).components()),
+            normalVector
+        );
     }
 
     Plane3d
     Plane3d::throughAxis(const Axis3d& axis) {
-        return Plane3d(axis.originPoint(), axis.directionVector().unitOrthogonal());
+        UnitVector3d normalVector = axis.directionVector().unitOrthogonal();
+        return Plane3d(
+            axis.originPoint(),
+            axis.directionVector(),
+            UnitVector3d(normalVector.cross(axis.directionVector()).components()),
+            normalVector
+        );
     }
 
     Plane3d
     Plane3d::xy() {
-        return Plane3d(Point3d::origin(), Vector3d::unitZ());
+        return Plane3d(Point3d::origin(), Vector3d::unitX(), Vector3d::unitY(), Vector3d::unitZ());
     }
 
     Plane3d
     Plane3d::xz() {
-        return Plane3d(Point3d::origin(), -Vector3d::unitY());
+        return Plane3d(Point3d::origin(), Vector3d::unitX(), Vector3d::unitZ(), -Vector3d::unitY());
     }
     
     Plane3d
     Plane3d::yx() {
-        return Plane3d(Point3d::origin(), -Vector3d::unitZ());
+        return Plane3d(Point3d::origin(), Vector3d::unitY(), Vector3d::unitX(), -Vector3d::unitZ());
     }
 
     Plane3d
     Plane3d::yz() {
-        return Plane3d(Point3d::origin(), Vector3d::unitX());
+        return Plane3d(Point3d::origin(), Vector3d::unitY(), Vector3d::unitZ(), Vector3d::unitX());
     }
 
     Plane3d
     Plane3d::zx() {
-        return Plane3d(Point3d::origin(), Vector3d::unitY());
+        return Plane3d(Point3d::origin(), Vector3d::unitZ(), Vector3d::unitX(), Vector3d::unitY());
     }
     
     Plane3d
     Plane3d::zy() {
-        return Plane3d(Point3d::origin(), -Vector3d::unitX());
+        return Plane3d(Point3d::origin(), Vector3d::unitZ(), Vector3d::unitY(), -Vector3d::unitX());
     }
     
     Plane3d
     Plane3d::offsetBy(double distance) const {
-        return Plane3d(originPoint() + distance * normalVector(), normalVector());
+        return Plane3d(
+            originPoint() + distance * normalVector(),
+            xDirectionVector(),
+            yDirectionVector(),
+            normalVector(),
+            handedness()
+        );
     }
 
     Plane3d
     Plane3d::flipped() const {
-        return Plane3d(originPoint(), -normalVector());
+        return Plane3d(
+            originPoint(),
+            xDirectionVector(),
+            yDirectionVector(),
+            -normalVector(),
+            -handedness()
+        );
     }
 
-    Axis<3>
+    Axis3d
     Plane3d::normalAxis() const {
         return Axis3d(originPoint(), normalVector());
     }
 
-    PlanarCoordinateSystem3d
-    Plane3d::coordinateSystem() const {
-        Vector3d xVector = normalVector().unitOrthogonal();
-        Vector3d yVector = normalVector().cross(xVector);
-        return PlanarCoordinateSystem3d(originPoint(), xVector, yVector);
-    }
-
     Plane3d
-    TransformationFunction<Plane3d, 3>::operator()(
-        const Plane3d& plane,
-        const Point3d& originPoint,
-        const Matrix3d& transformationMatrix,
-        const Point3d& destinationPoint
-    ) const {
-        if (transformationMatrix.determinant() == Zero()) {
-            assert(false);
-            return Plane3d();
-        }
-        Matrix3d normalTransformationMatrix = transformationMatrix.inverse().transpose();
-        Vector3d transformedNormal(normalTransformationMatrix * plane.normalVector().components());
-        double transformedNorm = transformedNormal.norm();
-        if (transformedNorm == Zero()) {
-            assert(false);
-            return Plane3d();
-        }
-        transformedNormal *= (1.0 / transformedNorm);
+    Plane3d::scaledAbout(const Point3d& point, double scale) const {
         return Plane3d(
-            transformed(
-                plane.originPoint(),
-                originPoint,
-                transformationMatrix,
-                destinationPoint
-            ),
-            UnitVector3d(transformedNormal.components())
+            originPoint().scaledAbout(point, scale),
+            xDirectionVector(),
+            yDirectionVector(),
+            normalVector(),
+            handedness()
         );
     }
 
     Plane3d
-    MorphingFunction<Plane3d, ParametricExpression<Point3d, Point3d>>::operator()(
-        const Plane3d& plane,
-        const ParametricExpression<Point3d, Point3d>& morphingExpression
-    ) const {
-        Matrix3d jacobian =  morphingExpression.jacobian(plane.originPoint());
-        if (jacobian.determinant() == Zero()) {
-            assert(false);
-            return Plane3d();
-        }
-        Matrix3d normalTransformationMatrix = jacobian.inverse().transpose();
-        Vector3d morphedNormal(normalTransformationMatrix * plane.normalVector().components());
-        double morphedNorm = morphedNormal.norm();
-        if (morphedNorm == Zero()) {
-            assert(false);
-            return Plane3d();
-        }
-        morphedNormal *= (1.0 / morphedNorm);
+    Plane3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
         return Plane3d(
-            morphed(plane.originPoint(), morphingExpression),
-            UnitVector3d(morphedNormal.components())
+            originPoint().rotatedAbout(point, rotationMatrix),
+            xDirectionVector().rotatedBy(rotationMatrix),
+            yDirectionVector().rotatedBy(rotationMatrix),
+            normalVector().rotatedBy(rotationMatrix),
+            handedness()
         );
+    }
+
+    Plane3d
+    Plane3d::translatedBy(const Vector3d& vector) const {
+        return Plane3d(
+            originPoint().translatedBy(vector),
+            xDirectionVector(),
+            yDirectionVector(),
+            normalVector(),
+            handedness()
+        );
+    }
+
+    Plane3d
+    Plane3d::toLocalIn(const Frame3d& frame) const {
+        return Plane3d(
+            originPoint().toLocalIn(frame),
+            xDirectionVector().toLocalIn(frame),
+            yDirectionVector().toLocalIn(frame),
+            normalVector().toLocalIn(frame),
+            handedness()
+        );
+    }
+
+    Plane3d
+    Plane3d::toGlobalFrom(const Frame3d& frame) const {
+        return Plane3d(
+            originPoint().toGlobalFrom(frame),
+            xDirectionVector().toGlobalFrom(frame),
+            yDirectionVector().toGlobalFrom(frame),
+            normalVector().toGlobalFrom(frame),
+            handedness()
+        );
+    }
+
+    Plane3d
+    Plane3d::mirroredAbout(const Point3d& point, const UnitVector3d& directionVector) const {
+        return Plane3d(
+            originPoint().mirroredAbout(point, directionVector),
+            xDirectionVector().mirroredAlong(directionVector),
+            yDirectionVector().mirroredAlong(directionVector),
+            normalVector().mirroredAlong(directionVector),
+            -handedness()
+        );
+    }
+
+    ParametricExpression<Point3d, Point2d>
+    Plane3d::expression() const {
+        Parameter2d u(0);
+        Parameter2d v(1);
+        return originPoint() + u * xDirectionVector() + v * yDirectionVector();
     }
 }

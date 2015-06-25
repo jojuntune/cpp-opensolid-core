@@ -27,12 +27,16 @@
 #include <OpenSolid/Core/Simplex/TriangleBase.definitions.hpp>
 
 #include <OpenSolid/Core/Box.hpp>
-#include <OpenSolid/Core/CoordinateSystem.hpp>
+#include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Simplex/SimplexVertices.hpp>
 #include <OpenSolid/Core/Simplex/TriangleEdges.hpp>
-#include <OpenSolid/Core/Triangle.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/Triangle.definitions.hpp>
+#include <OpenSolid/Core/Vector.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 
 namespace opensolid
 {
@@ -72,14 +76,6 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        Point<iNumDimensions>&
-        TriangleBase<iNumDimensions>::vertex(int index) {
-            assert(index >= 0 && index < 3);
-            return _vertices[index];
-        }
-
-        template <int iNumDimensions>
-        inline
         SimplexVertices<Triangle<iNumDimensions>, 3>
         TriangleBase<iNumDimensions>::vertices() const {
             return SimplexVertices<Triangle<iNumDimensions>, 3>(derived());
@@ -89,9 +85,7 @@ namespace opensolid
         inline
         Point<iNumDimensions>
         TriangleBase<iNumDimensions>::centroid() const {
-            return Point<iNumDimensions>(
-                (vertex(0).components() + vertex(1).components() + vertex(2).components()) / 3.0
-            );
+            return vertex(0) + ((vertex(1) - vertex(0)) + (vertex(2) - vertex(0))) / 3.0;
         }
 
         template <int iNumDimensions>
@@ -114,20 +108,86 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        CoordinateSystem<iNumDimensions, 2>
-        TriangleBase<iNumDimensions>::coordinateSystem() const {
-            return CoordinateSystem<iNumDimensions, 2>(
-                vertex(0),
-                vertex(1) - vertex(0),
-                vertex(2) - vertex(0)
+        Box<iNumDimensions>
+        TriangleBase<iNumDimensions>::bounds() const {
+            return vertex(0).hull(vertex(1)).hull(vertex(2));
+        }
+
+        template <int iNumDimensions>
+        inline
+        Triangle<iNumDimensions>
+        TriangleBase<iNumDimensions>::scaledAbout(
+            const Point<iNumDimensions>& point,
+            double scale
+        ) const {
+            return Triangle<iNumDimensions>(
+                vertex(0).scaledAbout(point, scale),
+                vertex(1).scaledAbout(point, scale),
+                vertex(2).scaledAbout(point, scale)
             );
         }
 
         template <int iNumDimensions>
         inline
-        Box<iNumDimensions>
-        TriangleBase<iNumDimensions>::bounds() const {
-            return vertex(0).hull(vertex(1)).hull(vertex(2));
+        Triangle<iNumDimensions>
+        TriangleBase<iNumDimensions>::rotatedAbout(
+            const Point<iNumDimensions>& point,
+            const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
+        ) const {
+            return Triangle<iNumDimensions>(
+                vertex(0).rotatedAbout(point, rotationMatrix),
+                vertex(1).rotatedAbout(point, rotationMatrix),
+                vertex(2).rotatedAbout(point, rotationMatrix)
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        Triangle<iNumDimensions>
+        TriangleBase<iNumDimensions>::translatedBy(
+            const Vector<double, iNumDimensions>& vector
+        ) const {
+            return Triangle<iNumDimensions>(
+                vertex(0).translatedBy(vector),
+                vertex(1).translatedBy(vector),
+                vertex(2).translatedBy(vector)
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        Triangle<iNumDimensions>
+        TriangleBase<iNumDimensions>::toLocalIn(const Frame<iNumDimensions>& frame) const {
+            return Triangle<iNumDimensions>(
+                vertex(0).toLocalIn(frame),
+                vertex(1).toLocalIn(frame),
+                vertex(2).toLocalIn(frame)
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        Triangle<iNumDimensions>
+        TriangleBase<iNumDimensions>::toGlobalFrom(const Frame<iNumDimensions>& frame) const {
+            return Triangle<iNumDimensions>(
+                vertex(0).toGlobalFrom(frame),
+                vertex(1).toGlobalFrom(frame),
+                vertex(2).toGlobalFrom(frame)
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        Triangle<iNumDimensions>
+        TriangleBase<iNumDimensions>::mirroredAbout(
+            const Point<iNumDimensions>& point,
+            const UnitVector<iNumDimensions>& mirrorDirection
+        ) const {
+            return Triangle<iNumDimensions>(
+                vertex(0).mirroredAbout(point, mirrorDirection),
+                vertex(1).mirroredAbout(point, mirrorDirection),
+                vertex(2).mirroredAbout(point, mirrorDirection)
+            );
         }
 
         template <int iNumDimensions>

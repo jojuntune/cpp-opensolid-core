@@ -28,11 +28,15 @@
 
 #include <OpenSolid/Core/Position/PointBase.declarations.hpp>
 
+#include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
+#include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Vector.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
+#include <OpenSolid/Core/Vector.declarations.hpp>
 
 namespace opensolid
 {
@@ -40,15 +44,14 @@ namespace opensolid
     {
         template <int iNumDimensions>
         class PointBase :
-            public detail::CartesianBase<double, iNumDimensions>
+            public detail::CartesianBase<double, iNumDimensions>,
+            public Transformable<Point<iNumDimensions>, iNumDimensions>
         {
         private:
             const Point<iNumDimensions>&
             derived() const;
         protected:
             PointBase();
-
-            PointBase(double value);
 
             PointBase(double x, double y);
 
@@ -62,14 +65,51 @@ namespace opensolid
             double
             distanceTo(const Point<iNumDimensions>& other) const;
 
-            const Box<iNumDimensions>
-            hull(const Point<iNumDimensions>& other) const;
-
-            const Box<iNumDimensions>
-            hull(const Box<iNumDimensions>& box) const;
+            bool
+            isEqualTo(const Point<iNumDimensions>& other, double precision = 1e-12) const;
 
             bool
             isOrigin(double precision = 1e-12) const;
+
+            double
+            distanceAlong(const Axis<iNumDimensions>& axis) const;
+
+            Box<iNumDimensions>
+            hull(const Point<iNumDimensions>& other) const;
+
+            Box<iNumDimensions>
+            hull(const Box<iNumDimensions>& box) const;
+
+            Point<iNumDimensions>
+            scaledAbout(const Point<iNumDimensions>& other, double scale) const;
+
+            Point<iNumDimensions>
+            rotatedAbout(
+                const Point<iNumDimensions>& other,
+                const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
+            ) const;
+
+            using Transformable<Point<iNumDimensions>, iNumDimensions>::rotatedAbout;
+
+            Point<iNumDimensions>
+            translatedBy(const Vector<double, iNumDimensions>& vector) const;
+
+            Point<iNumDimensions>
+            toLocalIn(const Frame<iNumDimensions>& frame) const;
+
+            Point<iNumDimensions>
+            toGlobalFrom(const Frame<iNumDimensions>& frame) const;
+
+            Point<iNumDimensions>
+            mirroredAbout(
+                const Point<iNumDimensions>& other,
+                const UnitVector<iNumDimensions>& mirrorDirection
+            ) const;
+
+            using Transformable<Point<iNumDimensions>, iNumDimensions>::mirroredAbout;
+
+            Point<iNumDimensions>
+            projectedOnto(const Axis<iNumDimensions>& axis) const;
 
             bool
             operator==(const Point<iNumDimensions>& other) const;
@@ -77,7 +117,7 @@ namespace opensolid
             bool
             operator!=(const Point<iNumDimensions>& other) const;
 
-            static const Point<iNumDimensions>
+            static Point<iNumDimensions>
             origin();
         };
     }

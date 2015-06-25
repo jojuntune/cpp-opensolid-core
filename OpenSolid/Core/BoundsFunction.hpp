@@ -35,7 +35,7 @@ namespace opensolid
 {
     template <class TBounded>
     inline
-    const typename BoundsType<TBounded>::Type
+    typename BoundsType<TBounded>::Type
     BoundsFunction<TBounded>::operator()(const TBounded& argument) const {
         return argument.bounds();
     }

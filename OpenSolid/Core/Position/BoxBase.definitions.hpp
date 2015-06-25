@@ -49,8 +49,6 @@ namespace opensolid
         protected:
             BoxBase();
 
-            BoxBase(Interval value);
-
             BoxBase(Interval x, Interval y);
 
             BoxBase(Interval x, Interval y, Interval z);

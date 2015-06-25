@@ -30,8 +30,11 @@
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
-#include <OpenSolid/Core/CoordinateSystem.definitions.hpp>
+#include <OpenSolid/Core/Frame.declarations.hpp>
+#include <OpenSolid/Core/FrameBase.definitions.hpp>
+#include <OpenSolid/Core/Handedness.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/ParametricExpression.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/UnitVector.definitions.hpp>
@@ -44,25 +47,36 @@ namespace opensolid
         static const int Value = 3;
     };
 
-    template <>
-    struct MorphedType<Plane3d, ParametricExpression<Point<3>, Point<3>>>
-    {
-        typedef Plane3d Type;
-    };
-
     class Plane3d :
         public Convertible<Plane3d>,
-        public Transformable<Plane3d>
+        public Transformable<Plane3d, 3>,
+        public FrameBase<3, 2>
     {
     private:
-        Point<3> _originPoint;
         UnitVector<3> _normalVector;
+        Handedness _handedness;
     public:
         OPENSOLID_CORE_EXPORT
         Plane3d();
 
         OPENSOLID_CORE_EXPORT
+        Plane3d(
+            const Point<3>& originPoint,
+            const UnitVector<3>& xDirectionVector,
+            const UnitVector<3>& yDirectionVector
+        );
+
+        OPENSOLID_CORE_EXPORT
         Plane3d(const Point<3>& originPoint, const UnitVector<3>& normalVector);
+
+        OPENSOLID_CORE_EXPORT
+        Plane3d(
+            const Point<3>& originPoint,
+            const UnitVector<3>& xDirectionVector,
+            const UnitVector<3>& yDirectionVector,
+            const UnitVector<3>& normalVector,
+            Handedness handedness = Handedness::rightHanded()
+        );
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
@@ -112,11 +126,17 @@ namespace opensolid
         static Plane3d
         zy();
 
-        const Point<3>&
-        originPoint() const;
+        UnitVector<3>
+        xDirectionVector() const;
+
+        UnitVector<3>
+        yDirectionVector() const;
 
         const UnitVector<3>&
         normalVector() const;
+
+        Handedness
+        handedness() const;
 
         OPENSOLID_CORE_EXPORT
         Plane3d
@@ -131,48 +151,35 @@ namespace opensolid
         normalAxis() const;
 
         OPENSOLID_CORE_EXPORT
-        PlanarCoordinateSystem3d
-        coordinateSystem() const;
-        
-        bool
-        contains(const Point<3>& point, double precision = 1e-12) const;
-    };
-    
-    template <>
-    struct ScalingFunction<Plane3d>
-    {
         Plane3d
-        operator()(const Plane3d& plane, const Point<3>& originPoint, double scale) const;
-    };
+        scaledAbout(const Point<3>& point, double scale) const;
 
-    template <>
-    struct TranslationFunction<Plane3d>
-    {
-        Plane3d
-        operator()(const Plane3d& plane, const Vector<double, 3>& vector) const;
-    };
-
-    template <>
-    struct TransformationFunction<Plane3d, 3>
-    {
         OPENSOLID_CORE_EXPORT
         Plane3d
-        operator()(
-            const Plane3d& plane,
-            const Point<3>& originPoint,
-            const Matrix<double, 3, 3>& transformationMatrix,
-            const Point<3>& destinationPoint
-        ) const;
-    };
+        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
 
-    template <>
-    struct MorphingFunction<Plane3d, ParametricExpression<Point<3>, Point<3>>>
-    {
+        using Transformable<Plane3d, 3>::rotatedAbout;
+
         OPENSOLID_CORE_EXPORT
         Plane3d
-        operator()(
-            const Plane3d& plane,
-            const ParametricExpression<Point<3>, Point<3>>& morphingExpression
-        ) const;
+        translatedBy(const Vector<double, 3>& vector) const;
+
+        OPENSOLID_CORE_EXPORT
+        Plane3d
+        toLocalIn(const Frame<3>& frame) const;
+
+        OPENSOLID_CORE_EXPORT
+        Plane3d
+        toGlobalFrom(const Frame<3>& frame) const;
+
+        OPENSOLID_CORE_EXPORT
+        Plane3d
+        mirroredAbout(const Point<3>& point, const UnitVector<3>& directionVector) const;
+
+        using Transformable<Plane3d, 3>::mirroredAbout;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricExpression<Point<3>, Point<2>>
+        expression() const;
     };
 }

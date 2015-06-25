@@ -29,7 +29,6 @@
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
 
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
@@ -38,6 +37,7 @@
 #include <OpenSolid/Core/ParametricExpression/DeduplicationCache.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
+#include <OpenSolid/Core/ParametricExpression/TransformableExpression.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Vector.hpp>
@@ -420,7 +420,7 @@ namespace opensolid
     
     template <class TValue, class TParameter>
     inline
-    const Matrix<double, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value>
+    Matrix<double, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value>
     ParametricExpression<TValue, TParameter>::jacobian(const TParameter& parameterValue) const {
         ConstMatrixViewXd parameterView = detail::constView(parameterValue);
 
@@ -434,7 +434,7 @@ namespace opensolid
     
     template <class TValue, class TParameter>
     inline
-    const Matrix<Interval, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value>
+    Matrix<Interval, NumDimensions<TValue>::Value, NumDimensions<TParameter>::Value>
     ParametricExpression<TValue, TParameter>::jacobian(
         const typename BoundsType<TParameter>::Type& parameterBounds
     ) const {
@@ -871,95 +871,5 @@ namespace opensolid
     ) {
         expression.implementation()->debug(stream, 0);
         return stream;
-    }
-
-    template <int iNumDimensions, class TParameter>
-    ParametricExpression<Vector<double, iNumDimensions>, TParameter>
-    inline
-    ScalingFunction<ParametricExpression<Vector<double, iNumDimensions>, TParameter>>::operator()(
-        const ParametricExpression<Vector<double, iNumDimensions>, TParameter>& expression,
-        const Point<iNumDimensions>& originPoint,
-        double scale
-    ) const {
-        return scale * expression;
-    }
-
-    template <int iNumDimensions, class TParameter>
-    inline
-    ParametricExpression<Point<iNumDimensions>, TParameter>
-    ScalingFunction<ParametricExpression<Point<iNumDimensions>, TParameter>>::operator()(
-        const ParametricExpression<Point<iNumDimensions>, TParameter>& expression,
-        const Point<iNumDimensions>& originPoint,
-        double scale
-    ) const {
-        return originPoint + scale * (expression - originPoint);
-    }
-
-    template <int iNumDimensions, class TParameter>
-    inline
-    ParametricExpression<Vector<double, iNumDimensions>, TParameter>
-    TranslationFunction<
-        ParametricExpression<Vector<double, iNumDimensions>, TParameter>
-    >::operator()(
-        const ParametricExpression<Vector<double, iNumDimensions>, TParameter>& expression,
-        const Vector<double, iNumDimensions>& vector
-    ) const {
-        return expression;
-    }
-
-    template <int iNumDimensions, class TParameter>
-    inline
-    ParametricExpression<Point<iNumDimensions>, TParameter>
-    TranslationFunction<ParametricExpression<Point<iNumDimensions>, TParameter>>::operator()(
-        const ParametricExpression<Point<iNumDimensions>, TParameter>& expression,
-        const Vector<double, iNumDimensions>& vector
-    ) const {
-        return expression + vector;
-    }
-
-    template <int iNumDimensions, class TParameter, int iNumResultDimensions>
-    inline
-    ParametricExpression<Vector<double, iNumResultDimensions>, TParameter>
-    TransformationFunction<
-        ParametricExpression<Vector<double, iNumDimensions>, TParameter>,
-        iNumResultDimensions
-    >::operator()(
-        const ParametricExpression<Vector<double, iNumDimensions>, TParameter>& expression,
-        const Point<iNumDimensions>& originPoint,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
-        const Point<iNumResultDimensions>& destinationPoint
-    ) const {
-        return transformationMatrix * expression.implementation();
-    }
-
-    template <int iNumDimensions, class TParameter, int iNumResultDimensions>
-    inline
-    ParametricExpression<Point<iNumResultDimensions>, TParameter>
-    TransformationFunction<
-        ParametricExpression<Point<iNumDimensions>, TParameter>,
-        iNumResultDimensions
-    >::operator()(
-        const ParametricExpression<Point<iNumDimensions>, TParameter>& expression,
-        const Point<iNumDimensions>& originPoint,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
-        const Point<iNumResultDimensions>& destinationPoint
-    ) const {
-        return (
-            destinationPoint.components() +
-            transformationMatrix * (expression - originPoint).implementation()
-        );
-    }
-
-    template <class TValue, class TParameter, class TResultValue>
-    inline
-    ParametricExpression<TResultValue, TParameter>
-    MorphingFunction<
-        ParametricExpression<TValue, TParameter>,
-        ParametricExpression<TResultValue, TValue>
-    >::operator()(
-        const ParametricExpression<TValue, TParameter>& expression,
-        const ParametricExpression<TResultValue, TValue>& morphingExpression
-    ) const {
-        return morphingExpression.composed(expression);
     }
 }

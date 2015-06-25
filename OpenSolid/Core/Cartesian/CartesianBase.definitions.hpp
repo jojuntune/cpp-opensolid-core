@@ -42,8 +42,6 @@ namespace opensolid
         protected:
             CartesianBase();
 
-            CartesianBase(TScalar value);
-
             CartesianBase(TScalar x, TScalar y);
 
             CartesianBase(TScalar x, TScalar y, TScalar z);
@@ -73,12 +71,6 @@ namespace opensolid
 
             TScalar&
             operator()(int index);
-            
-            TScalar
-            value() const;
-
-            TScalar&
-            value();
 
             TScalar
             x() const;

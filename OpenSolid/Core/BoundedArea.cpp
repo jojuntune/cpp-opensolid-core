@@ -29,6 +29,9 @@
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/ParametricCurve.hpp>
+#include <OpenSolid/Core/Parameter.hpp>
+#include <OpenSolid/Core/ParametricExpression.hpp>
+#include <OpenSolid/Core/ParametricSurface.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
@@ -55,72 +58,13 @@ namespace opensolid
         _boundaries(std::move(boundaries)) {
     }
 
-    const BoundedArea2d
-    ScalingFunction<BoundedArea2d>::operator()(
-        const BoundedArea2d& boundedArea,
-        const Point2d& originPoint,
-        double scale
-    ) const {
+    BoundedArea2d
+    BoundedArea2d::scaledAbout(const Point2d& point, double scale) const {
         return BoundedArea2d(
             SpatialSet<ParametricCurve2d>(
-                boundedArea.boundaries().map(
-                    [&originPoint, scale] (const ParametricCurve2d& curve) {
-                        return scaled(curve, originPoint, scale);
-                    }
-                )
-            )
-        );
-    }
-
-    const BoundedArea2d
-    TranslationFunction<BoundedArea2d>::operator()(
-        const BoundedArea2d& boundedArea,
-        const Vector2d& vector
-    ) const {
-        return BoundedArea2d(
-            SpatialSet<ParametricCurve2d>(
-                boundedArea.boundaries().map(
-                    [&vector] (const ParametricCurve2d& curve) {
-                        return translated(curve, vector);
-                    }
-                )
-            )
-        );
-    }
-
-    const BoundedArea2d
-    TransformationFunction<BoundedArea2d, 2>::operator()(
-        const BoundedArea2d& boundedArea,
-        const Point2d& originPoint,
-        const Matrix2d& transformationMatrix,
-        const Point2d& destinationPoint
-    ) const {
-        return BoundedArea2d(
-            SpatialSet<ParametricCurve2d>(
-                boundedArea.boundaries().map(
-                    [&] (const ParametricCurve2d& curve) {
-                        return transformed(
-                            curve,
-                            originPoint,
-                            transformationMatrix,
-                            destinationPoint
-                        );
-                    }
-                )
-            )
-        );
-    }
-
-    const BoundedArea2d
-    MorphingFunction<BoundedArea2d, ParametricExpression<Point2d, Point2d>>::operator()(
-        const BoundedArea2d& boundedArea,
-        const ParametricExpression<Point2d, Point2d>& morphingExpression
-    ) const {
-        return BoundedArea2d(
-            SpatialSet<ParametricCurve2d>(
-                boundedArea.boundaries().map(
-                    [&morphingExpression] (const ParametricCurve2d& curve) {
-                        return morphed(curve, morphingExpression);
+                boundaries().map(
+                    [&point, scale] (const ParametricCurve2d& boundaryCurve) {
+                        return boundaryCurve.scaledAbout(point, scale);
                     }
                 )
             )
@@ -128,16 +72,12 @@ namespace opensolid
     }
 
     BoundedArea2d
-    MirrorFunction<BoundedArea2d>::operator()(
-        const BoundedArea2d& boundedArea,
-        const Point2d& originPoint,
-        const UnitVector2d& normalVector
-    ) const {
+    BoundedArea2d::rotatedAbout(const Point2d& point, const Matrix2d& rotationMatrix) const {
         return BoundedArea2d(
             SpatialSet<ParametricCurve2d>(
-                boundedArea.boundaries().map(
-                    [&originPoint, &normalVector] (const ParametricCurve2d& curve) {
-                        return mirrored(curve, originPoint, normalVector);
+                boundaries().map(
+                    [&point, &rotationMatrix] (const ParametricCurve2d& boundaryCurve) {
+                        return boundaryCurve.rotatedAbout(point, rotationMatrix);
                     }
                 )
             )
@@ -145,15 +85,59 @@ namespace opensolid
     }
 
     BoundedArea2d
-    ProjectionFunction<BoundedArea2d, Axis<2>>::operator()(
-        const BoundedArea2d& boundedArea,
-        const Axis2d& axis
+    BoundedArea2d::translatedBy(const Vector2d& vector) const {
+        return BoundedArea2d(
+            SpatialSet<ParametricCurve2d>(
+                boundaries().map(
+                    [&vector] (const ParametricCurve2d& boundaryCurve) {
+                        return boundaryCurve.translatedBy(vector);
+                    }
+                )
+            )
+        );
+    }
+
+    BoundedArea2d
+    BoundedArea2d::toLocalIn(const Frame<2>& frame) const {
+        return BoundedArea2d(
+            SpatialSet<ParametricCurve2d>(
+                boundaries().map(
+                    [&frame] (const ParametricCurve2d& boundaryCurve) {
+                        return boundaryCurve.toLocalIn(frame);
+                    }
+                )
+            )
+        );
+    }
+
+    BoundedArea2d
+    BoundedArea2d::toGlobalFrom(const Frame<2>& frame) const {
+        return BoundedArea2d(
+            SpatialSet<ParametricCurve2d>(
+                boundaries().map(
+                    [&frame] (const ParametricCurve2d& boundaryCurve) {
+                        return boundaryCurve.toGlobalFrom(frame);
+                    }
+                )
+            )
+        );
+    }
+
+    ParametricSurface3d
+    BoundedArea2d::toGlobalFrom(const Plane3d& plane) const {
+        return ParametricSurface3d(plane.expression(), *this);
+    }
+
+    BoundedArea2d
+    BoundedArea2d::mirroredAbout(
+        const Point2d& point,
+        const UnitVector2d& directionVector
     ) const {
         return BoundedArea2d(
             SpatialSet<ParametricCurve2d>(
-                boundedArea.boundaries().map(
-                    [&axis] (const ParametricCurve2d& curve) {
-                        return projected(curve, axis);
+                boundaries().map(
+                    [&point, &directionVector] (const ParametricCurve2d& boundaryCurve) {
+                        return boundaryCurve.mirroredAbout(point, directionVector);
                     }
                 )
             )

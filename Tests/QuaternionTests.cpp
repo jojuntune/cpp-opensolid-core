@@ -69,13 +69,13 @@ TEST_CASE("Composite rotation 3D") {
     double inclinationAngle = acos(sqrt(2.0 / 3.0));
     Quaternion3d quaternion = Quaternion3d(Vector3d::unitZ(), M_PI / 4) *
         Quaternion3d(Vector3d::unitY(), -inclinationAngle);
-    CoordinateSystem3d coordinateSystem(
+    Frame3d frame(
         Point3d::origin(),
         Vector3d(1, 1, 1).normalized(),
         Vector3d(-1, 1, 0).normalized(),
         Vector3d(-1, -1, 2).normalized()
     );
-    REQUIRE((quaternion.rotationMatrix() - coordinateSystem.basisMatrix()).isZero());
+    REQUIRE((quaternion.rotationMatrix() - frame.basisMatrix()).isZero());
 }
 
 TEST_CASE("Angle extraction 2D") {
@@ -129,9 +129,10 @@ TEST_CASE("Slerp 3D") {
     Quaternion3d final =
         Quaternion3d(Vector3d::unitZ(), M_PI / 2) * Quaternion3d(Vector3d::unitX(), -M_PI / 2);
     Quaternion3d relative = final * initial.inverse();
+    UnitVector3d directionVector = relative.unitVector();
     CAPTURE(relative.unitVector())
     CAPTURE(relative.angle());
-    Axis3d axis(Point3d::origin(), relative.unitVector());
+    Axis3d axis(Point3d::origin(), directionVector);
     double angle = relative.angle();
 
     SECTION("Initial") {
@@ -146,9 +147,15 @@ TEST_CASE("Slerp 3D") {
         Vector3d xBasisVector = Vector3d(rotationMatrix.column(0));
         Vector3d yBasisVector = Vector3d(rotationMatrix.column(1));
         Vector3d zBasisVector = Vector3d(rotationMatrix.column(2));
-        REQUIRE((xBasisVector - Vector3d::unitX().rotatedAbout(axis, angle * 0.5)).isZero());
-        REQUIRE((yBasisVector - Vector3d::unitY().rotatedAbout(axis, angle * 0.5)).isZero());
-        REQUIRE((zBasisVector - Vector3d::unitZ().rotatedAbout(axis, angle * 0.5)).isZero());
+        REQUIRE(
+            (xBasisVector - Vector3d::unitX().rotatedAbout(directionVector, angle * 0.5)).isZero()
+        );
+        REQUIRE(
+            (yBasisVector - Vector3d::unitY().rotatedAbout(directionVector, angle * 0.5)).isZero()
+        );
+        REQUIRE(
+            (zBasisVector - Vector3d::unitZ().rotatedAbout(directionVector, angle * 0.5)).isZero()
+        );
     }
 
     SECTION("Final") {

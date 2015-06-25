@@ -29,10 +29,15 @@
 #include <OpenSolid/Core/ParametricCurve/ParametricCurveBase.definitions.hpp>
 
 #include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Parameter.hpp>
-#include <OpenSolid/Core/ParametricCurve.hpp>
+#include <OpenSolid/Core/ParametricCurve.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
+#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 
 namespace opensolid
 {
@@ -165,6 +170,75 @@ namespace opensolid
         ParametricExpression<double, double>
         ParametricCurveBase<iNumDimensions>::curvature() const {
             return tangentVector().derivative().norm() / expression().derivative().norm();
+        }
+
+        template <int iNumDimensions>
+        ParametricCurve<iNumDimensions>
+        ParametricCurveBase<iNumDimensions>::scaledAbout(
+            const Point<iNumDimensions>& point,
+            double scale
+        ) const {
+            return ParametricCurve<iNumDimensions>(
+                expression().scaledAbout(point, scale),
+                domain()
+            );
+        }
+
+        template <int iNumDimensions>
+        ParametricCurve<iNumDimensions>
+        ParametricCurveBase<iNumDimensions>::rotatedAbout(
+            const Point<iNumDimensions>& point,
+            const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
+        ) const {
+            return ParametricCurve<iNumDimensions>(
+                expression().rotatedAbout(point, rotationMatrix),
+                domain()
+            );
+        }
+
+        template <int iNumDimensions>
+        ParametricCurve<iNumDimensions>
+        ParametricCurveBase<iNumDimensions>::translatedBy(
+            const Vector<double, iNumDimensions>& vector
+        ) const {
+            return ParametricCurve<iNumDimensions>(
+                expression().translatedBy(vector),
+                domain()
+            );
+        }
+
+        template <int iNumDimensions>
+        ParametricCurve<iNumDimensions>
+        ParametricCurveBase<iNumDimensions>::toLocalIn(
+            const Frame<iNumDimensions>& frame
+        ) const {
+            return ParametricCurve<iNumDimensions>(
+                expression().toLocalIn(frame),
+                domain()
+            );
+        }
+
+        template <int iNumDimensions>
+        ParametricCurve<iNumDimensions>
+        ParametricCurveBase<iNumDimensions>::toGlobalFrom(
+            const Frame<iNumDimensions>& frame
+        ) const {
+            return ParametricCurve<iNumDimensions>(
+                expression().toGlobalFrom(frame),
+                domain()
+            );
+        }
+
+        template <int iNumDimensions>
+        ParametricCurve<iNumDimensions>
+        ParametricCurveBase<iNumDimensions>::mirroredAbout(
+            const Point<iNumDimensions>& point,
+            const UnitVector<iNumDimensions>& mirrorDirection
+        ) const {
+            return ParametricCurve<iNumDimensions>(
+                expression().mirroredAbout(point, mirrorDirection),
+                domain()
+            );
         }
     }
 }

@@ -5,7 +5,6 @@
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Plane.hpp>
-#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
 #include <OpenSolid/Core/Tetrahedron.hpp>
@@ -103,22 +102,6 @@ void planeExamples() {
     assert((projected - Point3d(1, 5, 6)).isZero());
 }
 
-void coordinateSystemExamples() {
-    CoordinateSystem3d globalFrame;
-
-    PlanarCoordinateSystem3d localFrame(Point3d(2, 0, 1));
-    localFrame = localFrame.rotatedAbout(globalFrame.zAxis(), M_PI / 4);
-
-    Point3d localOrigin = localFrame.originPoint();
-    assert((localOrigin - Point3d(sqrt(2.0), sqrt(2.0), 1)).isZero());
-
-    Point2d localized = Point3d(0, 0, 1) / localFrame;
-    assert((localized - Point2d(-2.0, 0.0)).isZero());
-
-    Point3d globalized = localFrame * Point2d(1, 0);
-    assert((globalized - Point3d(3 / sqrt(2.0), 3 / sqrt(2.0), 1)).isZero());
-}
-
 void lineSegmentExamples() {
     LineSegment2d segment(Point2d(1, 1), Point2d(3, 4));
     
@@ -155,15 +138,6 @@ void triangleExamples() {
 
     Point3d projectedOrigin = Point3d::origin().projectedOnto(triangle.plane());
     assert((projectedOrigin - Point3d(0, 0, 1)).isZero());
-
-    PlanarCoordinateSystem3d triangleCoordinateSystem = triangle.coordinateSystem();
-
-    Point3d firstEdgeMidpoint(2, 1, 1);
-    Point2d midpointTriangleCoordinates = firstEdgeMidpoint / triangleCoordinateSystem;
-    assert((midpointTriangleCoordinates - Point2d(0.5, 0)).isZero());
-
-    Point2d centroidTriangleCoordinates = centroid / triangleCoordinateSystem;
-    assert((centroidTriangleCoordinates - Point2d(1.0 / 3.0, 1.0 / 3.0)).isZero());
 }
 
 void tetrahedronExamples() {
@@ -244,7 +218,6 @@ int main() {
     boxExamples();
     axisExamples();
     planeExamples();
-    coordinateSystemExamples();
     lineSegmentExamples();
     triangleExamples();
     tetrahedronExamples();

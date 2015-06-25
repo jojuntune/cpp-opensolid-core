@@ -37,6 +37,7 @@
 #include <OpenSolid/Core/LazyCollection/OverlapPredicate.hpp>
 #include <OpenSolid/Core/LazyCollection/SpatialSetData.hpp>
 #include <OpenSolid/Core/LazyCollection/SpatialSetNode.hpp>
+#include <OpenSolid/Core/NumDimensions.definitions.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 #include <algorithm>

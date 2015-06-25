@@ -30,6 +30,7 @@
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
+#include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
@@ -53,7 +54,7 @@ namespace opensolid
 
     template <>
     class Circle<2> :
-        public Transformable<Circle<2>>,
+        public Transformable<Circle<2>, 2>,
         public Convertible<Circle<2>>
     {
     private:
@@ -85,6 +86,34 @@ namespace opensolid
         double
         radius() const;
 
+        Circle<2>
+        scaledAbout(const Point<2>& point, double scale) const;
+
+        Circle<2>
+        rotatedAbout(const Point<2>& point, const Matrix<double, 2, 2>& rotationMatrix) const;
+
+        using Transformable<Circle<2>, 2>::rotatedAbout;
+
+        Circle<2>
+        translatedBy(const Vector<double, 2>& vector);
+
+        Circle<2>
+        toLocalIn(const Frame<2>& frame) const;
+
+        Circle<2>
+        toGlobalFrom(const Frame<2>& frame) const;
+
+        Circle<3>
+        toGlobalFrom(const Plane3d& plane) const;
+
+        LineSegment<2>
+        projectedOnto(const Axis<2>& axis) const;
+
+        Circle<2>
+        mirroredAbout(const Point<2>& point, const UnitVector<2>& mirrorDirection) const;
+
+        using Transformable<Circle<2>, 2>::mirroredAbout;
+
         static Circle<2>
         circumcircle(const Triangle<2>& triangle);
     };
@@ -93,7 +122,7 @@ namespace opensolid
 
     template <>
     class Circle<3> :
-        public Transformable<Circle<3>>,
+        public Transformable<Circle<3>, 3>,
         public Convertible<Circle<3>>
     {
     private:
@@ -139,81 +168,31 @@ namespace opensolid
         Axis<3>
         axis() const;
 
+        Circle<3>
+        scaledAbout(const Point<3>& point, double scale) const;
+
+        Circle<3>
+        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
+
+        using Transformable<Circle<3>, 3>::rotatedAbout;
+
+        Circle<3>
+        translatedBy(const Vector<double, 3>& vector);
+
+        Circle<3>
+        toLocalIn(const Frame<3>& frame) const;
+
+        Circle<3>
+        toGlobalFrom(const Frame<3>& frame) const;
+
+        Circle<3>
+        mirroredAbout(const Point<3>& point, const UnitVector<3>& mirrorDirection) const;
+
+        using Transformable<Circle<3>, 3>::mirroredAbout;
+
         static Circle<3>
         circumcircle(const Triangle<3>& triangle);
     };
 
     typedef Circle<3> Circle3d;
-
-    template <>
-    struct TranslationFunction<Circle<2>>
-    {
-        Circle<2>
-        operator()(const Circle<2>& circle, const Vector<double, 2>& vector) const;
-    };
-
-    template <>
-    struct TranslationFunction<Circle<3>>
-    {
-        Circle<3>
-        operator()(const Circle<3>& circle, const Vector<double, 3>& vector) const;
-    };
-
-    template <>
-    struct ScalingFunction<Circle<2>>
-    {
-        Circle<2>
-        operator()(const Circle<2>& circle, const Point<2>& originPoint, double scale) const;
-    };
-
-    template <>
-    struct ScalingFunction<Circle<3>>
-    {
-        Circle<3>
-        operator()(const Circle<3>& circle, const Point<3>& originPoint, double scale) const;
-    };
-
-    template <>
-    struct RotationFunction<Circle<2>>
-    {
-        Circle<2>
-        operator()(
-            const Circle<2>& circle,
-            const Point<2>& originPoint,
-            const Matrix<double, 2, 2>& rotationMatrix
-        ) const;
-    };
-
-    template <>
-    struct RotationFunction<Circle<3>>
-    {
-        Circle<3>
-        operator()(
-            const Circle<3>& circle,
-            const Point<3>& originPoint,
-            const Matrix<double, 3, 3>& rotationMatrix
-        ) const;
-    };
-
-    template <>
-    struct MirrorFunction<Circle<2>>
-    {
-        Circle<2>
-        operator()(
-            const Circle<2>& circle,
-            const Point<2>& originPoint,
-            const UnitVector<2>& normalVector
-        ) const;
-    };
-
-    template <>
-    struct MirrorFunction<Circle<3>>
-    {
-        Circle<3>
-        operator()(
-            const Circle<3>& circle,
-            const Point<3>& originPoint,
-            const UnitVector<3>& normalVector
-        ) const;
-    };
 }

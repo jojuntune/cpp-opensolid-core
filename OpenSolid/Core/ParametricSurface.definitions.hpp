@@ -31,10 +31,14 @@
 #include <OpenSolid/Core/BoundedArea.definitions.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.definitions.hpp>
+#include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/ParametricArea.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
+#include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
 
 namespace opensolid
 {
@@ -50,14 +54,8 @@ namespace opensolid
         static const int Value = 3;
     };
 
-    template <>
-    struct MorphedType<ParametricSurface3d, ParametricExpression<Point<3>, Point<3>>>
-    {
-        typedef ParametricSurface3d Type;
-    };
-
     class ParametricSurface3d :
-        public Transformable<ParametricSurface3d>
+        public Transformable<ParametricSurface3d, 3>
     {
     private:
         ParametricExpression<Point<3>, Point<2>> _expression;
@@ -99,49 +97,41 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         ParametricExpression<Vector<double, 3>, Point<2>>
         normalVector() const;
-    };
 
-    template <>
-    struct ScalingFunction<ParametricSurface3d>
-    {
         OPENSOLID_CORE_EXPORT
         ParametricSurface3d
-        operator()(
-            const ParametricSurface3d& surface,
-            const Point<3>& originPoint,
-            double scale
-        ) const;
-    };
+        scaledAbout(const Point<3>& point, double scale) const;
 
-    template <>
-    struct TranslationFunction<ParametricSurface3d>
-    {
         OPENSOLID_CORE_EXPORT
         ParametricSurface3d
-        operator()(const ParametricSurface3d& surface, const Vector<double, 3>& vector) const;
-    };
+        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
 
-    template <>
-    struct TransformationFunction<ParametricSurface3d, 3>
-    {
+        using Transformable<ParametricSurface3d, 3>::rotatedAbout;
+
         OPENSOLID_CORE_EXPORT
         ParametricSurface3d
-        operator()(
-            const ParametricSurface3d& surface,
-            const Point<3>& originPoint,
-            const Matrix<double, 3, 3>& transformationMatrix,
-            const Point<3>& destinationPoint
-        ) const;
-    };
+        translatedBy(const Vector<double, 3>& vector) const;
 
-    template <>
-    struct MorphingFunction<ParametricSurface3d, ParametricExpression<Point<3>, Point<3>>>
-    {
         OPENSOLID_CORE_EXPORT
         ParametricSurface3d
-        operator()(
-            const ParametricSurface3d& surface,
-            const ParametricExpression<Point<3>, Point<3>>& morphingExpression
-        ) const;
+        toLocalIn(const Frame<3>& frame) const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricSurface3d
+        toGlobalFrom(const Frame<3>& frame) const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricArea2d
+        toLocalIn(const Plane3d& plane) const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricSurface3d
+        projectedOnto(const Plane3d& plane) const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricSurface3d
+        mirroredAbout(const Point<3>& point, const UnitVector<3>& mirrorDirection) const;
+
+        using Transformable<ParametricSurface3d, 3>::mirroredAbout;
     };
 }

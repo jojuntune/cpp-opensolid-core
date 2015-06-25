@@ -28,6 +28,9 @@
 
 #include <OpenSolid/Core/Vector/DoubleVectorBase.declarations.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/Frame.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/UnitVector.definitions.hpp>
 #include <OpenSolid/Core/Vector.definitions.hpp>
 #include <OpenSolid/Core/Vector/VectorBase.hpp>
@@ -52,12 +55,6 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        DoubleVectorBase<iNumDimensions>::DoubleVectorBase(double value) :
-            VectorBase<double, iNumDimensions>(value) {
-        }
-
-        template <int iNumDimensions>
-        inline
         DoubleVectorBase<iNumDimensions>::DoubleVectorBase(double x, double y) :
             VectorBase<double, iNumDimensions>(x, y) {
         }
@@ -77,7 +74,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const UnitVector<iNumDimensions>
+        UnitVector<iNumDimensions>
         DoubleVectorBase<iNumDimensions>::normalized() const {
             double norm = this->norm();
             if (norm == opensolid::Zero()) {
@@ -85,6 +82,47 @@ namespace opensolid
                 return UnitVector<iNumDimensions>();
             }
             return UnitVector<iNumDimensions>((1.0 / norm) * this->components());
+        }
+
+        template <int iNumDimensions>
+        inline
+        Vector<double, iNumDimensions>
+        DoubleVectorBase<iNumDimensions>::rotatedBy(
+            const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
+        ) const {
+            return Vector<double, iNumDimensions>(rotationMatrix * this->components());
+        }
+
+        template <int iNumDimensions>
+        inline
+        Vector<double, iNumDimensions>
+        DoubleVectorBase<iNumDimensions>::toLocalIn(const Frame<iNumDimensions>& frame) const {
+            return Vector<double, iNumDimensions>(
+                frame.basisMatrix().transposeProduct(this->components())
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        Vector<double, iNumDimensions>
+        DoubleVectorBase<iNumDimensions>::toGlobalFrom(const Frame<iNumDimensions>& frame) const {
+            return Vector<double, iNumDimensions>(frame.basisMatrix() * this->components());
+        }
+
+        template <int iNumDimensions>
+        inline
+        Vector<double, iNumDimensions>
+        DoubleVectorBase<iNumDimensions>::projectedOnto(const Axis<iNumDimensions>& axis) const {
+            return this->dot(axis.directionVector()) * axis.directionVector();
+        }
+
+        template <int iNumDimensions>
+        inline
+        Vector<double, iNumDimensions>
+        DoubleVectorBase<iNumDimensions>::mirroredAlong(
+            const UnitVector<iNumDimensions>& mirrorDirection
+        ) const {
+            return derived() - 2.0 * this->dot(mirrorDirection) * mirrorDirection;
         }
 
         template <int iNumDimensions>

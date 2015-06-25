@@ -28,12 +28,17 @@
 
 #include <OpenSolid/Core/Sphere.definitions.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Circle.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
+#include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
 namespace opensolid
@@ -76,13 +81,65 @@ namespace opensolid
     }
 
     inline
-    const Box3d
+    Box3d
     Sphere3d::bounds() const {
         return Box3d(
             Interval(centerPoint().x() - radius(), centerPoint().x() + radius()),
             Interval(centerPoint().y() - radius(), centerPoint().y() + radius()),
             Interval(centerPoint().z() - radius(), centerPoint().z() + radius())
         );
+    }
+
+    inline
+    Sphere3d
+    Sphere3d::scaledAbout(const Point3d& point, double scale) const {
+        return Sphere3d(centerPoint().scaledAbout(point, scale), radius() * scale);
+    }
+
+    inline
+    Sphere3d
+    Sphere3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
+        return Sphere3d(centerPoint().rotatedAbout(point, rotationMatrix), radius());
+    }
+
+    inline
+    Sphere3d
+    Sphere3d::translatedBy(const Vector3d& vector) const {
+        return Sphere3d(centerPoint().translatedBy(vector), radius());
+    }
+
+    inline
+    Sphere3d
+    Sphere3d::toLocalIn(const Frame3d& frame) const {
+        return Sphere3d(centerPoint().toLocalIn(frame), radius());
+    }
+
+    inline
+    Sphere3d
+    Sphere3d::toGlobalFrom(const Frame3d& frame) const {
+        return Sphere3d(centerPoint().toGlobalFrom(frame), radius());
+    }
+
+    inline
+    LineSegment3d
+    Sphere3d::projectedOnto(const Axis3d& axis) const {
+        Point3d projectedCenter = centerPoint().projectedOnto(axis);
+        return LineSegment3d(
+            projectedCenter - radius() * axis.directionVector(),
+            projectedCenter + radius() * axis.directionVector()
+        );
+    }
+
+    inline
+    Circle3d
+    Sphere3d::projectedOnto(const Plane3d& plane) const {
+        return Circle3d(centerPoint().projectedOnto(plane), plane.normalVector(), radius());
+    }
+
+    inline
+    Sphere3d
+    Sphere3d::mirroredAbout(const Point3d& point, const UnitVector3d& mirrorDirection) const {
+        return Sphere3d(centerPoint().mirroredAbout(point, mirrorDirection), radius());
     }
     
     inline
@@ -95,74 +152,6 @@ namespace opensolid
         return (
             equalityFunction(firstSphere.centerPoint(), secondSphere.centerPoint(), precision) &&
             equalityFunction(firstSphere.radius(), secondSphere.radius(), precision)
-        );
-    }
-
-    inline
-    Sphere3d
-    ScalingFunction<Sphere3d>::operator()(
-        const Sphere3d& sphere,
-        const Point3d& originPoint,
-        double scale
-    ) const {
-        return Sphere3d(scaled(sphere.centerPoint(), originPoint, scale), scale * sphere.radius());
-    }
-
-    inline
-    Sphere3d
-    TranslationFunction<Sphere3d>::operator()(
-        const Sphere3d& sphere,
-        const Vector3d& vector
-    ) const {
-        return Sphere3d(translated(sphere.centerPoint(), vector), sphere.radius());
-    }
-
-    inline
-    Sphere3d
-    RotationFunction<Sphere3d>::operator()(
-        const Sphere3d& sphere,
-        const Point3d& originPoint,
-        const Matrix3d& rotationMatrix
-    ) const {
-        return Sphere3d(
-            rotated(sphere.centerPoint(), originPoint, rotationMatrix),
-            sphere.radius()
-        );
-    }
-
-    inline
-    Sphere3d
-    MirrorFunction<Sphere3d>::operator()(
-        const Sphere3d& sphere,
-        const Point3d& originPoint,
-        const UnitVector3d& normalVector
-    ) const {
-        return Sphere3d(mirrored(sphere.centerPoint(), originPoint, normalVector), sphere.radius());
-    }
-
-    inline
-    LineSegment3d
-    ProjectionFunction<Sphere3d, Axis3d>::operator()(
-        const Sphere3d& sphere,
-        const Axis3d& axis
-    ) const {
-        Point3d projectedCenter = sphere.centerPoint().projectedOnto(axis);
-        return LineSegment3d(
-            projectedCenter - sphere.radius() * axis.directionVector(),
-            projectedCenter + sphere.radius() * axis.directionVector()
-        );
-    }
-
-    inline
-    Circle3d
-    ProjectionFunction<Sphere3d, Plane3d>::operator()(
-        const Sphere3d& sphere,
-        const Plane3d& plane
-    ) const {
-        return Circle3d(
-            sphere.centerPoint().projectedOnto(plane),
-            plane.normalVector(),
-            sphere.radius()
         );
     }
 }

@@ -338,9 +338,8 @@ namespace opensolid
     bool
     operator==(Interval firstInterval, Interval secondInterval) {
         return (
-            firstInterval.isSingleton() &&
-            secondInterval.isSingleton() &&
-            firstInterval.lowerBound() == secondInterval.lowerBound()
+            firstInterval.lowerBound() == secondInterval.lowerBound() &&
+            firstInterval.upperBound() == secondInterval.upperBound()
         );
     }
 

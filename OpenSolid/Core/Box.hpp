@@ -39,37 +39,6 @@
 namespace opensolid
 {
     inline
-    Box1d::Box() {
-    }
-
-    inline
-    Box1d::Box(Interval value) :
-        detail::BoxBase<1>(value) {        
-    }
-
-    inline
-    Box1d::Box(const IntervalVector1d& intervalVector) :
-        detail::BoxBase<1>(intervalVector.components()) {
-    }
-
-    inline
-    Box1d::Box(const IntervalMatrix1d& components) :
-        detail::BoxBase<1>(components) {
-    }
-
-    inline
-    const Point1d
-    Box1d::interpolated(double xValue) const {
-        return minVertex() + Vector1d(xValue * x().width());
-    }
-
-    inline
-    const Box1d
-    Box1d::interpolated(Interval xInterval) const {
-        return minVertex() + IntervalVector1d(xInterval * x().width());
-    }
-
-    inline
     Box2d::Box() {
     }
 
@@ -89,15 +58,27 @@ namespace opensolid
     }
 
     inline
-    const Point2d
-    Box2d::interpolated(double xValue, double yValue) const {
-        return minVertex() + Vector2d(xValue * x().width(), yValue * y().width());
+    Point2d
+    Box2d::interpolated(double x, double y) const {
+        return minVertex() + Vector2d(x * this->x().width(), y * this->y().width());
     }
 
     inline
-    const Box2d
-    Box2d::interpolated(Interval xInterval, Interval yInterval) const {
-        return minVertex() + IntervalVector2d(xInterval * x().width(), yInterval * y().width());
+    Box2d
+    Box2d::interpolated(Interval x, Interval y) const {
+        return minVertex() + IntervalVector2d(x * this->x().width(), y * this->y().width());
+    }
+
+    inline
+    Box2d
+    Box2d::scaledAbout(const Point2d& point, double scale) const {
+        return Box2d(point + scale * (*this - point));
+    }
+
+    inline
+    Box2d
+    Box2d::translatedBy(const Vector2d& vector) const {
+        return *this + vector;
     }
 
     inline
@@ -120,82 +101,94 @@ namespace opensolid
     }
 
     inline
-    const Point3d
-    Box3d::interpolated(double xValue, double yValue, double zValue) const {
-        Vector3d vector(xValue * x().width(), yValue * y().width(), zValue * z().width());
+    Point3d
+    Box3d::interpolated(double x, double y, double z) const {
+        Vector3d vector(x * this->x().width(), y * this->y().width(), z * this->z().width());
         return minVertex() + vector;
     }
 
     inline
-    const Box3d
-    Box3d::interpolated(Interval xInterval, Interval yInterval, Interval zInterval) const {
+    Box3d
+    Box3d::interpolated(Interval x, Interval y, Interval z) const {
         IntervalVector3d intervalVector(
-            xInterval * x().width(),
-            yInterval * y().width(),
-            zInterval * z().width()
+            x * this->x().width(),
+            y * this->y().width(),
+            z * this->z().width()
         );
         return minVertex() + intervalVector;
     }
 
+    inline
+    Box3d
+    Box3d::scaledAbout(const Point3d& point, double scale) const {
+        return Box3d(point + scale * (*this - point));
+    }
+
+    inline
+    Box3d
+    Box3d::translatedBy(const Vector3d& vector) const {
+        return *this + vector;
+    }
+
     template <int iNumDimensions>
     inline
-    const Box<iNumDimensions>
+    Box<iNumDimensions>
     operator+(const Point<iNumDimensions>& point, const Vector<Interval, iNumDimensions>& vector) {
         return Box<iNumDimensions>(point.components() + vector.components());
     }
 
     template <int iNumDimensions>
     inline
-    const Box<iNumDimensions>
+    Box<iNumDimensions>
     operator+(const Box<iNumDimensions>& box, const Vector<double, iNumDimensions>& vector) {
         return Box<iNumDimensions>(box.components() + vector.components());
     }
 
     template <int iNumDimensions>
     inline
-    const Box<iNumDimensions>
+    Box<iNumDimensions>
     operator+(const Box<iNumDimensions>& box, const Vector<Interval, iNumDimensions>& vector) {
         return Box<iNumDimensions>(box.components() + vector.components());
     }
 
     template <int iNumDimensions>
     inline
-    const Box<iNumDimensions>
+    Box<iNumDimensions>
     operator-(const Point<iNumDimensions>& point, const Vector<Interval, iNumDimensions>& vector) {
         return Box<iNumDimensions>(point.components() - vector.components());
     }
 
     template <int iNumDimensions>
     inline
-    const Box<iNumDimensions>
+    Box<iNumDimensions>
     operator-(const Box<iNumDimensions>& box, const Vector<double, iNumDimensions>& vector) {
         return Box<iNumDimensions>(box.components() - vector.components());
     }
 
     template <int iNumDimensions>
     inline
-    const Box<iNumDimensions>
+    Box<iNumDimensions>
     operator-(const Box<iNumDimensions>& box, const Vector<Interval, iNumDimensions>& vector) {
         return Box<iNumDimensions>(box.components() - vector.components());
     }
 
     template <int iNumDimensions>
     inline
-    const Vector<Interval, iNumDimensions>
+    Vector<Interval, iNumDimensions>
     operator-(const Point<iNumDimensions>& point, const Box<iNumDimensions>& box) {
         return Vector<Interval, iNumDimensions>(point.components() - box.components());
     }
 
     template <int iNumDimensions>
     inline
-    const Vector<Interval, iNumDimensions>
+    Vector<Interval, iNumDimensions>
     operator-(const Box<iNumDimensions>& box, const Point<iNumDimensions>& point) {
         return Vector<Interval, iNumDimensions>(box.components() - point.components());
     }
 
     template <int iNumDimensions>
     inline
-    const Vector<Interval, iNumDimensions>
+    Vector<Interval, iNumDimensions>
     operator-(const Box<iNumDimensions>& firstBox, const Box<iNumDimensions>& secondBox) {
         return Vector<Interval, iNumDimensions>(firstBox.components() - secondBox.components());
     }
@@ -220,57 +213,5 @@ namespace opensolid
     const Box<iNumDimensions>&
     BoundsFunction<Box<iNumDimensions>>::operator()(const Box<iNumDimensions>& box) const {
         return box;
-    }
-
-    template <int iNumDimensions>
-    inline
-    const Box<iNumDimensions>
-    ScalingFunction<Box<iNumDimensions>>::operator()(
-        const Box<iNumDimensions>& box,
-        const Point<iNumDimensions>& originPoint,
-        double scale
-    ) const {
-        return Box<iNumDimensions>(
-            originPoint.components() + scale * (box.components() - originPoint.components())
-        );
-    }
-
-    template <int iNumDimensions>
-    inline
-    const Box<iNumDimensions>
-    TranslationFunction<Box<iNumDimensions>>::operator()(
-        const Box<iNumDimensions>& box,
-        const Vector<double, iNumDimensions>& vector
-    ) const {
-        return Box<iNumDimensions>(box.components() + vector.components());
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    const Box<iNumResultDimensions>
-    TransformationFunction<Box<iNumDimensions>, iNumResultDimensions>::operator()(
-        const Box<iNumDimensions>& box,
-        const Point<iNumDimensions>& originPoint,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
-        const Point<iNumResultDimensions>& destinationPoint
-    ) const {
-        return Box<iNumResultDimensions>(
-            destinationPoint.components() + matrix * (box.components() - originPoint.components())
-        );
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    inline
-    const Box<iNumResultDimensions>
-    MorphingFunction<
-        Box<iNumDimensions>,
-        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
-    >::operator()(
-        const Box<iNumDimensions>& box,
-        const ParametricExpression<
-            Point<iNumResultDimensions>,
-            Point<iNumDimensions>
-        >& morphingExpression
-    ) const {
-        return morphingExpression.evaluate(box);
     }
 }

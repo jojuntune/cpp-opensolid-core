@@ -50,12 +50,6 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        IntervalVectorBase<iNumDimensions>::IntervalVectorBase(Interval value) :
-            VectorBase<Interval, iNumDimensions>(value) {
-        }
-
-        template <int iNumDimensions>
-        inline
         IntervalVectorBase<iNumDimensions>::IntervalVectorBase(Interval x, Interval y) :
             VectorBase<Interval, iNumDimensions>(x, y) {
         }
@@ -75,7 +69,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const Vector<Interval, iNumDimensions>
+        Vector<Interval, iNumDimensions>
         IntervalVectorBase<iNumDimensions>::normalized() const {
             Interval norm = this->norm();
             if (norm == opensolid::Zero()) {
@@ -100,31 +94,21 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const Vector<double, iNumDimensions>
+        Vector<double, iNumDimensions>
         IntervalVectorBase<iNumDimensions>::minVertex() const {
             return Vector<double, iNumDimensions>(this->components().cwiseLowerBound());
         }
         
         template <int iNumDimensions>
         inline
-        const Vector<double, iNumDimensions>
+        Vector<double, iNumDimensions>
         IntervalVectorBase<iNumDimensions>::maxVertex() const {
             return Vector<double, iNumDimensions>(this->components().cwiseUpperBound());
         }
 
         template <>
         inline
-        const Vector<double, 1>
-        IntervalVectorBase<1>::vertex(int index) const {
-            assert(index >= 0 && index < 2);
-            return Vector<double, 1>(
-                index == 0 ? this->value().lowerBound() : this->value().upperBound()
-            );
-        }
-
-        template <>
-        inline
-        const Vector<double, 2>
+        Vector<double, 2>
         IntervalVectorBase<2>::vertex(int index) const {
             assert(index >= 0 && index < 4);
             return Vector<double, 2>(
@@ -135,7 +119,7 @@ namespace opensolid
 
         template <>
         inline
-        const Vector<double, 3>
+        Vector<double, 3>
         IntervalVectorBase<3>::vertex(int index) const {
             assert(index >= 0 && index < 8);
             return Vector<double, 3>(
@@ -147,21 +131,21 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const IntervalVectorVertices<iNumDimensions>
+        IntervalVectorVertices<iNumDimensions>
         IntervalVectorBase<iNumDimensions>::vertices() const {
             return IntervalVectorVertices<iNumDimensions>(derived());
         }
         
         template <int iNumDimensions>
         inline
-        const Vector<double, iNumDimensions>
+        Vector<double, iNumDimensions>
         IntervalVectorBase<iNumDimensions>::centroid() const {
             return Vector<double, iNumDimensions>(this->components().cwiseMedian());
         }
         
         template <int iNumDimensions>
         inline
-        const Vector<double, iNumDimensions>
+        Vector<double, iNumDimensions>
         IntervalVectorBase<iNumDimensions>::randomVector() const {
             return Vector<double, iNumDimensions>(
                 this->components().map(
@@ -174,7 +158,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const Vector<double, iNumDimensions>
+        Vector<double, iNumDimensions>
         IntervalVectorBase<iNumDimensions>::diagonalVector() const {
             return Vector<double, iNumDimensions>(this->components().cwiseWidth());
         }
@@ -335,7 +319,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const Vector<Interval, iNumDimensions>
+        Vector<Interval, iNumDimensions>
         IntervalVectorBase<iNumDimensions>::unit() {
             return Vector<Interval, iNumDimensions>(
                 Matrix<Interval, iNumDimensions, 1>::constant(Interval::unit())
@@ -344,7 +328,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const Vector<Interval, iNumDimensions>
+        Vector<Interval, iNumDimensions>
         IntervalVectorBase<iNumDimensions>::empty() {
             return Vector<Interval, iNumDimensions>(
                 Matrix<Interval, iNumDimensions, 1>::constant(Interval::empty())
@@ -353,7 +337,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const Vector<Interval, iNumDimensions>
+        Vector<Interval, iNumDimensions>
         IntervalVectorBase<iNumDimensions>::whole() {
             return Vector<Interval, iNumDimensions>(
                 Matrix<Interval, iNumDimensions, 1>::constant(Interval::whole())

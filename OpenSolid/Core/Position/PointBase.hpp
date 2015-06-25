@@ -28,10 +28,14 @@
 
 #include <OpenSolid/Core/Position/PointBase.definitions.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Cartesian/CartesianBase.hpp>
+#include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 #include <OpenSolid/Core/Vector.hpp>
 
 namespace opensolid
@@ -48,12 +52,6 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         PointBase<iNumDimensions>::PointBase() {
-        }
-
-        template <int iNumDimensions>
-        inline
-        PointBase<iNumDimensions>::PointBase(double value) :
-            CartesianBase<double, iNumDimensions>(value) {
         }
 
         template <int iNumDimensions>
@@ -90,7 +88,31 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const Box<iNumDimensions>
+        bool
+        PointBase<iNumDimensions>::isEqualTo(
+            const Point<iNumDimensions>& other,
+            double precision
+        ) const {
+            return (derived() - other).isZero(precision);
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        PointBase<iNumDimensions>::isOrigin(double precision) const {
+            return this->components().cwiseSquared().sum() == Zero(precision * precision);
+        }
+
+        template <int iNumDimensions>
+        inline
+        double
+        PointBase<iNumDimensions>::distanceAlong(const Axis<iNumDimensions>& axis) const {
+            return (derived() - axis.originPoint()).dot(axis.directionVector());
+        }
+
+        template <int iNumDimensions>
+        inline
+        Box<iNumDimensions>
         PointBase<iNumDimensions>::hull(const Point<iNumDimensions>& other) const {
             return Box<iNumDimensions>(
                 this->components().binaryMap(
@@ -104,7 +126,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const Box<iNumDimensions>
+        Box<iNumDimensions>
         PointBase<iNumDimensions>::hull(const Box<iNumDimensions>& box) const {
             return Box<iNumDimensions>(
                 this->components().binaryMap(
@@ -118,9 +140,67 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        bool
-        PointBase<iNumDimensions>::isOrigin(double precision) const {
-            return this->components().cwiseSquared().sum() == Zero(precision * precision);
+        Point<iNumDimensions>
+        PointBase<iNumDimensions>::scaledAbout(
+            const Point<iNumDimensions>& other,
+            double scale
+        ) const {
+            return other + scale * (derived() - other);
+        }
+
+        template <int iNumDimensions>
+        inline
+        Point<iNumDimensions>
+        PointBase<iNumDimensions>::rotatedAbout(
+            const Point<iNumDimensions>& other,
+            const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
+        ) const {
+            return other + (derived() - other).rotatedBy(rotationMatrix);
+        }
+
+        template <int iNumDimensions>
+        inline
+        Point<iNumDimensions>
+        PointBase<iNumDimensions>::translatedBy(
+            const Vector<double, iNumDimensions>& vector
+        ) const {
+            return derived() + vector;
+        }
+
+        template <int iNumDimensions>
+        inline
+        Point<iNumDimensions>
+        PointBase<iNumDimensions>::toLocalIn(const Frame<iNumDimensions>& frame) const {
+            return Point<iNumDimensions>(
+                (derived() - frame.originPoint()).toLocalIn(frame).components()
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        Point<iNumDimensions>
+        PointBase<iNumDimensions>::toGlobalFrom(const Frame<iNumDimensions>& frame) const {
+            return (
+                frame.originPoint() +
+                Vector<double, iNumDimensions>(this->components()).toGlobalFrom(frame)
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        Point<iNumDimensions>
+        PointBase<iNumDimensions>::mirroredAbout(
+            const Point<iNumDimensions>& other,
+            const UnitVector<iNumDimensions>& mirrorDirection
+        ) const {
+            return derived() - 2.0 * (derived() - other).dot(mirrorDirection) * mirrorDirection;
+        }
+
+        template <int iNumDimensions>
+        inline
+        Point<iNumDimensions>
+        PointBase<iNumDimensions>::projectedOnto(const Axis<iNumDimensions>& axis) const {
+            return axis.originPoint() + distanceAlong(axis) * axis.directionVector();
         }
 
         template <int iNumDimensions>
@@ -139,7 +219,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const Point<iNumDimensions>
+        Point<iNumDimensions>
         PointBase<iNumDimensions>::origin() {
             return Point<iNumDimensions>(Matrix<double, iNumDimensions, 1>::zero());
         }

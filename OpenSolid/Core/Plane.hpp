@@ -30,7 +30,7 @@
 
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/CoordinateSystem.hpp>
+#include <OpenSolid/Core/Handedness.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
@@ -39,9 +39,15 @@
 namespace opensolid
 {
     inline
-    const Point<3>&
-    Plane3d::originPoint() const {
-        return _originPoint;
+    UnitVector3d
+    Plane3d::xDirectionVector() const {
+        return directionVector(0);
+    }
+
+    inline
+    UnitVector3d
+    Plane3d::yDirectionVector() const {
+        return directionVector(1);
     }
 
     inline
@@ -49,35 +55,10 @@ namespace opensolid
     Plane3d::normalVector() const {
         return _normalVector;
     }
-    
-    inline
-    bool
-    Plane3d::contains(const Point3d& point, double precision) const {
-        return point.distanceTo(*this) == Zero(precision);
-    }
 
     inline
-    Plane3d
-    ScalingFunction<Plane3d>::operator()(
-        const Plane3d& plane,
-        const Point3d& originPoint,
-        double scale
-    ) const {
-        return Plane3d(
-            scaled(plane.originPoint(), originPoint, scale),
-            scale >= 0.0 ? plane.normalVector() : -plane.normalVector()
-        );
-    }
-
-    inline
-    Plane3d
-    TranslationFunction<Plane3d>::operator()(
-        const Plane3d& plane,
-        const Vector<double, 3>& vector
-    ) const {
-        return Plane3d(
-            translated(plane.originPoint(), vector),
-            plane.normalVector()
-        );
+    Handedness
+    Plane3d::handedness() const {
+        return _handedness;
     }
 }

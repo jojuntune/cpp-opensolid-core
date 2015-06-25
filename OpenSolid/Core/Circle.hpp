@@ -66,6 +66,56 @@ namespace opensolid
 
     inline
     Circle2d
+    Circle2d::scaledAbout(const Point2d& point, double scale) const {
+        return Circle2d(centerPoint().scaledAbout(point, scale), scale * radius());
+    }
+
+    inline
+    Circle2d
+    Circle2d::rotatedAbout(const Point2d& point, const Matrix2d& rotationMatrix) const {
+        return Circle2d(centerPoint().rotatedAbout(point, rotationMatrix), radius());
+    }
+
+    inline
+    Circle2d
+    Circle2d::translatedBy(const Vector2d& vector) {
+        return Circle2d(centerPoint().translatedBy(vector), radius());
+    }
+
+    inline
+    Circle2d
+    Circle2d::toLocalIn(const Frame2d& frame) const {
+        return Circle2d(centerPoint().toLocalIn(frame), radius());
+    }
+
+    inline
+    Circle2d
+    Circle2d::toGlobalFrom(const Frame2d& frame) const {
+        return Circle2d(centerPoint().toGlobalFrom(frame), radius());
+    }
+
+    inline
+    Circle<3>
+    Circle2d::toGlobalFrom(const Plane3d& plane) const {
+        return Circle3d(centerPoint().toGlobalFrom(plane), plane.normalVector(), radius());
+    }
+
+    inline
+    LineSegment2d
+    Circle2d::projectedOnto(const Axis2d& axis) const {
+        Point2d projectedCenter = centerPoint().projectedOnto(axis);
+        Vector2d offset = radius() * axis.directionVector();
+        return LineSegment2d(projectedCenter - offset, projectedCenter + offset);
+    }
+
+    inline
+    Circle2d
+    Circle2d::mirroredAbout(const Point2d& point, const UnitVector2d& mirrorDirection) const {
+        return Circle2d(centerPoint().mirroredAbout(point, mirrorDirection), radius());
+    }
+
+    inline
+    Circle2d
     Circle2d::circumcircle(const Triangle2d& triangle) {
         return Circle2d(triangle.vertex(0), triangle.vertex(1), triangle.vertex(2));
     }
@@ -137,107 +187,59 @@ namespace opensolid
 
     inline
     Circle3d
+    Circle3d::scaledAbout(const Point3d& point, double scale) const {
+        return Circle3d(centerPoint().scaledAbout(point, scale), normalVector(), scale * radius());
+    }
+
+    inline
+    Circle3d
+    Circle3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
+        return Circle3d(
+            centerPoint().rotatedAbout(point, rotationMatrix),
+            normalVector().rotatedBy(rotationMatrix),
+            radius()
+        );
+    }
+
+    inline
+    Circle3d
+    Circle3d::translatedBy(const Vector3d& vector) {
+        return Circle3d(centerPoint().translatedBy(vector), normalVector(), radius());
+    }
+
+    inline
+    Circle3d
+    Circle3d::toLocalIn(const Frame3d& frame) const {
+        return Circle3d(
+            centerPoint().toLocalIn(frame),
+            normalVector().toLocalIn(frame),
+            radius()
+        );
+    }
+
+    inline
+    Circle3d
+    Circle3d::toGlobalFrom(const Frame3d& frame) const {
+        return Circle3d(
+            centerPoint().toGlobalFrom(frame),
+            normalVector().toGlobalFrom(frame),
+            radius()
+        );
+    }
+
+    inline
+    Circle3d
+    Circle3d::mirroredAbout(const Point3d& point, const UnitVector3d& mirrorDirection) const {
+        return Circle3d(
+            centerPoint().mirroredAbout(point, mirrorDirection),
+            normalVector().mirroredAlong(mirrorDirection),
+            radius()
+        );
+    }
+
+    inline
+    Circle3d
     Circle3d::circumcircle(const Triangle3d& triangle) {
         return Circle3d(triangle.vertex(0), triangle.vertex(1), triangle.vertex(2));
-    }
-
-    inline
-    Circle2d
-    TranslationFunction<Circle2d>::operator()(
-        const Circle2d& circle,
-        const Vector2d& vector
-    ) const {
-        return Circle2d(translated(circle.centerPoint(), vector), circle.radius());
-    }
-
-    inline
-    Circle3d
-    TranslationFunction<Circle3d>::operator()(
-        const Circle3d& circle,
-        const Vector3d& vector
-    ) const {
-        return Circle3d(
-            translated(circle.centerPoint(), vector),
-            circle.normalVector(),
-            circle.radius()
-        );
-    }
-
-    inline
-    Circle2d
-    ScalingFunction<Circle2d>::operator()(
-        const Circle2d& circle,
-        const Point2d& originPoint,
-        double scale
-    ) const {
-        return Circle2d(
-            scaled(circle.centerPoint(), originPoint, scale),
-            circle.radius() * scale
-        );
-    }
-
-    inline
-    Circle3d
-    ScalingFunction<Circle3d>::operator()(
-        const Circle3d& circle,
-        const Point3d& originPoint,
-        double scale
-    ) const {
-        return Circle3d(
-            scaled(circle.centerPoint(), originPoint, scale),
-            scale >= 0.0 ? circle.normalVector() : -circle.normalVector(),
-            circle.radius() * scale
-        );
-    }
-
-    inline
-    Circle2d
-    RotationFunction<Circle2d>::operator()(
-        const Circle2d& circle,
-        const Point2d& originPoint,
-        const Matrix<double, 2, 2>& rotationMatrix
-    ) const {
-        return Circle2d(
-            rotated(circle.centerPoint(), originPoint, rotationMatrix),
-            circle.radius()
-        );
-    }
-
-    inline
-    Circle3d
-    RotationFunction<Circle3d>::operator()(
-        const Circle3d& circle,
-        const Point3d& originPoint,
-        const Matrix<double, 3, 3>& rotationMatrix
-    ) const {
-        return Circle3d(
-            rotated(circle.centerPoint(), originPoint, rotationMatrix),
-            rotated(circle.normalVector(), originPoint, rotationMatrix),
-            circle.radius()
-        );
-    }
-
-    inline
-    Circle2d
-    MirrorFunction<Circle2d>::operator()(
-        const Circle2d& circle,
-        const Point2d& originPoint,
-        const UnitVector2d& normalVector
-    ) const {
-        return Circle2d(mirrored(circle.centerPoint(), originPoint, normalVector), circle.radius());
-    }
-
-    inline
-    Circle3d
-    MirrorFunction<Circle3d>::operator()(
-        const Circle3d& circle,
-        const Point3d& originPoint,
-        const UnitVector3d& normalVector
-    ) const {
-        return Circle3d(
-            mirrored(circle.centerPoint(), originPoint, normalVector),
-            mirrored(circle.normalVector(), originPoint, normalVector),
-            circle.radius()
-        );
     }
 }

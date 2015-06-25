@@ -45,8 +45,6 @@ namespace opensolid
         protected:
             VectorBase();
 
-            VectorBase(TScalar value);
-
             VectorBase(TScalar x, TScalar y);
 
             VectorBase(TScalar x, TScalar y, TScalar z);
@@ -69,17 +67,17 @@ namespace opensolid
             dot(const Vector<Interval, iNumDimensions>& other) const;
 
             template <class TOtherScalar>
-            const Vector<Interval, iNumDimensions>
+            Vector<Interval, iNumDimensions>
             hull(const Vector<TOtherScalar, iNumDimensions>& other) const;
 
             template <class TOtherScalar>
-            const Vector<Interval, iNumDimensions>
+            Vector<Interval, iNumDimensions>
             intersection(const Vector<TOtherScalar, iNumDimensions>& other) const;
 
-            static const Vector<TScalar, iNumDimensions>
+            static Vector<TScalar, iNumDimensions>
             zero();
 
-            static const Vector<TScalar, iNumDimensions>
+            static Vector<TScalar, iNumDimensions>
             random();
         };
     }

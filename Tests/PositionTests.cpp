@@ -24,7 +24,6 @@
 
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Box.hpp>
-#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
@@ -42,7 +41,7 @@ TEST_CASE("Transformation") {
 
 TEST_CASE("Points") {
     Point3d point1(1, 2, 3);
-    Point3d point2(Vector3d(1, 2, 3));
+    Point3d point2(Vector3d(1, 2, 3).components());
     Point3d point3(4, 5, 6);
     Point3d origin = Point3d::origin();
     REQUIRE((point1 - point2).isZero());
@@ -50,17 +49,6 @@ TEST_CASE("Points") {
     REQUIRE(origin.isOrigin());
     REQUIRE((point1 + Vector3d(3, 3, 3) - point3).isZero());
     REQUIRE((point1.rotatedAbout(Axis3d::x(), M_PI / 2) - Point3d(1, -3, 2)).isZero());
-}
-
-TEST_CASE("Boxes") {
-    Box3d box1(Interval(1, 2), Interval(3, 4), Interval(5, 6));
-    Box3d projected = box1.projectedOnto(Plane3d::yz());
-    REQUIRE(projected.x().lowerBound() == Zero());
-    REQUIRE(projected.x().upperBound() == Zero());
-    REQUIRE((projected.y().lowerBound() - box1.y().lowerBound()) == Zero());
-    REQUIRE((projected.y().upperBound() - box1.y().upperBound()) == Zero());
-    REQUIRE((projected.z().lowerBound() - box1.z().lowerBound()) == Zero());
-    REQUIRE((projected.z().upperBound() - box1.z().upperBound()) == Zero());
 }
 
 TEST_CASE("Mixed operations") {
@@ -125,13 +113,13 @@ TEST_CASE("2D point predicates") {
     Axis2d axis(Point2d(1, 1), Vector2d(2, 1).normalized());
     LineSegment2d lineSegment(Point2d(0, 1), Point2d(1, 0));
 
-    REQUIRE(axis.contains(Point2d(3, 2)));
-    REQUIRE_FALSE(axis.contains(Point2d(3, 3)));
+    REQUIRE(Point2d(3, 2).isOn(axis));
+    REQUIRE_FALSE(Point2d(3, 3).isOn(axis));
 
-    REQUIRE(lineSegment.contains(Point2d(0.5, 0.5)));
-    REQUIRE(lineSegment.contains(Point2d(0, 1)));
-    REQUIRE_FALSE(lineSegment.contains(Point2d(-1, 2)));
-    REQUIRE_FALSE(lineSegment.contains(Point2d(1, 1)));
+    REQUIRE(Point2d(0.5, 0.5).isOn(lineSegment));
+    REQUIRE(Point2d(0, 1).isOn(lineSegment));
+    REQUIRE_FALSE(Point2d(-1, 2).isOn(lineSegment));
+    REQUIRE_FALSE(Point2d(1, 1).isOn(lineSegment));
 }
 
 TEST_CASE("3D point predicates") {
@@ -140,24 +128,24 @@ TEST_CASE("3D point predicates") {
     LineSegment3d lineSegment(Point3d(0, 0, 1), Point3d(1, 1, 0));
     Triangle3d triangle(Point3d(1, 0, 0), Point3d(0, 1, 0), Point3d(0, 0, 1));
 
-    REQUIRE(axis.contains(Point3d(2, 3, 4)));
-    REQUIRE_FALSE(axis.contains(Point3d(2, 3, 5)));
+    REQUIRE(Point3d(2, 3, 4).isOn(axis));
+    REQUIRE_FALSE(Point3d(2, 3, 5).isOn(axis));
 
-    REQUIRE(plane.contains(Point3d(0, 0, 2)));
-    REQUIRE_FALSE(plane.contains(Point3d::origin()));
+    REQUIRE(Point3d(0, 0, 2).isOn(plane));
+    REQUIRE_FALSE(Point3d::origin().isOn(plane));
 
-    REQUIRE(lineSegment.contains(lineSegment.centroid()));
-    REQUIRE(lineSegment.contains(lineSegment.endVertex()));
+    REQUIRE(lineSegment.centroid().isOn(lineSegment));
+    REQUIRE(lineSegment.endVertex().isOn(lineSegment));
     Point3d extendedPoint(2, 2, -1);
-    REQUIRE(lineSegment.axis().contains(extendedPoint));
-    REQUIRE_FALSE(lineSegment.contains(extendedPoint));
+    REQUIRE(extendedPoint.isOn(lineSegment.axis()));
+    REQUIRE_FALSE(extendedPoint.isOn(lineSegment));
 
-    REQUIRE(triangle.contains(triangle.centroid()));
-    REQUIRE(triangle.contains(triangle.vertex(1)));
+    REQUIRE(triangle.centroid().isOn(triangle));
+    REQUIRE(triangle.vertex(1).isOn(triangle));
     Point3d planarPoint(-1, 0, 2);
-    REQUIRE(triangle.plane().contains(planarPoint));
-    REQUIRE_FALSE(triangle.contains(planarPoint));
-    REQUIRE_FALSE(triangle.contains(Point3d(1, 1, 1)));
+    REQUIRE(planarPoint.isOn(triangle.plane()));
+    REQUIRE_FALSE(planarPoint.isOn(triangle));
+    REQUIRE_FALSE(Point3d(1, 1, 1).isOn(triangle));
 }
 
 TEST_CASE("Hull") {

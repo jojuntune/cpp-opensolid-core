@@ -34,6 +34,7 @@
 #include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 
 namespace opensolid
 {

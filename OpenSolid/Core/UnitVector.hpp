@@ -29,48 +29,12 @@
 #include <OpenSolid/Core/UnitVector.definitions.hpp>
 
 #include <OpenSolid/Core/Convertible.hpp>
+#include <OpenSolid/Core/Quaternion.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Vector.hpp>
 
 namespace opensolid
 {
-    inline
-    UnitVector1d::UnitVector() :
-        Vector1d() {
-    }
-
-    inline
-    UnitVector1d::UnitVector(double x) :
-        Vector1d(x) {
-
-        assert(abs(x) - 1.0 == opensolid::Zero());
-    }
-
-    inline
-    UnitVector1d::UnitVector(const Matrix1d& components) :
-        Vector1d(components) {
-
-        assert(abs(components.value()) - 1.0 == opensolid::Zero());
-    }
-
-    inline
-    double
-    UnitVector1d::norm() {
-        return 1.0;
-    }
-
-    inline
-    double
-    UnitVector1d::squaredNorm() const {
-        return 1.0;
-    }
-
-    inline
-    const UnitVector1d
-    UnitVector1d::normalized() const {
-        return *this;
-    }
-
     inline
     UnitVector2d::UnitVector() :
         Vector2d() {
@@ -103,15 +67,59 @@ namespace opensolid
     }
 
     inline
-    const UnitVector2d
+    UnitVector2d
     UnitVector2d::normalized() const {
         return *this;
     }
 
     inline
-    const UnitVector2d
+    UnitVector2d
     UnitVector2d::unitOrthogonal() const {
         return UnitVector2d(-y(), x());
+    }
+
+    inline
+    UnitVector2d
+    UnitVector2d::rotatedBy(double angle) const {
+        return rotatedBy(Quaternion2d(angle).rotationMatrix());
+    }
+
+    inline
+    UnitVector2d
+    UnitVector2d::rotatedBy(const Matrix2d& rotationMatrix) const {
+        return UnitVector2d(rotationMatrix * components());
+    }
+
+    inline
+    UnitVector2d
+    UnitVector2d::toLocalIn(const Frame2d& frame) const {
+        return UnitVector2d(frame.basisMatrix().transposeProduct(components()));
+    }
+
+    inline
+    UnitVector2d
+    UnitVector2d::toGlobalFrom(const Frame2d& frame) const {
+        return UnitVector2d(frame.basisMatrix() * components());
+    }
+
+    inline
+    UnitVector3d
+    UnitVector2d::toGlobalFrom(const Plane3d& plane) const {
+        return UnitVector3d(plane.basisMatrix() * components());
+    }
+
+    inline
+    UnitVector2d
+    UnitVector2d::mirroredAlong(const UnitVector2d& mirrorDirection) const {
+        return UnitVector2d(
+            (*this - 2 * this->dot(mirrorDirection) * mirrorDirection).components()
+        );
+    }
+
+    inline
+    UnitVector2d
+    UnitVector2d::mirroredAbout(const Axis2d& axis) const {
+        return mirroredAlong(axis.normalVector());
     }
 
     inline
@@ -152,69 +160,46 @@ namespace opensolid
     }
 
     inline
-    const UnitVector1d
-    operator-(const UnitVector1d& unitVector) {
-        return UnitVector1d(unitVector.value());
+    UnitVector3d
+    UnitVector3d::rotatedBy(const Matrix3d& rotationMatrix) const {
+        return UnitVector3d(rotationMatrix * components());
     }
 
     inline
-    const UnitVector2d
+    UnitVector3d
+    UnitVector3d::toLocalIn(const Frame3d& frame) const {
+        return UnitVector3d(frame.basisMatrix().transposeProduct(components()));
+    }
+
+    inline
+    UnitVector3d
+    UnitVector3d::toGlobalFrom(const Frame3d& frame) const {
+        return UnitVector3d(frame.basisMatrix() * components());
+    }
+
+    inline
+    UnitVector3d
+    UnitVector3d::mirroredAlong(const UnitVector3d& mirrorDirection) const {
+        return UnitVector3d(
+            (*this - 2 * this->dot(mirrorDirection) * mirrorDirection).components()
+        );
+    }
+
+    inline
+    UnitVector3d
+    UnitVector3d::mirroredAbout(const Plane3d& plane) const {
+        return mirroredAlong(plane.normalVector());
+    }
+
+    inline
+    UnitVector2d
     operator-(const UnitVector2d& unitVector) {
         return UnitVector2d(-unitVector.x(), -unitVector.y());
     }
 
     inline
-    const UnitVector3d
+    UnitVector3d
     operator-(const UnitVector3d& unitVector) {
         return UnitVector3d(-unitVector.x(), -unitVector.y(), -unitVector.z());
-    }
-
-    template <int iNumDimensions>
-    std::ostream&
-    operator<<(std::ostream& stream, const UnitVector<iNumDimensions>& unitVector) {
-        stream << "UnitVector" << iNumDimensions << "d";
-        stream << "(";
-        for (int index = 0; index < iNumDimensions; ++index) {
-            stream << unitVector.component(index);
-            if (index < iNumDimensions - 1) {
-                stream << ",";
-            }
-        }
-        stream << ")";
-        return stream;
-    }
-
-    template <int iNumDimensions>
-    inline
-    const UnitVector<iNumDimensions>&
-    TranslationFunction<UnitVector<iNumDimensions>>::operator()(
-        const UnitVector<iNumDimensions>& unitVector,
-        const Vector<double, iNumDimensions>& vector
-    ) const {
-        return unitVector;
-    }
-
-    template <int iNumDimensions>
-    inline
-    UnitVector<iNumDimensions>
-    RotationFunction<UnitVector<iNumDimensions>>::operator()(
-        const UnitVector<iNumDimensions>& unitVector,
-        const Point<iNumDimensions>& originPoint,
-        const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
-    ) const {
-        return UnitVector<iNumDimensions>(rotationMatrix * unitVector.components());
-    }
-
-    template <int iNumDimensions>
-    inline
-    UnitVector<iNumDimensions>
-    MirrorFunction<UnitVector<iNumDimensions>>::operator()(
-        const UnitVector<iNumDimensions>& unitVector,
-        const Point<iNumDimensions>& originPoint,
-        const UnitVector<iNumDimensions>& normalVector
-    ) const {
-        return UnitVector<iNumDimensions>(
-            (unitVector - 2 * (unitVector.dot(normalVector)) * normalVector).components()
-        );
     }
 }

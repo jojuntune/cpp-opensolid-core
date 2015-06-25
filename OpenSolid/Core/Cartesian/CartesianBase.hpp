@@ -41,12 +41,6 @@ namespace opensolid
 
         template <class TScalar, int iNumDimensions>
         inline
-        CartesianBase<TScalar, iNumDimensions>::CartesianBase(TScalar value) :
-            _components(value) {
-        }
-
-        template <class TScalar, int iNumDimensions>
-        inline
         CartesianBase<TScalar, iNumDimensions>::CartesianBase(TScalar x, TScalar y) :
             _components(x, y) {
         }
@@ -120,22 +114,6 @@ namespace opensolid
         TScalar&
         CartesianBase<TScalar, iNumDimensions>::operator()(int index) {
             return components()(index);
-        }
-
-        template <class TScalar, int iNumDimensions>
-        inline
-        TScalar
-        CartesianBase<TScalar, iNumDimensions>::value() const {
-            static_assert(iNumDimensions == 1, "value() only defined for 1D objects");
-            return *data();
-        }
-
-        template <class TScalar, int iNumDimensions>
-        inline
-        TScalar&
-        CartesianBase<TScalar, iNumDimensions>::value() {
-            static_assert(iNumDimensions == 1, "value() only defined for 1D objects");
-            return *data();
         }
 
         template <class TScalar, int iNumDimensions>

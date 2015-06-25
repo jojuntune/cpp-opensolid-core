@@ -67,46 +67,45 @@ namespace opensolid
     }
 
     ParametricSurface3d
-    ScalingFunction<ParametricSurface3d>::operator()(
-        const ParametricSurface3d& surface,
-        const Point3d& originPoint,
-        double scale
-    ) const {
-        return ParametricSurface3d(
-            scaled(surface.expression(), originPoint, scale),
-            surface.domain()
-        );
+    ParametricSurface3d::scaledAbout(const Point3d& point, double scale) const {
+        return ParametricSurface3d(expression().scaledAbout(point, scale), domain());
     }
 
     ParametricSurface3d
-    TranslationFunction<ParametricSurface3d>::operator()(
-        const ParametricSurface3d& surface,
-        const Vector3d& vector
-    ) const {
-        return ParametricSurface3d(surface.expression() + vector, surface.domain());
+    ParametricSurface3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
+        return ParametricSurface3d(expression().rotatedAbout(point, rotationMatrix), domain());
     }
 
     ParametricSurface3d
-    TransformationFunction<ParametricSurface3d, 3>::operator()(
-        const ParametricSurface3d& surface,
-        const Point3d& originPoint,
-        const Matrix3d& transformationMatrix,
-        const Point3d& destinationPoint
-    ) const {
-        return ParametricSurface3d(
-            transformed(surface.expression(), originPoint, transformationMatrix, destinationPoint),
-            surface.domain()
-        );
+    ParametricSurface3d::translatedBy(const Vector3d& vector) const {
+        return ParametricSurface3d(expression().translatedBy(vector), domain());
     }
 
     ParametricSurface3d
-    MorphingFunction<ParametricSurface3d, ParametricExpression<Point3d, Point3d>>::operator()(
-        const ParametricSurface3d& surface,
-        const ParametricExpression<Point3d, Point3d>& morphingExpression
+    ParametricSurface3d::toLocalIn(const Frame3d& frame) const {
+        return ParametricSurface3d(expression().toLocalIn(frame), domain());
+    }
+
+    ParametricSurface3d
+    ParametricSurface3d::toGlobalFrom(const Frame3d& frame) const {
+        return ParametricSurface3d(expression().toGlobalFrom(frame), domain());
+    }
+
+    ParametricArea2d
+    ParametricSurface3d::toLocalIn(const Plane3d& plane) const {
+        return ParametricArea2d(expression().toLocalIn(plane), domain());
+    }
+
+    ParametricSurface3d
+    ParametricSurface3d::projectedOnto(const Plane3d& plane) const {
+        return ParametricSurface3d(expression().projectedOnto(plane), domain());
+    }
+
+    ParametricSurface3d
+    ParametricSurface3d::mirroredAbout(
+        const Point3d& point,
+        const UnitVector3d& mirrorDirection
     ) const {
-        return ParametricSurface3d(
-            morphingExpression.composed(surface.expression()),
-            surface.domain()
-        );
+        return ParametricSurface3d(expression().mirroredAbout(point, mirrorDirection), domain());
     }
 }

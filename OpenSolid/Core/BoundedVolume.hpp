@@ -48,7 +48,7 @@ namespace opensolid
     }
 
     inline
-    const Box3d
+    Box3d
     BoundedVolume3d::bounds() const {
         return boundaries().bounds();
     }

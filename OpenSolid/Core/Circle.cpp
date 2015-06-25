@@ -120,18 +120,17 @@ namespace opensolid
 
         Plane3d plane(firstPoint + 0.5 * (secondPoint - firstPoint), normalVector);
 
-        if (!plane.contains(firstPoint) || !plane.contains(secondPoint)) {
+        if (!firstPoint.isOn(plane) || !secondPoint.isOn(plane)) {
             throw Error(new PlaceholderError());
         }
 
-        PlanarCoordinateSystem3d planarCoordinateSystem = plane.coordinateSystem();
         Circle2d circle2d(
             radius,
             COUNTERCLOCKWISE,
-            firstPoint / planarCoordinateSystem,
-            secondPoint / planarCoordinateSystem
+            firstPoint.toLocalIn(plane),
+            secondPoint.toLocalIn(plane)
         );
-        _centerPoint = planarCoordinateSystem * circle2d.centerPoint();
+        _centerPoint = circle2d.centerPoint().toGlobalFrom(plane);
         _radius = circle2d.radius();
     }
 
@@ -150,13 +149,12 @@ namespace opensolid
         }
         
         Plane3d plane(secondPoint, _normalVector);
-        PlanarCoordinateSystem3d planarCoordinateSystem = plane.coordinateSystem();
         Circle2d circle2d(
-            firstPoint / planarCoordinateSystem,
-            secondPoint / planarCoordinateSystem,
-            thirdPoint / planarCoordinateSystem
+            firstPoint.toLocalIn(plane),
+            secondPoint.toLocalIn(plane),
+            thirdPoint.toLocalIn(plane)
         );
-        _centerPoint = planarCoordinateSystem * circle2d.centerPoint();
+        _centerPoint = circle2d.centerPoint().toGlobalFrom(plane);
         _radius = circle2d.radius();
     }
 }

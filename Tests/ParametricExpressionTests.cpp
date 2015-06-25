@@ -309,14 +309,14 @@ TEST_CASE("Component") {
 }
 
 TEST_CASE("Transformation") {
-    CoordinateSystem3d coordinateSystem = CoordinateSystem3d::xyz();
-    coordinateSystem = coordinateSystem.translatedBy(Vector3d(1, 1, 1));
-    coordinateSystem = coordinateSystem.rotatedAbout(coordinateSystem.zAxis(), M_PI / 4);
+    Frame3d frame;
+    frame = frame.translatedBy(Vector3d(1, 1, 1));
+    frame = frame.rotatedAbout(frame.zAxis(), M_PI / 4);
 
     Parameter1d t;
     ParametricExpression<Point3d, double> linear = Point3d::origin() + Vector3d(1.0, 1.0, 1.0) * t;
-    ParametricExpression<Point3d, double> product = coordinateSystem * linear;
-    ParametricExpression<Point3d, double> quotient = linear / coordinateSystem;
+    ParametricExpression<Point3d, double> product = linear.toGlobalFrom(frame);
+    ParametricExpression<Point3d, double> quotient = linear.toLocalIn(frame);
 
     std::vector<double> parameterValues(5);
     std::vector<Point3d> expectedProductValues(5);
@@ -324,8 +324,8 @@ TEST_CASE("Transformation") {
     for (int i = 0; i < 5; ++i) {
         parameterValues[i] = i / 4.0;
         Point3d expectedValue =  Point3d::origin() + Vector3d(1.0, 1.0, 1.0) * parameterValues[i];
-        expectedProductValues[i] = coordinateSystem * expectedValue;
-        expectedQuotientValues[i] = expectedValue / coordinateSystem;
+        expectedProductValues[i] = expectedValue.toGlobalFrom(frame);
+        expectedQuotientValues[i] = expectedValue.toLocalIn(frame);
     }
     std::vector<Point3d> productValues = product.evaluate(parameterValues);
     std::vector<Point3d> quotientValues = quotient.evaluate(parameterValues);
@@ -519,7 +519,7 @@ TEST_CASE("Squiggle Jacobians") {
         testJacobian(vector.dot(vector + Vector3d(0, 0, 1)), parameterValues[i]);
         testJacobian(exp(scalar), parameterValues[i]);
         testJacobian(log(scalar + 2.0), parameterValues[i]);
-        testJacobian(vector.rotatedAbout(Axis3d::x(), M_PI / 4), parameterValues[i]);
+        testJacobian(vector.rotatedAbout(Vector3d::unitX(), M_PI / 4), parameterValues[i]);
         testJacobian(-vector, parameterValues[i]);
         testJacobian(vector.normalized(), parameterValues[i]);
         testJacobian(vector.norm(), parameterValues[i]);

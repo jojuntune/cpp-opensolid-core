@@ -26,63 +26,6 @@
 
 namespace opensolid
 {
-    template <class TDerived>
+    template <class TDerived, int iNumDimensions>
     class Transformable;
-
-    template <class TTransformable>
-    struct NumDimensions;
-
-    template <class TTransformable>
-    struct ScaledType;
-
-    template <class TTransformable>
-    struct TranslatedType;
-
-    template <class TTransformable, int iNumResultDimensions>
-    struct TransformedType;
-
-    template <class TTransformable, class TExpression>
-    struct MorphedType;
-    
-    template <class TTransformable>
-    struct RotatedType;
-
-    template <class TTransformable>
-    struct MirroredType;
-
-    template <class TTransformable, class TDatum>
-    struct ProjectedType;
-
-    template <class TTransformable, class TCoordinateSystem>
-    struct LocalizedType;
-
-    template <class TTransformable, class TCoordinateSystem>
-    struct GlobalizedType;
-
-    template <class TTransformable>
-    struct ScalingFunction;
-
-    template <class TTransformable>
-    struct TranslationFunction;
-
-    template <class TTransformable, int iNumResultDimensions>
-    struct TransformationFunction;
-
-    template <class TTransformable, class TExpression>
-    struct MorphingFunction;
-
-    template <class TTransformable>
-    struct RotationFunction;
-
-    template <class TTransformable>
-    struct MirrorFunction;
-
-    template <class TTransformable, class TDatum>
-    struct ProjectionFunction;
-
-    template <class TTransformable, class TCoordinateSystem>
-    struct LocalizationFunction;
-
-    template <class TTransformable, class TCoordinateSystem>
-    struct GlobalizationFunction;
 }

@@ -28,10 +28,13 @@
 
 #include <OpenSolid/Core/Vector.declarations.hpp>
 
+#include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
+#include <OpenSolid/Core/Frame.declarations.hpp>
+#include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
 #include <OpenSolid/Core/Vector/DoubleVectorBase.definitions.hpp>
@@ -53,43 +56,9 @@ namespace opensolid
         static const int Value = iNumDimensions;
     };
 
-    template <class TScalar, int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<Vector<TScalar, iNumDimensions>, iNumResultDimensions>
-    {
-        typedef Vector<TScalar, iNumResultDimensions> Type;
-    };
-
-    template <>
-    class Vector<double, 1> :
-        public detail::DoubleVectorBase<1>,
-        public Transformable<Vector<double, 1>>,
-        public Convertible<Vector<double, 1>>
-    {
-    public:
-        Vector();
-
-        explicit
-        Vector(double value);
-
-        explicit
-        Vector(const Matrix<double, 1, 1>& components);
-
-        static const UnitVector<1>
-        unitRandom();
-
-        static const UnitVector<1>
-        unit(int index);
-
-        static const UnitVector<1>
-        unitX();
-    };
-
-    typedef Vector<double, 1> Vector1d;
-
     template <>
     class Vector<double, 2> :
         public detail::DoubleVectorBase<2>,
-        public Transformable<Vector<double, 2>>,
         public Convertible<Vector<double, 2>>
     {
     public:
@@ -100,19 +69,30 @@ namespace opensolid
         explicit
         Vector(const Matrix<double, 2, 1>& components);
 
-        const UnitVector<2>
+        UnitVector<2>
         unitOrthogonal() const;
 
-        static const UnitVector<2>
+        Vector<double, 2>
+        rotatedBy(double angle) const;
+
+        using DoubleVectorBase<2>::rotatedBy;
+
+        Vector<double, 3>
+        toGlobalFrom(const Plane3d& plane) const;
+
+        using DoubleVectorBase<2>::toGlobalFrom;
+
+        OPENSOLID_CORE_EXPORT
+        static UnitVector<2>
         unitRandom();
 
-        static const UnitVector<2>
+        static UnitVector<2>
         unit(int index);
 
-        static const UnitVector<2>
+        static UnitVector<2>
         unitX();
 
-        static const UnitVector<2>
+        static UnitVector<2>
         unitY();
     };
 
@@ -121,7 +101,6 @@ namespace opensolid
     template <>
     class Vector<double, 3> :
         public detail::DoubleVectorBase<3>,
-        public Transformable<Vector<double, 3>>,
         public Convertible<Vector<double, 3>>
     {
     public:
@@ -132,55 +111,51 @@ namespace opensolid
         explicit
         Vector(const Matrix<double, 3, 1>& components);
 
-        const Vector<double, 3>
+        Vector<double, 3>
         cross(const Vector<double, 3>& other) const;
 
-        const Vector<Interval, 3>
+        Vector<Interval, 3>
         cross(const Vector<Interval, 3>& intervalVector) const;
 
-        const UnitVector<3>
+        OPENSOLID_CORE_EXPORT
+        UnitVector<3>
         unitOrthogonal() const;
 
-        static const UnitVector<3>
+        Vector<double, 3>
+        rotatedAbout(const UnitVector<3>& directionVector, double angle) const;
+
+        Vector<double, 2>
+        toLocalIn(const Plane3d& plane) const;
+
+        using DoubleVectorBase<3>::toLocalIn;
+
+        Vector<double, 3>
+        projectedOnto(const Plane3d& plane) const;
+
+        using DoubleVectorBase<3>::projectedOnto;
+
+        OPENSOLID_CORE_EXPORT
+        static UnitVector<3>
         unitRandom();
 
-        static const UnitVector<3>
+        static UnitVector<3>
         unit(int index);
 
-        static const UnitVector<3>
+        static UnitVector<3>
         unitX();
 
-        static const UnitVector<3>
+        static UnitVector<3>
         unitY();
 
-        static const UnitVector<3>
+        static UnitVector<3>
         unitZ();
     };
 
     typedef Vector<double, 3> Vector3d;
 
     template <>
-    class Vector<Interval, 1> :
-        public detail::IntervalVectorBase<1>,
-        public Transformable<Vector<Interval, 1>>,
-        public Convertible<Vector<Interval, 1>>
-    {
-    public:
-        Vector();
-
-        explicit
-        Vector(const Matrix<Interval, 1, 1>& components);
-
-        explicit
-        Vector(Interval x);
-    };
-
-    typedef Vector<Interval, 1> IntervalVector1d;
-
-    template <>
     class Vector<Interval, 2> :
         public detail::IntervalVectorBase<2>,
-        public Transformable<Vector<Interval, 2>>,
         public Convertible<Vector<Interval, 2>>
     {
     public:
@@ -197,7 +172,6 @@ namespace opensolid
     template <>
     class Vector<Interval, 3> :
         public detail::IntervalVectorBase<3>,
-        public Transformable<Vector<Interval, 3>>,
         public Convertible<Vector<Interval, 3>>
     {
     public:
@@ -208,64 +182,72 @@ namespace opensolid
         explicit
         Vector(const Matrix<Interval, 3, 1>& components);
 
-        const Vector<Interval, 3>
+        Vector<Interval, 3>
         cross(const Vector<double, 3>& other) const;
 
-        const Vector<Interval, 3>
+        Vector<Interval, 3>
         cross(const Vector<Interval, 3>& other) const;
     };
 
     typedef Vector<Interval, 3> IntervalVector3d;
 
     template <class TScalar, int iNumDimensions>
-    const Vector<TScalar, iNumDimensions>
+    Vector<TScalar, iNumDimensions>
     operator*(double scale, const Vector<TScalar, iNumDimensions>& vector);
 
     template <class TScalar, int iNumDimensions>
-    const Vector<Interval, iNumDimensions>
+    Vector<Interval, iNumDimensions>
     operator*(Interval scale, const Vector<TScalar, iNumDimensions>& vector);
 
     template <class TScalar, int iNumDimensions>
-    const Vector<TScalar, iNumDimensions>
+    Vector<TScalar, iNumDimensions>
     operator*(const Vector<TScalar, iNumDimensions>& vector, double scale);
 
     template <class TScalar, int iNumDimensions>
-    const Vector<Interval, iNumDimensions>
+    Vector<Interval, iNumDimensions>
     operator*(const Vector<TScalar, iNumDimensions>& vector, Interval scale);
 
     template <class TScalar, int iNumDimensions>
-    const Vector<TScalar, iNumDimensions>
+    Vector<TScalar, iNumDimensions>
     operator/(const Vector<TScalar, iNumDimensions>& vector, double divisor);
 
     template <class TScalar, int iNumDimensions>
-    const Vector<Interval, iNumDimensions>
+    Vector<Interval, iNumDimensions>
     operator/(const Vector<TScalar, iNumDimensions>& vector, Interval divisor);
 
     template <class TScalar, int iNumDimensions>
-    const Vector<TScalar, iNumDimensions>
+    Vector<TScalar, iNumDimensions>
     operator-(const Vector<TScalar, iNumDimensions>& vector);
 
     template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() + TSecondScalar()), iNumDimensions>
+    Vector<decltype(TFirstScalar() + TSecondScalar()), iNumDimensions>
     operator+(
         const Vector<TFirstScalar, iNumDimensions>& firstVector,
         const Vector<TSecondScalar, iNumDimensions>& secondVector
     );
 
     template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
-    const Vector<decltype(TFirstScalar() - TSecondScalar()), iNumDimensions>
+    Vector<decltype(TFirstScalar() - TSecondScalar()), iNumDimensions>
     operator-(
         const Vector<TFirstScalar, iNumDimensions>& firstVector,
         const Vector<TSecondScalar, iNumDimensions>& secondVector
     );
 
-    template <int iNumDimensions>
+    OPENSOLID_CORE_EXPORT
     std::ostream&
-    operator<<(std::ostream& stream, const Vector<double, iNumDimensions>& vector);
+    operator<<(std::ostream& stream, const Vector<double, 2>& vector);
 
-    template <int iNumDimensions>
+    OPENSOLID_CORE_EXPORT
     std::ostream&
-    operator<<(std::ostream& stream, const Vector<Interval, iNumDimensions>& vector);
+    operator<<(std::ostream& stream, const Vector<double, 3>& vector);
+
+    OPENSOLID_CORE_EXPORT
+    std::ostream&
+    operator<<(std::ostream& stream, const Vector<Interval, 2>& vector);
+
+    OPENSOLID_CORE_EXPORT
+    std::ostream&
+    operator<<(std::ostream& stream, const Vector<Interval, 3>& vector);
 
     template <int iNumDimensions>
     struct EqualityFunction<Vector<double, iNumDimensions>>
@@ -281,7 +263,7 @@ namespace opensolid
     template <int iNumDimensions>
     struct BoundsFunction<Vector<double, iNumDimensions>>
     {
-        const Vector<Interval, iNumDimensions>
+        Vector<Interval, iNumDimensions>
         operator()(const Vector<double, iNumDimensions>& vector) const;
     };
 
@@ -290,38 +272,5 @@ namespace opensolid
     {
         const Vector<Interval, iNumDimensions>&
         operator()(const Vector<Interval, iNumDimensions>& vector) const;
-    };
-
-    template <class TScalar, int iNumDimensions>
-    struct ScalingFunction<Vector<TScalar, iNumDimensions>>
-    {
-        const Vector<TScalar, iNumDimensions>
-        operator()(
-            const Vector<TScalar, iNumDimensions>& vector,
-            const Point<iNumDimensions>& originPoint,
-            double scale
-        ) const;
-    };
-
-    template <class TScalar, int iNumDimensions>
-    struct TranslationFunction<Vector<TScalar, iNumDimensions>>
-    {
-        const Vector<TScalar, iNumDimensions>&
-        operator()(
-            const Vector<TScalar, iNumDimensions>& vector,
-            const Vector<double, iNumDimensions>& translationVector
-        ) const;
-    };
-
-    template <class TScalar, int iNumDimensions, int iNumResultDimensions>
-    struct TransformationFunction<Vector<TScalar, iNumDimensions>, iNumResultDimensions>
-    {
-        const Vector<TScalar, iNumResultDimensions>
-        operator()(
-            const Vector<TScalar, iNumDimensions>& vector,
-            const Point<iNumDimensions>& originPoint,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
-            const Point<iNumResultDimensions>& destinationPoint
-        ) const;
     };
 }

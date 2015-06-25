@@ -94,37 +94,24 @@ TEST_CASE("Axis/plane intersection") {
     REQUIRE_FALSE(offsetIntersection.isPoint());
 }
 
-TEST_CASE("3D axis/triangle intersection") {
-    Triangle3d triangle(Point3d(1, 0, 0), Point3d(0, 1, 0), Point3d(0, 0, 1));
-    Axis3d intersectionAxis(Point3d::origin(), Vector3d(1, 1, 1).normalized());
-    Axis3d missingAxis(Point3d(0, -1, 0), Vector3d::unitZ());
-    Axis3d offsetAxis(Point3d(1, 1, 1), Vector3d(1, -1, 0).normalized());
-    Axis3d overlappingAxis(Point3d(0.5, 0.5, 0), Vector3d(0, -1, 1).normalized());
-    Axis3d edgeCoincidentAxis(Point3d(0, 0, 1), Vector3d(1, 0, -1).normalized());
-    Axis3d edgeIntersectionAxis(Point3d::origin(), Vector3d(1, 1, 0).normalized());
-    Axis3d vertexIntersectionAxis(Point3d(1, 0, 1), Vector3d::unitX());
+// TEST_CASE("3D axis/triangle intersection") {
+//     Triangle3d triangle(Point3d(1, 0, 0), Point3d(0, 1, 0), Point3d(0, 0, 1));
+//     Axis3d intersectionAxis(Point3d::origin(), Vector3d(1, 1, 1).normalized());
+//     Axis3d missingAxis(Point3d(0, -1, 0), Vector3d::unitZ());
+//     Axis3d offsetAxis(Point3d(1, 1, 1), Vector3d(1, -1, 0).normalized());
+//     Axis3d overlappingAxis(Point3d(0.5, 0.5, 0), Vector3d(0, -1, 1).normalized());
+//     Axis3d edgeCoincidentAxis(Point3d(0, 0, 1), Vector3d(1, 0, -1).normalized());
+//     Axis3d edgeIntersectionAxis(Point3d::origin(), Vector3d(1, 1, 0).normalized());
+//     Axis3d vertexIntersectionAxis(Point3d(1, 0, 1), Vector3d::unitX());
 
-    auto intersection = intersectionAxis.intersection(triangle);
-    REQUIRE(intersection.exists());
-    REQUIRE(intersection.isPoint());
-    REQUIRE(intersection.point().distanceTo(triangle.plane()) == Zero());
+//     auto intersection = intersectionAxis.intersection(triangle);
+//     REQUIRE(intersection.exists());
+//     REQUIRE(intersection.isPoint());
+//     REQUIRE(intersection.point().distanceTo(triangle.plane()) == Zero());
 
-    auto missingIntersection = missingAxis.intersection(triangle);
-    REQUIRE_FALSE(missingIntersection.exists());   
-}
-
-TEST_CASE("Non-orthogonal plane transformation") {
-    Plane3d original = Plane3d(Point3d(1, 0, 1), Vector3d(1, 0, 1).normalized());
-    CoordinateSystem3d coordinateSystem = CoordinateSystem3d(
-        Point3d::origin(),
-        Vector3d(2, 0, 0),
-        Vector3d(0, 1, 0),
-        Vector3d(0, 0, 1)
-    );
-    Plane3d transformed = coordinateSystem * original;
-    REQUIRE((transformed.originPoint() - Point3d(2, 0, 1)).isZero());
-    REQUIRE((transformed.normalVector() - Vector3d(1, 0, 2).normalized()).isZero());
-}
+//     auto missingIntersection = missingAxis.intersection(triangle);
+//     REQUIRE_FALSE(missingIntersection.exists());   
+// }
 
 TEST_CASE("Plane mirroring") {
     Plane3d original = Plane3d(Point3d(1, 0, 1), Vector3d(-1, 0, -2).normalized());
@@ -141,54 +128,4 @@ TEST_CASE("Pair conversion") {
 
     REQUIRE(plane.originPoint() == normalPlane.originPoint());
     REQUIRE(plane.normalVector() == normalPlane.normalVector());
-}
-
-TEST_CASE("Plane morphing") {
-    Parameter3d x(0);
-    Parameter3d y(1);
-    Parameter3d z(2);
-    ParametricExpression<Point3d, Point3d> morphingExpression = (
-        ParametricExpression<Point3d, Point3d>::fromComponents(x + z.squared(), y, z)
-    );
-
-    SECTION("XY Plane") {
-        Plane3d plane(Point3d::origin(), Vector3d::unitZ());
-        Plane3d morphedPlane = plane.morphedBy(morphingExpression);
-
-        REQUIRE((morphedPlane.originPoint() - plane.originPoint()).isZero());
-        REQUIRE((morphedPlane.normalVector() - plane.normalVector()).isZero());
-    }
-
-    SECTION("Raised XY Plane") {
-        Plane3d plane(Point3d(0.0, 0.0, 2.0), Vector3d::unitZ());
-        Plane3d morphedPlane = plane.morphedBy(morphingExpression);
-
-        REQUIRE((morphedPlane.originPoint() - Point3d(4.0, 0.0, 2.0)).isZero());
-        REQUIRE((morphedPlane.normalVector() - plane.normalVector()).isZero());
-    }
-
-    SECTION("YZ plane") {
-        Plane3d plane(Point3d::origin(), Vector3d::unitX());
-        Plane3d morphedPlane = plane.morphedBy(morphingExpression);
-
-        REQUIRE((morphedPlane.originPoint() - plane.originPoint()).isZero());
-        REQUIRE((morphedPlane.normalVector() - plane.normalVector()).isZero());
-    }
-
-    SECTION("Raised YZ plane") {
-        Plane3d plane(Point3d(0.0, 0.0, 2.0), Vector3d::unitX());
-        Plane3d morphedPlane = plane.morphedBy(morphingExpression);
-
-        REQUIRE((morphedPlane.originPoint() - Point3d(4.0, 0.0, 2.0)).isZero());
-        REQUIRE((morphedPlane.normalVector() - Vector3d(1.0, 0.0, -4.0).normalized()).isZero());
-    }
-
-    SECTION("Sloped plane") {
-        Plane3d plane(Point3d(1.0, 0.0, 1.0), Vector3d(-1.0, 0.0, 1.0).normalized());
-        Plane3d morphedPlane = plane.morphedBy(morphingExpression);
-
-        REQUIRE((morphedPlane.originPoint() - Point3d(2.0, 0.0, 1.0)).isZero());
-        CAPTURE(morphedPlane.normalVector());
-        REQUIRE((morphedPlane.normalVector() - Vector3d(-1.0, 0.0, 3.0).normalized()).isZero());
-    }
 }

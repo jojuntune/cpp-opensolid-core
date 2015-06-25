@@ -27,6 +27,7 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/NumDimensions.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression.declarations.hpp>
 #include <OpenSolid/Core/Transformable.declarations.hpp>
 

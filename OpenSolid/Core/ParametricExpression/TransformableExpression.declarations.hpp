@@ -26,6 +26,9 @@
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
-    class CoordinateSystem;
+    namespace detail
+    {
+        template <class TValue, class TParameter>
+        class TransformableExpression;
+    }
 }

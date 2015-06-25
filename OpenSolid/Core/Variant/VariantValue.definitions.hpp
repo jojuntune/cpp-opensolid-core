@@ -31,7 +31,6 @@
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Component.declarations.hpp>
-#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
@@ -167,26 +166,6 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         virtual const Plane3d&
         toPlane3d() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const CoordinateSystem<2, 1>&
-        toAxialCoordinateSystem2d() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const CoordinateSystem<3, 1>&
-        toAxialCoordinateSystem3d() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const CoordinateSystem<3, 2>&
-        toPlanarCoordinateSystem3d() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const CoordinateSystem<2, 2>&
-        toCoordinateSystem2d() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const CoordinateSystem<3, 3>&
-        toCoordinateSystem3d() const;
 
         OPENSOLID_CORE_EXPORT
         virtual const LineSegment<2>&

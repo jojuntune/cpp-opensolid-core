@@ -27,7 +27,6 @@
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Component.hpp>
-#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
@@ -176,31 +175,6 @@ namespace opensolid
 
     const Plane3d&
     VariantValue::toPlane3d() const {
-        throw PlaceholderError();
-    }
-
-    const AxialCoordinateSystem2d&
-    VariantValue::toAxialCoordinateSystem2d() const {
-        throw PlaceholderError();
-    }
-
-    const AxialCoordinateSystem3d&
-    VariantValue::toAxialCoordinateSystem3d() const {
-        throw PlaceholderError();
-    }
-
-    const PlanarCoordinateSystem3d&
-    VariantValue::toPlanarCoordinateSystem3d() const {
-        throw PlaceholderError();
-    }
-
-    const CoordinateSystem2d&
-    VariantValue::toCoordinateSystem2d() const {
-        throw PlaceholderError();
-    }
-
-    const CoordinateSystem3d&
-    VariantValue::toCoordinateSystem3d() const {
         throw PlaceholderError();
     }
 

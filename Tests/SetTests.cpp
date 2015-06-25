@@ -203,7 +203,7 @@ TEST_CASE("Vector set transformation") {
     Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::unitZ());
     std::vector<Vector3d> rotatedVectors = vectorSet.map(
         [&rotationAxis] (const Vector3d& vector) -> Vector3d {
-            return vector.rotatedAbout(rotationAxis, M_PI / 2);
+            return vector.rotatedAbout(rotationAxis.directionVector(), M_PI / 2);
         }
     );
 

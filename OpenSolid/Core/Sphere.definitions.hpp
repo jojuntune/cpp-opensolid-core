@@ -34,10 +34,13 @@
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Circle.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
+#include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
+#include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
 #include <OpenSolid/Core/Vector.declarations.hpp>
 
 namespace opensolid
@@ -54,20 +57,8 @@ namespace opensolid
         static const int Value = 3;
     };
 
-    template <>
-    struct ProjectedType<Sphere3d, Axis<3>>
-    {
-        typedef LineSegment<3> Type;
-    };
-
-    template <>
-    struct ProjectedType<Sphere3d, Plane3d>
-    {
-        typedef Circle<3> Type;
-    };
-
     class Sphere3d :
-        public Transformable<Sphere3d>,
+        public Transformable<Sphere3d, 3>,
         public Convertible<Sphere3d>
     {
     private:
@@ -90,8 +81,36 @@ namespace opensolid
         double
         surfaceArea() const;
 
-        const Box<3>
+        Box<3>
         bounds() const;
+
+        Sphere3d
+        scaledAbout(const Point<3>& point, double scale) const;
+
+        Sphere3d
+        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
+
+        using Transformable<Sphere3d, 3>::rotatedAbout;
+
+        Sphere3d
+        translatedBy(const Vector<double, 3>& vector) const;
+
+        Sphere3d
+        toLocalIn(const Frame<3>& frame) const;
+
+        Sphere3d
+        toGlobalFrom(const Frame<3>& frame) const;
+
+        LineSegment<3>
+        projectedOnto(const Axis<3>& axis) const;
+
+        Circle<3>
+        projectedOnto(const Plane3d& plane) const;
+
+        Sphere3d
+        mirroredAbout(const Point<3>& point, const UnitVector<3>& mirrorDirection) const;
+
+        using Transformable<Sphere3d, 3>::mirroredAbout;
     };
     
     template <>
@@ -103,56 +122,5 @@ namespace opensolid
             const Sphere3d& secondSphere,
             double precision
         ) const;
-    };
-
-    template <>
-    struct ScalingFunction<Sphere3d>
-    {
-        Sphere3d
-        operator()(const Sphere3d& sphere, const Point<3>& originPoint, double scale) const;
-    };
-
-    template <>
-    struct TranslationFunction<Sphere3d>
-    {
-        Sphere3d
-        operator()(const Sphere3d& sphere, const Vector<double, 3>& vector) const;
-    };
-
-    template <>
-    struct RotationFunction<Sphere3d>
-    {
-        OPENSOLID_CORE_EXPORT
-        Sphere3d
-        operator()(
-            const Sphere3d& sphere,
-            const Point<3>& originPoint,
-            const Matrix<double, 3, 3>& rotationMatrix
-        ) const;
-    };
-
-    template <>
-    struct MirrorFunction<Sphere3d>
-    {
-        Sphere3d
-        operator()(
-            const Sphere3d& sphere,
-            const Point<3>& originPoint,
-            const UnitVector<3>& normalVector
-        ) const;
-    };
-
-    template <>
-    struct ProjectionFunction<Sphere3d, Plane3d>
-    {
-        Circle<3>
-        operator()(const Sphere3d& sphere, const Plane3d& plane) const;
-    };
-
-    template <>
-    struct ProjectionFunction<Sphere3d, Axis<3>>
-    {
-        LineSegment<3>
-        operator()(const Sphere3d& sphere, const Axis<3>& axis) const;
     };
 }

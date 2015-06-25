@@ -30,10 +30,14 @@
 
 #include <OpenSolid/Core/BoundedArea.hpp>
 #include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
+#include <OpenSolid/Core/ParametricSurface.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 
 namespace opensolid
 {

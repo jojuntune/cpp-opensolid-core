@@ -35,6 +35,7 @@
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
 
 namespace opensolid
 {
@@ -50,14 +51,8 @@ namespace opensolid
         static const int Value = 3;
     };
 
-    template <>
-    struct MorphedType<ParametricVolume3d, ParametricExpression<Point<3>, Point<3>>>
-    {
-        typedef ParametricVolume3d Type;
-    };
-
     class ParametricVolume3d :
-        public Transformable<ParametricVolume3d>
+        public Transformable<ParametricVolume3d, 3>
     {
     private:
         ParametricExpression<Point<3>, Point<3>> _expression;
@@ -95,52 +90,33 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         Box<3>
         evaluate(const Box<3>& parameterBounds) const;
-    };
 
-    template <>
-    struct ScalingFunction<ParametricVolume3d>
-    {
         OPENSOLID_CORE_EXPORT
         ParametricVolume3d
-        operator()(
-            const ParametricVolume3d& parametricVolume,
-            const Point<3>& originPoint,
-            double scale
-        ) const;
-    };
+        scaledAbout(const Point<3>& point, double scale) const;
 
-    template <>
-    struct TranslationFunction<ParametricVolume3d>
-    {
         OPENSOLID_CORE_EXPORT
         ParametricVolume3d
-        operator()(
-            const ParametricVolume3d& parametricVolume,
-            const Vector<double, 3>& vector
-        ) const;
-    };
+        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
 
-    template <>
-    struct TransformationFunction<ParametricVolume3d, 3>
-    {
+        using Transformable<ParametricVolume3d, 3>::rotatedAbout;
+
         OPENSOLID_CORE_EXPORT
         ParametricVolume3d
-        operator()(
-            const ParametricVolume3d& parametricVolume,
-            const Point<3>& originPoint,
-            const Matrix<double, 3, 3>& transformationMatrix,
-            const Point<3>& destinationPoint
-        ) const;
-    };
+        translatedBy(const Vector<double, 3>& vector) const;
 
-    template <>
-    struct MorphingFunction<ParametricVolume3d, ParametricExpression<Point<3>, Point<3>>>
-    {
         OPENSOLID_CORE_EXPORT
         ParametricVolume3d
-        operator()(
-            const ParametricVolume3d& parametricVolume,
-            const ParametricExpression<Point<3>, Point<3>>& morphingExpression
-        ) const;
+        toLocalIn(const Frame<3>& frame) const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricVolume3d
+        toGlobalFrom(const Frame<3>& frame) const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricVolume3d
+        mirroredAbout(const Point<3>& point, const UnitVector<3>& mirrorDirection) const;
+
+        using Transformable<ParametricVolume3d, 3>::mirroredAbout;
     };
 }

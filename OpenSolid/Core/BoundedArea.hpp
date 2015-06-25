@@ -48,7 +48,7 @@ namespace opensolid
     }
 
     inline
-    const Box2d
+    Box2d
     BoundedArea2d::bounds() const {
         return boundaries().bounds();
     }

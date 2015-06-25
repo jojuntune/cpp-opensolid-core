@@ -22,7 +22,7 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include <OpenSolid/Core/CoordinateSystem.hpp>
+#include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
@@ -231,37 +231,22 @@ namespace opensolid
 
 TEST_CASE("Localization") {
     Triangle3d triangle3d(Point3d(1, 1, 1), Point3d(3, 1, 2), Point3d(2, 2, 4));
-    PlanarCoordinateSystem3d xyCoordinateSystem(
-        Point3d::origin(),
-        Vector3d::unitX(),
-        Vector3d::unitY()
-    );
-    PlanarCoordinateSystem3d yzCoordinateSystem(
-        Point3d::origin(),
-        Vector3d::unitY(),
-        Vector3d::unitZ()
-    );
-    PlanarCoordinateSystem3d xzCoordinateSystem(
-        Point3d::origin(),
-        Vector3d::unitX(),
-        Vector3d::unitZ()
-    );
 
-    Triangle2d xyComponents = triangle3d / xyCoordinateSystem;
-    REQUIRE((xyComponents.vertex(0) - Point2d(1, 1)).isZero());
-    REQUIRE((xyComponents.vertex(1) - Point2d(3, 1)).isZero());
-    REQUIRE((xyComponents.vertex(2) - Point2d(2, 2)).isZero());
+    Triangle2d xyComponents = triangle3d.toLocalIn(Plane3d::xy());
+    REQUIRE(xyComponents.vertex(0).isEqualTo(Point2d(1, 1)));
+    REQUIRE(xyComponents.vertex(1).isEqualTo(Point2d(3, 1)));
+    REQUIRE(xyComponents.vertex(2).isEqualTo(Point2d(2, 2)));
     double xyArea = xyComponents.area();
     REQUIRE(xyArea > 0.0);
 
-    Triangle2d yzComponents = triangle3d / yzCoordinateSystem;
-    REQUIRE((yzComponents.vertex(0) - Point2d(1, 1)).isZero());
-    REQUIRE((yzComponents.vertex(1) - Point2d(1, 2)).isZero());
-    REQUIRE((yzComponents.vertex(2) - Point2d(2, 4)).isZero());
+    Triangle2d yzComponents = triangle3d.toLocalIn(Plane3d::yz());
+    REQUIRE(yzComponents.vertex(0).isEqualTo(Point2d(1, 1)));
+    REQUIRE(yzComponents.vertex(1).isEqualTo(Point2d(1, 2)));
+    REQUIRE(yzComponents.vertex(2).isEqualTo(Point2d(2, 4)));
     double yzArea = yzComponents.area();
     REQUIRE(yzArea < 0.0);
 
-    double xzArea = (triangle3d / xzCoordinateSystem).area();
+    double xzArea = triangle3d.toLocalIn(Plane3d::xz()).area();
 
     double areaFromComponents = sqrt(xyArea * xyArea + yzArea * yzArea + xzArea * xzArea);
     REQUIRE((triangle3d.area() - areaFromComponents) == Zero());
@@ -305,35 +290,10 @@ TEST_CASE("Triangle normal") {
     REQUIRE((triangle.normalVector() - expectedNormal).isZero());
 }
 
-TEST_CASE("Coordinate system") {
+TEST_CASE("Projection") {
     Triangle3d triangle(Point3d::origin(), Point3d(2, 0, 0), Point3d(1, 2, 0));
-    PlanarCoordinateSystem3d coordinateSystem = triangle.coordinateSystem();
-
-    Point3d globalized = coordinateSystem * Point2d(0.5, 0.5);
-    REQUIRE((globalized - Point3d(1.5, 1, 0)).isZero());
-
-    Point2d localized = Point3d(1, 0, 0) / coordinateSystem;
-    REQUIRE((localized - Point2d(0.5, 0)).isZero());
-
-    localized = Point3d(3, 2, 0) / coordinateSystem;
-    REQUIRE((localized - Point2d(1, 1)).isZero());
-
     Point3d projection = Point3d(3, 4, 5).projectedOnto(triangle.plane());
     REQUIRE((projection - Point3d(3, 4, 0)).isZero());
-}
-
-TEST_CASE("1D line segment") {
-    LineSegment3d lineSegment3d(Point3d(1, 2, 3), Point3d(4, 5, 6));
-    AxialCoordinateSystem3d axialCoordinateSystem(Point3d::origin(), Vector3d::unitY());
-    
-    LineSegment1d localized = lineSegment3d / axialCoordinateSystem;
-    REQUIRE((localized.startVertex() - Point1d(2)).isZero());
-    REQUIRE((localized.endVertex() - Point1d(5)).isZero());
-
-    LineSegment3d globalized = lineSegment3d.coordinateSystem() *
-        LineSegment1d(Point1d(1.0 / 3.0), Point1d(2.0 / 3.0));
-    REQUIRE((globalized.startVertex() - Point3d(2, 3, 4)).isZero());
-    REQUIRE((globalized.endVertex() - Point3d(3, 4, 5)).isZero());
 }
 
 TEST_CASE("Set") {
@@ -438,24 +398,27 @@ TEST_CASE("Line segment/plane intersection") {
 TEST_CASE("Triangle containment") {
     Triangle2d triangle(Point2d(1, 1), Point2d(3, 1), Point2d(2, 2));
 
+    CAPTURE(detail::crossProduct2d(triangle.vertex(0), triangle.vertex(2), triangle.vertex(1)));
+    CAPTURE(detail::crossProduct2d(triangle.vertex(1), triangle.vertex(0), triangle.vertex(2)));
+    CAPTURE(detail::crossProduct2d(triangle.vertex(2), triangle.vertex(1), triangle.vertex(0)));
+
     REQUIRE(triangle.contains(triangle.vertex(2)));
     REQUIRE(triangle.contains(triangle.centroid()));
-    REQUIRE(triangle.strictlyContains(triangle.centroid()));
-    REQUIRE_FALSE(triangle.strictlyContains(triangle.vertex(2)));
+    REQUIRE(triangle.contains(triangle.centroid(), -1e-12));
+    REQUIRE_FALSE(triangle.contains(triangle.vertex(2), -1e-12));
     REQUIRE_FALSE(triangle.contains(Point2d::origin()));
-    REQUIRE_FALSE(triangle.strictlyContains(Point2d::origin()));
 }
 
-TEST_CASE("Tetrahedron containment") {
-    Tetrahedron3d tetrahedron = Tetrahedron3d::unit();
+// TEST_CASE("Tetrahedron containment") {
+//     Tetrahedron3d tetrahedron = Tetrahedron3d::unit();
 
-    REQUIRE(tetrahedron.contains(tetrahedron.vertex(2)));
-    REQUIRE(tetrahedron.contains(tetrahedron.centroid()));
-    REQUIRE(tetrahedron.strictlyContains(tetrahedron.centroid()));
-    REQUIRE_FALSE(tetrahedron.strictlyContains(tetrahedron.vertex(2)));
-    REQUIRE(tetrahedron.contains(Point3d::origin()));
-    REQUIRE_FALSE(tetrahedron.strictlyContains(Point3d::origin()));
-}
+//     REQUIRE(tetrahedron.contains(tetrahedron.vertex(2)));
+//     REQUIRE(tetrahedron.contains(tetrahedron.centroid()));
+//     REQUIRE(tetrahedron.contains(tetrahedron.centroid(), -1e-12));
+//     REQUIRE_FALSE(tetrahedron.contains(tetrahedron.vertex(2), -1e-12));
+//     REQUIRE(tetrahedron.contains(Point3d::origin()));
+//     REQUIRE_FALSE(tetrahedron.contains(Point3d::origin(), -1e-12));
+// }
 
 TEST_CASE("Line segment conversion") {
     MyLineSegment3d initial = MyLineSegment3d(MyPoint3d(1, 0, 1), MyPoint3d(2, 0, 2));

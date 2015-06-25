@@ -38,28 +38,10 @@
 #include <OpenSolid/Core/Position/PointBase.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 
 namespace opensolid
 {
-    inline
-    Point1d::Point() {
-    }
-
-    inline
-    Point1d::Point(double value) :
-        detail::PointBase<1>(value) {
-    }
-
-    inline
-    Point1d::Point(const Vector1d& vector) :
-        detail::PointBase<1>(vector.components()) {
-    }
-
-    inline
-    Point1d::Point(const Matrix1d& matrix) :
-        detail::PointBase<1>(matrix) {
-    }
-
     inline
     Point2d::Point() {
     }
@@ -67,11 +49,6 @@ namespace opensolid
     inline
     Point2d::Point(double x, double y) :
         detail::PointBase<2>(x, y) {
-    }
-
-    inline
-    Point2d::Point(const Vector2d& vector) :
-        detail::PointBase<2>(vector.components()) {
     }
 
     inline
@@ -86,9 +63,15 @@ namespace opensolid
     }
 
     inline
-    const Point2d
-    Point2d::polar(double radius, double angle) {
-        return Point2d(radius * cos(angle), radius * sin(angle));
+    bool
+    Point2d::isOn(const Axis2d& axis, double precision) const {
+        return distanceTo(axis) == Zero(precision);
+    }
+
+    inline
+    Point3d
+    Point2d::toGlobalFrom(const Plane3d& plane) const {
+        return plane.originPoint() + Vector2d(components()).toGlobalFrom(plane);
     }
 
     inline
@@ -98,11 +81,6 @@ namespace opensolid
     inline
     Point3d::Point(double x, double y, double z) :
         detail::PointBase<3>(x, y, z) {
-    }
-
-    inline
-    Point3d::Point(const Vector3d& vector) :
-        detail::PointBase<3>(vector.components()) {
     }
 
     inline
@@ -129,59 +107,49 @@ namespace opensolid
     }
 
     inline
-    const Point3d
-    Point3d::cylindrical(double radius, double angle, double height) {
-        return Point3d(radius * cos(angle), radius * sin(angle), height);
+    bool
+    Point3d::isOn(const Axis3d& axis, double precision) const {
+        return squaredDistanceTo(axis) <= precision * precision;
     }
 
     inline
-    const Point3d
-    Point3d::spherical(double radius, double polarAngle, double elevationAngle) {
-        double sinElevation = sin(elevationAngle);
-        double cosElevation = cos(elevationAngle);
-        double sinPolar = sin(polarAngle);
-        double cosPolar = cos(polarAngle);
-        return Point3d(
-            radius * cosElevation * cosPolar,
-            radius * cosElevation * sinPolar,
-            radius * sinElevation
-        );
+    bool
+    Point3d::isOn(const Plane3d& plane, double precision) const {
+        return distanceTo(plane) == Zero(precision);
+    }
+
+    inline
+    Point2d
+    Point3d::toLocalIn(const Plane3d& plane) const {
+        return Point2d((*this - plane.originPoint()).toLocalIn(plane).components());
+    }
+
+    inline
+    Point3d
+    Point3d::projectedOnto(const Plane3d& plane) const {
+        Vector3d displacement = *this - plane.originPoint();
+        return *this - displacement.dot(plane.normalVector()) * plane.normalVector();
     }
 
     template <int iNumDimensions>
     inline
-    const Point<iNumDimensions>
+    Point<iNumDimensions>
     operator+(const Point<iNumDimensions>& point, const Vector<double, iNumDimensions>& vector) {
         return Point<iNumDimensions>(point.components() + vector.components());
     }
 
     template <int iNumDimensions>
     inline
-    const Point<iNumDimensions>
+    Point<iNumDimensions>
     operator-(const Point<iNumDimensions>& point, const Vector<double, iNumDimensions>& vector) {
         return Point<iNumDimensions>(point.components() - vector.components());
     }
 
     template <int iNumDimensions>
     inline
-    const Vector<double, iNumDimensions>
+    Vector<double, iNumDimensions>
     operator-(const Point<iNumDimensions>& firstPoint, const Point<iNumDimensions>& secondPoint) {
         return Vector<double, iNumDimensions>(firstPoint.components() - secondPoint.components());
-    }
-
-    template <int iNumDimensions>
-    std::ostream&
-    operator<<(std::ostream& stream, const Point<iNumDimensions>& point) {
-        stream << "Point" << iNumDimensions << "d";
-        stream << "(";
-        for (int index = 0; index < iNumDimensions; ++index) {
-            stream << point.component(index);
-            if (index < iNumDimensions - 1) {
-                stream << ",";
-            }
-        }
-        stream << ")";
-        return stream;
     }
 
     template <int iNumDimensions>
@@ -197,52 +165,13 @@ namespace opensolid
 
     template <int iNumDimensions>
     inline
-    const Box<iNumDimensions>
+    Box<iNumDimensions>
     BoundsFunction<Point<iNumDimensions>>::operator()(const Point<iNumDimensions>& point) const {
         return Box<iNumDimensions>(
             point.components().map(
                 [] (double component) -> Interval {
                     return Interval(component);
                 }
-            )
-        );
-    }
-
-    template <int iNumDimensions>
-    inline
-    const Point<iNumDimensions>
-    ScalingFunction<Point<iNumDimensions>>::operator()(
-        const Point<iNumDimensions>& point,
-        const Point<iNumDimensions>& originPoint,
-        double scale
-    ) const {
-        return Point<iNumDimensions>(
-            originPoint.components() + scale * (point.components() - originPoint.components())
-        );
-    }
-
-    template <int iNumDimensions>
-    inline
-    const Point<iNumDimensions>
-    TranslationFunction<Point<iNumDimensions>>::operator()(
-        const Point<iNumDimensions>& point,
-        const Vector<double, iNumDimensions>& vector
-    ) const {
-        return Point<iNumDimensions>(point.components() + vector.components());
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    inline
-    const Point<iNumResultDimensions>
-    TransformationFunction<Point<iNumDimensions>, iNumResultDimensions>::operator()(
-        const Point<iNumDimensions>& point,
-        const Point<iNumDimensions>& originPoint,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
-        const Point<iNumResultDimensions>& destinationPoint
-    ) const {
-        return Point<iNumResultDimensions>(
-            destinationPoint.components() + (
-                transformationMatrix * (point.components() - originPoint.components())
             )
         );
     }

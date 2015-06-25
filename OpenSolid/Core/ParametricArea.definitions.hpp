@@ -31,10 +31,12 @@
 #include <OpenSolid/Core/BoundedArea.definitions.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.definitions.hpp>
+#include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
 
 namespace opensolid
 {
@@ -50,26 +52,24 @@ namespace opensolid
         static const int Value = 2;
     };
 
-    template <>
-    struct MorphedType<ParametricArea2d, ParametricExpression<Point<2>, Point<2>>>
-    {
-        typedef ParametricArea2d Type;
-    };
-
     class ParametricArea2d :
-        public Transformable<ParametricArea2d>
+        public Transformable<ParametricArea2d, 2>
     {
     private:
         ParametricExpression<Point<2>, Point<2>> _expression;
         BoundedArea2d _domain;
         Box<2> _bounds;
     public:
+        OPENSOLID_CORE_EXPORT
         ParametricArea2d();
 
+        OPENSOLID_CORE_EXPORT
         ParametricArea2d(const ParametricArea2d& other);
 
+        OPENSOLID_CORE_EXPORT
         ParametricArea2d(ParametricArea2d&& other);
 
+        OPENSOLID_CORE_EXPORT
         ParametricArea2d(
             const ParametricExpression<Point<2>, Point<2>>& expression,
             const BoundedArea2d& domain
@@ -84,50 +84,44 @@ namespace opensolid
         const Box<2>&
         bounds() const;
 
+        OPENSOLID_CORE_EXPORT
         Point<2>
         evaluate(const Point<2>& parameterValue) const;
 
+        OPENSOLID_CORE_EXPORT
         Box<2>
         evaluate(const Box<2>& parameterBounds) const;
-    };
-    
-    template <>
-    struct ScalingFunction<ParametricArea2d>
-    {
-        ParametricArea2d
-        operator()(
-            const ParametricArea2d& parametricArea,
-            const Point<2>& originPoint,
-            double scale
-        ) const;
-    };
 
-    template <>
-    struct TranslationFunction<ParametricArea2d>
-    {
+        OPENSOLID_CORE_EXPORT
         ParametricArea2d
-        operator()(const ParametricArea2d& parametricArea, const Vector<double, 2>& vector) const;
-    };
+        scaledAbout(const Point<2>& point, double scale) const;
 
-    template <>
-    struct TransformationFunction<ParametricArea2d, 2>
-    {
+        OPENSOLID_CORE_EXPORT
         ParametricArea2d
-        operator()(
-            const ParametricArea2d& parametricArea,
-            const Point<2>& originPoint,
-            const Matrix<double, 2, 2>& transformationMatrix,
-            const Point<2>& destinationPoint
-        ) const;
-    };
+        rotatedAbout(const Point<2>& point, const Matrix<double, 2, 2>& rotationMatrix) const;
 
-    template <>
-    struct MorphingFunction<ParametricArea2d, ParametricExpression<Point<2>, Point<2>>>
-    {
+        using Transformable<ParametricArea2d, 2>::rotatedAbout;
+
+        OPENSOLID_CORE_EXPORT
         ParametricArea2d
-        operator()(
-            const ParametricArea2d& parametricArea,
-            const ParametricExpression<Point<2>, Point<2>>& morphingExpression
-        ) const;
+        translatedBy(const Vector<double, 2>& vector) const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricArea2d
+        toLocalIn(const Frame<2>& frame) const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricArea2d
+        toGlobalFrom(const Frame<2>& frame) const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricSurface3d
+        toGlobalFrom(const Plane3d& plane) const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricArea2d
+        mirroredAbout(const Point<2>& point, const UnitVector<2>& mirrorDirection) const;
+
+        using Transformable<ParametricArea2d, 2>::mirroredAbout;
     };
 }

@@ -49,12 +49,6 @@ namespace opensolid
 
         template <class TScalar, int iNumDimensions>
         inline
-        VectorBase<TScalar, iNumDimensions>::VectorBase(TScalar value) :
-            CartesianBase<TScalar, iNumDimensions>(value) {
-        }
-
-        template <class TScalar, int iNumDimensions>
-        inline
         VectorBase<TScalar, iNumDimensions>::VectorBase(TScalar x, TScalar y) :
             CartesianBase<TScalar, iNumDimensions>(x, y) {
         }
@@ -90,7 +84,7 @@ namespace opensolid
         inline
         bool
         VectorBase<TScalar, iNumDimensions>::isZero(double precision) const {
-            return squaredNorm() == opensolid::Zero(precision * precision);
+            return squaredNorm() <= precision * precision;
         }
 
         template <class TScalar, int iNumDimensions>
@@ -113,7 +107,7 @@ namespace opensolid
 
         template <class TScalar, int iNumDimensions> template <class TOtherScalar>
         inline
-        const Vector<Interval, iNumDimensions>
+        Vector<Interval, iNumDimensions>
         VectorBase<TScalar, iNumDimensions>::hull(
             const Vector<TOtherScalar, iNumDimensions>& other
         ) const {
@@ -124,7 +118,7 @@ namespace opensolid
 
         template <class TScalar, int iNumDimensions> template <class TOtherScalar>
         inline
-        const Vector<Interval, iNumDimensions>
+        Vector<Interval, iNumDimensions>
         VectorBase<TScalar, iNumDimensions>::intersection(
             const Vector<TOtherScalar, iNumDimensions>& other
         ) const {
@@ -135,14 +129,14 @@ namespace opensolid
 
         template <class TScalar, int iNumDimensions>
         inline
-        const Vector<TScalar, iNumDimensions>
+        Vector<TScalar, iNumDimensions>
         VectorBase<TScalar, iNumDimensions>::zero() {
-            return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::Zero());
+            return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::zero());
         }
 
         template <class TScalar, int iNumDimensions>
         inline
-        const Vector<TScalar, iNumDimensions>
+        Vector<TScalar, iNumDimensions>
         VectorBase<TScalar, iNumDimensions>::random() {
             return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::random());
         }

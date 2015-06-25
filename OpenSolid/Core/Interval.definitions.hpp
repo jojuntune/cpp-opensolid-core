@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
+#include <OpenSolid/Core/NumDimensions.declarations.hpp>
 #include <OpenSolid/Core/Zero.declarations.hpp>
 
 #include <ostream>
@@ -42,6 +43,12 @@ namespace opensolid
     struct BoundsType<Interval>
     {
         typedef Interval Type;
+    };
+
+    template <>
+    struct NumDimensions<Interval>
+    {
+        static const int Value = 1;
     };
 
     class Interval :

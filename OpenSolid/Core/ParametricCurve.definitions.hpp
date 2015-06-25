@@ -56,25 +56,9 @@ namespace opensolid
         static const int Value = iNumDimensions;
     };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<ParametricCurve<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef ParametricCurve<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<
-        ParametricCurve<iNumDimensions>,
-        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
-    >
-    {
-        typedef ParametricCurve<iNumResultDimensions> Type;
-    };
-
     template <>
     class ParametricCurve<2> :
-        public detail::ParametricCurveBase<2>,
-        public Transformable<ParametricCurve<2>>
+        public detail::ParametricCurveBase<2>
     {
     private:
         ParametricExpression<Point<2>, double> _expression;
@@ -88,6 +72,12 @@ namespace opensolid
         ParametricCurve(ParametricCurve<2>&& other);
 
         ParametricCurve(const ParametricExpression<Point<2>, double>& expression, Interval domain);
+
+        OPENSOLID_CORE_EXPORT
+        ParametricCurve<3>
+        toGlobalFrom(const Plane3d& plane) const;
+
+        using detail::ParametricCurveBase<2>::toGlobalFrom;
 
         ///// Arcs /////
         //
@@ -194,8 +184,7 @@ namespace opensolid
 
     template <>
     class ParametricCurve<3> :
-        public detail::ParametricCurveBase<3>,
-        public Transformable<ParametricCurve<3>>
+        public detail::ParametricCurveBase<3>
     {
     private:
         ParametricExpression<Point<3>, double> _expression;
@@ -212,6 +201,16 @@ namespace opensolid
             const ParametricExpression<Point<3>, double>& expression,
             Interval domain
         );
+
+        OPENSOLID_CORE_EXPORT
+        ParametricCurve<2>
+        toLocalIn(const Plane3d& plane) const;
+
+        using detail::ParametricCurveBase<3>::toLocalIn;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricCurve<3>
+        projectedOnto(const Plane3d& plane) const;
 
         ///// Arcs /////
         //
@@ -398,54 +397,6 @@ namespace opensolid
             double length // if <= 0: determine from pitch/numTurns
         );
     };
+
     typedef ParametricCurve<3> ParametricCurve3d;
-
-    template <int iNumDimensions>
-    struct ScalingFunction<ParametricCurve<iNumDimensions>>
-    {
-        ParametricCurve<iNumDimensions>
-        operator()(
-            const ParametricCurve<iNumDimensions>& curve,
-            const Point<iNumDimensions>& originPoint,
-            double scale
-        ) const;
-    };
-
-    template <int iNumDimensions>
-    struct TranslationFunction<ParametricCurve<iNumDimensions>>
-    {
-        ParametricCurve<iNumDimensions>
-        operator()(
-            const ParametricCurve<iNumDimensions>& curve,
-            const Vector<double, iNumDimensions>& vector
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformationFunction<ParametricCurve<iNumDimensions>, iNumResultDimensions>
-    {
-        ParametricCurve<iNumResultDimensions>
-        operator()(
-            const ParametricCurve<iNumDimensions>& curve,
-            const Point<iNumDimensions>& originPoint,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
-            const Point<iNumResultDimensions>& destinationPoint
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<
-        ParametricCurve<iNumDimensions>,
-        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
-    >
-    {
-        ParametricCurve<iNumResultDimensions>
-        operator()(
-            const ParametricCurve<iNumDimensions>& curve,
-            const ParametricExpression<
-                Point<iNumResultDimensions>,
-                Point<iNumDimensions>
-            >& morphingExpression
-        ) const;
-    };
 }

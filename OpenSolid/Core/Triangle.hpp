@@ -37,20 +37,23 @@
 #include <OpenSolid/Core/Simplex/TriangleBase.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
+#include <utility>
+
 namespace opensolid
 {
-    inline
-    Triangle1d::Triangle() {
+    namespace detail
+    {
+        inline
+        double
+        crossProduct2d(const Point2d& p0, const Point2d& p1, const Point2d& p2) {
+            double a1 = p1.x() - p0.x();
+            double a2 = p1.y() - p0.y();
+            double b1 = p2.x() - p0.x();
+            double b2 = p2.y() - p0.y();
+            return a1 * b2 - a2 * b1;
+        }
     }
-
-    inline
-    Triangle1d::Triangle(
-        const Point1d& firstVertex,
-        const Point1d& secondVertex,
-        const Point1d& thirdVertex
-    ) : detail::TriangleBase<1>(firstVertex, secondVertex, thirdVertex) {
-    }
-
+    
     inline
     Triangle2d::Triangle() {
     }
@@ -64,23 +67,19 @@ namespace opensolid
     }
 
     inline
-    bool
-    Triangle2d::contains(const Point2d& point, double precision) const {
-        Point2d localCoordinates = point / coordinateSystem();
-        double a = localCoordinates.x();
-        double b = localCoordinates.y();
-        Zero zero(precision);
-        return a >= zero && b >= zero && 1 - a - b >= zero;
+    double
+    Triangle2d::area() const {
+        return 0.5 * detail::crossProduct2d(vertex(0), vertex(1), vertex(2));
     }
 
     inline
-    bool
-    Triangle2d::strictlyContains(const Point<2>& point, double precision) const {
-        Point2d localCoordinates = point / coordinateSystem();
-        double a = localCoordinates.x();
-        double b = localCoordinates.y();
-        Zero zero(precision);
-        return a > zero && b > zero && 1 - a - b > zero;
+    Triangle3d
+    Triangle2d::toGlobalFrom(const Plane3d& plane) const {
+        return Triangle3d(
+            vertex(0).toGlobalFrom(plane),
+            vertex(1).toGlobalFrom(plane),
+            vertex(2).toGlobalFrom(plane)
+        );
     }
 
     inline
@@ -95,6 +94,26 @@ namespace opensolid
     ) : detail::TriangleBase<3>(firstVertex, secondVertex, thirdVertex) {
     }
 
+    inline
+    Triangle2d
+    Triangle3d::toLocalIn(const Plane3d& plane) const {
+        return Triangle2d(
+            vertex(0).toLocalIn(plane),
+            vertex(1).toLocalIn(plane),
+            vertex(2).toLocalIn(plane)
+        );
+    }
+
+    inline
+    Triangle3d
+    Triangle3d::projectedOnto(const Plane3d& plane) const {
+        return Triangle3d(
+            vertex(0).projectedOnto(plane),
+            vertex(1).projectedOnto(plane),
+            vertex(2).projectedOnto(plane)
+        );
+    }
+
     template <int iNumDimensions>
     bool
     EqualityFunction<Triangle<iNumDimensions>>::operator()(
@@ -106,67 +125,6 @@ namespace opensolid
             equalityFunction(firstTriangle.vertex(0), secondTriangle.vertex(0), precision) &&
             equalityFunction(firstTriangle.vertex(1), secondTriangle.vertex(1), precision) &&
             equalityFunction(firstTriangle.vertex(2), secondTriangle.vertex(2), precision)
-        );
-    }
-
-    template <int iNumDimensions>
-    Triangle<iNumDimensions>
-    ScalingFunction<Triangle<iNumDimensions>>::operator()(
-        const Triangle<iNumDimensions>& triangle,
-        const Point<iNumDimensions>& originPoint,
-        double scale
-    ) const {
-        return Triangle<iNumDimensions>(
-            scaled(triangle.vertex(0), originPoint, scale),
-            scaled(triangle.vertex(1), originPoint, scale),
-            scaled(triangle.vertex(2), originPoint, scale)
-        );
-    }
-
-    template <int iNumDimensions>
-    Triangle<iNumDimensions>
-    TranslationFunction<Triangle<iNumDimensions>>::operator()(
-        const Triangle<iNumDimensions>& triangle,
-        const Vector<double, iNumDimensions>& vector
-    ) const {
-        return Triangle<iNumDimensions>(
-            translated(triangle.vertex(0), vector),
-            translated(triangle.vertex(1), vector),
-            translated(triangle.vertex(2), vector)
-        );
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    Triangle<iNumResultDimensions>
-    TransformationFunction<Triangle<iNumDimensions>, iNumResultDimensions>::operator()(
-        const Triangle<iNumDimensions>& triangle,
-        const Point<iNumDimensions>& originPoint,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
-        const Point<iNumResultDimensions>& destinationPoint
-    ) const {
-        return Triangle<iNumResultDimensions>(
-            transformed(triangle.vertex(0), originPoint, transformationMatrix, destinationPoint),
-            transformed(triangle.vertex(1), originPoint, transformationMatrix, destinationPoint),
-            transformed(triangle.vertex(2), originPoint, transformationMatrix, destinationPoint)
-        );
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    Triangle<iNumResultDimensions>
-    MorphingFunction<
-        Triangle<iNumDimensions>,
-        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
-    >::operator()(
-        const Triangle<iNumDimensions>& triangle,
-        const ParametricExpression<
-            Point<iNumResultDimensions>,
-            Point<iNumDimensions>
-        >& morphingExpression
-    ) const {
-        return Triangle<iNumResultDimensions>(
-            morphed(triangle.vertex(0), morphingExpression),
-            morphed(triangle.vertex(1), morphingExpression),
-            morphed(triangle.vertex(2), morphingExpression)
         );
     }
 }

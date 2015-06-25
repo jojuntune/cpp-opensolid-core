@@ -28,205 +28,56 @@
 
 #include <OpenSolid/Core/LineSegment.definitions.hpp>
 
-#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/BoundsFunction.hpp>
-#include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/LineSegmentPlaneIntersection3d.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Plane.hpp>
-#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Simplex/LineSegmentBase.hpp>
+#include <OpenSolid/Core/Simplex/SimplexVertices.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions>
     inline
-    LineSegment<iNumDimensions>::LineSegment() {
+    LineSegment2d::LineSegment() {
     }
 
-    template <int iNumDimensions>
     inline
-    LineSegment<iNumDimensions>::LineSegment(
-        const Point<iNumDimensions>& startVertex,
-        const Point<iNumDimensions>& endVertex
-    ) {
-        _vertices[0] = startVertex;
-        _vertices[1] = endVertex;
+    LineSegment2d::LineSegment(const Point2d& startVertex, const Point2d& endVertex) :
+        detail::LineSegmentBase<2>(startVertex, endVertex) {
     }
 
-    template <int iNumDimensions>
     inline
-    const Point<iNumDimensions>&
-    LineSegment<iNumDimensions>::startVertex() const {
-        return _vertices[0];
+    LineSegment3d
+    LineSegment2d::toGlobalFrom(const Plane3d& plane) const {
+        return LineSegment3d(startVertex().toGlobalFrom(plane), endVertex().toGlobalFrom(plane));
     }
 
-    template <int iNumDimensions>
     inline
-    Point<iNumDimensions>&
-    LineSegment<iNumDimensions>::startVertex() {
-        return _vertices[0];
+    LineSegment3d::LineSegment() {
     }
 
-    template <int iNumDimensions>
     inline
-    const Point<iNumDimensions>&
-    LineSegment<iNumDimensions>::endVertex() const {
-        return _vertices[1];
+    LineSegment3d::LineSegment(const Point3d& startVertex, const Point3d& endVertex) :
+        detail::LineSegmentBase<3>(startVertex, endVertex) {
     }
 
-    template <int iNumDimensions>
-    inline
-    Point<iNumDimensions>&
-    LineSegment<iNumDimensions>::endVertex() {
-        return _vertices[1];
-    }
-
-    template <int iNumDimensions>
-    inline
-    const Point<iNumDimensions>&
-    LineSegment<iNumDimensions>::vertex(int index) const {
-        assert(index == 0 || index == 1);
-        return _vertices[index];
-    }
-
-    template <int iNumDimensions>
-    inline
-    Point<iNumDimensions>&
-    LineSegment<iNumDimensions>::vertex(int index) {
-        assert(index == 0 || index == 1);
-        return _vertices[index];
-    }
-
-    template <int iNumDimensions>
-    inline
-    detail::SimplexVertices<LineSegment<iNumDimensions>, 2>
-    LineSegment<iNumDimensions>::vertices() const {
-        return detail::SimplexVertices<LineSegment<iNumDimensions>, 2>(*this);
-    }
-
-    template <int iNumDimensions>
-    inline
-    Point<iNumDimensions>
-    LineSegment<iNumDimensions>::centroid() const {
-        return startVertex() + 0.5 * vector();
-    }
-
-    template <int iNumDimensions>
-    inline
-    double
-    LineSegment<iNumDimensions>::length() const {
-        return vector().norm();
-    }
-
-    template <int iNumDimensions>
-    inline
-    double
-    LineSegment<iNumDimensions>::squaredLength() const {
-        return vector().squaredNorm();
-    }
-
-    template<int iNumDimensions>
-    inline
-    Vector<double, iNumDimensions>
-    LineSegment<iNumDimensions>::vector() const {
-        return endVertex() - startVertex();
-    }
-
-    template<int iNumDimensions>
-    inline
-    UnitVector<iNumDimensions>
-    LineSegment<iNumDimensions>::normalVector() const {
-        return vector().unitOrthogonal();
-    }
-
-    template <int iNumDimensions>
-    inline
-    CoordinateSystem<iNumDimensions, 1>
-    LineSegment<iNumDimensions>::coordinateSystem() const {
-        return CoordinateSystem<iNumDimensions, 1>(startVertex(), vector());
-    }
-
-    template <int iNumDimensions>
-    inline
-    Axis<iNumDimensions>
-    LineSegment<iNumDimensions>::axis() const {
-        return Axis<iNumDimensions>(startVertex(), vector().normalized());
-    }
-
-    template <int iNumDimensions>
-    inline
-    Box<iNumDimensions>
-    LineSegment<iNumDimensions>::bounds() const {
-        return startVertex().hull(endVertex());
-    }
-
-    template <int iNumDimensions>
-    inline
-    bool
-    LineSegment<iNumDimensions>::operator==(const LineSegment<iNumDimensions>& other) const {
-        return startVertex() == other.startVertex() && endVertex() == other.endVertex();
-    }
-
-    template <int iNumDimensions>
     inline
     Intersection<LineSegment3d, Plane3d>
-    LineSegment<iNumDimensions>::intersection(const Plane3d& plane, double precision) const {
+    LineSegment3d::intersection(const Plane3d& plane, double precision) const {
         return Intersection<LineSegment3d, Plane3d>(*this, plane, precision);
     }
-    
-    template <int iNumDimensions>
+
     inline
-    bool
-    LineSegment<iNumDimensions>::contains(const Point2d& point, double precision) const {
-        Vector2d parallelVector = vector();
-        Vector2d perpendicularVector(parallelVector.x(), -parallelVector.y());
-        double squaredLength = parallelVector.squaredNorm();
-        Vector2d startVector = point - startVertex();
-        Zero zero(precision * precision * squaredLength);
-
-        // Check whether the point is on the axis defined by the segment
-        double perpendicularMetric = startVector.dot(perpendicularVector);
-        if (perpendicularMetric * perpendicularMetric > zero) {
-            return false;
-        }
-
-        // Check whether point is located within the segment
-        Point1d localCoordinates = point / coordinateSystem();
-        if (!Interval::unit().contains(localCoordinates.value())) {
-            return false;
-        }
-
-        // Passed all checks
-        return true;
+    LineSegment2d
+    LineSegment3d::toLocalIn(const Plane3d& plane) const {
+        return LineSegment2d(startVertex().toLocalIn(plane), endVertex().toLocalIn(plane));
     }
-    
-    template <int iNumDimensions>
+
     inline
-    bool
-    LineSegment<iNumDimensions>::contains(const Point3d& point, double precision) const {
-        Vector3d parallelVector = vector();
-        double squaredLength = parallelVector.squaredNorm();
-        Vector3d startVector = point - startVertex();
-        Zero zero(precision * precision * squaredLength);
-
-        // Check whether the point is on the axis defined by the segment
-        double perpendicularMetric = startVector.cross(parallelVector).squaredNorm();
-        if (perpendicularMetric > zero) {
-            return false;
-        }
-
-        // Check whether point is located within the segment
-        Point1d localCoordinates = point / coordinateSystem();
-        if (!Interval::unit().contains(localCoordinates.value())) {
-            return false;
-        }
-
-        // Passed all checks
-        return true;
+    LineSegment3d
+    LineSegment3d::projectedOnto(const Plane3d& plane) const {
+        return LineSegment3d(startVertex().projectedOnto(plane), endVertex().projectedOnto(plane));
     }
 
     template <int iNumDimensions>
@@ -245,77 +96,6 @@ namespace opensolid
             firstLineSegment.endVertex(),
             secondLineSegment.endVertex(),
             precision
-        );
-    }
-
-    template <int iNumDimensions>
-    inline
-    LineSegment<iNumDimensions>
-    ScalingFunction<LineSegment<iNumDimensions>>::operator()(
-        const LineSegment<iNumDimensions>& lineSegment,
-        const Point<iNumDimensions>& originPoint,
-        double scale
-    ) const {
-        return LineSegment<iNumDimensions>(
-            scaled(lineSegment.startVertex(), originPoint, scale),
-            scaled(lineSegment.endVertex(), originPoint, scale)
-        );
-    }
-
-    template <int iNumDimensions>
-    inline
-    LineSegment<iNumDimensions>
-    TranslationFunction<LineSegment<iNumDimensions>>::operator()(
-        const LineSegment<iNumDimensions>& lineSegment,
-        const Vector<double, iNumDimensions>& vector
-    ) const {
-        return LineSegment<iNumDimensions>(
-            translated(lineSegment.startVertex(), vector),
-            translated(lineSegment.endVertex(), vector)
-        );
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    inline
-    LineSegment<iNumResultDimensions>
-    TransformationFunction<LineSegment<iNumDimensions>, iNumResultDimensions>::operator()(
-        const LineSegment<iNumDimensions>& lineSegment,
-        const Point<iNumDimensions>& originPoint,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
-        const Point<iNumResultDimensions>& destinationPoint
-    ) const {
-        return LineSegment<iNumResultDimensions>(
-            transformed(
-                lineSegment.startVertex(),
-                originPoint,
-                transformationMatrix,
-                destinationPoint
-            ),
-            transformed(
-                lineSegment.endVertex(),
-                originPoint,
-                transformationMatrix,
-                destinationPoint
-            )
-        );
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    inline
-    LineSegment<iNumResultDimensions>
-    MorphingFunction<
-        LineSegment<iNumDimensions>,
-        ParametricExpression<Point<iNumResultDimensions>, Point<iNumDimensions>>
-    >::operator()(
-        const LineSegment<iNumDimensions>& lineSegment,
-        const ParametricExpression<
-            Point<iNumResultDimensions>,
-            Point<iNumDimensions>
-        >& morphingExpression
-    ) const {
-        return LineSegment<iNumResultDimensions>(
-            morphingExpression.evaluate(lineSegment.startVertex()),
-            morphingExpression.evaluate(lineSegment.endVertex())
         );
     }
 }

@@ -53,12 +53,6 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        BoxBase<iNumDimensions>::BoxBase(Interval value) :
-            CartesianBase<Interval, iNumDimensions>(value) {
-        }
-
-        template <int iNumDimensions>
-        inline
         BoxBase<iNumDimensions>::BoxBase(Interval x, Interval y) :
             CartesianBase<Interval, iNumDimensions>(x, y) {
         }
@@ -98,16 +92,6 @@ namespace opensolid
         const Point<iNumDimensions>
         BoxBase<iNumDimensions>::maxVertex() const {
             return Point<iNumDimensions>(this->components().cwiseUpperBound());
-        }
-
-        template <>
-        inline
-        const Point<1>
-        BoxBase<1>::vertex(int index) const {
-            assert(index >= 0 && index < 2);
-            return Point<1>(
-                index == 0 ? this->component(0).lowerBound() : this->component(0).upperBound()
-            );
         }
 
         template <>
