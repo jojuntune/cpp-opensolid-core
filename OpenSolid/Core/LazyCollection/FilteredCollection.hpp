@@ -117,8 +117,7 @@ namespace opensolid
         inline
         bool
         FilteredCollectionIterator<TBaseCollection, TPredicate>::equal(
-            const FilteredCollectionIterator<TBaseCollection,
-            TPredicate>& other
+            const FilteredCollectionIterator<TBaseCollection, TPredicate>& other
         ) const {
             return _baseIterator == other._baseIterator;
         }
