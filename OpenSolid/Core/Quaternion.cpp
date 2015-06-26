@@ -64,7 +64,7 @@ namespace opensolid
         }
     }
 
-    const Quaternion2d
+    Quaternion2d
     Quaternion2d::slerp(
         const Quaternion2d& startQuaternion,
         const Quaternion2d& endQuaternion,
@@ -73,7 +73,7 @@ namespace opensolid
         return computeSlerp(startQuaternion, endQuaternion, parameterValue);
     }
 
-    const Quaternion3d
+    Quaternion3d
     Quaternion3d::slerp(
         const Quaternion3d& startQuaternion,
         const Quaternion3d& endQuaternion,

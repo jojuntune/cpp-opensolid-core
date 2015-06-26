@@ -155,30 +155,30 @@ namespace opensolid
         void
         operator=(const detail::MatrixInterface<TOtherDerived>& other);
 
-        static const Matrix<TScalar, iNumRows, iNumColumns>
+        static Matrix<TScalar, iNumRows, iNumColumns>
         constant(TScalar value);
 
-        static const Matrix<TScalar, iNumRows, iNumColumns>
+        static Matrix<TScalar, iNumRows, iNumColumns>
         zero();
 
-        static const Matrix<TScalar, iNumRows, iNumColumns>
+        static Matrix<TScalar, iNumRows, iNumColumns>
         ones();
 
-        static const Matrix<TScalar, iNumRows, iNumColumns>
+        static Matrix<TScalar, iNumRows, iNumColumns>
         identity();
 
-        static const Matrix<TScalar, iNumRows, iNumColumns>
+        static Matrix<TScalar, iNumRows, iNumColumns>
         random();
 
         template <class TFirstDerived, class TSecondDerived>
-        static const Matrix<TScalar, iNumRows, iNumColumns>
+        static Matrix<TScalar, iNumRows, iNumColumns>
         fromColumns(
             const detail::MatrixInterface<TFirstDerived>& firstColumn,
             const detail::MatrixInterface<TSecondDerived>& secondColumn
         );
 
         template <class TFirstDerived, class TSecondDerived, class TThirdDerived>
-        static const Matrix<TScalar, iNumRows, iNumColumns>
+        static Matrix<TScalar, iNumRows, iNumColumns>
         fromColumns(
             const detail::MatrixInterface<TFirstDerived>& firstColumn,
             const detail::MatrixInterface<TSecondDerived>& secondColumn,
@@ -244,19 +244,19 @@ namespace opensolid
 
         operator TScalar() const;
 
-        static const Matrix<TScalar, 1, 1>
+        static Matrix<TScalar, 1, 1>
         constant(TScalar value);
 
-        static const Matrix<TScalar, 1, 1>
+        static Matrix<TScalar, 1, 1>
         zero();
 
-        static const Matrix<TScalar, 1, 1>
+        static Matrix<TScalar, 1, 1>
         ones();
 
-        static const Matrix<TScalar, 1, 1>
+        static Matrix<TScalar, 1, 1>
         identity();
 
-        static const Matrix<TScalar, 1, 1>
+        static Matrix<TScalar, 1, 1>
         random();
     };
 
@@ -310,30 +310,30 @@ namespace opensolid
         void
         operator=(const detail::MatrixInterface<TOtherDerived>& other);
 
-        static const Matrix<TScalar, -1, iNumColumns>
+        static Matrix<TScalar, -1, iNumColumns>
         constant(int numRows, TScalar value);
 
-        static const Matrix<TScalar, -1, iNumColumns>
+        static Matrix<TScalar, -1, iNumColumns>
         zero(int numRows);
 
-        static const Matrix<TScalar, -1, iNumColumns>
+        static Matrix<TScalar, -1, iNumColumns>
         ones(int numRows);
 
-        static const Matrix<TScalar, -1, iNumColumns>
+        static Matrix<TScalar, -1, iNumColumns>
         identity(int numRows);
 
-        static const Matrix<TScalar, -1, iNumColumns>
+        static Matrix<TScalar, -1, iNumColumns>
         random(int numRows);
 
         template <class TFirstDerived, class TSecondDerived>
-        static const Matrix<TScalar, -1, iNumColumns>
+        static Matrix<TScalar, -1, iNumColumns>
         fromColumns(
             const detail::MatrixInterface<TFirstDerived>& firstColumn,
             const detail::MatrixInterface<TSecondDerived>& secondColumn
         );
 
         template <class TFirstDerived, class TSecondDerived, class TThirdDerived>
-        static const Matrix<TScalar, -1, iNumColumns>
+        static Matrix<TScalar, -1, iNumColumns>
         fromColumns(
             const detail::MatrixInterface<TFirstDerived>& firstColumn,
             const detail::MatrixInterface<TSecondDerived>& secondColumn,
@@ -396,30 +396,30 @@ namespace opensolid
         void
         operator=(const detail::MatrixInterface<TOtherDerived>& other);
 
-        static const Matrix<TScalar, iNumRows, -1>
+        static Matrix<TScalar, iNumRows, -1>
         constant(int numColumns, TScalar value);
 
-        static const Matrix<TScalar, iNumRows, -1>
+        static Matrix<TScalar, iNumRows, -1>
         zero(int numColumns);
 
-        static const Matrix<TScalar, iNumRows, -1>
+        static Matrix<TScalar, iNumRows, -1>
         ones(int numColumns);
 
-        static const Matrix<TScalar, iNumRows, -1>
+        static Matrix<TScalar, iNumRows, -1>
         identity(int numColumns);
 
-        static const Matrix<TScalar, iNumRows, -1>
+        static Matrix<TScalar, iNumRows, -1>
         random(int numColumns);
 
         template <class TFirstDerived, class TSecondDerived>
-        static const Matrix<TScalar, iNumRows, -1>
+        static Matrix<TScalar, iNumRows, -1>
         fromColumns(
             const detail::MatrixInterface<TFirstDerived>& firstColumn,
             const detail::MatrixInterface<TSecondDerived>& secondColumn
         );
 
         template <class TFirstDerived, class TSecondDerived, class TThirdDerived>
-        static const Matrix<TScalar, iNumRows, -1>
+        static Matrix<TScalar, iNumRows, -1>
         fromColumns(
             const detail::MatrixInterface<TFirstDerived>& firstColumn,
             const detail::MatrixInterface<TSecondDerived>& secondColumn,
@@ -485,30 +485,30 @@ namespace opensolid
         void
         operator=(const detail::MatrixInterface<TOtherDerived>& other);
 
-        static const Matrix<TScalar, -1, -1>
+        static Matrix<TScalar, -1, -1>
         constant(int numRows, int numColumns, TScalar value);
 
-        static const Matrix<TScalar, -1, -1>
+        static Matrix<TScalar, -1, -1>
         zero(int numRows, int numColumns);
 
-        static const Matrix<TScalar, -1, -1>
+        static Matrix<TScalar, -1, -1>
         ones(int numRows, int numColumns);
 
-        static const Matrix<TScalar, -1, -1>
+        static Matrix<TScalar, -1, -1>
         identity(int numRows, int numColumns);
 
-        static const Matrix<TScalar, -1, -1>
+        static Matrix<TScalar, -1, -1>
         random(int numRows, int numColumns);
 
         template <class TFirstDerived, class TSecondDerived>
-        static const Matrix<TScalar, -1, -1>
+        static Matrix<TScalar, -1, -1>
         fromColumns(
             const detail::MatrixInterface<TFirstDerived>& firstColumn,
             const detail::MatrixInterface<TSecondDerived>& secondColumn
         );
 
         template <class TFirstDerived, class TSecondDerived, class TThirdDerived>
-        static const Matrix<TScalar, -1, -1>
+        static Matrix<TScalar, -1, -1>
         fromColumns(
             const detail::MatrixInterface<TFirstDerived>& firstColumn,
             const detail::MatrixInterface<TSecondDerived>& secondColumn,

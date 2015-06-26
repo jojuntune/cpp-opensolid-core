@@ -89,19 +89,19 @@ namespace opensolid
     }
 
     inline
-    const Quaternion2d
+    Quaternion2d
     Quaternion2d::inverse() const {
         return Quaternion2d(cosAngle(), -sinAngle());
     }
 
     inline
-    const Matrix2d
+    Matrix2d
     Quaternion2d::rotationMatrix() const {
         return Matrix2d(cosAngle(), sinAngle(), -sinAngle(), cosAngle());
     }
 
     inline
-    const Quaternion2d
+    Quaternion2d
     Quaternion2d::operator*(const Quaternion2d& other) const {
         double cosAngle = this->cosAngle() * other.cosAngle() - this->sinAngle() * other.sinAngle();
         double sinAngle = this->sinAngle() * other.cosAngle() + this->cosAngle() * other.sinAngle();
@@ -117,7 +117,7 @@ namespace opensolid
     }
 
     inline
-    const Quaternion2d
+    Quaternion2d
     Quaternion2d::identity() {
         return Quaternion2d(ColumnMatrix2d(1.0, 0.0));
     }
@@ -205,13 +205,13 @@ namespace opensolid
     }
 
     inline
-    const Quaternion3d
+    Quaternion3d
     Quaternion3d::inverse() const {
         return Quaternion3d(-x(), -y(), -z(), w());
     }
 
     inline
-    const Matrix3d
+    Matrix3d
     Quaternion3d::rotationMatrix() const {
         double wx = w() * x();
         double wy = w() * y();
@@ -264,7 +264,7 @@ namespace opensolid
     }
 
     inline
-    const Quaternion3d
+    Quaternion3d
     Quaternion3d::identity() {
         return Quaternion3d(Matrix<double, 4, 1>(0.0, 0.0, 0.0, 1.0));
     }

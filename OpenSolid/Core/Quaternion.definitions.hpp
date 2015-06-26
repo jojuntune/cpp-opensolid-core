@@ -66,20 +66,20 @@ namespace opensolid
         double
         dot(const Quaternion<2>& other) const;
 
-        const Quaternion<2>
+        Quaternion<2>
         inverse() const;
 
-        const Matrix<double, 2, 2>
+        Matrix<double, 2, 2>
         rotationMatrix() const;
 
-        const Quaternion<2>
+        Quaternion<2>
         operator*(const Quaternion<2>& other) const;
 
-        static const Quaternion<2>
+        static Quaternion<2>
         identity();
 
         OPENSOLID_CORE_EXPORT
-        static const Quaternion<2>
+        static Quaternion<2>
         slerp(
             const Quaternion<2>& startQuaternion,
             const Quaternion<2>& endQuaternion,
@@ -129,20 +129,20 @@ namespace opensolid
         double
         dot(const Quaternion<3>& other) const;
 
-        const Quaternion<3>
+        Quaternion<3>
         inverse() const;
 
-        const Matrix<double, 3, 3>
+        Matrix<double, 3, 3>
         rotationMatrix() const;
 
         Quaternion<3>
         operator*(const Quaternion<3>& other) const;
 
-        static const Quaternion<3>
+        static Quaternion<3>
         identity();
 
         OPENSOLID_CORE_EXPORT
-        static const Quaternion<3>
+        static Quaternion<3>
         slerp(
             const Quaternion<3>& startQuaternion,
             const Quaternion<3>& endQuaternion,

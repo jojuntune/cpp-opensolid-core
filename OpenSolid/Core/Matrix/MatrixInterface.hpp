@@ -433,7 +433,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<
+        Matrix<
             typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumColumns,
             MatrixTraits<TDerived>::NumRows
@@ -460,7 +460,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<
+        Matrix<
             typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumRows,
             MatrixTraits<TDerived>::NumColumns
@@ -476,7 +476,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const EigenDecomposition<MatrixTraits<TDerived>::NumRows>
+        EigenDecomposition<MatrixTraits<TDerived>::NumRows>
         MatrixInterface<TDerived>::eigenDecomposition() const {
             assert(numRows() == numColumns());
             return EigenDecomposition<
@@ -602,7 +602,7 @@ namespace opensolid
 
         template <class TDerived> template <class TUnaryFunction>
         inline
-        const typename MappedMatrixType<TUnaryFunction, TDerived>::Type
+        typename MappedMatrixType<TUnaryFunction, TDerived>::Type
         MatrixInterface<TDerived>::map(TUnaryFunction unaryFunction) const {
             typename MappedMatrixType<TUnaryFunction, TDerived>::Type result(dimensions());
             result.setMap(*this, unaryFunction);
@@ -611,7 +611,7 @@ namespace opensolid
 
         template <class TDerived> template <class TOtherDerived, class TBinaryFunction>
         inline
-        const typename PairwiseMappedMatrixType<TBinaryFunction, TDerived, TOtherDerived>::Type
+        typename PairwiseMappedMatrixType<TBinaryFunction, TDerived, TOtherDerived>::Type
         MatrixInterface<TDerived>::binaryMap(
             const MatrixInterface<TOtherDerived>& other,
             TBinaryFunction binaryFunction
@@ -627,7 +627,7 @@ namespace opensolid
 
         template <class TDerived> template <class TValue, class TFunction>
         inline
-        const TValue
+        TValue
         MatrixInterface<TDerived>::fold(TValue initialValue, TFunction function) const {
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
@@ -639,7 +639,7 @@ namespace opensolid
 
         template <class TDerived> template <class TOtherDerived, class TValue, class TFunction>
         inline
-        const TValue
+        TValue
         MatrixInterface<TDerived>::binaryFold(
             const MatrixInterface<TOtherDerived>& other,
             TValue initialValue,
@@ -830,7 +830,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<double, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
+        Matrix<double, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
         MatrixInterface<TDerived>::cwiseLowerBound() const {
             return map(
                 [] (Scalar component) -> double {
@@ -853,7 +853,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<double, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
+        Matrix<double, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
         MatrixInterface<TDerived>::cwiseUpperBound() const {
             return map(
                 [] (Scalar component) -> double {
@@ -876,7 +876,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<double, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
+        Matrix<double, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
         MatrixInterface<TDerived>::cwiseWidth() const {
             return map(
                 [] (Scalar component) -> double {
@@ -899,7 +899,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<double, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
+        Matrix<double, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
         MatrixInterface<TDerived>::cwiseMedian() const {
             return map(
                 [] (Scalar component) -> double {
@@ -910,7 +910,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<
+        Matrix<
             typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumRows,
             MatrixTraits<TDerived>::NumColumns
@@ -937,7 +937,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<
+        Matrix<
             typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumRows,
             MatrixTraits<TDerived>::NumColumns
@@ -952,7 +952,7 @@ namespace opensolid
 
         template <class TDerived> template <class TOtherDerived>
         inline
-        const Matrix<
+        Matrix<
             typename CommonScalar<TDerived, TOtherDerived>::Type,
             CommonRows<TDerived, TOtherDerived>::Value,
             CommonColumns<TDerived, TOtherDerived>::Value
@@ -971,7 +971,7 @@ namespace opensolid
 
         template <class TDerived> template <class TOtherDerived>
         inline
-        const Matrix<
+        Matrix<
             typename CommonScalar<TDerived, TOtherDerived>::Type,
             CommonRows<TDerived, TOtherDerived>::Value,
             CommonColumns<TDerived, TOtherDerived>::Value
@@ -1016,7 +1016,7 @@ namespace opensolid
 
         template <class TDerived> template <class TOtherDerived>
         inline
-        const Matrix<
+        Matrix<
             Interval,
             CommonRows<TDerived, TOtherDerived>::Value,
             CommonColumns<TDerived, TOtherDerived>::Value
@@ -1071,7 +1071,7 @@ namespace opensolid
 
         template <class TDerived> template <class TOtherDerived>
         inline
-        const Matrix<
+        Matrix<
             Interval,
             CommonRows<TDerived, TOtherDerived>::Value,
             CommonColumns<TDerived, TOtherDerived>::Value
@@ -1384,7 +1384,7 @@ namespace opensolid
 
         template <class TDerived> template <class TOtherDerived>
         inline
-        const Matrix<
+        Matrix<
             typename CommonScalar<TDerived, TOtherDerived>::Type,
             MatrixTraits<TDerived>::NumColumns,
             MatrixTraits<TOtherDerived>::NumColumns
@@ -1466,7 +1466,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<
+        Matrix<
             typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumRows,
             MatrixTraits<TDerived>::NumColumns
@@ -1481,7 +1481,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<
+        Matrix<
             typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumRows,
             MatrixTraits<TDerived>::NumColumns
@@ -1496,11 +1496,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<
-            Interval,
-            MatrixTraits<TDerived>::NumRows,
-            MatrixTraits<TDerived>::NumColumns
-        >
+        Matrix<Interval, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
         operator*(Interval scale, const MatrixInterface<TDerived>& matrix) {
             return matrix.map(
                 [scale] (typename MatrixTraits<TDerived>::Scalar component) {
@@ -1511,7 +1507,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<
+        Matrix<
             typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumRows,
             MatrixTraits<TDerived>::NumColumns
@@ -1526,11 +1522,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<
-            Interval,
-            MatrixTraits<TDerived>::NumRows,
-            MatrixTraits<TDerived>::NumColumns
-        >
+        Matrix<Interval, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
         operator*(const MatrixInterface<TDerived>& matrix, Interval scale) {
             return matrix.map(
                 [scale] (typename MatrixTraits<TDerived>::Scalar component) {
@@ -1541,7 +1533,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<
+        Matrix<
             typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumRows,
             MatrixTraits<TDerived>::NumColumns
@@ -1556,11 +1548,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        const Matrix<
-            Interval,
-            MatrixTraits<TDerived>::NumRows,
-            MatrixTraits<TDerived>::NumColumns
-        >
+        Matrix<Interval, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
         operator/(const MatrixInterface<TDerived>& matrix, Interval divisor) {
             return matrix.map(
                 [divisor] (typename MatrixTraits<TDerived>::Scalar component) {
@@ -1571,7 +1559,7 @@ namespace opensolid
 
         template <class TFirstDerived, class TSecondDerived>
         inline
-        const Matrix<
+        Matrix<
             typename CommonScalar<TFirstDerived, TSecondDerived>::Type,
             CommonRows<TFirstDerived, TSecondDerived>::Value,
             CommonColumns<TFirstDerived, TSecondDerived>::Value
@@ -1593,7 +1581,7 @@ namespace opensolid
 
         template <class TFirstDerived, class TSecondDerived>
         inline
-        const Matrix<
+        Matrix<
             typename CommonScalar<TFirstDerived, TSecondDerived>::Type,
             CommonRows<TFirstDerived, TSecondDerived>::Value,
             CommonColumns<TFirstDerived, TSecondDerived>::Value
@@ -1614,7 +1602,7 @@ namespace opensolid
         }
 
         template <class TFirstDerived, class TSecondDerived>
-        const Matrix<
+        Matrix<
             typename CommonScalar<TFirstDerived, TSecondDerived>::Type,
             MatrixTraits<TFirstDerived>::NumRows,
             MatrixTraits<TSecondDerived>::NumColumns

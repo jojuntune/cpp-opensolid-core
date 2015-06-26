@@ -50,13 +50,13 @@ namespace opensolid
         const TDerived&
         derived() const;
 
-        const TDerived
+        TDerived
         rotatedAbout(const Point<2>& originPoint, double angle) const;
 
-        const TDerived
+        TDerived
         translatedAlong(const Axis<2>& axis, double distance) const;
 
-        const TDerived
+        TDerived
         mirroredAbout(const Axis<2>& axis) const;
     };
 
@@ -76,13 +76,13 @@ namespace opensolid
         const TDerived&
         derived() const;
 
-        const TDerived
+        TDerived
         rotatedAbout(const Axis<3>& axis, double angle) const;
 
-        const TDerived
+        TDerived
         translatedAlong(const Axis<3>& axis, double distance) const;
 
-        const TDerived
+        TDerived
         mirroredAbout(const Plane3d& plane) const;
     };
 }

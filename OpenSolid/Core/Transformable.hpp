@@ -47,21 +47,21 @@ namespace opensolid
 
     template <class TDerived>
     inline
-    const TDerived
+    TDerived
     Transformable<TDerived, 2>::rotatedAbout(const Point2d& point, double angle) const {
         return derived().rotatedAbout(point, Quaternion2d(angle).rotationMatrix());
     }
     
     template <class TDerived>
     inline
-    const TDerived
+    TDerived
     Transformable<TDerived, 2>::translatedAlong(const Axis<2>& axis, double distance) const {
         return derived().translatedBy(distance * axis.directionVector());
     }
 
     template <class TDerived>
     inline
-    const TDerived
+    TDerived
     Transformable<TDerived, 2>::mirroredAbout(const Axis2d& axis) const {
         return derived().mirroredAbout(axis.originPoint(), axis.normalVector());
     }
@@ -75,7 +75,7 @@ namespace opensolid
 
     template <class TDerived>
     inline
-    const TDerived
+    TDerived
     Transformable<TDerived, 3>::rotatedAbout(const Axis3d& axis, double angle) const {
         return derived().rotatedAbout(
             axis.originPoint(),
@@ -85,14 +85,14 @@ namespace opensolid
     
     template <class TDerived>
     inline
-    const TDerived
+    TDerived
     Transformable<TDerived, 3>::translatedAlong(const Axis<3>& axis, double distance) const {
         return derived().translatedBy(distance * axis.directionVector());
     }
 
     template <class TDerived>
     inline
-    const TDerived
+    TDerived
     Transformable<TDerived, 3>::mirroredAbout(const Plane3d& plane) const {
         return derived().mirroredAbout(plane.originPoint(), plane.normalVector());
     }
