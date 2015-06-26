@@ -55,7 +55,7 @@ namespace opensolid
     template <class TDerived>
     inline
     TDerived
-    Transformable<TDerived, 2>::translatedAlong(const Axis<2>& axis, double distance) const {
+    Transformable<TDerived, 2>::translatedAlong(const Axis2d& axis, double distance) const {
         return derived().translatedBy(distance * axis.directionVector());
     }
 
@@ -86,7 +86,7 @@ namespace opensolid
     template <class TDerived>
     inline
     TDerived
-    Transformable<TDerived, 3>::translatedAlong(const Axis<3>& axis, double distance) const {
+    Transformable<TDerived, 3>::translatedAlong(const Axis3d& axis, double distance) const {
         return derived().translatedBy(distance * axis.directionVector());
     }
 

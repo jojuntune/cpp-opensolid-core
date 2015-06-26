@@ -183,9 +183,9 @@ namespace opensolid
     }
 
     inline
-    Intersection<Axis3d, Triangle<3>>
-    Axis3d::intersection(const Triangle<3>& triangle, double precision) const {
-        return Intersection<Axis3d, Triangle<3>>(*this, triangle, precision);
+    Intersection<Axis3d, Triangle3d>
+    Axis3d::intersection(const Triangle3d& triangle, double precision) const {
+        return Intersection<Axis3d, Triangle3d>(*this, triangle, precision);
     }
 
     inline

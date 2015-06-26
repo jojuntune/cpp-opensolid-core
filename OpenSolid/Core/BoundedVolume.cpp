@@ -56,7 +56,7 @@ namespace opensolid
     }
 
     BoundedVolume3d
-    BoundedVolume3d::scaledAbout(const Point<3>& point, double scale) const {
+    BoundedVolume3d::scaledAbout(const Point3d& point, double scale) const {
         return BoundedVolume3d(
             SpatialSet<ParametricSurface3d>(
                 boundaries().map(

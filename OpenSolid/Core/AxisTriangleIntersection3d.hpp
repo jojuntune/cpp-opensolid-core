@@ -34,32 +34,32 @@ namespace opensolid
 {
     inline
     bool
-    Intersection<Axis<3>, Triangle<3>>::exists() const {
+    Intersection<Axis3d, Triangle3d>::exists() const {
         return _type != NONE;
     }
 
     inline
     bool
-    Intersection<Axis<3>, Triangle<3>>::isPoint() const {
+    Intersection<Axis3d, Triangle3d>::isPoint() const {
         return _type == POINT;
     }
 
     inline
     bool
-    Intersection<Axis<3>, Triangle<3>>::isLineSegment() const {
+    Intersection<Axis3d, Triangle3d>::isLineSegment() const {
         return _type == LINE_SEGMENT;
     }
 
     inline
     const Point3d&
-    Intersection<Axis<3>, Triangle<3>>::point() const {
+    Intersection<Axis3d, Triangle3d>::point() const {
         assert(_type == POINT);
         return _point;
     }
 
     inline
     const LineSegment3d&
-    Intersection<Axis<3>, Triangle<3>>::lineSegment() const {
+    Intersection<Axis3d, Triangle3d>::lineSegment() const {
         assert(_type == LINE_SEGMENT);
         return _lineSegment;
     }

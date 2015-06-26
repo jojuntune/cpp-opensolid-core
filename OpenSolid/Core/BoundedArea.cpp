@@ -98,7 +98,7 @@ namespace opensolid
     }
 
     BoundedArea2d
-    BoundedArea2d::toLocalIn(const Frame<2>& frame) const {
+    BoundedArea2d::toLocalIn(const Frame2d& frame) const {
         return BoundedArea2d(
             SpatialSet<ParametricCurve2d>(
                 boundaries().map(
@@ -111,7 +111,7 @@ namespace opensolid
     }
 
     BoundedArea2d
-    BoundedArea2d::toGlobalFrom(const Frame<2>& frame) const {
+    BoundedArea2d::toGlobalFrom(const Frame2d& frame) const {
         return BoundedArea2d(
             SpatialSet<ParametricCurve2d>(
                 boundaries().map(

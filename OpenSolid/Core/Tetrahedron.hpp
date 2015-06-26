@@ -66,14 +66,14 @@ namespace opensolid
     }
 
     inline
-    const Point<3>&
+    const Point3d&
     Tetrahedron3d::vertex(int index) const {
         assert(index >= 0 && index < 4);
         return _vertices[index];
     }
 
     inline
-    Point<3>&
+    Point3d&
     Tetrahedron3d::vertex(int index) {
         assert(index >= 0 && index < 4);
         return _vertices[index];
@@ -98,7 +98,7 @@ namespace opensolid
     }
 
     inline
-    Box<3>
+    Box3d
     Tetrahedron3d::bounds() const {
         return vertex(0).hull(vertex(1)).hull(vertex(2)).hull(vertex(3));
     }

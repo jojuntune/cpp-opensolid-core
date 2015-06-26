@@ -59,14 +59,14 @@ namespace opensolid
         }
 
         inline
-        const Point<2>&
+        const Point2d&
         XAxisTriangleIntersection2d::point() const {
             assert(_type == POINT);
             return _point;
         }
 
         inline
-        const LineSegment<2>&
+        const LineSegment2d&
         XAxisTriangleIntersection2d::lineSegment() const {
             assert(_type == LINE_SEGMENT);
             return _lineSegment;

@@ -95,7 +95,7 @@ namespace opensolid
     }
 
     inline
-    Circle<3>
+    Circle3d
     Circle2d::toGlobalFrom(const Plane3d& plane) const {
         return Circle3d(centerPoint().toGlobalFrom(plane), plane.normalVector(), radius());
     }

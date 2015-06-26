@@ -30,25 +30,25 @@ namespace opensolid
 {
     inline
     bool
-    Intersection<Axis<3>, Plane3d>::exists() const {
+    Intersection<Axis3d, Plane3d>::exists() const {
         return _type != NONE;
     }
 
     inline
     bool
-    Intersection<Axis<3>, Plane3d>::isPoint() const {
+    Intersection<Axis3d, Plane3d>::isPoint() const {
         return _type == POINT;
     }
 
     inline
     bool
-    Intersection<Axis<3>, Plane3d>::isCoincident() const {
+    Intersection<Axis3d, Plane3d>::isCoincident() const {
         return _type == COINCIDENT;
     }
 
     inline
     const Point<3>&
-    Intersection<Axis<3>, Plane3d>::point() const {
+    Intersection<Axis3d, Plane3d>::point() const {
         return _point;
     }
 }

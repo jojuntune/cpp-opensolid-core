@@ -32,7 +32,7 @@
 namespace opensolid
 {
     Intersection<Axis3d, Plane3d>::Intersection(
-        const Axis<3>& axis,
+        const Axis3d& axis,
         const Plane3d& plane,
         double precision
     ) {
