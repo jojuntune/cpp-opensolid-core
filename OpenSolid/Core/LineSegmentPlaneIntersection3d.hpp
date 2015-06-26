@@ -28,6 +28,10 @@
 
 #include <OpenSolid/Core/LineSegmentPlaneIntersection3d.definitions.hpp>
 
+#include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/Plane.hpp>
+#include <OpenSolid/Core/Point.hpp>
+
 namespace opensolid
 {
     inline
