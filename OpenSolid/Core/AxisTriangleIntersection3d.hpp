@@ -28,6 +28,12 @@
 
 #include <OpenSolid/Core/AxisTriangleIntersection3d.definitions.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/Plane.hpp>
+#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/Triangle.hpp>
+
 #include <cassert>
 
 namespace opensolid
