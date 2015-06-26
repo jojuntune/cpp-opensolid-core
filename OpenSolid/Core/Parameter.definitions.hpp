@@ -40,6 +40,7 @@ namespace opensolid
     private:
         int _parameterIndex;
     public:
+        explicit
         Parameter(int parameterIndex);
 
         int

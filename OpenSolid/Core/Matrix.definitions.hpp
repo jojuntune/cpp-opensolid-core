@@ -45,6 +45,7 @@ namespace opensolid
 
         template <class TOtherScalar, int iOtherNumRows, int iOtherNumColumns> friend class Matrix;
 
+        explicit
         Matrix(bool);
     public:
         static_assert(iNumRows > 0, "Matrices must have at least one row");
@@ -275,8 +276,10 @@ namespace opensolid
     public:
         static_assert(iNumColumns > 0, "Matrices must have at least one column");
 
+        explicit
         Matrix(int numRows);
 
+        explicit
         Matrix(const std::pair<int, int>& dimensions);
        
         template <class TOtherDerived>
@@ -361,8 +364,10 @@ namespace opensolid
     public:
         static_assert(iNumRows > 0, "Matrices must have at least one row");
 
+        explicit
         Matrix(int numColumns);
 
+        explicit
         Matrix(const std::pair<int, int>& dimensions);
        
         template <class TOtherDerived>

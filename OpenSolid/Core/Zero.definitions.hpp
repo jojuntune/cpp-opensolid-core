@@ -37,6 +37,7 @@ namespace opensolid
     private:
         double _precision;
     public:
+        explicit
         Zero(double precision = 1e-12);
 
         double

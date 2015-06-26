@@ -57,6 +57,7 @@ namespace opensolid
     public:
         Frame();
 
+        explicit
         Frame(const Point<2>& originPoint);
 
         Frame(const Point<2>& originPoint, const Matrix<double, 2, 2>& basisMatrix);
@@ -118,6 +119,7 @@ namespace opensolid
     public:
         Frame();
 
+        explicit
         Frame(const Point<3>& originPoint);
 
         Frame(const Point<3>& originPoint, const Matrix<double, 3, 3>& basisMatrix);
