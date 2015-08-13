@@ -79,13 +79,14 @@ TEST_CASE("Integer") {
     std::vector<double> expected(list);
     std::sort(expected.begin(), expected.end());
 
-    std::vector<double> actual = set.filtered(
+    std::vector<Indexed<double>> actual = set.filtered(
         [] (Interval bounds) -> bool {
             return true;
         }
     );
 
-    REQUIRE(actual == expected);
+    REQUIRE(actual.size() == expected.size());
+    REQUIRE(std::equal(actual.begin(), actual.end(), expected.begin()));
 }
 
 TEST_CASE("Interval") {
@@ -132,10 +133,12 @@ TEST_CASE("Double overlapping") {
     list[3] = 4;
     list[4] = 2;
     SpatialSet<double> set(list);
-    std::vector<double> overlapping = set.overlapping(Interval(2.5, 4.5));
+    std::vector<Indexed<double>> overlapping = set.overlapping(Interval(2.5, 4.5));
     REQUIRE(overlapping.size() == 2u);
     REQUIRE(overlapping.front() == 3);
+    REQUIRE(overlapping.front().index() == 1);
     REQUIRE(overlapping.back() == 4);
+    REQUIRE(overlapping.back().index() == 3);
 }
 
 TEST_CASE("2D vector overlapping") {
@@ -145,12 +148,14 @@ TEST_CASE("2D vector overlapping") {
     list[2] = Vector2d(1, 3);
     list[3] = Vector2d(5, 3);
     SpatialSet<Vector2d> set(list.begin(), list.end());
-    std::vector<Vector2d> check = set.overlapping(
+    std::vector<Indexed<Vector2d>> check = set.overlapping(
         IntervalVector2d(Interval(1, 5), Interval(2, 4))
     );
     REQUIRE(check.size() == 2u);
     REQUIRE(check[0] == Vector2d(1, 3));
+    REQUIRE(check[0].index() == 2);
     REQUIRE(check[1] == Vector2d(5, 3));
+    REQUIRE(check[1].index() == 3);
 }
 
 TEST_CASE("3D point") {
@@ -161,7 +166,7 @@ TEST_CASE("3D point") {
 
     SpatialSet<Point3d> pointSet(pointList);
     Box3d testBox(Interval(1, 3), Interval(1, 5), Interval(1, 7));
-    std::vector<Point3d> overlappingPoints = pointSet.overlapping(testBox);
+    std::vector<Indexed<Point3d>> overlappingPoints = pointSet.overlapping(testBox);
     std::sort(
         overlappingPoints.begin(),
         overlappingPoints.end(),
@@ -171,7 +176,9 @@ TEST_CASE("3D point") {
     );
     REQUIRE(overlappingPoints.size() == 2);
     REQUIRE(overlappingPoints[0] == Point3d(1, 2, 3));
+    REQUIRE(overlappingPoints[0].index() == 0);
     REQUIRE(overlappingPoints[1] == Point3d(2, 4, 6));
+    REQUIRE(overlappingPoints[1].index() == 2);
 }
 
 TEST_CASE("Point set transformation") {

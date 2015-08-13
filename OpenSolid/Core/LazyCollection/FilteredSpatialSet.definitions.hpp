@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/LazyCollection/FilteredSpatialSet.declarations.hpp>
 
+#include <OpenSolid/Core/Indexed.declarations.hpp>
 #include <OpenSolid/Core/LazyCollection.definitions.hpp>
 #include <OpenSolid/Core/LazyCollection/SpatialSetNode.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet.definitions.hpp>
@@ -83,14 +84,15 @@ namespace opensolid
         class FilteredSpatialSetIterator :
             public boost::iterator_facade<
                 FilteredSpatialSetIterator<TItem, TBoundsPredicate>,
-                TItem,
+                Indexed<TItem>,
                 boost::forward_traversal_tag,
-                const TItem&
+                Indexed<TItem>
             >
         {
         private:
             const SpatialSetNode<TItem>* _currentNodePtr;
             const TBoundsPredicate* _boundsPredicatePtr;
+            const TItem* _firstItemPtr;
 
             friend class boost::iterator_core_access;
 
@@ -103,15 +105,22 @@ namespace opensolid
             bool
             equal(const FilteredSpatialSetIterator<TItem, TBoundsPredicate>& other) const;
 
-            const TItem&
+            Indexed<TItem>
             dereference() const;
         public:
             FilteredSpatialSetIterator();
 
             FilteredSpatialSetIterator(
                 const SpatialSetNode<TItem>* rootNodePtr,
-                const TBoundsPredicate* boundsPredicatePtr
+                const TBoundsPredicate* boundsPredicatePtr,
+                const TItem* firstItemPtr
             );
+
+            const TItem&
+            item() const;
+
+            std::size_t
+            index() const;
         };
     }
 }

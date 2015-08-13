@@ -402,11 +402,12 @@ namespace opensolid
             
             BoundsFunction<TItem> boundsFunction;
             detail::OverlapPredicate<TItem> overlapPredicate(boundsFunction(item), precision);
-            FilteredIterator filteredIterator(rootNode(), &overlapPredicate);
-            FilteredIterator filteredEnd(nullptr, &overlapPredicate);
+            const TItem* firstItemPtr = _dataPtr->items.data();
+            FilteredIterator filteredIterator(rootNode(), &overlapPredicate, firstItemPtr);
+            FilteredIterator filteredEnd(nullptr, &overlapPredicate, firstItemPtr);
             while (filteredIterator != filteredEnd) {
-                if (equalityFunction(item, *filteredIterator, precision)) {
-                    return begin() + (&(*filteredIterator) - _dataPtr->items.data());
+                if (equalityFunction(item, filteredIterator.item(), precision)) {
+                    return begin() + filteredIterator.index();
                 }
                 ++filteredIterator;
             }
