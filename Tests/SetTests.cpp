@@ -293,13 +293,17 @@ TEST_CASE("Unique") {
     testPoints[6] = Point2d(2 + 1e-14, 2 + 1e-14);
     testPoints[7] = Point2d(0, 2);
 
-    std::vector<Point2d> uniquePointsTolerant = SpatialSet<Point2d>(testPoints).uniqueItems();
-    std::vector<Point2d> uniquePointsExact = SpatialSet<Point2d>(testPoints).uniqueItems(0.0);
+    std::vector<Indexed<Point2d>> uniquePointsTolerant = (
+        SpatialSet<Point2d>(testPoints).uniqueItems()
+    );
+    std::vector<Indexed<Point2d>> uniquePointsExact = (
+        SpatialSet<Point2d>(testPoints).uniqueItems(0.0)
+    );
 
     REQUIRE(uniquePointsTolerant.size() == 4);
     REQUIRE(uniquePointsTolerant.size() < uniquePointsExact.size());
 
-    std::vector<Point2d> sortedPoints = uniquePointsTolerant;
+    std::vector<Indexed<Point2d>> sortedPoints = uniquePointsTolerant;
     std::sort(
         sortedPoints.begin(),
         sortedPoints.end(),
@@ -312,6 +316,10 @@ TEST_CASE("Unique") {
     REQUIRE((sortedPoints[1] - Point2d(2, 2)).isZero());
     REQUIRE((sortedPoints[2] - Point2d(1, 2)).isZero());
     REQUIRE((sortedPoints[3] - Point2d(0, 2)).isZero());
+
+    for (const Indexed<Point2d>& indexedPoint: sortedPoints) {
+        REQUIRE(indexedPoint == testPoints[indexedPoint.index()]);
+    }
 }
 
 TEST_CASE("Unique mapping") {
@@ -323,7 +331,7 @@ TEST_CASE("Unique mapping") {
     values[4] = 3.0;
 
     std::vector<std::size_t> mapping;
-    std::vector<double> uniqueItems = SpatialSet<double>(values).uniqueItems(mapping);
+    std::vector<Indexed<double>> uniqueItems = SpatialSet<double>(values).uniqueItems(mapping);
 
     REQUIRE(mapping.size() == 5);
     REQUIRE(mapping[0] == 0);
@@ -331,6 +339,11 @@ TEST_CASE("Unique mapping") {
     REQUIRE(mapping[2] == 1);
     REQUIRE(mapping[3] == 2);
     REQUIRE(mapping[4] == 2);
+
+    REQUIRE(uniqueItems.size() == 3);
+    REQUIRE(uniqueItems[0].index() == 0);
+    REQUIRE(uniqueItems[1].index() == 1);
+    REQUIRE(uniqueItems[2].index() == 3);
 }
 
 TEST_CASE("Unique points") {
@@ -343,9 +356,13 @@ TEST_CASE("Unique points") {
     points[5] = Point3d(14.673119544983, 2, -17.180282592773);
 
     SpatialSet<Point3d> pointSet(points);
-    std::vector<Point3d> uniquePoints = pointSet.uniqueItems();
+    std::vector<Indexed<Point3d>> uniquePoints = pointSet.uniqueItems();
 
     REQUIRE(uniquePoints.size() == 4u);
+
+    for (const Indexed<Point3d>& indexedPoint: uniquePoints) {
+        REQUIRE(indexedPoint == points[indexedPoint.index()]);
+    }
 }
 
 TEST_CASE("Find") {

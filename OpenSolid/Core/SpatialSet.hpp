@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/BoundsType.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
+#include <OpenSolid/Core/Indexed.hpp>
 #include <OpenSolid/Core/LazyCollection.hpp>
 #include <OpenSolid/Core/LazyCollection/ContainPredicate.hpp>
 #include <OpenSolid/Core/LazyCollection/FilteredSpatialSet.hpp>
@@ -473,7 +474,7 @@ namespace opensolid
 
     template <class TItem>
     inline
-    std::vector<TItem>
+    std::vector<Indexed<TItem>>
     SpatialSet<TItem>::uniqueItems(double precision) const {
         std::vector<std::size_t> dummy;
         return uniqueItems(dummy, precision);
@@ -481,11 +482,11 @@ namespace opensolid
 
     template <class TItem>
     inline
-    std::vector<TItem>
+    std::vector<Indexed<TItem>>
     SpatialSet<TItem>::uniqueItems(std::vector<std::size_t>& mapping, double precision) const {
         if (isEmpty()) {
             mapping.clear();
-            return std::vector<TItem>();
+            return std::vector<Indexed<TItem>>();
         } else {
             // Initialize unique item mapping
             mapping.resize(size());
@@ -501,12 +502,12 @@ namespace opensolid
                 nodePtr = nodePtr->leftChildPtr;
             }
 
-            std::vector<TItem> results;
+            std::vector<Indexed<TItem>> results;
             do {
                 const TItem* itemPtr = nodePtr->itemPtr;
                 std::size_t itemIndex = itemPtr - firstItemPtr;
                 if (mapping[itemIndex] == std::size_t(-1)) {
-                    results.push_back(*itemPtr);
+                    results.emplace_back(*itemPtr, itemIndex);
                     mapping[itemIndex] = uniqueIndex;
                     detail::markDuplicateItems(
                         nodePtr,
