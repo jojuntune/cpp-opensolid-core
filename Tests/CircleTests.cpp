@@ -37,7 +37,7 @@ TEST_CASE("Rotation") {
     }
     SECTION("3D") {
         Circle3d original(Point3d(1.0, 0.0, 1.0), UnitVector3d::Z(), 1.0);
-        Circle3d rotated = original.rotatedAbout(Axis3d::x(), M_PI / 2.0);
+        Circle3d rotated = original.rotatedAbout(Axis3d::X(), M_PI / 2.0);
         REQUIRE((rotated.centerPoint() - Point3d(1.0, -1.0 , 0.0)).isZero());
         REQUIRE(rotated.normalVector().equals(-UnitVector3d::Y()));
         REQUIRE((rotated.radius() - 1.0) == Zero());

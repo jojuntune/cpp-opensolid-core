@@ -38,7 +38,7 @@ TEST_CASE("Projection onto plane") {
 
 TEST_CASE("Projection onto axis") {
     Sphere3d sphere(Point3d(3.0, 3.0, 3.0), 1.0);
-    LineSegment3d segment = sphere.projectedOnto(Axis3d::x());
+    LineSegment3d segment = sphere.projectedOnto(Axis3d::X());
     REQUIRE((segment.startVertex() - Point3d(2.0, 0.0, 0.0)).isZero());
     REQUIRE((segment.endVertex() - Point3d(4.0, 0.0, 0.0)).isZero());
 }

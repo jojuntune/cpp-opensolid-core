@@ -151,13 +151,13 @@ namespace opensolid
 
     inline
     Axis2d
-    Axis2d::x() {
+    Axis2d::X() {
         return Axis2d(Point2d::origin(), UnitVector2d::X());
     }
 
     inline
     Axis2d
-    Axis2d::y() {
+    Axis2d::Y() {
         return Axis2d(Point2d::origin(), UnitVector2d::Y());
     }
 
@@ -235,19 +235,19 @@ namespace opensolid
 
     inline
     Axis3d
-    Axis3d::x() {
+    Axis3d::X() {
         return Axis3d(Point3d::origin(), UnitVector3d::X());
     }
 
     inline
     Axis3d
-    Axis3d::y() {
+    Axis3d::Y() {
         return Axis3d(Point3d::origin(), UnitVector3d::Y());
     }
 
     inline
     Axis3d
-    Axis3d::z() {
+    Axis3d::Z() {
         return Axis3d(Point3d::origin(), UnitVector3d::Z());
     }
 }

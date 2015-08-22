@@ -118,10 +118,10 @@ namespace opensolid
         placedOnto(const Plane3d& plane) const;
 
         static Axis<2>
-        x();    
+        X();    
 
         static Axis<2>
-        y();
+        Y();
     };
 
     typedef Axis<2> Axis2d;
@@ -161,13 +161,13 @@ namespace opensolid
         projectedInto(const Plane3d& plane) const;
 
         static Axis<3>
-        x();
+        X();
 
         static Axis<3>
-        y();
+        Y();
 
         static Axis<3>
-        z();
+        Z();
     };
 
     typedef Axis<3> Axis3d;
