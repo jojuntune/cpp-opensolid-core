@@ -1,0 +1,68 @@
+package opensolid;
+
+message VariantMessage {
+    enum Type {
+        NONE = 0;
+        INT = 1;
+        DOUBLE = 2;
+        STRING = 3;
+        INTERVAL = 4;
+        VECTOR2D = 5;
+        VECTOR3D = 6;
+        VECTORXD = 7;
+        VECTOR2I = 8;
+        VECTOR3I = 9;
+        VECTORXI = 10;
+        ROWVECTOR2D = 11;
+        ROWVECTOR3D = 12;
+        ROWVECTORXD = 13;
+        ROWVECTOR2I = 14;
+        ROWVECTOR3I = 15;
+        ROWVECTORXI = 16;
+        MATRIX2D = 17;
+        MATRIX3D = 18;
+        MATRIX2XD = 19;
+        MATRIX3XD = 20;
+        MATRIXXD = 21;
+        MATRIX2I = 22;
+        MATRIX3I = 23;
+        MATRIX2XI = 24;
+        MATRIX3XI = 25;
+        MATRIXXI = 26;
+        POINT2D = 27;
+        POINT3D = 28;
+        BOX2D = 29;
+        BOX3D = 30;
+        AXIS2D = 31;
+        AXIS3D = 32;
+        PLANE3D = 33;
+        LINESEGMENT2D = 39;
+        LINESEGMENT3D = 40;
+        TRIANGLE2D = 41;
+        TRIANGLE3D = 42;
+        TETRAHEDRON3D = 43;
+        COMPONENT = 44;
+    }
+
+    required Type type = 1;
+
+    optional int64 int_value = 2;
+    optional double double_value = 3;
+    optional string string_value = 4;
+
+    optional ComponentMessage component_value = 45;
+}
+
+message IntervalMessage {
+    required double lower_bound = 1;
+    required double upper_bound = 2;
+}
+
+message ComponentMessage {
+    message KeyValuePair {
+        required string key = 1;
+        required VariantMessage value = 2;
+    }
+
+    repeated KeyValuePair key_value_pairs = 1;
+}
