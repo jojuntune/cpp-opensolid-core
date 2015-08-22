@@ -75,6 +75,12 @@ namespace
 
     template <int iNumDimensions>
     Matrix<double, iNumDimensions, 1>
+    matrixComponents(const UnitVector<iNumDimensions>& unitVector) {
+        return unitVector.components();
+    }
+
+    template <int iNumDimensions>
+    Matrix<double, iNumDimensions, 1>
     matrixComponents(const Point<iNumDimensions>& point) {
         return point.components();
     }
@@ -89,14 +95,14 @@ namespace
     Vector<double, iNumDimensions>
     offsetParameter(const Vector<double, iNumDimensions>& vector, int index, double amount) {
         assert(index >= 0 && index < iNumDimensions);
-        return vector + amount * Vector<double, iNumDimensions>::unit(index);
+        return vector + amount * UnitVector<iNumDimensions>(index);
     }
 
     template <int iNumDimensions>
     Point<iNumDimensions>
     offsetParameter(const Point<iNumDimensions>& point, int index, double amount) {
         assert(index >= 0 && index < iNumDimensions);
-        return point + amount * Vector<double, iNumDimensions>::unit(index);
+        return point + amount * UnitVector<iNumDimensions>(index);
     }
 }
 
@@ -135,8 +141,8 @@ void testJacobian(
         shiftedParameterValues[0] = offsetParameter(parameterValues, j, -1e-6 / 2.0);
         shiftedParameterValues[1] = offsetParameter(parameterValues, j, 1e-6 / 2.0);
         std::vector<TValue> shiftedValues = expression.evaluate(shiftedParameterValues);
-        Matrix<double, NumDimensions<TValue>::Value, 1> numericalDerivative = matrixComponents(
-            shiftedValues[1] - shiftedValues[0]
+        Matrix<double, NumDimensions<TValue>::Value, 1> numericalDerivative = (
+            matrixComponents(shiftedValues[1]) - matrixComponents(shiftedValues[0])
         ) / 1e-6;
         Matrix<double, NumDimensions<TValue>::Value, 1> jacobianDerivative = jacobian.column(j);
         CAPTURE(expression);
@@ -315,8 +321,8 @@ TEST_CASE("Transformation") {
 
     Parameter1d t;
     ParametricExpression<Point3d, double> linear = Point3d::origin() + Vector3d(1.0, 1.0, 1.0) * t;
-    ParametricExpression<Point3d, double> product = linear.toGlobalFrom(frame);
-    ParametricExpression<Point3d, double> quotient = linear.toLocalIn(frame);
+    ParametricExpression<Point3d, double> product = linear.placedIn(frame);
+    ParametricExpression<Point3d, double> quotient = linear.relativeTo(frame);
 
     std::vector<double> parameterValues(5);
     std::vector<Point3d> expectedProductValues(5);
@@ -324,8 +330,8 @@ TEST_CASE("Transformation") {
     for (int i = 0; i < 5; ++i) {
         parameterValues[i] = i / 4.0;
         Point3d expectedValue =  Point3d::origin() + Vector3d(1.0, 1.0, 1.0) * parameterValues[i];
-        expectedProductValues[i] = expectedValue.toGlobalFrom(frame);
-        expectedQuotientValues[i] = expectedValue.toLocalIn(frame);
+        expectedProductValues[i] = expectedValue.placedIn(frame);
+        expectedQuotientValues[i] = expectedValue.relativeTo(frame);
     }
     std::vector<Point3d> productValues = product.evaluate(parameterValues);
     std::vector<Point3d> quotientValues = quotient.evaluate(parameterValues);
@@ -356,9 +362,8 @@ TEST_CASE("Arccosine") {
     bounds = expression.evaluate(Interval(0.5, 1.5));
     REQUIRE(bounds.lowerBound() == Zero());
     REQUIRE((bounds.upperBound() - M_PI / 3) == Zero());
-    bounds = expression.evaluate(Interval(1 + 1e-14, 1 + 1e-10));
+    bounds = expression.evaluate(Interval(1 - 1e-6, 1 + 1e-12));
     REQUIRE(bounds.lowerBound() == Zero());
-    REQUIRE(bounds.upperBound() == Zero());
 
     testJacobian(expression, -0.5);
     testJacobian(expression, 0.0);
@@ -384,8 +389,7 @@ TEST_CASE("Arcsine") {
     bounds = expression.evaluate(Interval(0.5, 1.5));
     REQUIRE((bounds.lowerBound() - M_PI / 6) == Zero());
     REQUIRE((bounds.upperBound() - M_PI / 2) == Zero());
-    bounds = expression.evaluate(Interval(1 + 1e-14, 1 + 1e-10));
-    REQUIRE((bounds.lowerBound() - M_PI / 2) == Zero());
+    bounds = expression.evaluate(Interval(1 - 1e-6, 1 + 1e-12));
     REQUIRE((bounds.upperBound() - M_PI / 2) == Zero());
 }
 
@@ -399,7 +403,7 @@ TEST_CASE("Normal vector") {
     REQUIRE((expression.evaluate(0) - Point2d(3, 1)).isZero());
     REQUIRE((expression.evaluate(M_PI / 2) - Point2d(1, 3)).isZero());
 
-    ParametricExpression<Vector2d, double> normalVector =
+    ParametricExpression<UnitVector2d, double> normalVector =
         expression.derivative().normalized().derivative().normalized();
     std::vector<double> parameterValues(5);
     parameterValues[0] = -M_PI / 2;
@@ -409,7 +413,7 @@ TEST_CASE("Normal vector") {
     parameterValues[4] = M_PI / 2;
 
     std::vector<Point2d> expressionValues = expression.evaluate(parameterValues);
-    std::vector<Vector2d> normalValues = normalVector.evaluate(parameterValues);
+    std::vector<UnitVector2d> normalValues = normalVector.evaluate(parameterValues);
     for (unsigned i = 0; i < expressionValues.size(); ++i) {
         REQUIRE((expressionValues[i] + 2 * normalValues[i] - Point2d(1, 1)).isZero());
     }
@@ -519,7 +523,7 @@ TEST_CASE("Squiggle Jacobians") {
         testJacobian(vector.dot(vector + Vector3d(0, 0, 1)), parameterValues[i]);
         testJacobian(exp(scalar), parameterValues[i]);
         testJacobian(log(scalar + 2.0), parameterValues[i]);
-        testJacobian(vector.rotatedAbout(Vector3d::unitX(), M_PI / 4), parameterValues[i]);
+        testJacobian(vector.rotatedAbout(UnitVector3d::X(), M_PI / 4), parameterValues[i]);
         testJacobian(-vector, parameterValues[i]);
         testJacobian(vector.normalized(), parameterValues[i]);
         testJacobian(vector.norm(), parameterValues[i]);

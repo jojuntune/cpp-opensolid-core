@@ -58,6 +58,9 @@ namespace opensolid
             bool
             isEmpty() const;
 
+            const Box<iNumDimensions>&
+            bounds() const;
+
             const Point<iNumDimensions>
             minVertex() const;
             

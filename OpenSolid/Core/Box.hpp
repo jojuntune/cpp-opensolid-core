@@ -207,11 +207,4 @@ namespace opensolid
         stream << ")";
         return stream;
     }
-
-    template <int iNumDimensions>
-    inline
-    const Box<iNumDimensions>&
-    BoundsFunction<Box<iNumDimensions>>::operator()(const Box<iNumDimensions>& box) const {
-        return box;
-    }
 }

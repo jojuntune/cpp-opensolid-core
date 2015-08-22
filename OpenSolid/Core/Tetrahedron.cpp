@@ -51,13 +51,13 @@ namespace opensolid
     Tetrahedron3d::face(int oppositeIndex) const {
         switch (oppositeIndex) {
         case 0:
-            return Triangle3d(vertex(1), vertex(2), vertex(3));
+            return Triangle3d(vertex(1), vertex(2), vertex(3), handedness());
         case 1:
-            return Triangle3d(vertex(0), vertex(3), vertex(2));
+            return Triangle3d(vertex(0), vertex(3), vertex(2), handedness());
         case 2:
-            return Triangle3d(vertex(3), vertex(0), vertex(1));
+            return Triangle3d(vertex(3), vertex(0), vertex(1), handedness());
         case 3:
-            return Triangle3d(vertex(2), vertex(1), vertex(0));
+            return Triangle3d(vertex(2), vertex(1), vertex(0), handedness());
         default:
             assert(false);
             return Triangle3d();
@@ -70,7 +70,7 @@ namespace opensolid
         matrix.column(0) = vertex(1).components() - vertex(0).components();
         matrix.column(1) = vertex(2).components() - vertex(0).components();
         matrix.column(2) = vertex(3).components() - vertex(0).components();
-        return matrix.determinant() / 6.0;
+        return handedness().sign() * matrix.determinant() / 6.0;
     }
 
     Point3d
@@ -86,67 +86,6 @@ namespace opensolid
     Tetrahedron3d::contains(const Point3d& point, double precision) const {
         // TODO
         return false;
-    }
-
-    Tetrahedron3d
-    Tetrahedron3d::scaledAbout(const Point3d& point, double scale) const {
-        return Tetrahedron3d(
-            vertex(0).scaledAbout(point, scale),
-            vertex(1).scaledAbout(point, scale),
-            vertex(2).scaledAbout(point, scale),
-            vertex(3).scaledAbout(point, scale)
-        );
-    }
-
-    Tetrahedron3d
-    Tetrahedron3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
-        return Tetrahedron3d(
-            vertex(0).rotatedAbout(point, rotationMatrix),
-            vertex(1).rotatedAbout(point, rotationMatrix),
-            vertex(2).rotatedAbout(point, rotationMatrix),
-            vertex(3).rotatedAbout(point, rotationMatrix)
-        );
-
-    }
-
-    Tetrahedron3d
-    Tetrahedron3d::translatedBy(const Vector3d& vector) const {
-        return Tetrahedron3d(
-            vertex(0).translatedBy(vector),
-            vertex(1).translatedBy(vector),
-            vertex(2).translatedBy(vector),
-            vertex(3).translatedBy(vector)
-        );
-    }
-
-    Tetrahedron3d
-    Tetrahedron3d::toLocalIn(const Frame3d& frame) const {
-        return Tetrahedron3d(
-            vertex(0).toLocalIn(frame),
-            vertex(1).toLocalIn(frame),
-            vertex(2).toLocalIn(frame),
-            vertex(3).toLocalIn(frame)
-        );
-    }
-
-    Tetrahedron3d
-    Tetrahedron3d::toGlobalFrom(const Frame3d& frame) const {
-        return Tetrahedron3d(
-            vertex(0).toGlobalFrom(frame),
-            vertex(1).toGlobalFrom(frame),
-            vertex(2).toGlobalFrom(frame),
-            vertex(3).toGlobalFrom(frame)
-        );
-    }
-
-    Tetrahedron3d
-    Tetrahedron3d::mirroredAbout(const Point3d& point, const UnitVector3d& mirrorDirection) const {
-        return Tetrahedron3d(
-            vertex(0).mirroredAbout(point, mirrorDirection),
-            vertex(1).mirroredAbout(point, mirrorDirection),
-            vertex(2).mirroredAbout(point, mirrorDirection),
-            vertex(3).mirroredAbout(point, mirrorDirection)
-        );
     }
 
     Tetrahedron3d

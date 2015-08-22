@@ -32,6 +32,7 @@
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.definitions.hpp>
 #include <OpenSolid/Core/Frame.declarations.hpp>
+#include <OpenSolid/Core/Handedness.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricArea.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
@@ -55,11 +56,12 @@ namespace opensolid
     };
 
     class ParametricSurface3d :
-        public Transformable<ParametricSurface3d, 3>
+        public Transformable<ParametricSurface3d, Point<3>>
     {
     private:
         ParametricExpression<Point<3>, Point<2>> _expression;
         BoundedArea2d _domain;
+        Handedness _handedness;
         Box<3> _bounds;
     public:
         OPENSOLID_CORE_EXPORT
@@ -77,11 +79,21 @@ namespace opensolid
             const BoundedArea2d& domain
         );
 
+        OPENSOLID_CORE_EXPORT
+        ParametricSurface3d(
+            const ParametricExpression<Point<3>, Point<2>>& expression,
+            const BoundedArea2d& domain,
+            Handedness handedness
+        );
+
         const ParametricExpression<Point<3>, Point<2>>&
         expression() const;
 
         const BoundedArea2d&
         domain() const;
+
+        Handedness
+        handedness() const;
 
         const Box<3>&
         bounds() const;
@@ -95,43 +107,19 @@ namespace opensolid
         evaluate(const Box<2>& parameterBounds) const;
 
         OPENSOLID_CORE_EXPORT
-        ParametricExpression<Vector<double, 3>, Point<2>>
+        ParametricExpression<UnitVector<3>, Point<2>>
         normalVector() const;
 
-        OPENSOLID_CORE_EXPORT
+        template <class TTransformation>
         ParametricSurface3d
-        scaledAbout(const Point<3>& point, double scale) const;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricSurface3d
-        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
-
-        using Transformable<ParametricSurface3d, 3>::rotatedAbout;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricSurface3d
-        translatedBy(const Vector<double, 3>& vector) const;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricSurface3d
-        toLocalIn(const Frame<3>& frame) const;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricSurface3d
-        toGlobalFrom(const Frame<3>& frame) const;
+        transformedBy(const TTransformation& transformation) const;
 
         OPENSOLID_CORE_EXPORT
         ParametricArea2d
-        toLocalIn(const Plane3d& plane) const;
+        projectedInto(const Plane3d& plane) const;
 
         OPENSOLID_CORE_EXPORT
         ParametricSurface3d
         projectedOnto(const Plane3d& plane) const;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricSurface3d
-        mirroredAbout(const Point<3>& point, const UnitVector<3>& mirrorDirection) const;
-
-        using Transformable<ParametricSurface3d, 3>::mirroredAbout;
     };
 }

@@ -33,6 +33,7 @@
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/FrameBase.hpp>
+#include <OpenSolid/Core/Handedness.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Plane.definitions.hpp>
 #include <OpenSolid/Core/Point.hpp>
@@ -41,126 +42,139 @@
 
 namespace opensolid
 {
+    namespace detail
+    {
+        template <int iNumDimensions>
+        inline
+        AxisBase<iNumDimensions>::AxisBase() :
+            FrameBase<iNumDimensions, 1>(
+                Point<iNumDimensions>::origin(),
+                Matrix<double, iNumDimensions, 1>::zero()
+            ) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        AxisBase<iNumDimensions>::AxisBase(
+            const Point<iNumDimensions>& originPoint,
+            const UnitVector<iNumDimensions>& directionVector
+        ) : FrameBase<iNumDimensions, 1>(originPoint, directionVector.components()) {
+        }
+    
+        template <int iNumDimensions>
+        inline
+        UnitVector<iNumDimensions>
+        AxisBase<iNumDimensions>::directionVector() const {
+            return UnitVector<iNumDimensions>(basisMatrix());
+        }
+    
+        template <int iNumDimensions>
+        inline
+        Point<iNumDimensions>
+        AxisBase<iNumDimensions>::pointAt(double distance) const {
+            return originPoint() + distance * directionVector();
+        }
+    }
+
     inline
     Axis2d::Axis() :
-        FrameBase<2, 1>(Point2d::origin(), ColumnMatrix2d::zero()) {
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     inline
     Axis2d::Axis(
         const Point2d& originPoint,
         const UnitVector2d& directionVector
-    ) : FrameBase<2, 1>(originPoint, directionVector.components()) {
+    ) : detail::AxisBase<2>(originPoint, directionVector),
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
-    
+
     inline
-    UnitVector2d
-    Axis2d::directionVector() const {
-        return UnitVector2d(basisMatrix());
+    Axis2d::Axis(
+        const Point2d& originPoint,
+        const UnitVector2d& directionVector,
+        Handedness handedness
+    ) : detail::AxisBase<2>(originPoint, directionVector),
+        _handedness(handedness) {
+    }
+
+    inline
+    Handedness
+    Axis2d::handedness() const {
+        return _handedness;
     }
 
     inline
     UnitVector2d
     Axis2d::normalVector() const {
-        return directionVector().unitOrthogonal();
+        return handedness().sign() * directionVector().unitOrthogonal();
     }
 
     inline
     Axis2d
-    Axis2d::flipped() const {
-        return Axis2d(originPoint(), -directionVector());
+    Axis2d::reversed() const {
+        return Axis2d(originPoint(), -directionVector(), -handedness());
     }
 
     inline
     Axis2d
     Axis2d::normalAxis() const {
-        return Axis2d(originPoint(), normalVector());
+        return Axis2d(originPoint(), normalVector(), handedness());
     }
 
+    template <class TTransformation>
     inline
     Axis2d
-    Axis2d::scaledAbout(const Point2d& point, double scale) const {
+    Axis2d::transformedBy(const TTransformation& transformation) const {
         return Axis2d(
-            originPoint().scaledAbout(point, scale),
-            scale >= 0.0 ? directionVector() : -directionVector()
+            originPoint().transformedBy(transformation),
+            directionVector().transformedBy(transformation),
+            handedness().transformedBy(transformation)
         );
     }
 
     inline
     Axis2d
-    Axis2d::rotatedAbout(const Point2d& point, const Matrix2d& rotationMatrix) const {
+    Axis2d::projectedOnto(const Axis2d& other) const {
         return Axis2d(
-            originPoint().rotatedAbout(point, rotationMatrix),
-            directionVector().rotatedBy(rotationMatrix)
+            originPoint().projectedOnto(other),
+            directionVector().projectedOnto(other).normalized(),
+            handedness()
         );
-    }
-
-    inline
-    Axis2d
-    Axis2d::translatedBy(const Vector2d& vector) const {
-        return Axis2d(originPoint().translatedBy(vector), directionVector());
-    }
-
-    inline
-    Axis2d
-    Axis2d::toLocalIn(const Frame2d& frame) const {
-        return Axis2d(originPoint().toLocalIn(frame), directionVector().toLocalIn(frame));
-    }
-
-    inline
-    Axis2d
-    Axis2d::toGlobalFrom(const Frame2d& frame) const {
-        return Axis2d(originPoint().toGlobalFrom(frame), directionVector().toGlobalFrom(frame));
     }
 
     inline
     Axis3d
-    Axis2d::toGlobalFrom(const Plane3d& plane) const {
-        return Axis3d(originPoint().toGlobalFrom(plane), directionVector().toGlobalFrom(plane));
-    }
-
-    inline
-    Axis2d
-    Axis2d::mirroredAbout(const Point2d& point, const UnitVector2d& directionVector) const {
-        return Axis2d(
-            originPoint().mirroredAbout(point, directionVector),
-            this->directionVector().mirroredAlong(directionVector)
-        );
+    Axis2d::placedOnto(const Plane3d& plane) const {
+        return Axis3d(originPoint().placedOnto(plane), directionVector().placedOnto(plane));
     }
 
     inline
     Axis2d
     Axis2d::x() {
-        return Axis2d(Point2d::origin(), Vector2d::unitX());
+        return Axis2d(Point2d::origin(), UnitVector2d::X());
     }
 
     inline
     Axis2d
     Axis2d::y() {
-        return Axis2d(Point2d::origin(), Vector2d::unitY());
+        return Axis2d(Point2d::origin(), UnitVector2d::Y());
     }
 
     inline
-    Axis3d::Axis() :
-        FrameBase<3, 1>(Point3d::origin(), ColumnMatrix3d::zero()) {
+    Axis3d::Axis() {
     }
 
     inline
     Axis3d::Axis(
         const Point3d& originPoint,
         const UnitVector3d& directionVector
-    ) : FrameBase<3, 1>(originPoint, directionVector.components()) {
-    }
-    
-    inline
-    UnitVector3d
-    Axis3d::directionVector() const {
-        return UnitVector3d(basisMatrix());
+    ) : detail::AxisBase<3>(originPoint, directionVector) {
     }
 
     inline
     Axis3d
-    Axis3d::flipped() const {
+    Axis3d::reversed() const {
         return Axis3d(originPoint(), -directionVector());
     }
 
@@ -168,12 +182,6 @@ namespace opensolid
     Plane3d
     Axis3d::normalPlane() const {
         return Plane3d(originPoint(), directionVector());
-    }
-    
-    inline
-    bool
-    Axis3d::contains(const Point3d& point, double precision) const {
-        return point.squaredDistanceTo(*this) == Zero(precision * precision);
     }
 
     inline
@@ -188,66 +196,58 @@ namespace opensolid
         return Intersection<Axis3d, Triangle3d>(*this, triangle, precision);
     }
 
+    template <class TTransformation>
     inline
     Axis3d
-    Axis3d::scaledAbout(const Point3d& point, double scale) const {
+    Axis3d::transformedBy(const TTransformation& transformation) const {
         return Axis3d(
-            originPoint().scaledAbout(point, scale),
-            scale >= 0.0 ? directionVector() : -directionVector()
+            originPoint().transformedBy(transformation),
+            directionVector().transformedBy(transformation)
         );
     }
 
     inline
     Axis3d
-    Axis3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
+    Axis3d::projectedOnto(const Axis3d& other) const {
         return Axis3d(
-            originPoint().rotatedAbout(point, rotationMatrix),
-            directionVector().rotatedBy(rotationMatrix)
+            originPoint().projectedOnto(other),
+            directionVector().projectedOnto(other).normalized()
         );
     }
 
     inline
     Axis3d
-    Axis3d::translatedBy(const Vector3d& vector) const {
-        return Axis3d(originPoint().translatedBy(vector), directionVector());
-    }
-
-    inline
-    Axis3d
-    Axis3d::toLocalIn(const Frame3d& frame) const {
-        return Axis3d(originPoint().toLocalIn(frame), directionVector().toLocalIn(frame));
-    }
-
-    inline
-    Axis3d
-    Axis3d::toGlobalFrom(const Frame3d& frame) const {
-        return Axis3d(originPoint().toGlobalFrom(frame), directionVector().toGlobalFrom(frame));
-    }
-
-    inline
-    Axis3d
-    Axis3d::mirroredAbout(const Point3d& point, const UnitVector3d& directionVector) const {
+    Axis3d::projectedOnto(const Plane3d& plane) const {
         return Axis3d(
-            originPoint().mirroredAbout(point, directionVector),
-            this->directionVector().mirroredAlong(directionVector)
+            originPoint().projectedOnto(plane),
+            directionVector().projectedOnto(plane).normalized()
+        );
+    }
+
+    inline
+    Axis2d
+    Axis3d::projectedInto(const Plane3d& plane) const {
+        return Axis2d(
+            originPoint().projectedInto(plane),
+            directionVector().projectedInto(plane).normalized()
         );
     }
 
     inline
     Axis3d
     Axis3d::x() {
-        return Axis3d(Point3d::origin(), Vector3d::unitX());
+        return Axis3d(Point3d::origin(), UnitVector3d::X());
     }
 
     inline
     Axis3d
     Axis3d::y() {
-        return Axis3d(Point3d::origin(), Vector3d::unitY());
+        return Axis3d(Point3d::origin(), UnitVector3d::Y());
     }
 
     inline
     Axis3d
     Axis3d::z() {
-        return Axis3d(Point3d::origin(), Vector3d::unitZ());
+        return Axis3d(Point3d::origin(), UnitVector3d::Z());
     }
 }

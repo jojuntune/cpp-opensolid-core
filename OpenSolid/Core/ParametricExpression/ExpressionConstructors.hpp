@@ -66,6 +66,17 @@ namespace opensolid
         }
 
         template <int iNumDimensions, class TParameter>
+        ParametricExpression<UnitVector<iNumDimensions>, TParameter>
+        ConstantExpressionConstructor<UnitVector<iNumDimensions>, TParameter>::constant(
+            const UnitVector<iNumDimensions>& unitVector
+        ) {
+            return new ConstantExpression(
+                unitVector.components(),
+                NumDimensions<TParameter>::Value
+            );
+        }
+
+        template <int iNumDimensions, class TParameter>
         ParametricExpression<Point<iNumDimensions>, TParameter>
         ConstantExpressionConstructor<Point<iNumDimensions>, TParameter>::constant(
             const Point<iNumDimensions>& point

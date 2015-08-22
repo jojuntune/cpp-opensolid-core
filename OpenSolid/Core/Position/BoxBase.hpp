@@ -82,6 +82,13 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
+        const Box<iNumDimensions>&
+        BoxBase<iNumDimensions>::bounds() const {
+            return derived();
+        }
+
+        template <int iNumDimensions>
+        inline
         const Point<iNumDimensions>
         BoxBase<iNumDimensions>::minVertex() const {
             return Point<iNumDimensions>(this->components().cwiseLowerBound());

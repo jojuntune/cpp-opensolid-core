@@ -74,6 +74,19 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
+        Box<iNumDimensions>
+        PointBase<iNumDimensions>::bounds() const {
+            return Box<iNumDimensions>(
+                components().map(
+                    [] (double component) -> Interval {
+                        return Interval(component);
+                    }
+                )
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
         double
         PointBase<iNumDimensions>::squaredDistanceTo(const Point<iNumDimensions>& other) const {
             return (derived() - other).squaredNorm();
@@ -138,62 +151,11 @@ namespace opensolid
             );
         }
 
-        template <int iNumDimensions>
+        template <int iNumDimensions> template <class TTransformation>
         inline
         Point<iNumDimensions>
-        PointBase<iNumDimensions>::scaledAbout(
-            const Point<iNumDimensions>& other,
-            double scale
-        ) const {
-            return other + scale * (derived() - other);
-        }
-
-        template <int iNumDimensions>
-        inline
-        Point<iNumDimensions>
-        PointBase<iNumDimensions>::rotatedAbout(
-            const Point<iNumDimensions>& other,
-            const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
-        ) const {
-            return other + (derived() - other).rotatedBy(rotationMatrix);
-        }
-
-        template <int iNumDimensions>
-        inline
-        Point<iNumDimensions>
-        PointBase<iNumDimensions>::translatedBy(
-            const Vector<double, iNumDimensions>& vector
-        ) const {
-            return derived() + vector;
-        }
-
-        template <int iNumDimensions>
-        inline
-        Point<iNumDimensions>
-        PointBase<iNumDimensions>::toLocalIn(const Frame<iNumDimensions>& frame) const {
-            return Point<iNumDimensions>(
-                (derived() - frame.originPoint()).toLocalIn(frame).components()
-            );
-        }
-
-        template <int iNumDimensions>
-        inline
-        Point<iNumDimensions>
-        PointBase<iNumDimensions>::toGlobalFrom(const Frame<iNumDimensions>& frame) const {
-            return (
-                frame.originPoint() +
-                Vector<double, iNumDimensions>(this->components()).toGlobalFrom(frame)
-            );
-        }
-
-        template <int iNumDimensions>
-        inline
-        Point<iNumDimensions>
-        PointBase<iNumDimensions>::mirroredAbout(
-            const Point<iNumDimensions>& other,
-            const UnitVector<iNumDimensions>& mirrorDirection
-        ) const {
-            return derived() - 2.0 * (derived() - other).dot(mirrorDirection) * mirrorDirection;
+        PointBase<iNumDimensions>::transformedBy(const TTransformation& transformation) const {
+            return transformation.transform(derived());
         }
 
         template <int iNumDimensions>

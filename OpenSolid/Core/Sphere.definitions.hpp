@@ -29,7 +29,6 @@
 #include <OpenSolid/Core/Sphere.declarations.hpp>
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Circle.declarations.hpp>
@@ -58,7 +57,7 @@ namespace opensolid
     };
 
     class Sphere3d :
-        public Transformable<Sphere3d, 3>,
+        public Transformable<Sphere3d, Point<3>>,
         public Convertible<Sphere3d>
     {
     private:
@@ -84,22 +83,9 @@ namespace opensolid
         Box<3>
         bounds() const;
 
+        template <class TTransformation>
         Sphere3d
-        scaledAbout(const Point<3>& point, double scale) const;
-
-        Sphere3d
-        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
-
-        using Transformable<Sphere3d, 3>::rotatedAbout;
-
-        Sphere3d
-        translatedBy(const Vector<double, 3>& vector) const;
-
-        Sphere3d
-        toLocalIn(const Frame<3>& frame) const;
-
-        Sphere3d
-        toGlobalFrom(const Frame<3>& frame) const;
+        transformedBy(const TTransformation& transformation) const;
 
         LineSegment<3>
         projectedOnto(const Axis<3>& axis) const;
@@ -107,10 +93,8 @@ namespace opensolid
         Circle<3>
         projectedOnto(const Plane3d& plane) const;
 
-        Sphere3d
-        mirroredAbout(const Point<3>& point, const UnitVector<3>& mirrorDirection) const;
-
-        using Transformable<Sphere3d, 3>::mirroredAbout;
+        Circle<2>
+        projectedInto(const Plane3d& plane) const;
     };
     
     template <>

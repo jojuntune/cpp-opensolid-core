@@ -29,7 +29,6 @@
 #include <OpenSolid/Core/Point.declarations.hpp>
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
@@ -88,9 +87,7 @@ namespace opensolid
         isOn(const LineSegment<2>& lineSegment, double precision = 1e-12) const;
 
         Point<3>
-        toGlobalFrom(const Plane3d& plane) const;
-
-        using detail::PointBase<2>::toGlobalFrom;
+        placedOnto(const Plane3d& plane) const;
 
         OPENSOLID_CORE_EXPORT
         static Point<2>
@@ -140,9 +137,7 @@ namespace opensolid
         isOn(const Plane3d& plane, double precision = 1e-12) const;
 
         Point<2>
-        toLocalIn(const Plane3d& plane) const;
-
-        using detail::PointBase<3>::toLocalIn;
+        projectedInto(const Plane3d& plane) const;
 
         Point<3>
         projectedOnto(const Plane3d& plane) const;
@@ -189,12 +184,5 @@ namespace opensolid
             const Point<iNumDimensions>& secondPoint,
             double precision
         ) const;
-    };
-
-    template <int iNumDimensions>
-    struct BoundsFunction<Point<iNumDimensions>>
-    {
-        Box<iNumDimensions>
-        operator()(const Point<iNumDimensions>& point) const;
     };
 }

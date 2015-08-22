@@ -34,8 +34,6 @@
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
 
-#include <cassert>
-
 namespace opensolid
 {
     inline

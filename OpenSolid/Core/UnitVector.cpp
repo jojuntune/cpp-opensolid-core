@@ -24,8 +24,39 @@
 
 #include <OpenSolid/Core/UnitVector.hpp>
 
+#include <cstdlib>
+
 namespace opensolid
 {
+    UnitVector2d
+    UnitVector2d::random() {
+        while (true) {
+            Vector2d candidate(
+                -1.0 + 2.0 * double(rand()) / RAND_MAX,
+                -1.0 + 2.0 * double(rand()) / RAND_MAX
+            );
+            double candidateSquaredNorm = candidate.squaredNorm();
+            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
+                return UnitVector2d((candidate / sqrt(candidateSquaredNorm)).components());
+            }
+        }
+    }
+
+    UnitVector3d
+    UnitVector3d::random() {
+        while (true) {
+            Vector3d candidate(
+                -1.0 + 2.0 * double(rand()) / RAND_MAX,
+                -1.0 + 2.0 * double(rand()) / RAND_MAX,
+                -1.0 + 2.0 * double(rand()) / RAND_MAX
+            );
+            double candidateSquaredNorm = candidate.squaredNorm();
+            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
+                return UnitVector3d((candidate / sqrt(candidateSquaredNorm)).components());
+            }
+        }
+    }
+
     std::ostream&
     operator<<(std::ostream& stream, const UnitVector2d& unitVector) {
         stream << "UnitVector2d(" << unitVector.x() << "," << unitVector.y() << ")";
@@ -34,8 +65,7 @@ namespace opensolid
 
     std::ostream&
     operator<<(std::ostream& stream, const UnitVector3d& unitVector) {
-        stream << "UnitVector3d";
-        stream << "(";
+        stream << "UnitVector3d(";
         stream << unitVector.x() << "," << unitVector.y() << "," << unitVector.z();
         stream << ")";
         return stream;

@@ -39,6 +39,7 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 #include <OpenSolid/Core/ParametricExpression/TransformableExpression.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Sign.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Vector.hpp>
 
@@ -83,6 +84,13 @@ namespace opensolid
         ConstIntervalMatrixViewXd
         constView(const Vector<Interval, iNumDimensions>& intervalVector) {
             return intervalVector.components().view();
+        }
+
+        template <int iNumDimensions>
+        inline
+        ConstMatrixViewXd
+        constView(const UnitVector<iNumDimensions>& unitVector) {
+            return unitVector.components().view();
         }
 
         template <int iNumDimensions>
@@ -148,6 +156,18 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         ConstMatrixViewXd
+        constView(const std::vector<UnitVector<iNumDimensions>>& unitVectors) {
+            return ConstMatrixViewXd(
+                unitVectors.front().data(),
+                iNumDimensions,
+                int(unitVectors.size()),
+                sizeof(UnitVector<iNumDimensions>)
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        ConstMatrixViewXd
         constView(const std::vector<Point<iNumDimensions>>& points) {
             return ConstMatrixViewXd(
                 points.front().data(),
@@ -193,6 +213,13 @@ namespace opensolid
         IntervalMatrixViewXd
         mutableView(Vector<Interval, iNumDimensions>& intervalVector) {
             return intervalVector.components().view();
+        }
+
+        template <int iNumDimensions>
+        inline
+        MatrixViewXd
+        mutableView(UnitVector<iNumDimensions>& unitVector) {
+            return unitVector.components().view();
         }
 
         template <int iNumDimensions>
@@ -258,6 +285,18 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         MatrixViewXd
+        mutableView(std::vector<UnitVector<iNumDimensions>>& unitVectors) {
+            return MatrixViewXd(
+                unitVectors.front().data(),
+                iNumDimensions,
+                int(unitVectors.size()),
+                sizeof(UnitVector<iNumDimensions>)
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        MatrixViewXd
         mutableView(std::vector<Point<iNumDimensions>>& points) {
             return MatrixViewXd(
                 points.front().data(),
@@ -285,11 +324,24 @@ namespace opensolid
             return ColumnMatrixXd::constant(1, value);
         }
 
+        inline
+        ColumnMatrixXd
+        components(Sign sign) {
+            return ColumnMatrixXd::constant(1, double(sign));
+        }
+
         template <int iNumDimensions>
         inline
         ColumnMatrixXd
         components(const Vector<double, iNumDimensions>& vector) {
             return vector.components();
+        }
+
+        template <int iNumDimensions>
+        inline
+        ColumnMatrixXd
+        components(const UnitVector<iNumDimensions>& unitVector) {
+            return unitVector.components();
         }
 
         template <int iNumDimensions>
@@ -307,6 +359,30 @@ namespace opensolid
 
         template <int iNumDimensions>
         struct IsVector<Vector<double, iNumDimensions>>
+        {
+            static const bool Value = true;
+        };
+
+        template <int iNumDimensions>
+        struct IsVector<UnitVector<iNumDimensions>>
+        {
+            static const bool Value = true;
+        };
+
+        template <class TValue>
+        struct IsVector3d
+        {
+            static const bool Value = false;
+        };
+
+        template <>
+        struct IsVector3d<Vector3d>
+        {
+            static const bool Value = true;
+        };
+
+        template <>
+        struct IsVector3d<UnitVector3d>
         {
             static const bool Value = true;
         };
@@ -502,7 +578,7 @@ namespace opensolid
     }
     
     template <class TValue, class TParameter>
-    ParametricExpression<TValue, TParameter>
+    ParametricExpression<typename NormalizedType<TValue>::Type, TParameter>
     ParametricExpression<TValue, TParameter>::normalized() const {
         static_assert(
             detail::IsVector<TValue>::Value,
@@ -578,11 +654,11 @@ namespace opensolid
         return implementation()->component(index)->deduplicated(deduplicationCache);
     }
 
-    template <class TValue, class TParameter>
+    template <class TValue, class TParameter> template <class TOtherValue>
     ParametricExpression<double, TParameter>
-    ParametricExpression<TValue, TParameter>::dot(const TValue& vector) const {
+    ParametricExpression<TValue, TParameter>::dot(const TOtherValue& vector) const {
         static_assert(
-            detail::IsVector<TValue>::Value,
+            detail::IsVector<TValue>::Value && detail::IsVector<TOtherValue>::Value,
             "dot() only defined for vectors"
         );
 
@@ -592,13 +668,13 @@ namespace opensolid
         )->deduplicated(deduplicationCache);
     }
     
-    template <class TValue, class TParameter>
+    template <class TValue, class TParameter> template <class TOtherValue>
     ParametricExpression<double, TParameter>
     ParametricExpression<TValue, TParameter>::dot(
-        const ParametricExpression<TValue, TParameter>& other
+        const ParametricExpression<TOtherValue, TParameter>& other
     ) const {
         static_assert(
-            detail::IsVector<TValue>::Value,
+            detail::IsVector<TValue>::Value && detail::IsVector<TOtherValue>::Value,
             "dot() only defined for vectors"
         );
 
@@ -606,11 +682,11 @@ namespace opensolid
         return implementation()->dot(other.implementation())->deduplicated(deduplicationCache);
     }
         
-    template <class TValue, class TParameter>
-    ParametricExpression<TValue, TParameter>
-    ParametricExpression<TValue, TParameter>::cross(const TValue& vector) const {
+    template <class TValue, class TParameter> template <class TOtherValue>
+    ParametricExpression<Vector3d, TParameter>
+    ParametricExpression<TValue, TParameter>::cross(const TOtherValue& vector) const {
         static_assert(
-            std::is_same<TValue, Vector3d>::value,
+            detail::IsVector3d<TValue>::Value && detail::IsVector3d<TOtherValue>::Value,
             "Cross product only defined for 3D vectors"
         );
 
@@ -620,13 +696,13 @@ namespace opensolid
         )->deduplicated(deduplicationCache);
     }
     
-    template <class TValue, class TParameter>
-    ParametricExpression<TValue, TParameter>
+    template <class TValue, class TParameter> template <class TOtherValue>
+    ParametricExpression<Vector3d, TParameter>
     ParametricExpression<TValue, TParameter>::cross(
-        const ParametricExpression<TValue, TParameter>& other
+        const ParametricExpression<TOtherValue, TParameter>& other
     ) const {
         static_assert(
-            std::is_same<TValue, Vector3d>::value,
+            detail::IsVector3d<TValue>::Value && detail::IsVector3d<TOtherValue>::Value,
             "Cross product only defined for 3D vectors"
         );
 

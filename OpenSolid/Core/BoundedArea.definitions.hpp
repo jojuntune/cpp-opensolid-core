@@ -33,6 +33,7 @@
 #include <OpenSolid/Core/ParametricCurve.definitions.hpp>
 #include <OpenSolid/Core/ParametricSurface.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
+#include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
@@ -51,7 +52,7 @@ namespace opensolid
     };
 
     class BoundedArea2d :
-        public Transformable<BoundedArea2d, 2>
+        public Transformable<BoundedArea2d, Point<2>>
     {
     private:
         SpatialSet<ParametricCurve2d> _boundaries;
@@ -80,33 +81,12 @@ namespace opensolid
         Box<2>
         bounds() const;
 
+        template <class TTransformation>
         BoundedArea2d
-        scaledAbout(const Point<2>& point, double scale) const;
+        transformedBy(const TTransformation& transformation) const;
 
-        BoundedArea2d
-        rotatedAbout(const Point<2>& point, const Matrix<double, 2, 2>& rotationMatrix) const;
-
-        using Transformable<BoundedArea2d, 2>::rotatedAbout;
-
-        BoundedArea2d
-        translatedBy(const Vector<double, 2>& vector) const;
-
-        BoundedArea2d
-        toLocalIn(const Frame<2>& frame) const;
-
-        BoundedArea2d
-        toGlobalFrom(const Frame<2>& frame) const;
-
+        OPENSOLID_CORE_EXPORT
         ParametricSurface3d
-        toGlobalFrom(const Plane3d& plane) const;
-
-        BoundedArea2d
-        mirroredAbout(const Point<2>& point, const UnitVector<2>& directionVector) const;
-
-        using Transformable<BoundedArea2d, 2>::mirroredAbout;
-
-        // TODO:
-        // const LineSegment<2>
-        // projectedOnto(const Axis<2>& axis) const;
+        placedOnto(const Plane3d& plane) const;
     };
 }

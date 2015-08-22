@@ -45,7 +45,7 @@ namespace opensolid
         template <int iNumDimensions>
         class PointBase :
             public detail::CartesianBase<double, iNumDimensions>,
-            public Transformable<Point<iNumDimensions>, iNumDimensions>
+            public Transformable<Point<iNumDimensions>, Point<iNumDimensions>>
         {
         private:
             const Point<iNumDimensions>&
@@ -59,6 +59,9 @@ namespace opensolid
 
             PointBase(const Matrix<double, iNumDimensions, 1>& components);
         public:
+            Box<iNumDimensions>
+            bounds() const;
+
             double
             squaredDistanceTo(const Point<iNumDimensions>& other) const;
 
@@ -80,33 +83,9 @@ namespace opensolid
             Box<iNumDimensions>
             hull(const Box<iNumDimensions>& box) const;
 
+            template <class TTransformation>
             Point<iNumDimensions>
-            scaledAbout(const Point<iNumDimensions>& other, double scale) const;
-
-            Point<iNumDimensions>
-            rotatedAbout(
-                const Point<iNumDimensions>& other,
-                const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
-            ) const;
-
-            using Transformable<Point<iNumDimensions>, iNumDimensions>::rotatedAbout;
-
-            Point<iNumDimensions>
-            translatedBy(const Vector<double, iNumDimensions>& vector) const;
-
-            Point<iNumDimensions>
-            toLocalIn(const Frame<iNumDimensions>& frame) const;
-
-            Point<iNumDimensions>
-            toGlobalFrom(const Frame<iNumDimensions>& frame) const;
-
-            Point<iNumDimensions>
-            mirroredAbout(
-                const Point<iNumDimensions>& other,
-                const UnitVector<iNumDimensions>& mirrorDirection
-            ) const;
-
-            using Transformable<Point<iNumDimensions>, iNumDimensions>::mirroredAbout;
+            transformedBy(const TTransformation& transformation) const;
 
             Point<iNumDimensions>
             projectedOnto(const Axis<iNumDimensions>& axis) const;

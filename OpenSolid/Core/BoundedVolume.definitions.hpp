@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/ParametricSurface.definitions.hpp>
+#include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
@@ -49,7 +50,7 @@ namespace opensolid
     };
 
     class BoundedVolume3d :
-        public Transformable<BoundedVolume3d, 3>
+        public Transformable<BoundedVolume3d, Point<3>>
     {
     private:
         SpatialSet<ParametricSurface3d> _boundaries;
@@ -78,42 +79,8 @@ namespace opensolid
         Box<3>
         bounds() const;
 
-        OPENSOLID_CORE_EXPORT
+        template <class TTransformation>
         BoundedVolume3d
-        scaledAbout(const Point<3>& point, double scale) const;
-
-        OPENSOLID_CORE_EXPORT
-        BoundedVolume3d
-        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
-
-        using Transformable<BoundedVolume3d, 3>::rotatedAbout;
-
-        OPENSOLID_CORE_EXPORT
-        BoundedVolume3d
-        translatedBy(const Vector<double, 3>& vector) const;
-
-        OPENSOLID_CORE_EXPORT
-        BoundedVolume3d
-        toLocalIn(const Frame<3>& frame) const;
-
-        // TODO
-        // OPENSOLID_CORE_EXPORT
-        // const BoundedArea2d
-        // toLocalIn(const Plane3d& plane) const;
-
-        OPENSOLID_CORE_EXPORT
-        BoundedVolume3d
-        toGlobalFrom(const Frame<3>& frame) const;
-
-        OPENSOLID_CORE_EXPORT
-        BoundedVolume3d
-        mirroredAbout(const Point<3>& point, const UnitVector<3>& directionVector) const;
-
-        using Transformable<BoundedVolume3d, 3>::mirroredAbout;
-
-        // TODO
-        // OPENSOLID_CORE_EXPORT
-        // const ParametricSurface3d
-        // projectedOnto(const Plane3d& plane) const;
+        transformedBy(const TTransformation& transformation) const;
     };
 }

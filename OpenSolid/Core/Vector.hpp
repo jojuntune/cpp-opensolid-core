@@ -28,96 +28,145 @@
 
 #include <OpenSolid/Core/Vector.definitions.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/BoundsType.hpp>
 #include <OpenSolid/Core/Cartesian/CartesianBase.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/Error.hpp>
-#include <OpenSolid/Core/Frame.definitions.hpp>
-#include <OpenSolid/Core/Quaternion.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/UnitVector.hpp>
-#include <OpenSolid/Core/Vector/DoubleVectorBase.hpp>
 #include <OpenSolid/Core/Vector/IntervalVectorBase.hpp>
+#include <OpenSolid/Core/Vector/VectorBase.hpp>
 
 #include <cstdlib>
 
 namespace opensolid
 {
     inline
-    Vector2d::Vector() :
-        detail::DoubleVectorBase<2>() {
+    Vector2d::Vector() {
     }
 
     inline
     Vector2d::Vector(double x, double y) :
-        detail::DoubleVectorBase<2>(x, y) {
+        detail::VectorBase<double, 2>(x, y) {
     }
 
     inline
     Vector2d::Vector(const ColumnMatrix2d& components) :
-        detail::DoubleVectorBase<2>(components) {
+        detail::VectorBase<double, 2>(components) {
+    }
+
+    inline
+    bool
+    Vector2d::operator==(const Vector2d& other) const {
+        return x() == other.x() && y() == other.y();
+    }
+
+    inline
+    bool
+    Vector2d::operator!=(const Vector2d& other) const {
+        return x() != other.x() || y() != other.y();
+    }
+
+    inline
+    bool
+    Vector2d::equals(const Vector2d& other, double precision) const {
+        return (*this - other).isZero(precision);
+    }
+
+    inline
+    IntervalVector2d
+    Vector2d::bounds() const {
+        return IntervalVector2d(
+            components().map(
+                [] (double component) {
+                    return Interval(component);
+                }
+            )
+        );
+    }
+
+    inline
+    UnitVector2d
+    Vector2d::normalized() const {
+        double norm = this->norm();
+        if (norm == 0.0) {
+            return UnitVector2d();
+        } else {
+            return UnitVector2d(components() / norm);
+        }
     }
 
     inline
     UnitVector2d
     Vector2d::unitOrthogonal() const {
-        if (isZero()) {
-            assert(false);
-            return UnitVector2d();
-        } else {
-            return Vector2d(-y(), x()).normalized();
-        }
+        return Vector2d(-y(), x()).normalized();
+    }
+
+    template <class TTransformation>
+    inline
+    Vector2d
+    Vector2d::transformedBy(const TTransformation& transformation) const {
+        return transformation.transform(*this);
     }
 
     inline
     Vector2d
-    Vector2d::rotatedBy(double angle) const {
-        return rotatedBy(Quaternion2d(angle).rotationMatrix());
+    Vector2d::projectedOnto(const Axis2d& axis) const {
+        return dot(axis.directionVector()) * axis.directionVector();
     }
 
     inline
     Vector3d
-    Vector2d::toGlobalFrom(const Plane3d& plane) const {
-        return Vector3d(plane.basisMatrix() * components());
+    Vector2d::placedOnto(const Plane3d& plane) const {
+        return x() * plane.xDirectionVector() + y() * plane.yDirectionVector();
     }
 
     inline
-    UnitVector2d
-    Vector2d::unit(int index) {
-        switch (index) {
-            case 0: return UnitVector2d(1.0, 0.0);
-            case 1: return UnitVector2d(0.0, 1.0);
-            default: throw Error(new PlaceholderError());
-        }
-    }
-
-    inline
-    UnitVector2d
-    Vector2d::unitX() {
-        return UnitVector2d(1.0, 0.0);
-    }
-
-    inline
-    UnitVector2d
-    Vector2d::unitY() {
-        return UnitVector2d(0.0, 1.0);
-    }
-
-    inline
-    Vector3d::Vector() :
-        detail::DoubleVectorBase<3>() {
+    Vector3d::Vector() {
     }
 
     inline
     Vector3d::Vector(double x, double y, double z) :
-        detail::DoubleVectorBase<3>(x, y, z) {
+        detail::VectorBase<double, 3>(x, y, z) {
     }
 
     inline
     Vector3d::Vector(const ColumnMatrix3d& components) :
-        detail::DoubleVectorBase<3>(components) {
+        detail::VectorBase<double, 3>(components) {
+    }
+
+    inline
+    bool
+    Vector3d::operator==(const Vector3d& other) const {
+        return x() == other.x() && y() == other.y() && z() == other.z();
+    }
+
+    inline
+    bool
+    Vector3d::operator!=(const Vector3d& other) const {
+        return x() != other.x() || y() != other.y() || z() != other.z();
+    }
+
+    inline
+    bool
+    Vector3d::equals(const Vector3d& other, double precision) const {
+        return (*this - other).isZero(precision);
+    }
+
+    inline
+    IntervalVector3d
+    Vector3d::bounds() const {
+        return IntervalVector3d(
+            components().map(
+                [] (double component) {
+                    return Interval(component);
+                }
+            )
+        );
     }
 
     inline
@@ -141,15 +190,27 @@ namespace opensolid
     }
 
     inline
+    UnitVector3d
+    Vector3d::normalized() const {
+        double norm = this->norm();
+        if (norm == 0.0) {
+            return UnitVector3d();
+        } else {
+            return UnitVector3d(components() / norm);
+        }
+    }
+
+    template <class TTransformation>
+    inline
     Vector3d
-    Vector3d::rotatedAbout(const UnitVector3d& directionVector, double angle) const {
-        return rotatedBy(Quaternion3d(directionVector, angle).rotationMatrix());
+    Vector3d::transformedBy(const TTransformation& transformation) const {
+        return transformation.transform(*this);
     }
 
     inline
-    Vector2d
-    Vector3d::toLocalIn(const Plane3d& plane) const {
-        return Vector2d(plane.basisMatrix().transposeProduct(components()));
+    Vector3d
+    Vector3d::projectedOnto(const Axis3d& axis) const {
+        return dot(axis.directionVector()) * axis.directionVector();
     }
 
     inline
@@ -159,32 +220,9 @@ namespace opensolid
     }
 
     inline
-    UnitVector3d
-    Vector3d::unit(int index) {
-        switch (index) {
-            case 0: return UnitVector3d(1.0, 0.0, 0.0);
-            case 1: return UnitVector3d(0.0, 1.0, 0.0);
-            case 2: return UnitVector3d(0.0, 0.0, 1.0);
-            default: throw Error(new PlaceholderError());
-        }
-    }
-
-    inline
-    UnitVector3d
-    Vector3d::unitX() {
-        return UnitVector3d(1.0, 0.0, 0.0);
-    }
-
-    inline
-    UnitVector3d
-    Vector3d::unitY() {
-        return UnitVector3d(0.0, 1.0, 0.0);
-    }
-
-    inline
-    UnitVector3d
-    Vector3d::unitZ() {
-        return UnitVector3d(0.0, 0.0, 1.0);
+    Vector2d
+    Vector3d::projectedInto(const Plane3d& plane) const {
+        return Vector2d(dot(plane.xDirectionVector()), dot(plane.yDirectionVector()));
     }
 
     inline
@@ -203,6 +241,24 @@ namespace opensolid
     }
 
     inline
+    bool
+    IntervalVector2d::operator==(const IntervalVector2d& other) const {
+        return x() == other.x() && y() == other.y();
+    }
+
+    inline
+    bool
+    IntervalVector2d::operator!=(const IntervalVector2d& other) const {
+        return x() != other.x() || y() != other.y();
+    }
+
+    inline
+    const IntervalVector2d&
+    IntervalVector2d::bounds() const {
+        return *this;
+    }
+
+    inline
     IntervalVector3d::Vector() :
         detail::IntervalVectorBase<3>() {
     }
@@ -215,6 +271,24 @@ namespace opensolid
     inline
     IntervalVector3d::Vector(const IntervalColumnMatrix3d& components) :
         detail::IntervalVectorBase<3>(components) {
+    }
+
+    inline
+    bool
+    IntervalVector3d::operator==(const IntervalVector3d& other) const {
+        return x() == other.x() && y() == other.y() && z() == other.z();
+    }
+
+    inline
+    bool
+    IntervalVector3d::operator!=(const IntervalVector3d& other) const {
+        return x() != other.x() || y() != other.y() || z() != other.z();
+    }
+
+    inline
+    const IntervalVector3d&
+    IntervalVector3d::bounds() const {
+        return *this;
     }
 
     inline
@@ -310,29 +384,5 @@ namespace opensolid
         double precision
     ) const {
         return (firstVector - secondVector).isZero(precision);
-    }
-
-    template <int iNumDimensions>
-    inline
-    Vector<Interval, iNumDimensions>
-    BoundsFunction<Vector<double, iNumDimensions>>::operator()(
-        const Vector<double, iNumDimensions>& vector
-    ) const {
-        return Vector<Interval, iNumDimensions>(
-            vector.components().map(
-                [] (double component) {
-                    return Interval(component);
-                }
-            )
-        );
-    }
-
-    template <int iNumDimensions>
-    inline
-    const Vector<Interval, iNumDimensions>&
-    BoundsFunction<Vector<Interval, iNumDimensions>>::operator()(
-        const Vector<Interval, iNumDimensions>& vector
-    ) const {
-        return vector;
     }
 }

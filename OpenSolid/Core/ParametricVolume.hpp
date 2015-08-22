@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/BoundedVolume.hpp>
 #include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/Handedness.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/Point.hpp>
@@ -51,8 +52,24 @@ namespace opensolid
     }
 
     inline
+    Handedness
+    ParametricVolume3d::handedness() const {
+        return _handedness;
+    }
+
+    inline
     const Box3d&
     ParametricVolume3d::bounds() const {
         return _bounds;
+    }
+
+    template <class TTransformation>
+    ParametricVolume3d
+    ParametricVolume3d::transformedBy(const TTransformation& transformation) const {
+        return ParametricVolume3d(
+            expression().transformedBy(transformation),
+            domain(),
+            handedness().transformedBy(transformation)
+        );
     }
 }

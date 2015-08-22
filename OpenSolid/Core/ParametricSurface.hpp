@@ -30,9 +30,12 @@
 
 #include <OpenSolid/Core/BoundedArea.hpp>
 #include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/Frame.hpp>
+#include <OpenSolid/Core/Handedness.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/ParametricArea.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/UnitVector.hpp>
@@ -52,8 +55,24 @@ namespace opensolid
     }
 
     inline
+    Handedness
+    ParametricSurface3d::handedness() const {
+        return _handedness;
+    }
+
+    inline
     const Box3d&
     ParametricSurface3d::bounds() const {
         return _bounds;
+    }
+
+    template <class TTransformation>
+    ParametricSurface3d
+    ParametricSurface3d::transformedBy(const TTransformation& transformation) const {
+        return ParametricSurface3d(
+            expression().transformedBy(transformation),
+            domain(),
+            handedness().transformedBy(transformation)
+        );
     }
 }

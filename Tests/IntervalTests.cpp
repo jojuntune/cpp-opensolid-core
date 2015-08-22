@@ -82,50 +82,6 @@ TEST_CASE("Bisection") {
     REQUIRE(bisected.second.upperBound() == 5);
 }
 
-TEST_CASE("Interpolation") {
-    Interval x(6, 10);
-
-    SECTION("Value") {
-        REQUIRE((x.interpolated(0.5) - 8) == Zero());
-    }
-
-    SECTION("Interval") {
-        Interval interpolated = x.interpolated(Interval(0.25, 0.75));
-        REQUIRE((interpolated.lowerBound() - 7) == Zero());
-        REQUIRE((interpolated.upperBound() - 9) == Zero());
-    }
-}
-
-TEST_CASE("Clamping") {
-    Interval interval(2, 4);
-
-    SECTION("Values") {
-        REQUIRE(interval.clamp(1) == 2);
-        REQUIRE(interval.clamp(2) == 2);
-        REQUIRE(interval.clamp(3) == 3);
-        REQUIRE(interval.clamp(4) == 4);
-        REQUIRE(interval.clamp(5) == 4);
-    }
-
-    SECTION("No overlap") {
-        Interval clamped = interval.clamp(Interval(0, 1));
-        REQUIRE(clamped.lowerBound() == 2);
-        REQUIRE(clamped.upperBound() == 2);
-    }
-
-    SECTION("Partial overlap") {
-        Interval clamped = interval.clamp(Interval(1, 3));
-        REQUIRE(clamped.lowerBound() == 2);
-        REQUIRE(clamped.upperBound() == 3);
-    }
-    
-    SECTION("Fully contained") {
-        Interval clamped = interval.clamp(Interval(2.5, 3.5));
-        REQUIRE(clamped.lowerBound() == 2.5);
-        REQUIRE(clamped.upperBound() == 3.5);
-    }
-}
-
 TEST_CASE("Random generation") {
     Interval interval(-2, 3);
     for (int i = 0; i < 100; ++i) {

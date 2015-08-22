@@ -29,7 +29,6 @@
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
@@ -58,17 +57,33 @@ namespace opensolid
     template <>
     class LineSegment<2> :
         public detail::LineSegmentBase<2>,
+        public Transformable<LineSegment<2>, Point<2>>,
         public Convertible<LineSegment<2>>
     {
+    private:
+        Handedness _handedness;
     public:
         LineSegment();
 
         LineSegment(const Point<2>& startVertex, const Point<2>& endVertex);
 
-        LineSegment<3>
-        toGlobalFrom(const Plane3d& plane) const;
+        LineSegment(const Point<2>& startVertex, const Point<2>& endVertex, Handedness handedness);
 
-        using detail::LineSegmentBase<2>::toGlobalFrom;
+        Handedness
+        handedness() const;
+
+        UnitVector<2>
+        normalVector() const;
+
+        Axis<2>
+        axis() const;
+
+        template <class TTransformation>
+        LineSegment<2>
+        transformedBy(const TTransformation& transformation) const;
+
+        LineSegment<3>
+        placedOnto(const Plane3d& plane) const;
     };
     
     typedef LineSegment<2> LineSegment2d;
@@ -76,6 +91,7 @@ namespace opensolid
     template <>
     class LineSegment<3> :
         public detail::LineSegmentBase<3>,
+        public Transformable<LineSegment<3>, Point<3>>,
         public Convertible<LineSegment<3>>
     {
     public:
@@ -83,13 +99,21 @@ namespace opensolid
 
         LineSegment(const Point<3>& startVertex, const Point<3>& endVertex);
 
+        UnitVector<3>
+        normalVector() const;
+
+        Axis<3>
+        axis() const;
+
         Intersection<LineSegment<3>, Plane3d>
         intersection(const Plane3d& plane, double precision = 1e-12) const;
 
-        LineSegment<2>
-        toLocalIn(const Plane3d& plane) const;
+        template <class TTransformation>
+        LineSegment<3>
+        transformedBy(const TTransformation& transformation) const;
 
-        using detail::LineSegmentBase<3>::toLocalIn;
+        LineSegment<2>
+        projectedInto(const Plane3d& plane) const;
 
         LineSegment<3>
         projectedOnto(const Plane3d& plane) const;

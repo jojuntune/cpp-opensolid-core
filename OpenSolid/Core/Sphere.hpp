@@ -90,34 +90,14 @@ namespace opensolid
         );
     }
 
+    template <class TTransformation>
     inline
     Sphere3d
-    Sphere3d::scaledAbout(const Point3d& point, double scale) const {
-        return Sphere3d(centerPoint().scaledAbout(point, scale), radius() * scale);
-    }
-
-    inline
-    Sphere3d
-    Sphere3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
-        return Sphere3d(centerPoint().rotatedAbout(point, rotationMatrix), radius());
-    }
-
-    inline
-    Sphere3d
-    Sphere3d::translatedBy(const Vector3d& vector) const {
-        return Sphere3d(centerPoint().translatedBy(vector), radius());
-    }
-
-    inline
-    Sphere3d
-    Sphere3d::toLocalIn(const Frame3d& frame) const {
-        return Sphere3d(centerPoint().toLocalIn(frame), radius());
-    }
-
-    inline
-    Sphere3d
-    Sphere3d::toGlobalFrom(const Frame3d& frame) const {
-        return Sphere3d(centerPoint().toGlobalFrom(frame), radius());
+    Sphere3d::transformedBy(const TTransformation& transformation) const {
+        return Sphere3d(
+            centerPoint().transformedBy(transformation),
+            transformation.scale() * radius()
+        );
     }
 
     inline
@@ -137,9 +117,9 @@ namespace opensolid
     }
 
     inline
-    Sphere3d
-    Sphere3d::mirroredAbout(const Point3d& point, const UnitVector3d& mirrorDirection) const {
-        return Sphere3d(centerPoint().mirroredAbout(point, mirrorDirection), radius());
+    Circle2d
+    Sphere3d::projectedInto(const Plane3d& plane) const {
+        return Circle2d(centerPoint().projectedInto(plane), radius());
     }
     
     inline

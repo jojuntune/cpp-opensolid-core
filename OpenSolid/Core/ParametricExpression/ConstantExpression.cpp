@@ -173,11 +173,13 @@ namespace opensolid
 
         ExpressionImplementationPtr
         ConstantExpression::sqrtImpl() const {
-            Interval domain(0, INFINITY);
-            if (!domain.contains(value())) {
+            if (value() >= 0.0) {
+                return new ConstantExpression(opensolid::sqrt(value()), numParameters());
+            } else if (value() == Zero()) {
+                return new ConstantExpression(0.0, numParameters());
+            } else {
                 throw Error(new PlaceholderError());
             }
-            return new ConstantExpression(opensolid::sqrt(domain.clamp(value())), numParameters());
         }
 
         ExpressionImplementationPtr
@@ -200,20 +202,28 @@ namespace opensolid
 
         ExpressionImplementationPtr
         ConstantExpression::acosImpl() const {
-            Interval domain(-1, 1);
-            if (!domain.contains(value())) {
+            if (-1.0 <= value() && value() <= 1.0) {
+                return new ConstantExpression(opensolid::acos(value()), numParameters());
+            } else if (value() + 1.0 == Zero()) {
+                return new ConstantExpression(M_PI, numParameters());
+            } else if (value() - 1.0 == Zero()) {
+                return new ConstantExpression(0.0, numParameters());
+            } else {
                 throw Error(new PlaceholderError());
             }
-            return new ConstantExpression(opensolid::acos(domain.clamp(value())), numParameters());
         }
 
         ExpressionImplementationPtr
         ConstantExpression::asinImpl() const {
-            Interval domain(-1, 1);
-            if (!domain.contains(value())) {
+            if (-1.0 <= value() && value() <= 1.0) {
+                return new ConstantExpression(opensolid::asin(value()), numParameters());
+            } else if (value() + 1.0 == Zero()) {
+                return new ConstantExpression(-M_PI / 2.0, numParameters());
+            } else if (value() - 1.0 == Zero()) {
+                return new ConstantExpression(M_PI / 2.0, numParameters());
+            } else {
                 throw Error(new PlaceholderError());
             }
-            return new ConstantExpression(opensolid::asin(domain.clamp(value())), numParameters());
         }
 
         ExpressionImplementationPtr

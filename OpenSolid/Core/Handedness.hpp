@@ -26,17 +26,32 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Sign.hpp>
+
 namespace opensolid
 {
     inline
-    Handedness::Handedness(int sign) :
+    Handedness::Handedness(Sign sign) :
         _sign(sign) {
     }
 
     inline
-    int
+    Sign
     Handedness::sign() const {
         return _sign;
+    }
+
+    template <class TTransformation>
+    inline
+    Handedness
+    Handedness::transformedBy(const TTransformation& transformation) const {
+        return transformation.transform(*this);
+    }
+
+    inline 
+    bool
+    Handedness::operator==(Handedness other) const {
+        return sign() == other.sign();
     }
 
     inline
@@ -47,13 +62,25 @@ namespace opensolid
 
     inline
     Handedness
-    Handedness::rightHanded() {
-        return Handedness(1);
+    Handedness::operator*(Handedness other) const {
+        return Handedness(sign() * other.sign());
     }
 
     inline
     Handedness
-    Handedness::leftHanded() {
-        return Handedness(-1);
+    Handedness::RIGHT_HANDED() {
+        return Handedness(Sign::POSITIVE());
+    }
+
+    inline
+    Handedness
+    Handedness::LEFT_HANDED() {
+        return Handedness(Sign::NEGATIVE());
+    }
+
+    inline
+    Handedness
+    Handedness::fromSignOf(double value) {
+        return Handedness(value >= 0.0 ? Sign::POSITIVE() : Sign::NEGATIVE());
     }
 }

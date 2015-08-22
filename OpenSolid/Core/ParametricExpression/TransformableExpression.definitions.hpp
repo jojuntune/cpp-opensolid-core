@@ -36,6 +36,7 @@
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Vector.declarations.hpp>
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
 
 namespace opensolid
 {
@@ -47,69 +48,102 @@ namespace opensolid
         };
 
         template <class TParameter>
-        class TransformableExpression<Vector<double, 2>, TParameter>
+        class TransformableExpression<Vector<double, 2>, TParameter> :
+            public Transformable<
+                ParametricExpression<Vector<double, 2>, TParameter>,
+                Vector<double, 2>
+            >
         {
         private:
             const ParametricExpression<Vector<double, 2>, TParameter>&
             derived() const;
         public:
-            ParametricExpression<Vector<double, 2>, TParameter>
-            rotatedBy(double angle) const;
+            ParametricExpression<UnitVector<2>, TParameter>
+            unitOrthogonal() const;
 
+            template <class TTransformation>
             ParametricExpression<Vector<double, 2>, TParameter>
-            rotatedBy(const Matrix<double, 2, 2>& rotationMatrix) const;
-
-            ParametricExpression<Vector<double, 2>, TParameter>
-            toLocalIn(const Frame<2>& frame) const;
-
-            ParametricExpression<Vector<double, 2>, TParameter>
-            toGlobalFrom(const Frame<2>& frame) const;
+            transformedBy(const TTransformation& transformation) const;
 
             ParametricExpression<Vector<double, 3>, TParameter>
-            toGlobalFrom(const Plane3d& plane) const;
+            placedOnto(const Plane3d& plane) const;
 
             ParametricExpression<Vector<double, 2>, TParameter>
             projectedOnto(const Axis<2>& axis) const;
-
-            ParametricExpression<Vector<double, 2>, TParameter>
-            mirroredAlong(const UnitVector<2>& mirrorDirection) const;
         };
 
         template <class TParameter>
-        class TransformableExpression<Vector<double, 3>, TParameter>
+        class TransformableExpression<Vector<double, 3>, TParameter> :
+            public Transformable<
+                ParametricExpression<Vector<double, 3>, TParameter>,
+                Vector<double, 3>
+            >
         {
         private:
             const ParametricExpression<Vector<double, 3>, TParameter>&
             derived() const;
         public:
+            template <class TTransformation>
             ParametricExpression<Vector<double, 3>, TParameter>
-            rotatedBy(const Matrix<double, 3, 3>& rotationMatrix) const;
-
-            ParametricExpression<Vector<double, 3>, TParameter>
-            rotatedAbout(const UnitVector<3>& directionVector, double angle) const;
-
-            ParametricExpression<Vector<double, 3>, TParameter>
-            toLocalIn(const Frame<3>& frame) const;
+            transformedBy(const TTransformation& transformation) const;
 
             ParametricExpression<Vector<double, 2>, TParameter>
-            toLocalIn(const Plane3d& plane) const;
-
-            ParametricExpression<Vector<double, 3>, TParameter>
-            toGlobalFrom(const Frame<3>& frame) const;
+            projectedInto(const Plane3d& plane) const;
 
             ParametricExpression<Vector<double, 3>, TParameter>
             projectedOnto(const Axis<3>& axis) const;
 
             ParametricExpression<Vector<double, 3>, TParameter>
             projectedOnto(const Plane3d& plane) const;
+        };
+
+        template <class TParameter>
+        class TransformableExpression<UnitVector<2>, TParameter> :
+            public Transformable<ParametricExpression<UnitVector<2>, TParameter>, Vector<double, 2>>
+        {
+        private:
+            const ParametricExpression<UnitVector<2>, TParameter>&
+            derived() const;
+        public:
+            ParametricExpression<UnitVector<2>, TParameter>
+            unitOrthogonal() const;
+            
+            template <class TTransformation>
+            ParametricExpression<UnitVector<2>, TParameter>
+            transformedBy(const TTransformation& transformation) const;
+
+            ParametricExpression<UnitVector<3>, TParameter>
+            placedOnto(const Plane3d& plane) const;
+
+            ParametricExpression<Vector<double, 2>, TParameter>
+            projectedOnto(const Axis<2>& axis) const;
+        };
+
+        template <class TParameter>
+        class TransformableExpression<UnitVector<3>, TParameter> :
+            public Transformable<ParametricExpression<UnitVector<3>, TParameter>, Vector<double, 3>>
+        {
+        private:
+            const ParametricExpression<UnitVector<3>, TParameter>&
+            derived() const;
+        public:
+            template <class TTransformation>
+            ParametricExpression<UnitVector<3>, TParameter>
+            transformedBy(const TTransformation& transformation) const;
+
+            ParametricExpression<Vector<double, 2>, TParameter>
+            projectedInto(const Plane3d& plane) const;
 
             ParametricExpression<Vector<double, 3>, TParameter>
-            mirroredAlong(const UnitVector<3>& mirrorDirection) const;
+            projectedOnto(const Axis<3>& axis) const;
+
+            ParametricExpression<Vector<double, 3>, TParameter>
+            projectedOnto(const Plane3d& plane) const;
         };
 
         template <class TParameter>
         class TransformableExpression<Point<2>, TParameter> :
-            public Transformable<ParametricExpression<Point<2>, TParameter>, 2>
+            public Transformable<ParametricExpression<Point<2>, TParameter>, Point<2>>
         {
         private:
             const ParametricExpression<Point<2>, TParameter>&
@@ -121,38 +155,20 @@ namespace opensolid
             ParametricExpression<double, TParameter>
             distanceAlong(const Axis<2>& axis) const;
 
+            template <class TTransformation>
             ParametricExpression<Point<2>, TParameter>
-            scaledAbout(const Point<2>& other, double scale) const;
-
-            ParametricExpression<Point<2>, TParameter>
-            rotatedAbout(const Point<2>& other, const Matrix<double, 2, 2>& rotationMatrix) const;
-
-            using Transformable<ParametricExpression<Point<2>, TParameter>, 2>::rotatedAbout;
-
-            ParametricExpression<Point<2>, TParameter>
-            translatedBy(const Vector<double, 2>& vector) const;
-
-            ParametricExpression<Point<2>, TParameter>
-            toLocalIn(const Frame<2>& frame) const;
-
-            ParametricExpression<Point<2>, TParameter>
-            toGlobalFrom(const Frame<2>& frame) const;
+            transformedBy(const TTransformation& transformation) const;
 
             ParametricExpression<Point<3>, TParameter>
-            toGlobalFrom(const Plane3d& plane) const;
+            placedOnto(const Plane3d& plane) const;
 
             ParametricExpression<Point<2>, TParameter>
             projectedOnto(const Axis<2>& axis) const;
-
-            ParametricExpression<Point<2>, TParameter>
-            mirroredAbout(const Point<2>& point, const UnitVector<2>& mirrorDirection) const;
-
-            using Transformable<ParametricExpression<Point<2>, TParameter>, 2>::mirroredAbout;
         };
 
         template <class TParameter>
         class TransformableExpression<Point<3>, TParameter> :
-            public Transformable<ParametricExpression<Point<3>, TParameter>, 3>
+            public Transformable<ParametricExpression<Point<3>, TParameter>, Point<3>>
         {
         private:
             const ParametricExpression<Point<3>, TParameter>&
@@ -170,36 +186,18 @@ namespace opensolid
             ParametricExpression<double, TParameter>
             distanceTo(const Plane3d& plane) const;
 
+            template <class TTransformation>
             ParametricExpression<Point<3>, TParameter>
-            scaledAbout(const Point<3>& other, double scale) const;
-
-            ParametricExpression<Point<3>, TParameter>
-            rotatedAbout(const Point<3>& other, const Matrix<double, 3, 3>& rotationMatrix) const;
-
-            using Transformable<ParametricExpression<Point<3>, TParameter>, 3>::rotatedAbout;
-
-            ParametricExpression<Point<3>, TParameter>
-            translatedBy(const Vector<double, 3>& vector) const;
-
-            ParametricExpression<Point<3>, TParameter>
-            toLocalIn(const Frame<3>& frame) const;
-
-            ParametricExpression<Point<3>, TParameter>
-            toGlobalFrom(const Frame<3>& frame) const;
+            transformedBy(const TTransformation& transformation) const;
 
             ParametricExpression<Point<2>, TParameter>
-            toLocalIn(const Plane3d& plane) const;
+            projectedInto(const Plane3d& plane) const;
 
             ParametricExpression<Point<3>, TParameter>
             projectedOnto(const Axis<3>& axis) const;
 
             ParametricExpression<Point<3>, TParameter>
             projectedOnto(const Plane3d& plane) const;
-
-            ParametricExpression<Point<3>, TParameter>
-            mirroredAbout(const Point<3>& point, const UnitVector<3>& mirrorDirection) const;
-
-            using Transformable<ParametricExpression<Point<3>, TParameter>, 3>::mirroredAbout;
         };
     }
 }

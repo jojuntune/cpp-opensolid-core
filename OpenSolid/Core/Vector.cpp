@@ -26,20 +26,6 @@
 
 namespace opensolid
 {
-    UnitVector2d
-    Vector2d::unitRandom() {
-        while (true) {
-            Vector2d candidate(
-                -1.0 + 2.0 * double(rand()) / RAND_MAX,
-                -1.0 + 2.0 * double(rand()) / RAND_MAX
-            );
-            double candidateSquaredNorm = candidate.squaredNorm();
-            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
-                return UnitVector2d((candidate / sqrt(candidateSquaredNorm)).components());
-            }
-        }
-    }
-
     UnitVector3d
     Vector3d::unitOrthogonal() const {
         if (isZero()) {
@@ -51,31 +37,16 @@ namespace opensolid
             double absZ = abs(z());
             if (absX <= absY) {
                 if (absX <= absZ) {
-                    return Vector3d::unitX().cross(*this).normalized();
+                    return UnitVector3d::X().cross(*this).normalized();
                 } else {
-                    return Vector3d::unitZ().cross(*this).normalized();
+                    return UnitVector3d::Z().cross(*this).normalized();
                 }
             } else {
                 if (absY <= absZ) {
-                    return Vector3d::unitY().cross(*this).normalized();
+                    return UnitVector3d::Y().cross(*this).normalized();
                 } else {
-                    return Vector3d::unitZ().cross(*this).normalized();
+                    return UnitVector3d::Z().cross(*this).normalized();
                 }
-            }
-        }
-    }
-
-    UnitVector3d
-    Vector3d::unitRandom() {
-        while (true) {
-            Vector3d candidate(
-                -1.0 + 2.0 * double(rand()) / RAND_MAX,
-                -1.0 + 2.0 * double(rand()) / RAND_MAX,
-                -1.0 + 2.0 * double(rand()) / RAND_MAX
-            );
-            double candidateSquaredNorm = candidate.squaredNorm();
-            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
-                return UnitVector3d((candidate / sqrt(candidateSquaredNorm)).components());
             }
         }
     }

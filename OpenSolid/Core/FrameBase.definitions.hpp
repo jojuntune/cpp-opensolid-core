@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/FrameBase.declarations.hpp>
 
+#include <OpenSolid/Core/Handedness.definitions.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
@@ -42,10 +43,6 @@ namespace opensolid
         Point<iNumDimensions> _originPoint;
         Matrix<double, iNumDimensions, iNumAxes> _basisMatrix;
     public:
-        FrameBase();
-
-        FrameBase(const Point<iNumDimensions>& originPoint);
-
         FrameBase(
             const Point<iNumDimensions>& originPoint,
             const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix

@@ -30,43 +30,15 @@
 
 namespace opensolid
 {
-    Axis2d
-    Axis2d::projectedOnto(const Axis2d& other) const {
-        double dotProduct = directionVector().dot(other.directionVector());
-        if (dotProduct == Zero()) {
-            throw Error(new PlaceholderError());
+    namespace detail
+    {
+        template <int iNumDimensions>
+        ParametricExpression<Point<iNumDimensions>, double>
+        AxisBase<iNumDimensions>::expression() const {
+            return originPoint() + Parameter1d() * directionVector();
         }
-        return Axis2d(
-            originPoint().projectedOnto(other),
-            dotProduct > 0.0 ? other.directionVector() : -other.directionVector()
-        );
-    }
 
-    ParametricExpression<Point2d, double>
-    Axis2d::expression() const {
-        return originPoint() + Parameter1d() * directionVector();
-    }
-
-    Axis2d
-    Axis3d::toLocalIn(const Plane3d& plane) const {
-        Vector2d localDirection = directionVector().toLocalIn(plane);
-        if (localDirection.isZero()) {
-            throw Error(new PlaceholderError());
-        }
-        return Axis2d(originPoint().toLocalIn(plane), localDirection.normalized());
-    }
-
-    Axis3d
-    Axis3d::projectedOnto(const Plane3d& plane) const {
-        Vector3d projectedDirection = directionVector().projectedOnto(plane);
-        if (projectedDirection.isZero()) {
-            throw Error(new PlaceholderError());
-        }
-        return Axis3d(originPoint().projectedOnto(plane), projectedDirection.normalized());
-    }
-
-    ParametricExpression<Point3d, double>
-    Axis3d::expression() const {
-        return originPoint() + Parameter1d() * directionVector();
+        template ParametricExpression<Point2d, double> AxisBase<2>::expression() const;
+        template ParametricExpression<Point3d, double> AxisBase<3>::expression() const;
     }
 }

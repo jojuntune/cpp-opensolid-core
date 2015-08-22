@@ -26,26 +26,41 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Sign.definitions.hpp>
+
 namespace opensolid
 {
     class Handedness
     {
     private:
-        int _sign;
-
-        explicit
-        Handedness(int sign);
+        Sign _sign;
     public:
-        int
+        explicit
+        Handedness(Sign sign);
+
+        Sign
         sign() const;
+
+        template <class TTransformation>
+        Handedness
+        transformedBy(const TTransformation& transformation) const;
+
+        bool
+        operator==(Handedness other) const;
 
         Handedness
         operator-() const;
 
-        static Handedness
-        rightHanded();
+        Handedness
+        operator*(Handedness other) const;
 
         static Handedness
-        leftHanded();
+        RIGHT_HANDED();
+
+        static Handedness
+        LEFT_HANDED();
+
+        static Handedness
+        fromSignOf(double value);
     };
 }

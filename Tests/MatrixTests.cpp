@@ -673,9 +673,9 @@ TEST_CASE("Construction from columns") {
 
     SECTION("3D") {
         Matrix3d matrix = Matrix3d::fromColumns(
-            Vector3d::unitX().components(),
-            Vector3d::unitY().components(),
-            Vector3d::unitZ().components()
+            UnitVector3d::X().components(),
+            UnitVector3d::Y().components(),
+            UnitVector3d::Z().components()
         );
         REQUIRE(matrix.isIdentity());
     }

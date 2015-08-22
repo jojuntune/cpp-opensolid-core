@@ -127,10 +127,10 @@ namespace opensolid
         Circle2d circle2d(
             radius,
             COUNTERCLOCKWISE,
-            firstPoint.toLocalIn(plane),
-            secondPoint.toLocalIn(plane)
+            firstPoint.projectedInto(plane),
+            secondPoint.projectedInto(plane)
         );
-        _centerPoint = circle2d.centerPoint().toGlobalFrom(plane);
+        _centerPoint = circle2d.centerPoint().placedOnto(plane);
         _radius = circle2d.radius();
     }
 
@@ -150,11 +150,27 @@ namespace opensolid
         
         Plane3d plane(secondPoint, _normalVector);
         Circle2d circle2d(
-            firstPoint.toLocalIn(plane),
-            secondPoint.toLocalIn(plane),
-            thirdPoint.toLocalIn(plane)
+            firstPoint.projectedInto(plane),
+            secondPoint.projectedInto(plane),
+            thirdPoint.projectedInto(plane)
         );
-        _centerPoint = circle2d.centerPoint().toGlobalFrom(plane);
+        _centerPoint = circle2d.centerPoint().placedOnto(plane);
         _radius = circle2d.radius();
+    }
+
+    
+    Box3d
+    Circle3d::bounds() const {
+        double nx2 = normalVector().x() * normalVector().x();
+        double ny2 = normalVector().y() * normalVector().y();
+        double nz2 = normalVector().z() * normalVector().z();
+        double dx = radius() * sqrt(ny2 + nz2);
+        double dy = radius() * sqrt(nx2 + nz2);
+        double dz = radius() * sqrt(nx2 + ny2);
+        return Box3d(
+            Interval(centerPoint().x() - dx, centerPoint().x() + dx),
+            Interval(centerPoint().y() - dy, centerPoint().y() + dy),
+            Interval(centerPoint().z() - dz, centerPoint().z() + dz)
+        );
     }
 }

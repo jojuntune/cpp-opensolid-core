@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/Axis.definitions.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/FrameBase.hpp>
+#include <OpenSolid/Core/Handedness.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Plane.definitions.hpp>
 #include <OpenSolid/Core/Point.hpp>
@@ -43,23 +44,26 @@ namespace opensolid
 {
     inline
     Frame2d::Frame() :
-        FrameBase<2, 2>(Point2d::origin(), Matrix2d::identity()) {
+        FrameBase<2, 2>(Point2d::origin(), Matrix2d::identity()),
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     inline
     Frame2d::Frame(const Point2d& originPoint) :
-        FrameBase<2, 2>(originPoint, Matrix2d::identity()) {
+        FrameBase<2, 2>(originPoint, Matrix2d::identity()),
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     inline
     Frame2d::Frame(const Point2d& originPoint, const Matrix2d& basisMatrix) :
-        FrameBase<2, 2>(originPoint, basisMatrix) {
+        FrameBase<2, 2>(originPoint, basisMatrix),
+        _handedness(Handedness::fromSignOf(basisMatrix.determinant())) {
     }
 
     inline
     Frame2d::Frame(const Point2d& originPoint, const Quaternion2d& orientation) :
-        FrameBase<2, 2>(originPoint, orientation.rotationMatrix()) {
-
+        FrameBase<2, 2>(originPoint, orientation.rotationMatrix()),
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     inline
@@ -68,9 +72,35 @@ namespace opensolid
         const UnitVector2d& xDirectionVector,
         const UnitVector2d& yDirectionVector
     ) : FrameBase<2, 2>(
-        originPoint,
-        Matrix2d::fromColumns(xDirectionVector.components(), yDirectionVector.components())
-    ) {
+            originPoint,
+            Matrix2d::fromColumns(xDirectionVector.components(), yDirectionVector.components())
+        ),
+        _handedness(
+            Handedness::fromSignOf(xDirectionVector.unitOrthogonal().dot(yDirectionVector))
+        ) {
+    }
+
+    inline
+    Frame2d::Frame(
+        const Point2d& originPoint,
+        const UnitVector2d& xDirectionVector,
+        const UnitVector2d& yDirectionVector,
+        Handedness handedness
+    ) : FrameBase<2, 2>(
+            originPoint,
+            Matrix2d::fromColumns(xDirectionVector.components(), yDirectionVector.components())
+        ),
+        _handedness(handedness) {
+        assert(
+            handedness ==
+            Handedness::fromSignOf(xDirectionVector.unitOrthogonal().dot(yDirectionVector))
+        );
+    }
+
+    inline
+    Handedness
+    Frame2d::handedness() const {
+        return _handedness;
     }
 
     inline
@@ -88,85 +118,60 @@ namespace opensolid
     inline
     Axis2d
     Frame2d::xAxis() const {
-        return Axis2d(originPoint(), xDirectionVector());
+        return Axis2d(originPoint(), xDirectionVector(), handedness());
     }
     
     inline
     Axis2d
     Frame2d::yAxis() const {
-        return Axis2d(originPoint(), yDirectionVector());
+        return Axis2d(originPoint(), yDirectionVector(), handedness());
     }
 
+    template <class TTransformation>
     inline
     Frame2d
-    Frame2d::scaledAbout(const Point2d& point, double scale) const {
+    Frame2d::transformedBy(const TTransformation& transformation) const {
         return Frame2d(
-            originPoint().scaledAbout(point, scale),
-            basisMatrix()
+            originPoint().transformedBy(transformation),
+            xDirectionVector().transformedBy(transformation),
+            yDirectionVector().transformedBy(transformation),
+            handedness().transformedBy(transformation)
         );
     }
 
     inline
-    Frame2d
-    Frame2d::rotatedAbout(const Point2d& point, const Matrix2d& rotationMatrix) const {
-        return Frame2d(
-            originPoint().rotatedAbout(point, rotationMatrix),
-            rotationMatrix * basisMatrix()
-        );
-    }
-
-    inline
-    Frame2d
-    Frame2d::translatedBy(const Vector2d& vector) const {
-        return Frame2d(originPoint().translatedBy(vector), basisMatrix());
-    }
-
-    inline
-    Frame2d
-    Frame2d::toLocalIn(const Frame2d& frame) const {
-        return Frame2d(
-            originPoint().toLocalIn(frame),
-            frame.basisMatrix().transposeProduct(basisMatrix())
-        );
-    }
-
-    inline
-    Frame2d
-    Frame2d::toGlobalFrom(const Frame2d& frame) const {
-        return Frame2d(
-            originPoint().toGlobalFrom(frame),
-            frame.basisMatrix() * basisMatrix()
-        );
-    }
-
-    inline
-    Frame2d
-    Frame2d::mirroredAbout(const Point2d& point, const UnitVector2d& direction) const {
-        return Frame2d(
-            originPoint().mirroredAbout(point, direction),
-            xDirectionVector().mirroredAlong(direction),
-            yDirectionVector().mirroredAlong(direction)
+    Plane3d
+    Frame2d::placedOnto(const Plane3d& plane) const {
+        return Plane3d(
+            originPoint().placedOnto(plane),
+            xDirectionVector().placedOnto(plane),
+            yDirectionVector().placedOnto(plane),
+            handedness()
         );
     }
 
     inline
     Frame3d::Frame() :
-        FrameBase<3, 3>(Point3d::origin(), Matrix3d::identity()) {
+        FrameBase<3, 3>(Point3d::origin(), Matrix3d::identity()),
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     inline
     Frame3d::Frame(const Point3d& originPoint) :
-        FrameBase<3, 3>(originPoint, Matrix3d::identity()) {
+        FrameBase<3, 3>(originPoint, Matrix3d::identity()),
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     inline
     Frame3d::Frame(const Point3d& originPoint, const Matrix3d& basisMatrix) :
-        FrameBase<3, 3>(originPoint, basisMatrix) {
+        FrameBase<3, 3>(originPoint, basisMatrix),
+        _handedness(Handedness::fromSignOf(basisMatrix.determinant())) {
     }
 
     inline
     Frame3d::Frame(const Point3d& originPoint, const Quaternion3d& orientation) :
-        FrameBase<3, 3>(originPoint, orientation.rotationMatrix()) {
+        FrameBase<3, 3>(originPoint, orientation.rotationMatrix()),
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     inline
@@ -176,13 +181,45 @@ namespace opensolid
         const UnitVector3d& yDirectionVector,
         const UnitVector3d& zDirectionVector
     ) : FrameBase<3, 3>(
-        originPoint,
-        Matrix3d::fromColumns(
-            xDirectionVector.components(),
-            yDirectionVector.components(),
-            zDirectionVector.components()
-        )
-    ) {
+            originPoint,
+            Matrix3d::fromColumns(
+                xDirectionVector.components(),
+                yDirectionVector.components(),
+                zDirectionVector.components()
+            )
+        ),
+        _handedness(
+            Handedness::fromSignOf(xDirectionVector.cross(yDirectionVector).dot(zDirectionVector))
+        ) {
+    }
+
+    inline
+    Frame3d::Frame(
+        const Point3d& originPoint,
+        const UnitVector3d& xDirectionVector,
+        const UnitVector3d& yDirectionVector,
+        const UnitVector3d& zDirectionVector,
+        Handedness handedness
+    ) : FrameBase<3, 3>(
+            originPoint,
+            Matrix3d::fromColumns(
+                xDirectionVector.components(),
+                yDirectionVector.components(),
+                zDirectionVector.components()
+            )
+        ),
+        _handedness(handedness) {
+
+        assert(
+            handedness ==
+            Handedness::fromSignOf(xDirectionVector.cross(yDirectionVector).dot(zDirectionVector))
+        );
+    }
+
+    inline
+    Handedness
+    Frame3d::handedness() const {
+        return _handedness;
     }
 
     inline
@@ -224,89 +261,85 @@ namespace opensolid
     inline
     Plane3d
     Frame3d::xyPlane() const {
-        return Plane3d(originPoint(), xDirectionVector(), yDirectionVector(), zDirectionVector());
+        return Plane3d(
+            originPoint(),
+            xDirectionVector(),
+            yDirectionVector(),
+            zDirectionVector(),
+            handedness()
+        );
     }
     
     inline
     Plane3d
     Frame3d::xzPlane() const {
-        return Plane3d(originPoint(), xDirectionVector(), zDirectionVector(), -yDirectionVector());
+        return Plane3d(
+            originPoint(),
+            xDirectionVector(),
+            zDirectionVector(),
+            -yDirectionVector(),
+            handedness()
+        );
     }
     
     inline
     Plane3d
     Frame3d::yxPlane() const {
-        return Plane3d(originPoint(), yDirectionVector(), xDirectionVector(), -zDirectionVector());
+        return Plane3d(
+            originPoint(),
+            yDirectionVector(),
+            xDirectionVector(),
+            -zDirectionVector(),
+            handedness()
+        );
     }
     
     inline
     Plane3d
     Frame3d::yzPlane() const {
-        return Plane3d(originPoint(), yDirectionVector(), zDirectionVector(), xDirectionVector());
+        return Plane3d(
+            originPoint(),
+            yDirectionVector(),
+            zDirectionVector(),
+            xDirectionVector(),
+            handedness()
+        );
     }
     
     inline
     Plane3d
     Frame3d::zxPlane() const {
-        return Plane3d(originPoint(), zDirectionVector(), xDirectionVector(), yDirectionVector());
+        return Plane3d(
+            originPoint(),
+            zDirectionVector(),
+            xDirectionVector(),
+            yDirectionVector(),
+            handedness()
+        );
     }
     
     inline
     Plane3d
     Frame3d::zyPlane() const {
-        return Plane3d(originPoint(), zDirectionVector(), yDirectionVector(), -xDirectionVector());
-    }
-
-    inline
-    Frame3d
-    Frame3d::scaledAbout(const Point3d& point, double scale) const {
-        return Frame3d(
-            originPoint().scaledAbout(point, scale),
-            basisMatrix()
+        return Plane3d(
+            originPoint(),
+            zDirectionVector(),
+            yDirectionVector(),
+            -xDirectionVector(),
+            handedness()
         );
     }
 
+    template <class TTransformation>
     inline
     Frame3d
-    Frame3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
+    Frame3d::transformedBy(const TTransformation& transformation) const {
         return Frame3d(
-            originPoint().rotatedAbout(point, rotationMatrix),
-            rotationMatrix * basisMatrix()
-        );
-    }
-
-    inline
-    Frame3d
-    Frame3d::translatedBy(const Vector3d& vector) const {
-        return Frame3d(originPoint().translatedBy(vector), basisMatrix());
-    }
-
-    inline
-    Frame3d
-    Frame3d::toLocalIn(const Frame3d& other) const {
-        return Frame3d(
-            originPoint().toLocalIn(other),
-            other.basisMatrix().transposeProduct(basisMatrix())
-        );
-    }
-
-    inline
-    Frame3d
-    Frame3d::toGlobalFrom(const Frame3d& other) const {
-        return Frame3d(
-            originPoint().toGlobalFrom(other),
-            other.basisMatrix() * basisMatrix()
-        );
-    }
-
-    inline
-    Frame3d
-    Frame3d::mirroredAbout(const Point3d& point, const UnitVector3d& direction) const {
-        return Frame3d(
-            originPoint().mirroredAbout(point, direction),
-            xDirectionVector().mirroredAlong(direction),
-            yDirectionVector().mirroredAlong(direction),
-            zDirectionVector().mirroredAlong(direction)
+            originPoint().transformedBy(transformation),
+            xDirectionVector().transformedBy(transformation),
+            yDirectionVector().transformedBy(transformation),
+            zDirectionVector().transformedBy(transformation),
+            handedness().transformedBy(transformation)
         );
     }
 }

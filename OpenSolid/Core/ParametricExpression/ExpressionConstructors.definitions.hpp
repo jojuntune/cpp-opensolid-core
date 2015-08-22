@@ -63,6 +63,14 @@ namespace opensolid
         };
 
         template <int iNumDimensions, class TParameter>
+        class ConstantExpressionConstructor<UnitVector<iNumDimensions>, TParameter>
+        {
+        public:
+            static ParametricExpression<UnitVector<iNumDimensions>, TParameter>
+            constant(const UnitVector<iNumDimensions>& unitVector);
+        };
+
+        template <int iNumDimensions, class TParameter>
         class ConstantExpressionConstructor<Point<iNumDimensions>, TParameter>
         {
         public:

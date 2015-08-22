@@ -26,6 +26,6 @@
 
 namespace opensolid
 {
-    template <class TDerived, int iNumDimensions>
+    template <class TDerived, class TBase>
     class Transformable;
 }

@@ -29,11 +29,11 @@
 #include <OpenSolid/Core/Tetrahedron.declarations.hpp>
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Frame.declarations.hpp>
+#include <OpenSolid/Core/Handedness.definitions.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
@@ -63,10 +63,11 @@ namespace opensolid
 
     class Tetrahedron3d :
         public Convertible<Tetrahedron3d>,
-        public Transformable<Tetrahedron3d, 3>
+        public Transformable<Tetrahedron3d, Point<3>>
     {
     private:
         Point<3> _vertices[4];
+        Handedness _handedness;
     public:
         Tetrahedron3d();
 
@@ -77,11 +78,22 @@ namespace opensolid
             const Point<3>& fourthVertex
         );
 
+        Tetrahedron3d(
+            const Point<3>& firstVertex,
+            const Point<3>& secondVertex,
+            const Point<3>& thirdVertex,
+            const Point<3>& fourthVertex,
+            Handedness handedness
+        );
+
         const Point<3>&
         vertex(int index) const;
 
         Point<3>&
         vertex(int index);
+
+        Handedness
+        handedness() const;
 
         detail::SimplexVertices<Tetrahedron3d, 4>
         vertices() const;
@@ -118,33 +130,9 @@ namespace opensolid
         bool
         operator==(const Tetrahedron3d& other) const;
 
-        OPENSOLID_CORE_EXPORT
+        template <class TTransformation>
         Tetrahedron3d
-        scaledAbout(const Point<3>& point, double scale) const;
-
-        OPENSOLID_CORE_EXPORT
-        Tetrahedron3d
-        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
-
-        using Transformable<Tetrahedron3d, 3>::rotatedAbout;
-
-        OPENSOLID_CORE_EXPORT
-        Tetrahedron3d
-        translatedBy(const Vector<double, 3>& vector) const;
-
-        OPENSOLID_CORE_EXPORT
-        Tetrahedron3d
-        toLocalIn(const Frame<3>& frame) const;
-
-        OPENSOLID_CORE_EXPORT
-        Tetrahedron3d
-        toGlobalFrom(const Frame<3>& frame) const;
-
-        OPENSOLID_CORE_EXPORT
-        Tetrahedron3d
-        mirroredAbout(const Point<3>& point, const UnitVector<3>& mirrorDirection) const;
-
-        using Transformable<Tetrahedron3d, 3>::mirroredAbout;
+        transformedBy(const TTransformation& transformation) const;
 
         OPENSOLID_CORE_EXPORT
         static Tetrahedron3d

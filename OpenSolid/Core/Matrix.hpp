@@ -32,7 +32,6 @@
 #include <OpenSolid/Core/Matrix/MatrixInterface.hpp>
 #include <OpenSolid/Core/MatrixView.hpp>
 
-#include <cassert>
 #include <algorithm>
 
 namespace opensolid

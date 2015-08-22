@@ -32,6 +32,7 @@
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.definitions.hpp>
 #include <OpenSolid/Core/Frame.declarations.hpp>
+#include <OpenSolid/Core/Handedness.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
@@ -53,11 +54,12 @@ namespace opensolid
     };
 
     class ParametricArea2d :
-        public Transformable<ParametricArea2d, 2>
+        public Transformable<ParametricArea2d, Point<2>>
     {
     private:
         ParametricExpression<Point<2>, Point<2>> _expression;
         BoundedArea2d _domain;
+        Handedness _handedness;
         Box<2> _bounds;
     public:
         OPENSOLID_CORE_EXPORT
@@ -75,11 +77,21 @@ namespace opensolid
             const BoundedArea2d& domain
         );
 
+        OPENSOLID_CORE_EXPORT
+        ParametricArea2d(
+            const ParametricExpression<Point<2>, Point<2>>& expression,
+            const BoundedArea2d& domain,
+            Handedness handedness
+        );
+
         const ParametricExpression<Point<2>, Point<2>>&
         expression() const;
 
         const BoundedArea2d&
         domain() const;
+
+        Handedness
+        handedness() const;
 
         const Box<2>&
         bounds() const;
@@ -92,36 +104,12 @@ namespace opensolid
         Box<2>
         evaluate(const Box<2>& parameterBounds) const;
 
-        OPENSOLID_CORE_EXPORT
+        template <class TTransformation>
         ParametricArea2d
-        scaledAbout(const Point<2>& point, double scale) const;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricArea2d
-        rotatedAbout(const Point<2>& point, const Matrix<double, 2, 2>& rotationMatrix) const;
-
-        using Transformable<ParametricArea2d, 2>::rotatedAbout;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricArea2d
-        translatedBy(const Vector<double, 2>& vector) const;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricArea2d
-        toLocalIn(const Frame<2>& frame) const;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricArea2d
-        toGlobalFrom(const Frame<2>& frame) const;
+        transformedBy(const TTransformation& transformation) const;
 
         OPENSOLID_CORE_EXPORT
         ParametricSurface3d
-        toGlobalFrom(const Plane3d& plane) const;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricArea2d
-        mirroredAbout(const Point<2>& point, const UnitVector<2>& mirrorDirection) const;
-
-        using Transformable<ParametricArea2d, 2>::mirroredAbout;
+        placedOnto(const Plane3d& plane) const;
     };
 }

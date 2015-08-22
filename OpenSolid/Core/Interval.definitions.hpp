@@ -27,8 +27,7 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Interval.declarations.hpp>
- 
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/NumDimensions.declarations.hpp>
@@ -69,6 +68,9 @@ namespace opensolid
         
         double
         upperBound() const;
+
+        Interval
+        bounds() const;
         
         double
         median() const;
@@ -78,12 +80,6 @@ namespace opensolid
         
         double
         randomValue() const;
-
-        double
-        clamp(double value) const;
-        
-        Interval
-        clamp(Interval interval) const;
         
         double
         interpolated(double value) const;
@@ -355,11 +351,4 @@ namespace opensolid
     OPENSOLID_CORE_EXPORT
     std::ostream&
     operator<<(std::ostream& stream, Interval interval);
-    
-    template <>
-    struct BoundsFunction<Interval>
-    {
-        Interval
-        operator()(Interval interval) const;
-    };
 }

@@ -44,8 +44,7 @@ namespace opensolid
     namespace detail
     {
         template <int iNumDimensions>
-        class LineSegmentBase :
-            public Transformable<LineSegment<iNumDimensions>, iNumDimensions>
+        class LineSegmentBase
         {        
         private:
             Point<iNumDimensions> _vertices[2];
@@ -84,48 +83,11 @@ namespace opensolid
             Vector<double, iNumDimensions>
             vector() const;
 
-            UnitVector<iNumDimensions>
-            normalVector() const;
-
-            Axis<iNumDimensions>
-            axis() const;
-
             Box<iNumDimensions>
             bounds() const;
 
             bool
             operator==(const LineSegment<iNumDimensions>& other) const;
-
-            LineSegment<iNumDimensions>
-            scaledAbout(const Point<iNumDimensions>& point, double scale) const;
-
-            LineSegment<iNumDimensions>
-            rotatedAbout(
-                const Point<iNumDimensions>& point,
-                const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
-            ) const;
-
-            using Transformable<LineSegment<iNumDimensions>, iNumDimensions>::rotatedAbout;
-
-            LineSegment<iNumDimensions>
-            translatedBy(const Vector<double, iNumDimensions>& vector) const;
-
-            LineSegment<iNumDimensions>
-            toLocalIn(const Frame<iNumDimensions>& frame) const;
-
-            LineSegment<iNumDimensions>
-            toGlobalFrom(const Frame<iNumDimensions>& frame) const;
-
-            LineSegment<iNumDimensions>
-            projectedOnto(const Axis<iNumDimensions>& axis) const;
-
-            LineSegment<iNumDimensions>
-            mirroredAbout(
-                const Point<iNumDimensions>& point,
-                const UnitVector<iNumDimensions>& mirrorDirection
-            ) const;
-
-            using Transformable<LineSegment<iNumDimensions>, iNumDimensions>::mirroredAbout;
         };
     }
 }

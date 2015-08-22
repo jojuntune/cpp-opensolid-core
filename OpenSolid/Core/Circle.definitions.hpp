@@ -27,7 +27,6 @@
 #include <OpenSolid/Core/Circle.declarations.hpp>
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Frame.declarations.hpp>
@@ -54,7 +53,7 @@ namespace opensolid
 
     template <>
     class Circle<2> :
-        public Transformable<Circle<2>, 2>,
+        public Transformable<Circle<2>, Point<2>>,
         public Convertible<Circle<2>>
     {
     private:
@@ -86,33 +85,18 @@ namespace opensolid
         double
         radius() const;
 
+        Box<2>
+        bounds() const;
+
+        template <class TTransformation>
         Circle<2>
-        scaledAbout(const Point<2>& point, double scale) const;
-
-        Circle<2>
-        rotatedAbout(const Point<2>& point, const Matrix<double, 2, 2>& rotationMatrix) const;
-
-        using Transformable<Circle<2>, 2>::rotatedAbout;
-
-        Circle<2>
-        translatedBy(const Vector<double, 2>& vector);
-
-        Circle<2>
-        toLocalIn(const Frame<2>& frame) const;
-
-        Circle<2>
-        toGlobalFrom(const Frame<2>& frame) const;
-
-        Circle<3>
-        toGlobalFrom(const Plane3d& plane) const;
+        transformedBy(const TTransformation& transformation) const;
 
         LineSegment<2>
         projectedOnto(const Axis<2>& axis) const;
 
-        Circle<2>
-        mirroredAbout(const Point<2>& point, const UnitVector<2>& mirrorDirection) const;
-
-        using Transformable<Circle<2>, 2>::mirroredAbout;
+        Circle<3>
+        placedOnto(const Plane3d& plane) const;
 
         static Circle<2>
         circumcircle(const Triangle<2>& triangle);
@@ -122,7 +106,7 @@ namespace opensolid
 
     template <>
     class Circle<3> :
-        public Transformable<Circle<3>, 3>,
+        public Transformable<Circle<3>, Point<3>>,
         public Convertible<Circle<3>>
     {
     private:
@@ -162,33 +146,19 @@ namespace opensolid
         double
         radius() const;
 
+        OPENSOLID_CORE_EXPORT
+        Box<3>
+        bounds() const;
+
         Plane3d
         plane() const;
 
         Axis<3>
         axis() const;
 
+        template <class TTransformation>
         Circle<3>
-        scaledAbout(const Point<3>& point, double scale) const;
-
-        Circle<3>
-        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
-
-        using Transformable<Circle<3>, 3>::rotatedAbout;
-
-        Circle<3>
-        translatedBy(const Vector<double, 3>& vector);
-
-        Circle<3>
-        toLocalIn(const Frame<3>& frame) const;
-
-        Circle<3>
-        toGlobalFrom(const Frame<3>& frame) const;
-
-        Circle<3>
-        mirroredAbout(const Point<3>& point, const UnitVector<3>& mirrorDirection) const;
-
-        using Transformable<Circle<3>, 3>::mirroredAbout;
+        transformedBy(const TTransformation& transformation) const;
 
         static Circle<3>
         circumcircle(const Triangle<3>& triangle);

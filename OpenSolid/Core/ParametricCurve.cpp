@@ -108,9 +108,27 @@ namespace opensolid
         }
     }
 
+    ParametricCurve2d
+    ParametricCurve2d::reversed() const {
+        ParametricExpression<double, double> reversedParameter = (
+            domain().upperBound() + domain().lowerBound() - Parameter1d()
+        );
+        return ParametricCurve2d(expression().composed(reversedParameter), domain(), -handedness());
+    }
+
+    ParametricExpression<UnitVector2d, double>
+    ParametricCurve2d::normalVector() const {
+        return handedness().sign() * tangentVector().unitOrthogonal();
+    }
+
+    ParametricExpression<double, double>
+    ParametricCurve2d::curvature() const {
+        return tangentVector().derivative().dot(normalVector());
+    }
+
     ParametricCurve3d
-    ParametricCurve2d::toGlobalFrom(const Plane3d& plane) const {
-        return ParametricCurve3d(expression().toGlobalFrom(plane), domain());
+    ParametricCurve2d::placedOnto(const Plane3d& plane) const {
+        return ParametricCurve3d(expression().placedOnto(plane), domain());
     }
 
     ParametricCurve2d
@@ -274,9 +292,32 @@ namespace opensolid
         return circle(triangle.vertex(0), triangle.vertex(1), triangle.vertex(2));
     }
 
+    ParametricCurve3d
+    ParametricCurve3d::reversed() const {
+        ParametricExpression<double, double> reversedParameter = (
+            domain().upperBound() + domain().lowerBound() - Parameter1d()
+        );
+        return ParametricCurve3d(expression().composed(reversedParameter), domain());
+    }
+
+    ParametricExpression<UnitVector3d, double>
+    ParametricCurve3d::normalVector() const {
+        return tangentVector().derivative().normalized();
+    }
+
+    ParametricExpression<UnitVector3d, double>
+    ParametricCurve3d::binormalVector() const {
+        return tangentVector().cross(normalVector()).implementation();
+    }
+
+    ParametricExpression<double, double>
+    ParametricCurve3d::curvature() const {
+        return tangentVector().derivative().norm() / expression().derivative().norm();
+    }
+
     ParametricCurve2d
-    ParametricCurve3d::toLocalIn(const Plane3d& plane) const {
-        return ParametricCurve2d(expression().toLocalIn(plane), domain());
+    ParametricCurve3d::projectedInto(const Plane3d& plane) const {
+        return ParametricCurve2d(expression().projectedInto(plane), domain());
     }
 
     ParametricCurve3d
@@ -314,9 +355,9 @@ namespace opensolid
         return ParametricCurve2d::arc(
             Point2d::origin(),
             COUNTERCLOCKWISE,
-            startPoint.toLocalIn(plane),
-            endPoint.toLocalIn(plane)
-        ).toGlobalFrom(plane);
+            startPoint.projectedInto(plane),
+            endPoint.projectedInto(plane)
+        ).placedOnto(plane);
     }
 
     ParametricCurve3d
@@ -388,9 +429,9 @@ namespace opensolid
         return ParametricCurve2d::arc(
             radius,
             COUNTERCLOCKWISE,
-            startPoint.toLocalIn(plane),
-            endPoint.toLocalIn(plane)
-        ).toGlobalFrom(plane);
+            startPoint.projectedInto(plane),
+            endPoint.projectedInto(plane)
+        ).placedOnto(plane);
     }
 
     ParametricCurve3d
@@ -407,10 +448,10 @@ namespace opensolid
         }
         Plane3d plane(innerPoint, normalVector);
         return ParametricCurve2d::arc(
-            startPoint.toLocalIn(plane),
-            innerPoint.toLocalIn(plane),
-            endPoint.toLocalIn(plane)
-        ).toGlobalFrom(plane);
+            startPoint.projectedInto(plane),
+            innerPoint.projectedInto(plane),
+            endPoint.projectedInto(plane)
+        ).placedOnto(plane);
     }
 
     ParametricCurve3d
@@ -488,9 +529,9 @@ namespace opensolid
         return ParametricCurve2d::circle(
             radius,
             COUNTERCLOCKWISE,
-            startPoint.toLocalIn(plane),
-            secondPoint.toLocalIn(plane)
-        ).toGlobalFrom(plane);   
+            startPoint.projectedInto(plane),
+            secondPoint.projectedInto(plane)
+        ).placedOnto(plane);   
     }
 
     ParametricCurve3d
@@ -507,10 +548,10 @@ namespace opensolid
         }
         Plane3d plane(secondPoint, normalVector);
         return ParametricCurve2d::arc(
-            startPoint.toLocalIn(plane),
-            secondPoint.toLocalIn(plane),
-            thirdPoint.toLocalIn(plane)
-        ).toGlobalFrom(plane);
+            startPoint.projectedInto(plane),
+            secondPoint.projectedInto(plane),
+            thirdPoint.projectedInto(plane)
+        ).placedOnto(plane);
     }
 
     ParametricCurve3d

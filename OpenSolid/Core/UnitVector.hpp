@@ -28,48 +28,87 @@
 
 #include <OpenSolid/Core/UnitVector.definitions.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/Quaternion.hpp>
+#include <OpenSolid/Core/Plane.hpp>
+#include <OpenSolid/Core/Sign.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Vector.hpp>
 
 namespace opensolid
 {
     inline
-    UnitVector2d::UnitVector() :
-        Vector2d() {
+    const Vector2d&
+    UnitVector2d::asVector() const {
+        static_assert(
+            sizeof(UnitVector2d) == sizeof(Vector2d),
+            "Unexpected size mismatch between UnitVector2d and Vector2d"
+        );
+        return reinterpret_cast<const Vector2d&>(*this);
+    }
+
+    inline
+    UnitVector2d::UnitVector() {
+    }
+
+    inline
+    UnitVector2d::UnitVector(int index) :
+        detail::CartesianBase<double, 2>(int(index == 0), int(index == 1)) {
     }
 
     inline
     UnitVector2d::UnitVector(double x, double y) :
-        Vector2d(x, y) {
+        detail::CartesianBase<double, 2>(x, y) {
 
-        assert(sqrt(x * x + y * y) - 1.0 == opensolid::Zero());
+        assert(isZero() || sqrt(x * x + y * y) - 1.0 == opensolid::Zero());
     }
 
     inline
     UnitVector2d::UnitVector(const ColumnMatrix2d& components) :
-        Vector2d(components) {
+        detail::CartesianBase<double, 2>(components) {
 
-        assert(sqrt(components.cwiseSquared().sum()) - 1.0 == opensolid::Zero());
+        assert(isZero() || sqrt(x() * x() + y() * y()) - 1.0 == opensolid::Zero());
+    }
+
+    inline
+    UnitVector2d::operator const Vector2d&() const {
+        return asVector();
+    }
+
+    inline
+    bool
+    UnitVector2d::operator==(const Vector2d& vector) const {
+        return asVector() == vector;
+    }
+
+    inline
+    bool
+    UnitVector2d::operator!=(const Vector2d& vector) const {
+        return asVector() != vector;
+    }
+
+    inline
+    bool
+    UnitVector2d::equals(const Vector2d& vector, double precision) const {
+        return asVector().equals(vector, precision);
+    }
+
+    inline
+    IntervalVector2d
+    UnitVector2d::bounds() const {
+        return asVector().bounds();
+    }
+
+    inline
+    bool
+    UnitVector2d::isZero() const {
+        return x() == 0.0 && y() == 0.0;
     }
 
     inline
     double
-    UnitVector2d::norm() const {
-        return 1.0;
-    }
-
-    inline
-    double
-    UnitVector2d::squaredNorm() const {
-        return 1.0;
-    }
-
-    inline
-    UnitVector2d
-    UnitVector2d::normalized() const {
-        return *this;
+    UnitVector2d::dot(const Vector2d& vector) const {
+        return asVector().dot(vector);
     }
 
     inline
@@ -78,117 +117,164 @@ namespace opensolid
         return UnitVector2d(-y(), x());
     }
 
+    template <class TTransformation>
     inline
     UnitVector2d
-    UnitVector2d::rotatedBy(double angle) const {
-        return rotatedBy(Quaternion2d(angle).rotationMatrix());
+    UnitVector2d::transformedBy(const TTransformation& transformation) const {
+        return transformation.transform(*this);
     }
 
-    inline
-    UnitVector2d
-    UnitVector2d::rotatedBy(const Matrix2d& rotationMatrix) const {
-        return UnitVector2d(rotationMatrix * components());
-    }
-
-    inline
-    UnitVector2d
-    UnitVector2d::toLocalIn(const Frame2d& frame) const {
-        return UnitVector2d(frame.basisMatrix().transposeProduct(components()));
-    }
-
-    inline
-    UnitVector2d
-    UnitVector2d::toGlobalFrom(const Frame2d& frame) const {
-        return UnitVector2d(frame.basisMatrix() * components());
+    inline    
+    Vector2d
+    UnitVector2d::projectedOnto(const Axis2d& axis) const {
+        return asVector().projectedOnto(axis);
     }
 
     inline
     UnitVector3d
-    UnitVector2d::toGlobalFrom(const Plane3d& plane) const {
+    UnitVector2d::placedOnto(const Plane3d& plane) const {
         return UnitVector3d(plane.basisMatrix() * components());
     }
 
     inline
     UnitVector2d
-    UnitVector2d::mirroredAlong(const UnitVector2d& mirrorDirection) const {
-        return UnitVector2d(
-            (*this - 2 * this->dot(mirrorDirection) * mirrorDirection).components()
-        );
+    UnitVector2d::X() {
+        return UnitVector2d(1.0, 0.0);
     }
 
     inline
     UnitVector2d
-    UnitVector2d::mirroredAbout(const Axis2d& axis) const {
-        return mirroredAlong(axis.normalVector());
+    UnitVector2d::Y() {
+        return UnitVector2d(0.0, 1.0);
     }
 
     inline
-    UnitVector3d::UnitVector() :
-        Vector3d() {
+    const Vector3d&
+    UnitVector3d::asVector() const {
+        static_assert(
+            sizeof(UnitVector3d) == sizeof(Vector3d),
+            "Unexpected size mismatch between UnitVector3d and Vector3d"
+        );
+        return reinterpret_cast<const Vector3d&>(*this);
+    }
+
+    inline
+    UnitVector3d::UnitVector() {
+    }
+
+    inline
+    UnitVector3d::UnitVector(int index) :
+        detail::CartesianBase<double, 3>(int(index == 0), int(index == 1), int(index == 2)) {
     }
 
     inline
     UnitVector3d::UnitVector(double x, double y, double z) :
-        Vector3d(x, y, z) {
+        detail::CartesianBase<double, 3>(x, y, z) {
 
-        assert(sqrt(x * x + y * y + z * z) - 1.0 == opensolid::Zero());
+        assert(isZero() || sqrt(x * x + y * y + z * z) - 1.0 == opensolid::Zero());
     }
 
     inline
     UnitVector3d::UnitVector(const ColumnMatrix3d& components) :
-        Vector3d(components) {
+        detail::CartesianBase<double, 3>(components) {
 
-        assert(sqrt(components.cwiseSquared().sum()) - 1.0 == opensolid::Zero());
+        assert(isZero() || sqrt(x() * x() + y() * y() + z() * z()) - 1.0 == opensolid::Zero());
+    }
+
+    inline
+    UnitVector3d::operator const Vector3d&() const {
+        return asVector();
+    }
+
+    inline
+    bool
+    UnitVector3d::operator==(const Vector3d& vector) const {
+        return asVector() == vector;
+    }
+
+    inline
+    bool
+    UnitVector3d::operator!=(const Vector3d& vector) const {
+        return asVector() != vector;
+    }
+
+    inline
+    bool
+    UnitVector3d::equals(const Vector3d& vector, double precision) const {
+        return asVector().equals(vector, precision);
+    }
+
+    inline
+    IntervalVector3d
+    UnitVector3d::bounds() const {
+        return asVector().bounds();
+    }
+
+    inline
+    bool
+    UnitVector3d::isZero() const {
+        return x() == 0.0 && y() == 0.0 && z() == 0.0;
     }
 
     inline
     double
-    UnitVector3d::norm() const {
-        return 1.0;
+    UnitVector3d::dot(const Vector3d& vector) const {
+        return asVector().dot(vector);
     }
 
     inline
-    double
-    UnitVector3d::squaredNorm() const {
-        return 1.0;
-    }
-
-    inline
-    UnitVector3d
-    UnitVector3d::normalized() const {
-        return *this;
+    Vector3d
+    UnitVector3d::cross(const Vector3d& vector) const {
+        return asVector().cross(vector);
     }
 
     inline
     UnitVector3d
-    UnitVector3d::rotatedBy(const Matrix3d& rotationMatrix) const {
-        return UnitVector3d(rotationMatrix * components());
+    UnitVector3d::unitOrthogonal() const {
+        return asVector().unitOrthogonal();
+    }
+
+    template <class TTransformation>
+    inline
+    UnitVector3d
+    UnitVector3d::transformedBy(const TTransformation& transformation) const {
+        return transformation.transform(*this);
+    }
+
+    inline
+    Vector3d
+    UnitVector3d::projectedOnto(const Axis<3>& axis) const {
+        return asVector().projectedOnto(axis);
+    }
+
+    inline
+    Vector3d
+    UnitVector3d::projectedOnto(const Plane3d& plane) const {
+        return asVector().projectedOnto(plane);
+    }
+
+    inline
+    Vector2d
+    UnitVector3d::projectedInto(const Plane3d& plane) const {
+        return asVector().projectedInto(plane);
     }
 
     inline
     UnitVector3d
-    UnitVector3d::toLocalIn(const Frame3d& frame) const {
-        return UnitVector3d(frame.basisMatrix().transposeProduct(components()));
+    UnitVector3d::X() {
+        return UnitVector3d(1.0, 0.0, 0.0);
     }
 
     inline
     UnitVector3d
-    UnitVector3d::toGlobalFrom(const Frame3d& frame) const {
-        return UnitVector3d(frame.basisMatrix() * components());
+    UnitVector3d::Y() {
+        return UnitVector3d(0.0, 1.0, 0.0);
     }
 
     inline
     UnitVector3d
-    UnitVector3d::mirroredAlong(const UnitVector3d& mirrorDirection) const {
-        return UnitVector3d(
-            (*this - 2 * this->dot(mirrorDirection) * mirrorDirection).components()
-        );
-    }
-
-    inline
-    UnitVector3d
-    UnitVector3d::mirroredAbout(const Plane3d& plane) const {
-        return mirroredAlong(plane.normalVector());
+    UnitVector3d::Z() {
+        return UnitVector3d(0.0, 0.0, 1.0);
     }
 
     inline
@@ -201,5 +287,101 @@ namespace opensolid
     UnitVector3d
     operator-(const UnitVector3d& unitVector) {
         return UnitVector3d(-unitVector.x(), -unitVector.y(), -unitVector.z());
+    }
+
+    inline
+    UnitVector2d
+    operator*(Sign sign, const UnitVector2d& unitVector) {
+        return UnitVector2d(sign.value() * unitVector.components());
+    }
+
+    inline
+    UnitVector2d
+    operator*(const UnitVector2d& unitVector, Sign sign) {
+        return UnitVector2d(unitVector.components() * sign.value());
+    }
+
+    inline
+    UnitVector3d
+    operator*(Sign sign, const UnitVector3d& unitVector) {
+        return UnitVector3d(sign.value() * unitVector.components());
+    }
+
+    inline
+    UnitVector3d
+    operator*(const UnitVector3d& unitVector, Sign sign) {
+        return UnitVector3d(unitVector.components() * sign.value());
+    }
+
+    inline
+    Vector2d
+    operator*(double scale, const UnitVector2d& unitVector) {
+        return scale * static_cast<const Vector2d&>(unitVector);
+    }
+
+    inline
+    IntervalVector2d
+    operator*(Interval scale, const UnitVector2d& unitVector) {
+        return scale * static_cast<const Vector2d&>(unitVector);
+    }
+
+    inline
+    Vector2d
+    operator*(const UnitVector2d& unitVector, double scale) {
+        return static_cast<const Vector2d&>(unitVector) * scale;
+    }
+
+    inline
+    IntervalVector2d
+    operator*(const UnitVector2d& unitVector, Interval scale) {
+        return static_cast<const Vector2d&>(unitVector) * scale;
+    }
+
+    inline
+    Vector3d
+    operator*(double scale, const UnitVector3d& unitVector) {
+        return scale * static_cast<const Vector3d&>(unitVector);
+    }
+
+    inline
+    IntervalVector3d
+    operator*(Interval scale, const UnitVector3d& unitVector) {
+        return scale * static_cast<const Vector3d&>(unitVector);
+    }
+
+    inline
+    Vector3d
+    operator*(const UnitVector3d& unitVector, double scale) {
+        return static_cast<const Vector3d&>(unitVector) * scale;
+    }
+
+    inline
+    IntervalVector3d
+    operator*(const UnitVector3d& unitVector, Interval scale) {
+        return static_cast<const Vector3d&>(unitVector) * scale;
+    }
+
+    inline
+    Vector2d
+    operator/(const UnitVector2d& unitVector, double scale) {
+        return static_cast<const Vector2d&>(unitVector) / scale;
+    }
+
+    inline
+    IntervalVector2d
+    operator/(const UnitVector2d& unitVector, Interval scale) {
+        return static_cast<const Vector2d&>(unitVector) / scale;
+    }
+
+    inline
+    Vector3d
+    operator/(const UnitVector3d& unitVector, double scale) {
+        return static_cast<const Vector3d&>(unitVector) / scale;
+    }
+
+    inline
+    IntervalVector3d
+    operator/(const UnitVector3d& unitVector, Interval scale) {
+        return static_cast<const Vector3d&>(unitVector) / scale;
     }
 }

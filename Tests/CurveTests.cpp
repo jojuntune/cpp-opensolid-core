@@ -41,7 +41,7 @@ TEST_CASE("Arc") {
     Point3d endPoint(1, -1, 1);
     ParametricCurve3d arc = ParametricCurve3d::arc(
         centerPoint,
-        Vector3d::unitZ(),
+        UnitVector3d::Z(),
         startPoint,
         endPoint
     );
@@ -61,11 +61,11 @@ TEST_CASE("Arc") {
     REQUIRE((derivative.evaluate(2 / 3.0) - Vector3d(0, -3 * M_PI, 0)).isZero());
     REQUIRE((derivative.evaluate(1) - Vector3d(3 * M_PI, 0, 0)).isZero());
     
-    ParametricExpression<Vector3d, double> tangent = arc.tangentVector();
-    REQUIRE((tangent.evaluate(0) - Vector3d(0, 1, 0)).isZero());
-    REQUIRE((tangent.evaluate(1 / 3.0) - Vector3d(-1, 0, 0)).isZero());
-    REQUIRE((tangent.evaluate(2 / 3.0) - Vector3d(0, -1, 0)).isZero());
-    REQUIRE((tangent.evaluate(1) - Vector3d(1, 0, 0)).isZero());
+    ParametricExpression<UnitVector3d, double> tangent = arc.tangentVector();
+    REQUIRE(tangent.evaluate(0).equals(Vector3d(0, 1, 0)));
+    REQUIRE(tangent.evaluate(1 / 3.0).equals(Vector3d(-1, 0, 0)));
+    REQUIRE(tangent.evaluate(2 / 3.0).equals(Vector3d(0, -1, 0)));
+    REQUIRE(tangent.evaluate(1).equals(Vector3d(1, 0, 0)));
     
     ParametricExpression<Vector3d, double> secondDerivative = (
         arc.expression().derivative().derivative()
@@ -85,15 +85,15 @@ TEST_CASE("Arc") {
     expectedValue = Vector3d(0, secondDerivativeMagnitude, 0);
     REQUIRE((secondDerivative.evaluate(1.0) - expectedValue).isZero());
     
-    ParametricExpression<Vector3d, double> normal = arc.normalVector();
-    REQUIRE((normal.evaluate(0.0) - Vector3d(-1, 0, 0)).isZero());
-    REQUIRE((normal.evaluate(1.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
-    REQUIRE((normal.evaluate(2.0 / 3.0) - Vector3d(1, 0, 0)).isZero());
-    REQUIRE((normal.evaluate(1.0) - Vector3d(0, 1, 0)).isZero());
+    ParametricExpression<UnitVector3d, double> normal = arc.normalVector();
+    REQUIRE(normal.evaluate(0.0).equals(Vector3d(-1, 0, 0)));
+    REQUIRE(normal.evaluate(1.0 / 3.0).equals(Vector3d(0, -1, 0)));
+    REQUIRE(normal.evaluate(2.0 / 3.0).equals(Vector3d(1, 0, 0)));
+    REQUIRE(normal.evaluate(1.0).equals(Vector3d(0, 1, 0)));
 }
 
 TEST_CASE("Full arc") {
-    Axis3d axis(Point3d(0, 3, 3), Vector3d::unitX());
+    Axis3d axis(Point3d(0, 3, 3), UnitVector3d::X());
     Point3d point(1, 3, 1);
     ParametricCurve3d arc = ParametricCurve3d::arc(axis, point, point);
 
@@ -126,10 +126,10 @@ TEST_CASE("Curve operations") {
     Vector3d normalVector = parabola.normalVector().evaluate(1.0);
     Vector3d binormalVector = parabola.binormalVector().evaluate(1.0);
 
-    REQUIRE((tangentVector - Vector3d(1, 2, 0).normalized()).isZero());
+    REQUIRE(tangentVector.equals(Vector3d(1, 2, 0).normalized()));
     REQUIRE((curvature - 2 / (5 * sqrt(5.0))) == Zero());
-    REQUIRE((normalVector - Vector3d(-2, 1, 0).normalized()).isZero());
-    REQUIRE((binormalVector - Vector3d(0, 0, 1)).isZero());
+    REQUIRE(normalVector.equals(Vector3d(-2, 1, 0).normalized()));
+    REQUIRE(binormalVector.equals(Vector3d(0, 0, 1)));
 
     ParametricCurve3d reversed = parabola.reversed();
     REQUIRE((reversed.evaluate(-1.0) - Point3d(1, 1, 0)).isZero());

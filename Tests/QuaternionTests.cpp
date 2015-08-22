@@ -67,8 +67,8 @@ namespace opensolid
 
 TEST_CASE("Composite rotation 3D") {
     double inclinationAngle = acos(sqrt(2.0 / 3.0));
-    Quaternion3d quaternion = Quaternion3d(Vector3d::unitZ(), M_PI / 4) *
-        Quaternion3d(Vector3d::unitY(), -inclinationAngle);
+    Quaternion3d quaternion = Quaternion3d(UnitVector3d::Z(), M_PI / 4) *
+        Quaternion3d(UnitVector3d::Y(), -inclinationAngle);
     Frame3d frame(
         Point3d::origin(),
         Vector3d(1, 1, 1).normalized(),
@@ -85,7 +85,7 @@ TEST_CASE("Angle extraction 2D") {
 
 TEST_CASE("Angle and unit vector extraction 3D") {
     for (int i = 0; i < 100; ++i) {
-        UnitVector3d unitVector = Vector3d::unitRandom();
+        UnitVector3d unitVector = UnitVector3d::random();
         double angle = Interval(-3 * M_PI / 4, 3 * M_PI / 4).randomValue();
         Quaternion3d quaternion = Quaternion3d(unitVector, angle);
         UnitVector3d extractedUnitVector = quaternion.unitVector();
@@ -100,7 +100,7 @@ TEST_CASE("Angle and unit vector extraction 3D") {
         CAPTURE(extractedAngle);
         CAPTURE(extractedUnitVector);
         REQUIRE((extractedAngle - angle) == Zero());
-        REQUIRE((extractedUnitVector - unitVector).isZero());
+        REQUIRE(extractedUnitVector.equals(unitVector));
     }
 }
 
@@ -127,7 +127,7 @@ TEST_CASE("Slerp 2D") {
 TEST_CASE("Slerp 3D") {
     Quaternion3d initial = Quaternion3d::identity();
     Quaternion3d final =
-        Quaternion3d(Vector3d::unitZ(), M_PI / 2) * Quaternion3d(Vector3d::unitX(), -M_PI / 2);
+        Quaternion3d(UnitVector3d::Z(), M_PI / 2) * Quaternion3d(UnitVector3d::X(), -M_PI / 2);
     Quaternion3d relative = final * initial.inverse();
     UnitVector3d directionVector = relative.unitVector();
     CAPTURE(relative.unitVector())
@@ -148,13 +148,13 @@ TEST_CASE("Slerp 3D") {
         Vector3d yBasisVector = Vector3d(rotationMatrix.column(1));
         Vector3d zBasisVector = Vector3d(rotationMatrix.column(2));
         REQUIRE(
-            (xBasisVector - Vector3d::unitX().rotatedAbout(directionVector, angle * 0.5)).isZero()
+            xBasisVector.equals(UnitVector3d::X().rotatedAbout(directionVector, angle * 0.5))
         );
         REQUIRE(
-            (yBasisVector - Vector3d::unitY().rotatedAbout(directionVector, angle * 0.5)).isZero()
+            yBasisVector.equals(UnitVector3d::Y().rotatedAbout(directionVector, angle * 0.5))
         );
         REQUIRE(
-            (zBasisVector - Vector3d::unitZ().rotatedAbout(directionVector, angle * 0.5)).isZero()
+            zBasisVector.equals(UnitVector3d::Z().rotatedAbout(directionVector, angle * 0.5))
         );
     }
 
@@ -164,9 +164,9 @@ TEST_CASE("Slerp 3D") {
         Vector3d xBasisVector = Vector3d(rotationMatrix.column(0));
         Vector3d yBasisVector = Vector3d(rotationMatrix.column(1));
         Vector3d zBasisVector = Vector3d(rotationMatrix.column(2));
-        REQUIRE((xBasisVector - Vector3d::unitY()).isZero());
-        REQUIRE((yBasisVector + Vector3d::unitZ()).isZero());
-        REQUIRE((zBasisVector + Vector3d::unitX()).isZero());
+        REQUIRE(xBasisVector.equals(UnitVector3d::Y()));
+        REQUIRE(yBasisVector.equals(-UnitVector3d::Z()));
+        REQUIRE(zBasisVector.equals(-UnitVector3d::X()));
     }
 }
 
@@ -245,8 +245,8 @@ TEST_CASE("Degenerate slerp 2D") {
 }
 
 TEST_CASE("Degenerate slerp 3D") {
-    Quaternion3d initial = Quaternion3d(Vector3d::unitZ(), -M_PI);
-    Quaternion3d final = Quaternion3d(Vector3d::unitZ(), M_PI);
+    Quaternion3d initial = Quaternion3d(UnitVector3d::Z(), -M_PI);
+    Quaternion3d final = Quaternion3d(UnitVector3d::Z(), M_PI);
     CAPTURE(initial.dot(final));
 
     SECTION("0.0") {
@@ -281,7 +281,7 @@ TEST_CASE("Degenerate slerp 3D") {
 }
 
 TEST_CASE("Conversion") {
-    Quaternion3d quaternion = Quaternion3d(Vector3d::unitX(), M_PI / 2);
+    Quaternion3d quaternion = Quaternion3d(UnitVector3d::X(), M_PI / 2);
     MyQuat myQuat = quaternion.to<MyQuat>();
     REQUIRE((myQuat.x - 1 / sqrt(2.0)) == Zero());
     REQUIRE(myQuat.y == Zero());

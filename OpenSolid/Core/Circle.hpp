@@ -27,7 +27,6 @@
 #include <OpenSolid/Core/Circle.definitions.hpp>
 
 #include <OpenSolid/Core/Axis.hpp>
-#include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Plane.hpp>
@@ -65,39 +64,28 @@ namespace opensolid
     }
 
     inline
-    Circle2d
-    Circle2d::scaledAbout(const Point2d& point, double scale) const {
-        return Circle2d(centerPoint().scaledAbout(point, scale), scale * radius());
+    Box2d
+    Circle2d::bounds() const {
+        return Box2d(
+            Interval(centerPoint().x() - radius(), centerPoint().x() + radius()),
+            Interval(centerPoint().y() - radius(), centerPoint().y() + radius())
+        );
     }
 
+    template <class TTransformation>
     inline
     Circle2d
-    Circle2d::rotatedAbout(const Point2d& point, const Matrix2d& rotationMatrix) const {
-        return Circle2d(centerPoint().rotatedAbout(point, rotationMatrix), radius());
-    }
-
-    inline
-    Circle2d
-    Circle2d::translatedBy(const Vector2d& vector) {
-        return Circle2d(centerPoint().translatedBy(vector), radius());
-    }
-
-    inline
-    Circle2d
-    Circle2d::toLocalIn(const Frame2d& frame) const {
-        return Circle2d(centerPoint().toLocalIn(frame), radius());
-    }
-
-    inline
-    Circle2d
-    Circle2d::toGlobalFrom(const Frame2d& frame) const {
-        return Circle2d(centerPoint().toGlobalFrom(frame), radius());
+    Circle2d::transformedBy(const TTransformation& transformation) const {
+        return Circle2d(
+            centerPoint().transformedBy(transformation),
+            transformation.scale() * radius()
+        );
     }
 
     inline
     Circle3d
-    Circle2d::toGlobalFrom(const Plane3d& plane) const {
-        return Circle3d(centerPoint().toGlobalFrom(plane), plane.normalVector(), radius());
+    Circle2d::placedOnto(const Plane3d& plane) const {
+        return Circle3d(centerPoint().placedOnto(plane), plane.normalVector(), radius());
     }
 
     inline
@@ -106,12 +94,6 @@ namespace opensolid
         Point2d projectedCenter = centerPoint().projectedOnto(axis);
         Vector2d offset = radius() * axis.directionVector();
         return LineSegment2d(projectedCenter - offset, projectedCenter + offset);
-    }
-
-    inline
-    Circle2d
-    Circle2d::mirroredAbout(const Point2d& point, const UnitVector2d& mirrorDirection) const {
-        return Circle2d(centerPoint().mirroredAbout(point, mirrorDirection), radius());
     }
 
     inline
@@ -174,66 +156,25 @@ namespace opensolid
     }
 
     inline
-    Axis3d
-    Circle3d::axis() const {
-        return Axis3d(centerPoint(), normalVector());
-    }
-
-    inline
     Plane3d
     Circle3d::plane() const {
         return Plane3d(centerPoint(), normalVector());
     }
 
     inline
-    Circle3d
-    Circle3d::scaledAbout(const Point3d& point, double scale) const {
-        return Circle3d(centerPoint().scaledAbout(point, scale), normalVector(), scale * radius());
+    Axis3d
+    Circle3d::axis() const {
+        return Axis3d(centerPoint(), normalVector());
     }
 
+    template <class TTransformation>
     inline
     Circle3d
-    Circle3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
+    Circle3d::transformedBy(const TTransformation& transformation) const {
         return Circle3d(
-            centerPoint().rotatedAbout(point, rotationMatrix),
-            normalVector().rotatedBy(rotationMatrix),
-            radius()
-        );
-    }
-
-    inline
-    Circle3d
-    Circle3d::translatedBy(const Vector3d& vector) {
-        return Circle3d(centerPoint().translatedBy(vector), normalVector(), radius());
-    }
-
-    inline
-    Circle3d
-    Circle3d::toLocalIn(const Frame3d& frame) const {
-        return Circle3d(
-            centerPoint().toLocalIn(frame),
-            normalVector().toLocalIn(frame),
-            radius()
-        );
-    }
-
-    inline
-    Circle3d
-    Circle3d::toGlobalFrom(const Frame3d& frame) const {
-        return Circle3d(
-            centerPoint().toGlobalFrom(frame),
-            normalVector().toGlobalFrom(frame),
-            radius()
-        );
-    }
-
-    inline
-    Circle3d
-    Circle3d::mirroredAbout(const Point3d& point, const UnitVector3d& mirrorDirection) const {
-        return Circle3d(
-            centerPoint().mirroredAbout(point, mirrorDirection),
-            normalVector().mirroredAlong(mirrorDirection),
-            radius()
+            centerPoint().transformedBy(transformation),
+            normalVector().transformedBy(transformation),
+            transformation.scale() * radius()
         );
     }
 

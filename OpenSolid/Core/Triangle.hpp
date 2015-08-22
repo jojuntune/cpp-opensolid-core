@@ -28,7 +28,6 @@
 
 #include <OpenSolid/Core/Triangle.definitions.hpp>
 
-#include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/BoundsType.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
@@ -36,6 +35,7 @@
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Simplex/TriangleBase.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 
 #include <utility>
 
@@ -63,22 +63,48 @@ namespace opensolid
         const Point2d& firstVertex,
         const Point2d& secondVertex,
         const Point2d& thirdVertex
-    ) : detail::TriangleBase<2>(firstVertex, secondVertex, thirdVertex) {
+    ) : detail::TriangleBase<2>(
+            firstVertex,
+            secondVertex,
+            thirdVertex,
+            Handedness::RIGHT_HANDED()
+        ) {
+    }
+
+    inline
+    Triangle2d::Triangle(
+        const Point2d& firstVertex,
+        const Point2d& secondVertex,
+        const Point2d& thirdVertex,
+        Handedness handedness
+    ) : detail::TriangleBase<2>(firstVertex, secondVertex, thirdVertex, handedness) {
+    }
+
+    inline
+    LineSegment2d
+    Triangle2d::edge(int oppositeIndex) const {
+        assert(oppositeIndex >= 0 && oppositeIndex < 3);
+        return LineSegment2d(
+            vertex((oppositeIndex + 2) % 3),
+            vertex((oppositeIndex + 1) % 3),
+            handedness()
+        );
     }
 
     inline
     double
     Triangle2d::area() const {
-        return 0.5 * detail::crossProduct2d(vertex(0), vertex(1), vertex(2));
+        return handedness().sign() * 0.5 * detail::crossProduct2d(vertex(0), vertex(1), vertex(2));
     }
 
     inline
     Triangle3d
-    Triangle2d::toGlobalFrom(const Plane3d& plane) const {
+    Triangle2d::placedOnto(const Plane3d& plane) const {
         return Triangle3d(
-            vertex(0).toGlobalFrom(plane),
-            vertex(1).toGlobalFrom(plane),
-            vertex(2).toGlobalFrom(plane)
+            vertex(0).placedOnto(plane),
+            vertex(1).placedOnto(plane),
+            vertex(2).placedOnto(plane),
+            handedness()
         );
     }
 
@@ -91,16 +117,41 @@ namespace opensolid
         const Point3d& firstVertex,
         const Point3d& secondVertex,
         const Point3d& thirdVertex
-    ) : detail::TriangleBase<3>(firstVertex, secondVertex, thirdVertex) {
+    ) : detail::TriangleBase<3>(
+            firstVertex,
+            secondVertex,
+            thirdVertex,
+            Handedness::RIGHT_HANDED()
+        ) {
+    }
+
+    inline
+    Triangle3d::Triangle(
+        const Point3d& firstVertex,
+        const Point3d& secondVertex,
+        const Point3d& thirdVertex,
+        Handedness handedness
+    ) : detail::TriangleBase<3>(firstVertex, secondVertex, thirdVertex, handedness) {
+    }
+
+    inline
+    LineSegment3d
+    Triangle3d::edge(int oppositeIndex) const {
+        assert(oppositeIndex >= 0 && oppositeIndex < 3);
+        return LineSegment3d(
+            vertex((oppositeIndex + 2) % 3),
+            vertex((oppositeIndex + 1) % 3)
+        );
     }
 
     inline
     Triangle2d
-    Triangle3d::toLocalIn(const Plane3d& plane) const {
+    Triangle3d::projectedInto(const Plane3d& plane) const {
         return Triangle2d(
-            vertex(0).toLocalIn(plane),
-            vertex(1).toLocalIn(plane),
-            vertex(2).toLocalIn(plane)
+            vertex(0).projectedInto(plane),
+            vertex(1).projectedInto(plane),
+            vertex(2).projectedInto(plane),
+            handedness() * plane.handedness()
         );
     }
 
@@ -110,7 +161,8 @@ namespace opensolid
         return Triangle3d(
             vertex(0).projectedOnto(plane),
             vertex(1).projectedOnto(plane),
-            vertex(2).projectedOnto(plane)
+            vertex(2).projectedOnto(plane),
+            handedness()
         );
     }
 
@@ -124,7 +176,8 @@ namespace opensolid
         return (
             equalityFunction(firstTriangle.vertex(0), secondTriangle.vertex(0), precision) &&
             equalityFunction(firstTriangle.vertex(1), secondTriangle.vertex(1), precision) &&
-            equalityFunction(firstTriangle.vertex(2), secondTriangle.vertex(2), precision)
+            equalityFunction(firstTriangle.vertex(2), secondTriangle.vertex(2), precision) &&
+            firstTriangle.handedness() == secondTriangle.handedness()
         );
     }
 }

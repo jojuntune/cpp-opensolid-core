@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/BoundedVolume.definitions.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.definitions.hpp>
+#include <OpenSolid/Core/Handedness.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
@@ -52,11 +53,12 @@ namespace opensolid
     };
 
     class ParametricVolume3d :
-        public Transformable<ParametricVolume3d, 3>
+        public Transformable<ParametricVolume3d, Point<3>>
     {
     private:
         ParametricExpression<Point<3>, Point<3>> _expression;
         BoundedVolume3d _domain;
+        Handedness _handedness;
         Box<3> _bounds;
     public:
         OPENSOLID_CORE_EXPORT
@@ -74,11 +76,21 @@ namespace opensolid
             const BoundedVolume3d& domain
         );
 
+        OPENSOLID_CORE_EXPORT
+        ParametricVolume3d(
+            const ParametricExpression<Point<3>, Point<3>>& expression,
+            const BoundedVolume3d& domain,
+            Handedness handedness
+        );
+
         const ParametricExpression<Point<3>, Point<3>>&
         expression() const;
 
         const BoundedVolume3d&
         domain() const;
+
+        Handedness
+        handedness() const;
 
         const Box<3>&
         bounds() const;
@@ -91,32 +103,8 @@ namespace opensolid
         Box<3>
         evaluate(const Box<3>& parameterBounds) const;
 
-        OPENSOLID_CORE_EXPORT
+        template <class TTransformation>
         ParametricVolume3d
-        scaledAbout(const Point<3>& point, double scale) const;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricVolume3d
-        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
-
-        using Transformable<ParametricVolume3d, 3>::rotatedAbout;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricVolume3d
-        translatedBy(const Vector<double, 3>& vector) const;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricVolume3d
-        toLocalIn(const Frame<3>& frame) const;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricVolume3d
-        toGlobalFrom(const Frame<3>& frame) const;
-
-        OPENSOLID_CORE_EXPORT
-        ParametricVolume3d
-        mirroredAbout(const Point<3>& point, const UnitVector<3>& mirrorDirection) const;
-
-        using Transformable<ParametricVolume3d, 3>::mirroredAbout;
+        transformedBy(const TTransformation& transformation) const;
     };
 }

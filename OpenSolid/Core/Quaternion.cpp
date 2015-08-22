@@ -39,7 +39,7 @@ namespace opensolid
             double parameterValue
         ) {
             double dotProduct = startQuaternion.dot(endQuaternion);
-            double angle = acos(Interval(-1, 1).clamp(dotProduct));
+            double angle = acos(max(-1.0, min(dotProduct, 1.0)));
             double sinAngle = sin(angle);
             double startCoefficient = 0.0;
             double endCoefficient = 0.0;

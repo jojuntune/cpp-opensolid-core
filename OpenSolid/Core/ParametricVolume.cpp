@@ -28,18 +28,21 @@
 
 namespace opensolid
 {
-    ParametricVolume3d::ParametricVolume3d() {
+    ParametricVolume3d::ParametricVolume3d() :
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     ParametricVolume3d::ParametricVolume3d(const ParametricVolume3d& other) :
         _expression(other.expression()),
         _domain(other.domain()),
+        _handedness(Handedness::RIGHT_HANDED()),
         _bounds(other.bounds()) {
     }
 
     ParametricVolume3d::ParametricVolume3d(ParametricVolume3d&& other) :
         _expression(std::move(other.expression())),
         _domain(other.domain()),
+        _handedness(other.handedness()),
         _bounds(other.bounds()) {
     }
 
@@ -48,6 +51,17 @@ namespace opensolid
         const BoundedVolume3d& domain
     ) : _expression(expression),
         _domain(domain),
+        _handedness(Handedness::RIGHT_HANDED()),
+        _bounds(expression.evaluate(domain.bounds())) {
+    }
+
+    ParametricVolume3d::ParametricVolume3d(
+        const ParametricExpression<Point3d, Point3d>& expression,
+        const BoundedVolume3d& domain,
+        Handedness handedness
+    ) : _expression(expression),
+        _domain(domain),
+        _handedness(handedness),
         _bounds(expression.evaluate(domain.bounds())) {
     }
 
@@ -59,38 +73,5 @@ namespace opensolid
     Box3d
     ParametricVolume3d::evaluate(const Box3d& parameterBounds) const {
         return expression().evaluate(parameterBounds);
-    }
-
-    ParametricVolume3d
-    ParametricVolume3d::scaledAbout(const Point3d& point, double scale) const {
-        return ParametricVolume3d(expression().scaledAbout(point, scale), domain());
-    }
-
-    ParametricVolume3d
-    ParametricVolume3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
-        return ParametricVolume3d(expression().rotatedAbout(point, rotationMatrix), domain());
-    }
-
-    ParametricVolume3d
-    ParametricVolume3d::translatedBy(const Vector3d& vector) const {
-        return ParametricVolume3d(expression().translatedBy(vector), domain());
-    }
-
-    ParametricVolume3d
-    ParametricVolume3d::toLocalIn(const Frame3d& frame) const {
-        return ParametricVolume3d(expression().toLocalIn(frame), domain());
-    }
-
-    ParametricVolume3d
-    ParametricVolume3d::toGlobalFrom(const Frame3d& frame) const {
-        return ParametricVolume3d(expression().toGlobalFrom(frame), domain());
-    }
-
-    ParametricVolume3d
-    ParametricVolume3d::mirroredAbout(
-        const Point3d& point,
-        const UnitVector3d& mirrorDirection
-    ) const {
-        return ParametricVolume3d(expression().mirroredAbout(point, mirrorDirection), domain());
     }
 }

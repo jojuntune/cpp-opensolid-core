@@ -165,19 +165,19 @@ TEST_CASE("Interval vector vertices") {
 TEST_CASE("2D unit orthogonal vector") {
     Vector2d testVector(2, 3);
     UnitVector2d expected(-3 / sqrt(13.0), 2 / sqrt(13.0));
-    REQUIRE((testVector.unitOrthogonal() - expected).isZero());
+    REQUIRE(testVector.unitOrthogonal().equals(expected));
 }
 
 TEST_CASE("3D unit orthogonal vector") {
     SECTION("Simple") {
         Vector3d testVector(4, 3, 0);
         UnitVector3d expected(-0.6, 0.8, 0.0);
-        REQUIRE((testVector.unitOrthogonal() - expected).isZero());
+        REQUIRE(testVector.unitOrthogonal().equals(expected));
     }
     SECTION("Negative components") {
         Vector3d testVector(0, 0, -1);
         UnitVector3d expected(0, 1, 0);
-        REQUIRE((testVector.unitOrthogonal() - expected).isZero());
+        REQUIRE(testVector.unitOrthogonal().equals(expected));
     }
 }
 
@@ -195,12 +195,12 @@ TEST_CASE("Interval vector normalization") {
 TEST_CASE("Unit vector rotation") {
     UnitVector2d original = Vector2d(1, 1).normalized();
     UnitVector2d rotated = original.rotatedBy(M_PI / 4);
-    REQUIRE((rotated - UnitVector2d::unitY()).isZero());
+    REQUIRE(rotated.equals(UnitVector2d::Y()));
 }
 
 TEST_CASE("Unit vector mirroring") {
     UnitVector3d original = Vector3d(4, 5, 6).normalized();
-    UnitVector3d mirrored = original.mirroredAlong(Vector3d::unitX());
+    UnitVector3d mirrored = original.mirroredAlong(UnitVector3d::X());
     REQUIRE((original.x() + mirrored.x()) == Zero());
     REQUIRE((original.y() - mirrored.y()) == Zero());
     REQUIRE((original.z() - mirrored.z()) == Zero());
@@ -215,7 +215,7 @@ TEST_CASE("Unit vector projection") {
 TEST_CASE("Unit vector conversion") {
     SECTION("Conversion from custom type") {
         UnitVector3d from = UnitVector3d::from(MyVector(1, 2, 3));
-        REQUIRE((from - Vector3d(1, 2, 3).normalized()).isZero());
+        REQUIRE(from.equals(Vector3d(1, 2, 3).normalized()));
     }
 
     SECTION("Conversion to custom type") {

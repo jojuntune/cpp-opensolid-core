@@ -32,156 +32,15 @@
 
 namespace opensolid
 {
-    namespace detail
-    {
-        class EdgeMetrics2d
-        {
-        public:
-            EdgeMetrics2d(
-                const Point2d& startVertex,
-                const Point2d& point,
-                const Point2d& endVertex,
-                double squaredTolerance
-            );
-
-            bool
-            isPositive() const;
-
-            bool
-            isStrictlyPositive() const;
-
-            bool
-            isNegative() const;
-
-            bool
-            isStrictlyNegative() const;
-
-            bool
-            isBetweenEndpoints() const;
-        private:
-            double _squaredLength;
-            double _crossProduct;
-            double _perpendicularMetric;
-            double _perpendicularCutoff;
-            double _parallelDotProduct;
-        };
-
-        inline
-        EdgeMetrics2d::EdgeMetrics2d(
-            const Point2d& startVertex,
-            const Point2d& point,
-            const Point2d& endVertex,
-            double squaredTolerance
-        ) {
-            double a1 = point.x() - startVertex.x();
-            double a2 = point.y() - startVertex.y();
-            double b1 = endVertex.x() - startVertex.x();
-            double b2 = endVertex.y() - startVertex.y();
-            _squaredLength = b1 * b1 + b2 * b2;
-            _crossProduct = a1 * b2 - a2 * b1;
-            _perpendicularMetric = _crossProduct * _crossProduct;
-            _perpendicularCutoff = _squaredLength * squaredTolerance;
-            _parallelDotProduct = a1 * b1 + a2 * b2;
-        }
-
-        inline
-        bool
-        EdgeMetrics2d::isPositive() const {
-            return _crossProduct > 0.0;
-        }
-
-        inline
-        bool
-        EdgeMetrics2d::isStrictlyPositive() const {
-            return _crossProduct > 0.0 && _perpendicularMetric > _perpendicularCutoff;
-        }
-
-        inline
-        bool
-        EdgeMetrics2d::isNegative() const {
-            return _crossProduct < 0.0;
-        }
-
-        inline
-        bool
-        EdgeMetrics2d::isStrictlyNegative() const {
-            return _crossProduct < 0.0 && _perpendicularMetric > _perpendicularCutoff;
-        }
-
-        inline
-        bool
-        EdgeMetrics2d::isBetweenEndpoints() const {
-            return _parallelDotProduct >= 0.0 && _parallelDotProduct <= _squaredLength;
-        }
-    }
-
     bool
-    Triangle2d::contains(const Point2d& point, double tolerance) const {
-        if (tolerance == 0.0) {
-            return (
-                detail::crossProduct2d(vertex(0), point, vertex(1)) <= 0.0 &&
-                detail::crossProduct2d(vertex(1), point, vertex(2)) <= 0.0 &&
-                detail::crossProduct2d(vertex(2), point, vertex(0)) <= 0.0
-            );
-        } else if (tolerance > 0.0) {        
-            double squaredTolerance = tolerance * tolerance;
-            detail::EdgeMetrics2d firstMetrics(vertex(0), point, vertex(1), squaredTolerance);
-            if (firstMetrics.isStrictlyPositive()) {
-                std::cout << "first metrics strictly positive" << std::endl;
-                return false;
-            }
-            detail::EdgeMetrics2d secondMetrics(vertex(1), point, vertex(2), squaredTolerance);
-            if (secondMetrics.isStrictlyPositive()) {
-                std::cout << "second metrics strictly positive" << std::endl;
-                return false;
-            }
-            detail::EdgeMetrics2d thirdMetrics(vertex(2), point, vertex(0), squaredTolerance);
-            if (thirdMetrics.isStrictlyPositive()) {
-                std::cout << "third metrics strictly positive" << std::endl;
-                return false;
-            }
-            if (
-                firstMetrics.isNegative() &&
-                secondMetrics.isNegative() &&
-                thirdMetrics.isNegative()
-            ) {
-                return true;
-            }
-            if (
-                ( firstMetrics.isPositive() && firstMetrics.isBetweenEndpoints()) ||
-                (secondMetrics.isPositive() && secondMetrics.isBetweenEndpoints()) ||
-                (thirdMetrics.isPositive() && thirdMetrics.isBetweenEndpoints())
-            ) {
-                return true;
-            }
-            return (
-                (point - vertex(0)).squaredNorm() <= squaredTolerance ||
-                (point - vertex(1)).squaredNorm() <= squaredTolerance ||
-                (point - vertex(2)).squaredNorm() <= squaredTolerance
-            );
-        } else {
-            double squaredTolerance = tolerance * tolerance;
-            return (
-                detail::EdgeMetrics2d(
-                    vertex(0),
-                    point,
-                    vertex(1),
-                    squaredTolerance
-                ).isStrictlyNegative() &&
-                detail::EdgeMetrics2d(
-                    vertex(1),
-                    point,
-                    vertex(2),
-                    squaredTolerance
-                ).isStrictlyNegative() &&
-                detail::EdgeMetrics2d(
-                    vertex(2),
-                    point,
-                    vertex(0),
-                    squaredTolerance
-                ).isStrictlyNegative()
-            );
-        }
+    Triangle2d::contains(const Point2d& point) const {
+        double crossProduct0 = detail::crossProduct2d(vertex(0), point, vertex(1));
+        double crossProduct1 = detail::crossProduct2d(vertex(1), point, vertex(2));
+        double crossProduct2 = detail::crossProduct2d(vertex(2), point, vertex(0));
+        return (
+            (crossProduct0 <= 0.0 && crossProduct1 <= 0.0 && crossProduct2 <= 0.0) ||
+            (crossProduct0 >= 0.0 && crossProduct1 >= 0.0 && crossProduct2 >= 0.0)
+        );
     }
 
     Triangle2d
@@ -199,7 +58,7 @@ namespace opensolid
         static const double epsilon = std::numeric_limits<double>::epsilon();
         Vector3d vector1 = vertex(1) - vertex(0);
         Vector3d vector2 = vertex(2) - vertex(0);
-        Vector3d crossProduct = vector1.cross(vector2);
+        Vector3d crossProduct = handedness().sign() * vector1.cross(vector2);
         double squaredNorm1 = vector1.squaredNorm();
         double squaredNorm2 = vector2.squaredNorm();
         double crossProductSquaredNorm = crossProduct.squaredNorm();

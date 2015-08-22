@@ -29,7 +29,6 @@
 #include <OpenSolid/Core/Vector.declarations.hpp>
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
@@ -37,8 +36,8 @@
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
-#include <OpenSolid/Core/Vector/DoubleVectorBase.definitions.hpp>
 #include <OpenSolid/Core/Vector/IntervalVectorBase.definitions.hpp>
+#include <OpenSolid/Core/Vector/VectorBase.definitions.hpp>
 
 #include <ostream>
 
@@ -58,7 +57,8 @@ namespace opensolid
 
     template <>
     class Vector<double, 2> :
-        public detail::DoubleVectorBase<2>,
+        public detail::VectorBase<double, 2>,
+        public Transformable<Vector<double, 2>, Vector<double, 2>>,
         public Convertible<Vector<double, 2>>
     {
     public:
@@ -69,38 +69,41 @@ namespace opensolid
         explicit
         Vector(const Matrix<double, 2, 1>& components);
 
+        bool
+        operator==(const Vector<double, 2>& other) const;
+
+        bool
+        operator!=(const Vector<double, 2>& other) const;
+
+        bool
+        equals(const Vector<double, 2>& other, double precision = 1e-12) const;
+
+        Vector<Interval, 2>
+        bounds() const;
+
+        UnitVector<2>
+        normalized() const;
+
         UnitVector<2>
         unitOrthogonal() const;
 
+        template <class TTransformation>
         Vector<double, 2>
-        rotatedBy(double angle) const;
+        transformedBy(const TTransformation& transformation) const;
 
-        using DoubleVectorBase<2>::rotatedBy;
+        Vector<double, 2>
+        projectedOnto(const Axis<2>& axis) const;
 
         Vector<double, 3>
-        toGlobalFrom(const Plane3d& plane) const;
-
-        using DoubleVectorBase<2>::toGlobalFrom;
-
-        OPENSOLID_CORE_EXPORT
-        static UnitVector<2>
-        unitRandom();
-
-        static UnitVector<2>
-        unit(int index);
-
-        static UnitVector<2>
-        unitX();
-
-        static UnitVector<2>
-        unitY();
+        placedOnto(const Plane3d& plane) const;
     };
 
     typedef Vector<double, 2> Vector2d;
 
     template <>
     class Vector<double, 3> :
-        public detail::DoubleVectorBase<3>,
+        public detail::VectorBase<double, 3>,
+        public Transformable<Vector<double, 3>, Vector<double, 3>>,
         public Convertible<Vector<double, 3>>
     {
     public:
@@ -111,44 +114,43 @@ namespace opensolid
         explicit
         Vector(const Matrix<double, 3, 1>& components);
 
+        bool
+        operator==(const Vector<double, 3>& other) const;
+
+        bool
+        operator!=(const Vector<double, 3>& other) const;
+
+        bool
+        equals(const Vector<double, 3>& other, double precision = 1e-12) const;
+
+        Vector<Interval, 3>
+        bounds() const;
+
         Vector<double, 3>
         cross(const Vector<double, 3>& other) const;
 
         Vector<Interval, 3>
         cross(const Vector<Interval, 3>& intervalVector) const;
 
+        UnitVector<3>
+        normalized() const;
+
         OPENSOLID_CORE_EXPORT
         UnitVector<3>
         unitOrthogonal() const;
 
+        template <class TTransformation>
         Vector<double, 3>
-        rotatedAbout(const UnitVector<3>& directionVector, double angle) const;
+        transformedBy(const TTransformation& transformation) const;
 
-        Vector<double, 2>
-        toLocalIn(const Plane3d& plane) const;
-
-        using DoubleVectorBase<3>::toLocalIn;
+        Vector<double, 3>
+        projectedOnto(const Axis<3>& axis) const;
 
         Vector<double, 3>
         projectedOnto(const Plane3d& plane) const;
 
-        using DoubleVectorBase<3>::projectedOnto;
-
-        OPENSOLID_CORE_EXPORT
-        static UnitVector<3>
-        unitRandom();
-
-        static UnitVector<3>
-        unit(int index);
-
-        static UnitVector<3>
-        unitX();
-
-        static UnitVector<3>
-        unitY();
-
-        static UnitVector<3>
-        unitZ();
+        Vector<double, 2>
+        projectedInto(const Plane3d& plane) const;
     };
 
     typedef Vector<double, 3> Vector3d;
@@ -165,6 +167,15 @@ namespace opensolid
         Vector(const Matrix<Interval, 2, 1>& components);
 
         Vector(Interval x, Interval y);
+
+        bool
+        operator==(const Vector<Interval, 2>& other) const;
+
+        bool
+        operator!=(const Vector<Interval, 2>& other) const;
+
+        const Vector<Interval, 2>&
+        bounds() const;
     };
 
     typedef Vector<Interval, 2> IntervalVector2d;
@@ -181,6 +192,15 @@ namespace opensolid
 
         explicit
         Vector(const Matrix<Interval, 3, 1>& components);
+
+        bool
+        operator==(const Vector<Interval, 3>& other) const;
+
+        bool
+        operator!=(const Vector<Interval, 3>& other) const;
+
+        const Vector<Interval, 3>&
+        bounds() const;
 
         Vector<Interval, 3>
         cross(const Vector<double, 3>& other) const;
@@ -258,19 +278,5 @@ namespace opensolid
             const Vector<double, iNumDimensions>& secondVector,
             double precision
         ) const;
-    };
-
-    template <int iNumDimensions>
-    struct BoundsFunction<Vector<double, iNumDimensions>>
-    {
-        Vector<Interval, iNumDimensions>
-        operator()(const Vector<double, iNumDimensions>& vector) const;
-    };
-
-    template <int iNumDimensions>
-    struct BoundsFunction<Vector<Interval, iNumDimensions>>
-    {
-        const Vector<Interval, iNumDimensions>&
-        operator()(const Vector<Interval, iNumDimensions>& vector) const;
     };
 }

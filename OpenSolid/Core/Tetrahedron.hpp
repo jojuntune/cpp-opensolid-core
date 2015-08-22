@@ -29,11 +29,11 @@
 #include <OpenSolid/Core/Tetrahedron.definitions.hpp>
 
 #include <OpenSolid/Core/Axis.hpp>
-#include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/Frame.hpp>
+#include <OpenSolid/Core/Handedness.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
@@ -49,7 +49,8 @@
 namespace opensolid
 {
     inline
-    Tetrahedron3d::Tetrahedron3d() {
+    Tetrahedron3d::Tetrahedron3d() :
+    _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     inline
@@ -58,7 +59,23 @@ namespace opensolid
         const Point3d& secondVertex,
         const Point3d& thirdVertex,
         const Point3d& fourthVertex
-    ) {
+    ) : _handedness(Handedness::RIGHT_HANDED()) {
+
+        _vertices[0] = firstVertex;
+        _vertices[1] = secondVertex;
+        _vertices[2] = thirdVertex;
+        _vertices[3] = fourthVertex;
+    }
+
+    inline
+    Tetrahedron3d::Tetrahedron3d(
+        const Point3d& firstVertex,
+        const Point3d& secondVertex,
+        const Point3d& thirdVertex,
+        const Point3d& fourthVertex,
+        Handedness handedness
+    ) : _handedness(handedness) {
+
         _vertices[0] = firstVertex;
         _vertices[1] = secondVertex;
         _vertices[2] = thirdVertex;
@@ -77,6 +94,12 @@ namespace opensolid
     Tetrahedron3d::vertex(int index) {
         assert(index >= 0 && index < 4);
         return _vertices[index];
+    }
+
+    inline
+    Handedness
+    Tetrahedron3d::handedness() const {
+        return _handedness;
     }
 
     inline
@@ -110,7 +133,20 @@ namespace opensolid
             vertex(0) == other.vertex(0) &&
             vertex(1) == other.vertex(1) &&
             vertex(2) == other.vertex(2) &&
-            vertex(3) == other.vertex(3)
+            vertex(3) == other.vertex(3) &&
+            handedness() == other.handedness()
+        );
+    }
+
+    template <class TTransformation>
+    Tetrahedron3d
+    Tetrahedron3d::transformedBy(const TTransformation& transformation) const {
+        return Tetrahedron3d(
+            vertex(0).transformedBy(transformation),
+            vertex(1).transformedBy(transformation),
+            vertex(2).transformedBy(transformation),
+            vertex(3).transformedBy(transformation),
+            handedness().transformedBy(transformation)
         );
     }
 
@@ -125,7 +161,8 @@ namespace opensolid
             equalityFunction(firstTetrahedron.vertex(0), secondTetrahedron.vertex(0), precision) &&
             equalityFunction(firstTetrahedron.vertex(1), secondTetrahedron.vertex(1), precision) &&
             equalityFunction(firstTetrahedron.vertex(2), secondTetrahedron.vertex(2), precision) &&
-            equalityFunction(firstTetrahedron.vertex(3), secondTetrahedron.vertex(3), precision)
+            equalityFunction(firstTetrahedron.vertex(3), secondTetrahedron.vertex(3), precision) &&
+            firstTetrahedron.handedness() == secondTetrahedron.handedness()
         );
     }
 }

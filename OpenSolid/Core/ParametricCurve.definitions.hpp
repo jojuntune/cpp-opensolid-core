@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.definitions.hpp>
+#include <OpenSolid/Core/Handedness.definitions.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricCurve/ParametricCurveBase.definitions.hpp>
@@ -58,11 +59,13 @@ namespace opensolid
 
     template <>
     class ParametricCurve<2> :
-        public detail::ParametricCurveBase<2>
+        public detail::ParametricCurveBase<2>,
+        public Transformable<ParametricCurve<2>, Point<2>>
     {
     private:
         ParametricExpression<Point<2>, double> _expression;
         Interval _domain;
+        Handedness _handedness;
         Box<2> _bounds;
     public:
         ParametricCurve();
@@ -73,11 +76,34 @@ namespace opensolid
 
         ParametricCurve(const ParametricExpression<Point<2>, double>& expression, Interval domain);
 
+        ParametricCurve(
+            const ParametricExpression<Point<2>, double>& expression,
+            Interval domain,
+            Handedness handedness
+        );
+
+        Handedness
+        handedness() const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricCurve<2>
+        reversed() const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricExpression<UnitVector<2>, double>
+        normalVector() const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricExpression<double, double>
+        curvature() const;
+
+        template <class TTransformation>
+        ParametricCurve<2>
+        transformedBy(const TTransformation& transformation) const;
+
         OPENSOLID_CORE_EXPORT
         ParametricCurve<3>
-        toGlobalFrom(const Plane3d& plane) const;
-
-        using detail::ParametricCurveBase<2>::toGlobalFrom;
+        placedOnto(const Plane3d& plane) const;
 
         ///// Arcs /////
         //
@@ -184,7 +210,8 @@ namespace opensolid
 
     template <>
     class ParametricCurve<3> :
-        public detail::ParametricCurveBase<3>
+        public detail::ParametricCurveBase<3>,
+        public Transformable<ParametricCurve<3>, Point<3>>
     {
     private:
         ParametricExpression<Point<3>, double> _expression;
@@ -203,10 +230,28 @@ namespace opensolid
         );
 
         OPENSOLID_CORE_EXPORT
-        ParametricCurve<2>
-        toLocalIn(const Plane3d& plane) const;
+        ParametricCurve<3>
+        reversed() const;
 
-        using detail::ParametricCurveBase<3>::toLocalIn;
+        OPENSOLID_CORE_EXPORT
+        ParametricExpression<UnitVector<3>, double>
+        normalVector() const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricExpression<UnitVector<3>, double>
+        binormalVector() const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricExpression<double, double>
+        curvature() const;
+
+        template <class TTransformation>
+        ParametricCurve<3>
+        transformedBy(const TTransformation& transformation) const;
+
+        OPENSOLID_CORE_EXPORT
+        ParametricCurve<2>
+        projectedInto(const Plane3d& plane) const;
 
         OPENSOLID_CORE_EXPORT
         ParametricCurve<3>

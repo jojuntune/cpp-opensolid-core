@@ -36,10 +36,10 @@ TEST_CASE("Rotation") {
         REQUIRE((rotated.radius() - 1.0) == Zero());
     }
     SECTION("3D") {
-        Circle3d original(Point3d(1.0, 0.0, 1.0), Vector3d::unitZ(), 1.0);
+        Circle3d original(Point3d(1.0, 0.0, 1.0), UnitVector3d::Z(), 1.0);
         Circle3d rotated = original.rotatedAbout(Axis3d::x(), M_PI / 2.0);
         REQUIRE((rotated.centerPoint() - Point3d(1.0, -1.0 , 0.0)).isZero());
-        REQUIRE((rotated.normalVector() + Vector3d::unitY()).isZero());
+        REQUIRE(rotated.normalVector().equals(-UnitVector3d::Y()));
         REQUIRE((rotated.radius() - 1.0) == Zero());
     }
 }
@@ -52,10 +52,10 @@ TEST_CASE("Scaling") {
         REQUIRE((scaled.radius() - 2.0) == Zero());
     }
     SECTION("3D") {
-        Circle3d original(Point3d(1.0, 0.0, 1.0), Vector3d::unitZ(), 1.0);
+        Circle3d original(Point3d(1.0, 0.0, 1.0), UnitVector3d::Z(), 1.0);
         Circle3d scaled = original.scaledAbout(original.centerPoint(), 3.0);
         REQUIRE((scaled.centerPoint() - original.centerPoint()).isZero());
-        REQUIRE((scaled.normalVector() - original.normalVector()).isZero());
+        REQUIRE(scaled.normalVector().equals(original.normalVector()));
         REQUIRE((scaled.radius() - 3.0) == Zero());
     }
 }
@@ -72,7 +72,7 @@ TEST_CASE("Mirroring") {
         Circle3d original(Point3d(1.0, 1.0, 1.0), Vector3d(1.0, 1.0, 1.0).normalized(), 1.0);
         Circle3d mirrored = original.mirroredAbout(Plane3d::xy());
         REQUIRE((mirrored.centerPoint() - Point3d(1.0, 1.0, -1.0)).isZero());
-        REQUIRE((mirrored.normalVector() - Vector3d(1.0, 1.0, -1.0).normalized()).isZero());
+        REQUIRE(mirrored.normalVector().equals(Vector3d(1.0, 1.0, -1.0).normalized()));
         REQUIRE((mirrored.radius() - original.radius()) == Zero());
     }
 }

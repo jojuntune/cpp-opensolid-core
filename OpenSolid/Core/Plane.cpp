@@ -31,7 +31,8 @@
 namespace opensolid
 {
     Plane3d::Plane3d() :
-        _handedness(Handedness::rightHanded()) {
+        FrameBase<3, 2>(Point3d::origin(), Matrix<double, 3, 2>()),
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     Plane3d::Plane3d(
@@ -46,7 +47,47 @@ namespace opensolid
             )
         ),
         _normalVector(xDirectionVector.cross(yDirectionVector).components()),
-        _handedness(Handedness::rightHanded()) {
+        _handedness(Handedness::RIGHT_HANDED()) {
+
+        assert(xDirectionVector.dot(yDirectionVector) == Zero());
+    }
+
+    Plane3d::Plane3d(
+        const Point3d& originPoint,
+        const UnitVector3d& xDirectionVector,
+        const UnitVector3d& yDirectionVector,
+        const UnitVector3d& normalVector
+    ) : FrameBase<3, 2>(
+            originPoint,
+            Matrix<double, 3, 2>::fromColumns(
+                xDirectionVector.components(),
+                yDirectionVector.components()
+            )
+        ),
+        _normalVector(normalVector),
+        _handedness(
+            Handedness::fromSignOf(xDirectionVector.cross(yDirectionVector).dot(normalVector))
+        ) {
+
+        assert(xDirectionVector.dot(yDirectionVector) == Zero());
+        assert(normalVector.dot(xDirectionVector) == Zero());
+        assert(normalVector.dot(yDirectionVector) == Zero());
+    }
+
+    Plane3d::Plane3d(
+        const Point3d& originPoint,
+        const UnitVector3d& xDirectionVector,
+        const UnitVector3d& yDirectionVector,
+        Handedness handedness
+    ) : FrameBase<3, 2>(
+            originPoint,
+            Matrix<double, 3, 2>::fromColumns(
+                xDirectionVector.components(),
+                yDirectionVector.components()
+            )
+        ),
+        _normalVector(handedness.sign() * xDirectionVector.cross(yDirectionVector).components()),
+        _handedness(handedness) {
 
         assert(xDirectionVector.dot(yDirectionVector) == Zero());
     }
@@ -68,8 +109,11 @@ namespace opensolid
         _handedness(handedness) {
 
         assert(xDirectionVector.dot(yDirectionVector) == Zero());
+        assert(normalVector.dot(xDirectionVector) == Zero());
+        assert(normalVector.dot(yDirectionVector) == Zero());
         assert(
-            xDirectionVector.cross(yDirectionVector).dot(normalVector) - handedness.sign() == Zero()
+            handedness ==
+            Handedness::fromSignOf(xDirectionVector.cross(yDirectionVector).dot(normalVector))
         );
     }
 
@@ -89,7 +133,7 @@ namespace opensolid
     Plane3d::Plane3d(const Point3d& originPoint, const UnitVector3d& normalVector) :
         FrameBase<3, 2>(originPoint, normalBasisMatrix(normalVector)),
         _normalVector(normalVector),
-        _handedness(Handedness::rightHanded()) {
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     Plane3d
@@ -103,7 +147,13 @@ namespace opensolid
         UnitVector3d xDirectionVector = firstLeg.normalized();
         UnitVector3d normalVector = firstLeg.cross(secondLeg).normalized();
         UnitVector3d yDirectionVector(normalVector.cross(xDirectionVector).components());
-        return Plane3d(firstPoint, xDirectionVector, yDirectionVector, normalVector);
+        return Plane3d(
+            firstPoint,
+            xDirectionVector,
+            yDirectionVector,
+            normalVector,
+            Handedness::RIGHT_HANDED()
+        );
     }
 
     Plane3d
@@ -143,24 +193,25 @@ namespace opensolid
 
         Point3d originPoint = planeBelow.originPoint() + 0.5 * displacementVector;
         UnitVector3d normalVector = UnitVector3d(
-            (belowNormalVector + 0.5 * (aboveNormalVector - belowNormalVector)).components()
+            belowNormalVector.components() +
+            0.5 * (aboveNormalVector.components() - belowNormalVector.components())
         );
         return Plane3d(originPoint, normalVector);
     }
 
     Plane3d
     Plane3d::throughAxisAndPoint(const Axis3d& axis, const Point3d& point) {
-        Vector3d crossProduct = (point - axis.originPoint()).cross(axis.directionVector());
-        if (crossProduct.isZero()) {
-            // Point is on axis
-            throw Error(new PlaceholderError());
-        }
+        Vector3d crossProduct = axis.directionVector().cross(point - axis.originPoint());
         UnitVector3d normalVector = crossProduct.normalized();
+        if (normalVector.isZero()) {
+            normalVector = axis.directionVector().unitOrthogonal();
+        }
         return Plane3d(
             axis.originPoint(),
             axis.directionVector(),
             UnitVector3d(normalVector.cross(axis.directionVector()).components()),
-            normalVector
+            normalVector,
+            Handedness::RIGHT_HANDED()
         );
     }
 
@@ -171,38 +222,75 @@ namespace opensolid
             axis.originPoint(),
             axis.directionVector(),
             UnitVector3d(normalVector.cross(axis.directionVector()).components()),
-            normalVector
+            normalVector,
+            Handedness::RIGHT_HANDED()
         );
     }
 
     Plane3d
     Plane3d::xy() {
-        return Plane3d(Point3d::origin(), Vector3d::unitX(), Vector3d::unitY(), Vector3d::unitZ());
+        return Plane3d(
+            Point3d::origin(),
+            UnitVector3d::X(),
+            UnitVector3d::Y(),
+            UnitVector3d::Z(),
+            Handedness::RIGHT_HANDED()
+        );
     }
 
     Plane3d
     Plane3d::xz() {
-        return Plane3d(Point3d::origin(), Vector3d::unitX(), Vector3d::unitZ(), -Vector3d::unitY());
+        return Plane3d(
+            Point3d::origin(),
+            UnitVector3d::X(),
+            UnitVector3d::Z(),
+            -UnitVector3d::Y(),
+            Handedness::RIGHT_HANDED()
+        );
     }
     
     Plane3d
     Plane3d::yx() {
-        return Plane3d(Point3d::origin(), Vector3d::unitY(), Vector3d::unitX(), -Vector3d::unitZ());
+        return Plane3d(
+            Point3d::origin(),
+            UnitVector3d::Y(),
+            UnitVector3d::X(),
+            -UnitVector3d::Z(),
+            Handedness::RIGHT_HANDED()
+        );
     }
 
     Plane3d
     Plane3d::yz() {
-        return Plane3d(Point3d::origin(), Vector3d::unitY(), Vector3d::unitZ(), Vector3d::unitX());
+        return Plane3d(
+            Point3d::origin(),
+            UnitVector3d::Y(),
+            UnitVector3d::Z(),
+            UnitVector3d::X(),
+            Handedness::RIGHT_HANDED()
+        );
     }
 
     Plane3d
     Plane3d::zx() {
-        return Plane3d(Point3d::origin(), Vector3d::unitZ(), Vector3d::unitX(), Vector3d::unitY());
+        return Plane3d(
+            Point3d::origin(),
+            UnitVector3d::Z(),
+            UnitVector3d::X(),
+            UnitVector3d::Y(),
+            Handedness::RIGHT_HANDED()
+        );
     }
     
     Plane3d
     Plane3d::zy() {
-        return Plane3d(Point3d::origin(), Vector3d::unitZ(), Vector3d::unitY(), -Vector3d::unitX());
+        return Plane3d(
+            Point3d::origin(),
+            UnitVector3d::Z(),
+            UnitVector3d::Y(),
+            -UnitVector3d::X(),
+            Handedness::RIGHT_HANDED()
+        );
     }
     
     Plane3d
@@ -230,72 +318,6 @@ namespace opensolid
     Axis3d
     Plane3d::normalAxis() const {
         return Axis3d(originPoint(), normalVector());
-    }
-
-    Plane3d
-    Plane3d::scaledAbout(const Point3d& point, double scale) const {
-        return Plane3d(
-            originPoint().scaledAbout(point, scale),
-            xDirectionVector(),
-            yDirectionVector(),
-            normalVector(),
-            handedness()
-        );
-    }
-
-    Plane3d
-    Plane3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
-        return Plane3d(
-            originPoint().rotatedAbout(point, rotationMatrix),
-            xDirectionVector().rotatedBy(rotationMatrix),
-            yDirectionVector().rotatedBy(rotationMatrix),
-            normalVector().rotatedBy(rotationMatrix),
-            handedness()
-        );
-    }
-
-    Plane3d
-    Plane3d::translatedBy(const Vector3d& vector) const {
-        return Plane3d(
-            originPoint().translatedBy(vector),
-            xDirectionVector(),
-            yDirectionVector(),
-            normalVector(),
-            handedness()
-        );
-    }
-
-    Plane3d
-    Plane3d::toLocalIn(const Frame3d& frame) const {
-        return Plane3d(
-            originPoint().toLocalIn(frame),
-            xDirectionVector().toLocalIn(frame),
-            yDirectionVector().toLocalIn(frame),
-            normalVector().toLocalIn(frame),
-            handedness()
-        );
-    }
-
-    Plane3d
-    Plane3d::toGlobalFrom(const Frame3d& frame) const {
-        return Plane3d(
-            originPoint().toGlobalFrom(frame),
-            xDirectionVector().toGlobalFrom(frame),
-            yDirectionVector().toGlobalFrom(frame),
-            normalVector().toGlobalFrom(frame),
-            handedness()
-        );
-    }
-
-    Plane3d
-    Plane3d::mirroredAbout(const Point3d& point, const UnitVector3d& directionVector) const {
-        return Plane3d(
-            originPoint().mirroredAbout(point, directionVector),
-            xDirectionVector().mirroredAlong(directionVector),
-            yDirectionVector().mirroredAlong(directionVector),
-            normalVector().mirroredAlong(directionVector),
-            -handedness()
-        );
     }
 
     ParametricExpression<Point3d, Point2d>

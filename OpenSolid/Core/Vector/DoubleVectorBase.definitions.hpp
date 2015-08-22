@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
 #include <OpenSolid/Core/Vector.declarations.hpp>
 #include <OpenSolid/Core/Vector/VectorBase.definitions.hpp>
@@ -56,24 +57,6 @@ namespace opensolid
 
             DoubleVectorBase(const Matrix<double, iNumDimensions, 1>& components);
         public:
-            UnitVector<iNumDimensions>
-            normalized() const;
-
-            Vector<double, iNumDimensions>
-            rotatedBy(const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix) const;
-
-            Vector<double, iNumDimensions>
-            toLocalIn(const Frame<iNumDimensions>& frame) const;
-
-            Vector<double, iNumDimensions>
-            toGlobalFrom(const Frame<iNumDimensions>& frame) const;
-
-            Vector<double, iNumDimensions>
-            projectedOnto(const Axis<iNumDimensions>& axis) const;
-
-            Vector<double, iNumDimensions>
-            mirroredAlong(const UnitVector<iNumDimensions>& mirrorDirection) const;
-
             bool
             operator==(const Vector<double, iNumDimensions>& other) const;
 

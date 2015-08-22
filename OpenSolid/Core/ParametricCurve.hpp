@@ -42,24 +42,53 @@
 namespace opensolid
 {
     inline
-    ParametricCurve2d::ParametricCurve() {
+    ParametricCurve2d::ParametricCurve() :
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     inline
     ParametricCurve2d::ParametricCurve(const ParametricCurve2d& other) :
-        ParametricCurveBase<2>(other) {
+        ParametricCurveBase<2>(other),
+        _handedness(other.handedness()) {
     }
 
     inline
     ParametricCurve2d::ParametricCurve(ParametricCurve2d&& other) :
-        ParametricCurveBase<2>(std::move(other)) {
+        ParametricCurveBase<2>(std::move(other)),
+        _handedness(other.handedness()) {
     }
 
     inline
     ParametricCurve2d::ParametricCurve(
         const ParametricExpression<Point2d, double>& expression,
         Interval domain
-    ) : ParametricCurveBase<2>(expression, domain) {
+    ) : ParametricCurveBase<2>(expression, domain),
+        _handedness(Handedness::RIGHT_HANDED()) {
+    }
+
+    inline
+    ParametricCurve2d::ParametricCurve(
+        const ParametricExpression<Point2d, double>& expression,
+        Interval domain,
+        Handedness handedness
+    ) : ParametricCurveBase<2>(expression, domain),
+        _handedness(handedness) {
+    }
+
+    inline
+    Handedness
+    ParametricCurve2d::handedness() const {
+        return _handedness;
+    }
+
+    template <class TTransformation>
+    ParametricCurve2d
+    ParametricCurve2d::transformedBy(const TTransformation& transformation) const {
+        return ParametricCurve2d(
+            expression().transformedBy(transformation),
+            domain(),
+            handedness().transformedBy(transformation)
+        );
     }
 
     inline
@@ -81,5 +110,11 @@ namespace opensolid
         const ParametricExpression<Point3d, double>& expression,
         Interval domain
     ) : ParametricCurveBase<3>(expression, domain) {
+    }
+
+    template <class TTransformation>
+    ParametricCurve3d
+    ParametricCurve3d::transformedBy(const TTransformation& transformation) const {
+        return ParametricCurve3d(expression().transformedBy(transformation), domain());
     }
 }

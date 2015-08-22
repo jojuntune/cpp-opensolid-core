@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/Axis.declarations.hpp>
 
 #include <OpenSolid/Core/Convertible.definitions.hpp>
+#include <OpenSolid/Core/Handedness.definitions.hpp>
 #include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/FrameBase.definitions.hpp>
 #include <OpenSolid/Core/Intersection.declarations.hpp>
@@ -43,6 +44,34 @@
 
 namespace opensolid
 {
+    namespace detail
+    {
+        template <int iNumDimensions>
+        class AxisBase :
+            public FrameBase<iNumDimensions, 1>,
+            public Convertible<Axis<iNumDimensions>>,
+            public Transformable<Axis<iNumDimensions>, Point<iNumDimensions>>
+        {
+        protected:
+            AxisBase();
+
+            AxisBase(
+                const Point<iNumDimensions>& originPoint,
+                const UnitVector<iNumDimensions>& directionVector
+            );
+        public:
+            UnitVector<iNumDimensions>
+            directionVector() const;
+        
+            Point<iNumDimensions>
+            pointAt(double distance) const;
+
+            OPENSOLID_CORE_EXPORT
+            ParametricExpression<Point<iNumDimensions>, double>
+            expression() const;
+        }; 
+    }
+
     template <int iNumDimensions>
     struct NumDimensions<Axis<iNumDimensions>>
     {
@@ -51,62 +80,42 @@ namespace opensolid
 
     template <>
     class Axis<2> :
-        public FrameBase<2, 1>,
-        public Convertible<Axis<2>>,
-        public Transformable<Axis<2>, 2>
+        public detail::AxisBase<2>
     {
+    private:
+        Handedness _handedness;
     public:
         Axis();
 
         Axis(const Point<2>& originPoint, const UnitVector<2>& directionVector);
-        
-        UnitVector<2>
-        directionVector() const;
+
+        Axis(
+            const Point<2>& originPoint,
+            const UnitVector<2>& directionVector,
+            Handedness handedness
+        );
+
+        Handedness
+        handedness() const;
 
         UnitVector<2>
         normalVector() const;
 
         Axis<2>
-        flipped() const;
+        reversed() const;
 
         Axis<2>
         normalAxis() const;
-        
-        Point<2>
-        pointAt(double distance) const;
 
+        template <class TTransformation>
         Axis<2>
-        scaledAbout(const Point<2>& point, double scale) const;
+        transformedBy(const TTransformation& transformation) const;
 
-        Axis<2>
-        rotatedAbout(const Point<2>& point, const Matrix<double, 2, 2>& rotationMatrix) const;
-
-        using Transformable<Axis<2>, 2>::rotatedAbout;
-
-        Axis<2>
-        translatedBy(const Vector<double, 2>& vector) const;
-
-        Axis<2>
-        toLocalIn(const Frame<2>& frame) const;
-
-        Axis<2>
-        toGlobalFrom(const Frame<2>& frame) const;
-
-        Axis<3>
-        toGlobalFrom(const Plane3d& plane) const;
-
-        Axis<2>
-        mirroredAbout(const Point<2>& point, const UnitVector<2>& directionVector) const;
-
-        using Transformable<Axis<2>, 2>::mirroredAbout;
-
-        OPENSOLID_CORE_EXPORT
         Axis<2>
         projectedOnto(const Axis<2>& other) const;
 
-        OPENSOLID_CORE_EXPORT
-        ParametricExpression<Point<2>, double>
-        expression() const;
+        Axis<3>
+        placedOnto(const Plane3d& plane) const;
 
         static Axis<2>
         x();    
@@ -119,26 +128,18 @@ namespace opensolid
 
     template <>
     class Axis<3> :
-        public FrameBase<3, 1>,
-        public Convertible<Axis<3>>,
-        public Transformable<Axis<3>, 3>
+        public detail::AxisBase<3>
     {
     public:
         Axis();
 
         Axis(const Point<3>& originPoint, const UnitVector<3>& directionVector);
 
-        UnitVector<3>
-        directionVector() const;
-
         Axis<3>
-        flipped() const;
+        reversed() const;
 
         Plane3d
         normalPlane() const;
-        
-        bool
-        contains(const Point<3>& point, double precision = 1e-12) const;
 
         Intersection<Axis<3>, Plane3d>
         intersection(const Plane3d& plane, double precision = 1e-12) const;
@@ -146,39 +147,18 @@ namespace opensolid
         Intersection<Axis<3>, Triangle<3>>
         intersection(const Triangle<3>& triangle, double precision = 1e-12) const;
 
+        template <class TTransformation>
         Axis<3>
-        scaledAbout(const Point<3>& point, double scale) const;
-
-        Axis<3>
-        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
-
-        using Transformable<Axis<3>, 3>::rotatedAbout;
+        transformedBy(const TTransformation& transformation) const;
 
         Axis<3>
-        translatedBy(const Vector<double, 3>& vector) const;
+        projectedOnto(const Axis<3>& other) const;
 
-        Axis<3>
-        toLocalIn(const Frame<3>& frame) const;
-
-        OPENSOLID_CORE_EXPORT
-        Axis<2>
-        toLocalIn(const Plane3d& plane) const;
-
-        Axis<3>
-        toGlobalFrom(const Frame<3>& frame) const;
-
-        Axis<3>
-        mirroredAbout(const Point<3>& point, const UnitVector<3>& directionVector) const;
-
-        using Transformable<Axis<3>, 3>::mirroredAbout;
-
-        OPENSOLID_CORE_EXPORT
         Axis<3>
         projectedOnto(const Plane3d& plane) const;
 
-        OPENSOLID_CORE_EXPORT
-        ParametricExpression<Point<3>, double>
-        expression() const;
+        Axis<2>
+        projectedInto(const Plane3d& plane) const;
 
         static Axis<3>
         x();

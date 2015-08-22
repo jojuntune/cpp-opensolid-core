@@ -43,8 +43,7 @@ namespace opensolid
     namespace detail
     {
         template <int iNumDimensions>
-        class ParametricCurveBase :
-            public Transformable<ParametricCurve<iNumDimensions>, iNumDimensions>
+        class ParametricCurveBase
         {
         private:
             ParametricExpression<Point<iNumDimensions>, double> _expression;
@@ -89,48 +88,8 @@ namespace opensolid
             Point<iNumDimensions>
             endPoint() const;
 
-            ParametricCurve<iNumDimensions>
-            reversed() const;
-
-            ParametricExpression<Vector<double, iNumDimensions>, double>
+            ParametricExpression<UnitVector<iNumDimensions>, double>
             tangentVector() const;
-
-            ParametricExpression<Vector<double, iNumDimensions>, double>
-            normalVector() const;
-
-            ParametricExpression<Vector<double, iNumDimensions>, double>
-            binormalVector() const;
-
-            ParametricExpression<double, double>
-            curvature() const;
-
-            ParametricCurve<iNumDimensions>
-            scaledAbout(const Point<iNumDimensions>& point, double scale) const;
-
-            ParametricCurve<iNumDimensions>
-            rotatedAbout(
-                const Point<iNumDimensions>& point,
-                const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
-            ) const;
-
-            using Transformable<ParametricCurve<iNumDimensions>, iNumDimensions>::rotatedAbout;
-
-            ParametricCurve<iNumDimensions>
-            translatedBy(const Vector<double, iNumDimensions>& vector) const;
-
-            ParametricCurve<iNumDimensions>
-            toLocalIn(const Frame<iNumDimensions>& frame) const;
-
-            ParametricCurve<iNumDimensions>
-            toGlobalFrom(const Frame<iNumDimensions>& frame) const;
-
-            ParametricCurve<iNumDimensions>
-            mirroredAbout(
-                const Point<iNumDimensions>& point,
-                const UnitVector<iNumDimensions>& mirrorDirection
-            ) const;
-
-            using Transformable<ParametricCurve<iNumDimensions>, iNumDimensions>::mirroredAbout;
         };
     }
 }

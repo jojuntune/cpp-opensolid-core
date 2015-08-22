@@ -33,6 +33,9 @@ namespace opensolid
     struct DerivativeType;
 
     template <class TValue>
+    struct NormalizedType;
+
+    template <class TValue>
     struct NegatedType;
 
     template <class TFirstValue, class TSecondValue>

@@ -11,7 +11,6 @@
 #include <OpenSolid/Core/SpatialSet.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
 
-#include <cassert>
 #include <vector>
 
 using namespace opensolid;
@@ -60,7 +59,7 @@ void pointExamples() {
     Point3d scaled = p2.scaledAbout(p1, 2.0);
     assert((scaled - Point3d(3, 3, 3)).isZero());
 
-    Point3d translated = p1.translatedBy(Vector3d::unitY());
+    Point3d translated = p1.translatedBy(UnitVector3d::Y());
     assert((translated - Point3d(1, 2, 1)).isZero());
 }
 
@@ -93,7 +92,7 @@ void axisExamples() {
 }
 
 void planeExamples() {
-    Plane3d plane(Point3d(1, 1, 1), Vector3d::unitX());
+    Plane3d plane(Point3d(1, 1, 1), UnitVector3d::X());
 
     Point3d mirrored = Point3d(2, 3, 4).mirroredAbout(plane);
     assert((mirrored - Point3d(0, 3, 4)).isZero());
@@ -109,13 +108,13 @@ void lineSegmentExamples() {
     assert(length - sqrt(13.0) == Zero());
     
     UnitVector2d normalVector = segment.normalVector();
-    assert((normalVector - Vector2d(-3, 2).normalized()).isZero());
+    assert(normalVector.equals(Vector2d(-3, 2).normalized()));
     
     Axis2d axis = segment.axis();
     Point2d axisOrigin = axis.originPoint();
     UnitVector2d axisDirection = axis.directionVector();
     assert((axisOrigin - segment.startVertex()).isZero());
-    assert((axisDirection - segment.vector().normalized()).isZero());
+    assert(axisDirection.equals(segment.vector().normalized()));
 }
 
 void triangleExamples() {
@@ -128,7 +127,7 @@ void triangleExamples() {
     assert((centroid - Point3d(5.0 / 3.0, 5.0 / 3.0, 1)).isZero());
 
     UnitVector3d normalVector = triangle.normalVector();
-    assert((normalVector - Vector3d::unitZ()).isZero());
+    assert(normalVector.equals(UnitVector3d::Z()));
 
     double area = triangle.area();
     assert(area - 2.0 == Zero());

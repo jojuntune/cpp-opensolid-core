@@ -28,23 +28,13 @@
 
 #include <OpenSolid/Core/FrameBase.definitions.hpp>
 
+#include <OpenSolid/Core/Handedness.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Vector.definitions.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
-    inline
-    FrameBase<iNumDimensions, iNumAxes>::FrameBase() {
-    }
-
-    template <int iNumDimensions, int iNumAxes>
-    inline
-    FrameBase<iNumDimensions, iNumAxes>::FrameBase(const Point<iNumDimensions>& originPoint) :
-        _originPoint(originPoint) {
-    }
-
     template <int iNumDimensions, int iNumAxes>
     inline
     FrameBase<iNumDimensions, iNumAxes>::FrameBase(

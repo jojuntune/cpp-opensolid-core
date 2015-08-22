@@ -50,35 +50,26 @@ namespace opensolid
             return static_cast<const ParametricExpression<Vector2d, TParameter>&>(*this);
         }
 
-        template <class TParameter>
-        ParametricExpression<Vector2d, TParameter>
-        TransformableExpression<Vector2d, TParameter>::rotatedBy(double angle) const {
-            return rotatedBy(Quaternion2d(angle).rotationMatrix());
+        template <class TParameter>        
+        ParametricExpression<UnitVector2d, TParameter>
+        TransformableExpression<Vector2d, TParameter>::unitOrthogonal() const {
+            return ParametricExpression<Vector2d, TParameter>::fromComponents(
+                -derived().y(),
+                derived().x()
+            ).normalized();
         }
 
-        template <class TParameter>
+        template <class TParameter> template <class TTransformation>
         ParametricExpression<Vector2d, TParameter>
-        TransformableExpression<Vector2d, TParameter>::rotatedBy(
-            const Matrix2d& rotationMatrix
+        TransformableExpression<Vector2d, TParameter>::transformedBy(
+            const TTransformation& transformation
         ) const {
-            return rotationMatrix * derived().implementation();
-        }
-
-        template <class TParameter>
-        ParametricExpression<Vector2d, TParameter>
-        TransformableExpression<Vector2d, TParameter>::toLocalIn(const Frame2d& frame) const {
-            return frame.basisMatrix().transpose() * derived().implementation();
-        }
-
-        template <class TParameter>
-        ParametricExpression<Vector2d, TParameter>
-        TransformableExpression<Vector2d, TParameter>::toGlobalFrom(const Frame2d& frame) const {
-            return frame.basisMatrix() * derived().implementation();
+            return transformation.transform(derived());
         }
 
         template <class TParameter>
         ParametricExpression<Vector3d, TParameter>
-        TransformableExpression<Vector2d, TParameter>::toGlobalFrom(const Plane3d& plane) const {
+        TransformableExpression<Vector2d, TParameter>::placedOnto(const Plane3d& plane) const {
             return plane.basisMatrix() * derived().implementation();
         }
 
@@ -89,53 +80,24 @@ namespace opensolid
         }
 
         template <class TParameter>
-        ParametricExpression<Vector2d, TParameter>
-        TransformableExpression<Vector2d, TParameter>::mirroredAlong(
-            const UnitVector2d& mirrorDirection
-        ) const {
-            return derived() - 2.0 * derived().dot(mirrorDirection) * mirrorDirection;
-        }
-
-        template <class TParameter>
         inline
         const ParametricExpression<Vector3d, TParameter>&
         TransformableExpression<Vector3d, TParameter>::derived() const {
             return static_cast<const ParametricExpression<Vector3d, TParameter>&>(*this);
         }
 
-        template <class TParameter>
+        template <class TParameter> template <class TTransformation>
         ParametricExpression<Vector3d, TParameter>
-        TransformableExpression<Vector3d, TParameter>::rotatedBy(
-            const Matrix3d& rotationMatrix
+        TransformableExpression<Vector3d, TParameter>::transformedBy(
+            const TTransformation& transformation
         ) const {
-            return rotationMatrix * derived().implementation();
-        }
-
-        template <class TParameter>
-        ParametricExpression<Vector3d, TParameter>
-        TransformableExpression<Vector3d, TParameter>::rotatedAbout(
-            const UnitVector3d& directionVector,
-            double angle
-        ) const {
-            return rotatedBy(Quaternion3d(directionVector, angle).rotationMatrix());
-        }
-
-        template <class TParameter>
-        ParametricExpression<Vector3d, TParameter>
-        TransformableExpression<Vector3d, TParameter>::toLocalIn(const Frame3d& frame) const {
-            return frame.basisMatrix().transpose() * derived().implementation();
+            return transformation.transform(derived());
         }
 
         template <class TParameter>
         ParametricExpression<Vector2d, TParameter>
-        TransformableExpression<Vector3d, TParameter>::toLocalIn(const Plane3d& plane) const {
+        TransformableExpression<Vector3d, TParameter>::projectedInto(const Plane3d& plane) const {
             return plane.basisMatrix().transpose() * derived().implementation();
-        }
-
-        template <class TParameter>
-        ParametricExpression<Vector3d, TParameter>
-        TransformableExpression<Vector3d, TParameter>::toGlobalFrom(const Frame3d& frame) const {
-            return frame.basisMatrix() * derived().implementation();
         }
 
         template <class TParameter>
@@ -151,11 +113,76 @@ namespace opensolid
         }
 
         template <class TParameter>
-        ParametricExpression<Vector3d, TParameter>
-        TransformableExpression<Vector3d, TParameter>::mirroredAlong(
-            const UnitVector3d& mirrorDirection
+        inline
+        const ParametricExpression<UnitVector2d, TParameter>&
+        TransformableExpression<UnitVector2d, TParameter>::derived() const {
+            return static_cast<const ParametricExpression<UnitVector2d, TParameter>&>(*this);
+        }
+
+        template <class TParameter>        
+        ParametricExpression<UnitVector2d, TParameter>
+        TransformableExpression<UnitVector2d, TParameter>::unitOrthogonal() const {
+            return ParametricExpression<UnitVector2d, TParameter>::fromComponents(
+                -derived().y(),
+                derived().x()
+            );
+        }
+
+        template <class TParameter> template <class TTransformation>
+        ParametricExpression<UnitVector2d, TParameter>
+        TransformableExpression<UnitVector2d, TParameter>::transformedBy(
+            const TTransformation& transformation
         ) const {
-            return derived() - 2.0 * derived().dot(mirrorDirection) * mirrorDirection;
+            return transformation.transform(derived());
+        }
+
+        template <class TParameter>
+        ParametricExpression<UnitVector3d, TParameter>
+        TransformableExpression<UnitVector2d, TParameter>::placedOnto(const Plane3d& plane) const {
+            return plane.basisMatrix() * derived().implementation();
+        }
+
+        template <class TParameter>
+        ParametricExpression<Vector2d, TParameter>
+        TransformableExpression<UnitVector2d, TParameter>::projectedOnto(const Axis2d& axis) const {
+            return derived().dot(axis.directionVector()) * axis.directionVector();
+        }
+
+        template <class TParameter>
+        inline
+        const ParametricExpression<UnitVector3d, TParameter>&
+        TransformableExpression<UnitVector3d, TParameter>::derived() const {
+            return static_cast<const ParametricExpression<UnitVector3d, TParameter>&>(*this);
+        }
+
+        template <class TParameter> template <class TTransformation>
+        ParametricExpression<UnitVector3d, TParameter>
+        TransformableExpression<UnitVector3d, TParameter>::transformedBy(
+            const TTransformation& transformation
+        ) const {
+            return transformation.transform(derived());
+        }
+
+        template <class TParameter>
+        ParametricExpression<Vector2d, TParameter>
+        TransformableExpression<UnitVector3d, TParameter>::projectedInto(
+            const Plane3d& plane
+        ) const {
+            return plane.basisMatrix().transpose() * derived().implementation();
+        }
+
+        template <class TParameter>
+        ParametricExpression<Vector3d, TParameter>
+        TransformableExpression<UnitVector3d, TParameter>::projectedOnto(const Axis3d& axis) const {
+            return derived().dot(axis.directionVector()) * axis.directionVector();
+        }
+
+        template <class TParameter>
+        ParametricExpression<Vector3d, TParameter>
+        TransformableExpression<UnitVector3d, TParameter>::projectedOnto(
+            const Plane3d& plane
+        ) const {
+            return derived() - derived().dot(plane.normalVector()) * plane.normalVector();
         }
 
         template <class TParameter>
@@ -177,61 +204,27 @@ namespace opensolid
             return (derived() - axis.originPoint()).dot(axis.directionVector());
         }
 
-        template <class TParameter>
+        template <class TParameter> template <class TTransformation>
         ParametricExpression<Point2d, TParameter>
-        TransformableExpression<Point2d, TParameter>::scaledAbout(
-            const Point2d& point,
-            double scale
+        TransformableExpression<Point2d, TParameter>::transformedBy(
+            const TTransformation& transformation
         ) const {
-            return point + scale * (derived() - point);
-        }
-
-        template <class TParameter>
-        ParametricExpression<Point2d, TParameter>
-        TransformableExpression<Point2d, TParameter>::rotatedAbout(
-            const Point2d& point,
-            const Matrix2d& rotationMatrix
-        ) const {
-            return point + (derived() - point).rotatedBy(rotationMatrix);
-        }
-
-        template <class TParameter>
-        ParametricExpression<Point2d, TParameter>
-        TransformableExpression<Point2d, TParameter>::translatedBy(const Vector2d& vector) const {
-            return derived() + vector;
-        }
-
-        template <class TParameter>
-        ParametricExpression<Point2d, TParameter>
-        TransformableExpression<Point2d, TParameter>::toLocalIn(const Frame2d& frame) const {
-            return Point2d::origin() + (derived() - frame.originPoint()).toLocalIn(frame);
-        }
-
-        template <class TParameter>
-        ParametricExpression<Point2d, TParameter>
-        TransformableExpression<Point2d, TParameter>::toGlobalFrom(const Frame2d& frame) const {
-            return frame.originPoint() + (derived() - Point2d::origin()).toGlobalFrom(frame);
+            return transformation.transform(derived());
         }
 
         template <class TParameter>
         ParametricExpression<Point3d, TParameter>
-        TransformableExpression<Point2d, TParameter>::toGlobalFrom(const Plane3d& plane) const {
-            return plane.originPoint() + (derived() - Point2d::origin()).toGlobalFrom(plane);
+        TransformableExpression<Point2d, TParameter>::placedOnto(const Plane3d& plane) const {
+            ParametricExpression<Vector3d, TParameter> displacement(
+                plane.basisMatrix() * derived().implementation()
+            );
+            return plane.originPoint() + displacement;
         }
 
         template <class TParameter>
         ParametricExpression<Point2d, TParameter>
         TransformableExpression<Point2d, TParameter>::projectedOnto(const Axis2d& axis) const {
             return axis.originPoint() + distanceAlong(axis) * axis.directionVector();
-        }
-
-        template <class TParameter>
-        ParametricExpression<Point2d, TParameter>
-        TransformableExpression<Point2d, TParameter>::mirroredAbout(
-            const Point2d& point,
-            const UnitVector2d& mirrorDirection
-        ) const {
-            return derived() - 2.0 * (derived() - point).dot(mirrorDirection) * mirrorDirection;
         }
 
         template <class TParameter>
@@ -265,46 +258,18 @@ namespace opensolid
             return (derived() - plane.originPoint()).dot(plane.normalVector());
         }
 
-        template <class TParameter>
+        template <class TParameter> template <class TTransformation>
         ParametricExpression<Point3d, TParameter>
-        TransformableExpression<Point3d, TParameter>::scaledAbout(
-            const Point3d& point,
-            double scale
+        TransformableExpression<Point3d, TParameter>::transformedBy(
+            const TTransformation& transformation
         ) const {
-            return point + scale * (derived() - point);
-        }
-
-        template <class TParameter>
-        ParametricExpression<Point3d, TParameter>
-        TransformableExpression<Point3d, TParameter>::rotatedAbout(
-            const Point3d& point,
-            const Matrix3d& rotationMatrix
-        ) const {
-            return point + (derived() - point).rotatedBy(rotationMatrix);
-        }
-
-        template <class TParameter>
-        ParametricExpression<Point3d, TParameter>
-        TransformableExpression<Point3d, TParameter>::translatedBy(const Vector3d& vector) const {
-            return derived() + vector;
-        }
-
-        template <class TParameter>
-        ParametricExpression<Point3d, TParameter>
-        TransformableExpression<Point3d, TParameter>::toLocalIn(const Frame3d& frame) const {
-            return Point3d::origin() + (derived() - frame.originPoint()).toLocalIn(frame);
-        }
-
-        template <class TParameter>
-        ParametricExpression<Point3d, TParameter>
-        TransformableExpression<Point3d, TParameter>::toGlobalFrom(const Frame3d& frame) const {
-            return frame.originPoint() + (derived() - Point3d::origin()).toGlobalFrom(frame);
+            return transformation.transform(derived());
         }
 
         template <class TParameter>
         ParametricExpression<Point2d, TParameter>
-        TransformableExpression<Point3d, TParameter>::toLocalIn(const Plane3d& plane) const {
-            return Point2d::origin() + (derived() - plane.originPoint()).toLocalIn(plane);
+        TransformableExpression<Point3d, TParameter>::projectedInto(const Plane3d& plane) const {
+            return (derived() - plane.originPoint()).projectedInto(plane).implementation();
         }
 
         template <class TParameter>
@@ -321,15 +286,6 @@ namespace opensolid
                 (derived() - plane.originPoint()).dot(plane.normalVector()) *
                 plane.normalVector()
             );
-        }
-
-        template <class TParameter>
-        ParametricExpression<Point3d, TParameter>
-        TransformableExpression<Point3d, TParameter>::mirroredAbout(
-            const Point3d& point,
-            const UnitVector3d& mirrorDirection
-        ) const {
-            return derived() - 2.0 * (derived() - point).dot(mirrorDirection) * mirrorDirection;
         }
     }
 }

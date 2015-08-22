@@ -28,7 +28,6 @@
 
 #include <OpenSolid/Core/Box.declarations.hpp>
 
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Frame.declarations.hpp>
@@ -157,11 +156,4 @@ namespace opensolid
     template <int iNumDimensions>
     std::ostream&
     operator<<(std::ostream& stream, const Box<iNumDimensions>& box);
-
-    template <int iNumDimensions>
-    struct BoundsFunction<Box<iNumDimensions>>
-    {
-        const Box<iNumDimensions>&
-        operator()(const Box<iNumDimensions>& point) const;
-    };
 }

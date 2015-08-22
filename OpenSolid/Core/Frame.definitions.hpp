@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/FrameBase.definitions.hpp>
+#include <OpenSolid/Core/Handedness.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
@@ -51,9 +52,11 @@ namespace opensolid
     template <>
     class Frame<2> :
         public FrameBase<2, 2>,
-        public Transformable<Frame<2>, 2>,
+        public Transformable<Frame<2>, Point<2>>,
         public Convertible<Frame<2>>
     {
+    private:
+        Handedness _handedness;
     public:
         Frame();
 
@@ -70,6 +73,16 @@ namespace opensolid
             const UnitVector<2>& yDirectionVector
         );
 
+        Frame(
+            const Point<2>& originPoint,
+            const UnitVector<2>& xDirectionVector,
+            const UnitVector<2>& yDirectionVector,
+            Handedness handedness
+        );
+
+        Handedness
+        handedness() const;
+
         UnitVector<2>
         xDirectionVector() const;
         
@@ -82,27 +95,12 @@ namespace opensolid
         Axis<2>
         yAxis() const;
 
+        template <class TTransformation>
         Frame<2>
-        scaledAbout(const Point<2>& point, double scale) const;
+        transformedBy(const TTransformation& transformation) const;
 
-        Frame<2>
-        rotatedAbout(const Point<2>& point, const Matrix<double, 2, 2>& rotationMatrix) const;
-
-        using Transformable<Frame<2>, 2>::rotatedAbout;
-
-        Frame<2>
-        translatedBy(const Vector<double, 2>& vector) const;
-
-        Frame<2>
-        toLocalIn(const Frame<2>& frame) const;
-
-        Frame<2>
-        toGlobalFrom(const Frame<2>& frame) const;
-
-        Frame<2>
-        mirroredAbout(const Point<2>& point, const UnitVector<2>& direction) const;
-
-        using Transformable<Frame<2>, 2>::mirroredAbout;
+        Plane3d
+        placedOnto(const Plane3d& plane) const;
 
         ParametricExpression<Point<2>, Point<2>>
         expression() const;
@@ -113,9 +111,11 @@ namespace opensolid
     template <>
     class Frame<3> :
         public FrameBase<3, 3>,
-        public Transformable<Frame<3>, 3>,
+        public Transformable<Frame<3>, Point<3>>,
         public Convertible<Frame<3>>
     {
+    private:
+        Handedness _handedness;
     public:
         Frame();
 
@@ -132,6 +132,17 @@ namespace opensolid
             const UnitVector<3>& yDirectionVector,
             const UnitVector<3>& zDirectionVector
         );
+
+        Frame(
+            const Point<3>& originPoint,
+            const UnitVector<3>& xDirectionVector,
+            const UnitVector<3>& yDirectionVector,
+            const UnitVector<3>& zDirectionVector,
+            Handedness handedness
+        );
+
+        Handedness
+        handedness() const;
 
         UnitVector<3>
         xDirectionVector() const;
@@ -169,27 +180,9 @@ namespace opensolid
         Plane3d
         zyPlane() const;
 
+        template <class TTransformation>
         Frame<3>
-        scaledAbout(const Point<3>& point, double scale) const;
-
-        Frame<3>
-        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
-
-        using Transformable<Frame<3>, 3>::rotatedAbout;
-
-        Frame<3>
-        translatedBy(const Vector<double, 3>& vector) const;
-
-        Frame<3>
-        toLocalIn(const Frame<3>& frame) const;
-
-        Frame<3>
-        toGlobalFrom(const Frame<3>& frame) const;
-
-        Frame<3>
-        mirroredAbout(const Point<3>& point, const UnitVector<3>& direction) const;
-
-        using Transformable<Frame<3>, 3>::mirroredAbout;
+        transformedBy(const TTransformation& transformation) const;
 
         ParametricExpression<Point<3>, Point<3>>
         expression() const;

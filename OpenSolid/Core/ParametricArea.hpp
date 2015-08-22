@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/BoundedArea.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Frame.hpp>
+#include <OpenSolid/Core/Handedness.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/ParametricSurface.hpp>
@@ -54,8 +55,24 @@ namespace opensolid
     }
 
     inline
+    Handedness
+    ParametricArea2d::handedness() const {
+        return _handedness;
+    }
+
+    inline
     const Box2d&
     ParametricArea2d::bounds() const {
         return _bounds;
+    }
+
+    template <class TTransformation>
+    ParametricArea2d
+    ParametricArea2d::transformedBy(const TTransformation& transformation) const {
+        return ParametricArea2d(
+            expression().transformedBy(transformation),
+            domain(),
+            handedness().transformedBy(transformation)
+        );
     }
 }

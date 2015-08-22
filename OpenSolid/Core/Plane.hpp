@@ -61,4 +61,16 @@ namespace opensolid
     Plane3d::handedness() const {
         return _handedness;
     }
+
+    template <class TTransformation>
+    Plane3d
+    Plane3d::transformedBy(const TTransformation& transformation) const {
+        return Plane3d(
+            originPoint().transformedBy(transformation),
+            xDirectionVector().transformedBy(transformation),
+            yDirectionVector().transformedBy(transformation),
+            normalVector().transformedBy(transformation),
+            handedness().transformedBy(transformation)
+        );
+    }
 }

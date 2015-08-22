@@ -39,6 +39,7 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression/TransformableExpression.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/Sign.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
 #include <OpenSolid/Core/Vector.declarations.hpp>
@@ -107,7 +108,7 @@ namespace opensolid
         ParametricExpression<double, TParameter>
         norm() const;
         
-        ParametricExpression<TValue, TParameter>
+        ParametricExpression<typename NormalizedType<TValue>::Type, TParameter>
         normalized() const;
         
         ParametricExpression<double, TParameter>
@@ -128,17 +129,21 @@ namespace opensolid
         ParametricExpression<double, TParameter>
         component(int index) const;
 
+        template <class TOtherValue>
         ParametricExpression<double, TParameter>
-        dot(const TValue& vector) const;
+        dot(const TOtherValue& vector) const;
 
+        template <class TOtherValue>
         ParametricExpression<double, TParameter>
-        dot(const ParametricExpression<TValue, TParameter>& other) const;
+        dot(const ParametricExpression<TOtherValue, TParameter>& other) const;
 
-        ParametricExpression<TValue, TParameter>
-        cross(const TValue& vector) const;
+        template <class TOtherValue>
+        ParametricExpression<Vector<double, 3>, TParameter>
+        cross(const TOtherValue& vector) const;
 
-        ParametricExpression<TValue, TParameter>
-        cross(const ParametricExpression<TValue, TParameter>& other) const;
+        template <class TOtherValue>
+        ParametricExpression<Vector<double, 3>, TParameter>
+        cross(const ParametricExpression<TOtherValue, TParameter>& other) const;
     };
 
     template <class TValue, class TParameter>
@@ -302,6 +307,32 @@ namespace opensolid
     };
 
     template <>
+    struct NormalizedType<double>
+    {
+        // TODO remove once normalized() is only defined for vector-type parametric expressions
+        typedef void Type;
+    };
+
+    template <int iNumDimensions>
+    struct NormalizedType<Point<iNumDimensions>>
+    {
+        // TODO remove once normalized() is only defined for vector-type parametric expressions
+        typedef void Type;
+    };
+
+    template <int iNumDimensions>
+    struct NormalizedType<Vector<double, iNumDimensions>>
+    {
+        typedef UnitVector<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct NormalizedType<UnitVector<iNumDimensions>>
+    {
+        typedef UnitVector<iNumDimensions> Type;
+    };
+
+    template <>
     struct NegatedType<double>
     {
         typedef double Type;
@@ -439,6 +470,30 @@ namespace opensolid
         typedef Vector<double, iNumDimensions> Type;
     };
 
+    template <class TValue>
+    struct ProductType<Sign, TValue> :
+        public ProductType<double, TValue>
+    {
+    };
+
+    template <class TValue>
+    struct ProductType<TValue, Sign> :
+        public ProductType<TValue, double>
+    {
+    };
+
+    template <int iNumDimensions>
+    struct ProductType<Sign, UnitVector<iNumDimensions>>
+    {
+        typedef UnitVector<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct ProductType<UnitVector<iNumDimensions>, Sign>
+    {
+        typedef UnitVector<iNumDimensions> Type;
+    };
+
     template <>
     struct QuotientType<double, double>
     {
@@ -455,5 +510,17 @@ namespace opensolid
     struct QuotientType<UnitVector<iNumDimensions>, double>
     {
         typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <class TValue>
+    struct QuotientType<TValue, Sign> :
+        public QuotientType<TValue, double>
+    {
+    };
+
+    template <int iNumDimensions>
+    struct QuotientType<UnitVector<iNumDimensions>, Sign>
+    {
+        typedef UnitVector<iNumDimensions> Type;
     };
 }

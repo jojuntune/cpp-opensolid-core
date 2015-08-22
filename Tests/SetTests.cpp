@@ -181,7 +181,7 @@ TEST_CASE("Point set transformation") {
     pointList[2] = Point3d(1, 1, 1);
 
     SpatialSet<Point3d> pointSet(pointList);
-    Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::unitZ());
+    Axis3d rotationAxis(Point3d(1, 0, 0), UnitVector3d::Z());
     std::vector<Point3d> rotatedPoints = pointSet.map(
         [&rotationAxis] (const Point3d& point) -> Point3d {
             return point.rotatedAbout(rotationAxis, M_PI / 2);
@@ -200,7 +200,7 @@ TEST_CASE("Vector set transformation") {
     vectorList[2] = Vector3d(1, 1, 1);
 
     SpatialSet<Vector3d> vectorSet(vectorList);
-    Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::unitZ());
+    Axis3d rotationAxis(Point3d(1, 0, 0), UnitVector3d::Z());
     std::vector<Vector3d> rotatedVectors = vectorSet.map(
         [&rotationAxis] (const Vector3d& vector) -> Vector3d {
             return vector.rotatedAbout(rotationAxis.directionVector(), M_PI / 2);

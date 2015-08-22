@@ -122,20 +122,6 @@ namespace opensolid
             return endVertex() - startVertex();
         }
 
-        template<int iNumDimensions>
-        inline
-        UnitVector<iNumDimensions>
-        LineSegmentBase<iNumDimensions>::normalVector() const {
-            return vector().unitOrthogonal();
-        }
-
-        template <int iNumDimensions>
-        inline
-        Axis<iNumDimensions>
-        LineSegmentBase<iNumDimensions>::axis() const {
-            return Axis<iNumDimensions>(startVertex(), vector().normalized());
-        }
-
         template <int iNumDimensions>
         inline
         Box<iNumDimensions>

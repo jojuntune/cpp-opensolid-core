@@ -232,21 +232,21 @@ namespace opensolid
 TEST_CASE("Localization") {
     Triangle3d triangle3d(Point3d(1, 1, 1), Point3d(3, 1, 2), Point3d(2, 2, 4));
 
-    Triangle2d xyComponents = triangle3d.toLocalIn(Plane3d::xy());
+    Triangle2d xyComponents = triangle3d.projectedInto(Plane3d::xy());
     REQUIRE(xyComponents.vertex(0).isEqualTo(Point2d(1, 1)));
     REQUIRE(xyComponents.vertex(1).isEqualTo(Point2d(3, 1)));
     REQUIRE(xyComponents.vertex(2).isEqualTo(Point2d(2, 2)));
     double xyArea = xyComponents.area();
     REQUIRE(xyArea > 0.0);
 
-    Triangle2d yzComponents = triangle3d.toLocalIn(Plane3d::yz());
+    Triangle2d yzComponents = triangle3d.projectedInto(Plane3d::yz());
     REQUIRE(yzComponents.vertex(0).isEqualTo(Point2d(1, 1)));
     REQUIRE(yzComponents.vertex(1).isEqualTo(Point2d(1, 2)));
     REQUIRE(yzComponents.vertex(2).isEqualTo(Point2d(2, 4)));
     double yzArea = yzComponents.area();
     REQUIRE(yzArea < 0.0);
 
-    double xzArea = triangle3d.toLocalIn(Plane3d::xz()).area();
+    double xzArea = triangle3d.projectedInto(Plane3d::xz()).area();
 
     double areaFromComponents = sqrt(xyArea * xyArea + yzArea * yzArea + xzArea * xzArea);
     REQUIRE((triangle3d.area() - areaFromComponents) == Zero());
@@ -281,13 +281,13 @@ TEST_CASE("Triangle centroid") {
 
 TEST_CASE("Line normal") {
     LineSegment2d line(Point2d(1, 1), Point2d(3, 2));
-    REQUIRE((line.normalVector() - Vector2d(-1, 2).normalized()).isZero());
+    REQUIRE(line.normalVector().equals(Vector2d(-1, 2).normalized()));
 }
 
 TEST_CASE("Triangle normal") {
     Triangle3d triangle(Point3d(1, 1, 1), Point3d(3, 1, 2), Point3d(2, 2, 4));
     UnitVector3d expectedNormal = Vector3d(2, 0, 1).cross(Vector3d(1, 1, 3)).normalized();
-    REQUIRE((triangle.normalVector() - expectedNormal).isZero());
+    REQUIRE(triangle.normalVector().equals(expectedNormal));
 }
 
 TEST_CASE("Projection") {
@@ -378,7 +378,7 @@ TEST_CASE("Tetrahedron faces") {
 }
 
 TEST_CASE("Line segment/plane intersection") {
-    Plane3d plane(Point3d(0, 0, 1), Vector3d::unitZ());
+    Plane3d plane(Point3d(0, 0, 1), UnitVector3d::Z());
 
     LineSegment3d firstSegment(Point3d(0, 0, 2), Point3d(2, 2, 2));
     LineSegment3d secondSegment(Point3d(0, 0, 1), Point3d(1, 1, 1));
@@ -404,8 +404,7 @@ TEST_CASE("Triangle containment") {
 
     REQUIRE(triangle.contains(triangle.vertex(2)));
     REQUIRE(triangle.contains(triangle.centroid()));
-    REQUIRE(triangle.contains(triangle.centroid(), -1e-12));
-    REQUIRE_FALSE(triangle.contains(triangle.vertex(2), -1e-12));
+    REQUIRE(triangle.contains(triangle.centroid()));
     REQUIRE_FALSE(triangle.contains(Point2d::origin()));
 }
 

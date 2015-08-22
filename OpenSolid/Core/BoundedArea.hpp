@@ -52,4 +52,18 @@ namespace opensolid
     BoundedArea2d::bounds() const {
         return boundaries().bounds();
     }
+
+    template <class TTransformation>
+    BoundedArea2d
+    BoundedArea2d::transformedBy(const TTransformation& transformation) const {
+        return BoundedArea2d(
+            SpatialSet<ParametricCurve2d>(
+                boundaries().map(
+                    [&transformation] (const ParametricCurve2d& boundaryCurve) {
+                        return boundaryCurve.transformedBy(transformation);
+                    }
+                )
+            )
+        );
+    }
 }

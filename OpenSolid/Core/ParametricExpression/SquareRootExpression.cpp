@@ -49,10 +49,13 @@ namespace opensolid
                     results.setMap(
                         results,
                         [] (double value) {
-                            if (value < Zero()) {
+                            if (value >= 0.0) {
+                                return opensolid::sqrt(value);
+                            } else if (value == Zero()) {
+                                return 0.0;
+                            } else {
                                 throw Error(new PlaceholderError());
                             }
-                            return value > 0.0 ? opensolid::sqrt(value) : 0.0;
                         }
                     );
                 }
@@ -91,10 +94,11 @@ namespace opensolid
                 resultID,
                 [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
                     double operandValue = operandValues.value();
-                    if (operandValue <= Zero()) {
+                    if (operandValue > 0.0) {
+                        results *= (0.5 / opensolid::sqrt(operandValue));
+                    } else {
                         throw Error(new PlaceholderError());
                     }
-                    results *= (0.5 / opensolid::sqrt(operandValue));
                 }
             );
         }
@@ -111,9 +115,6 @@ namespace opensolid
                 resultID,
                 [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
                     Interval operandValue = operandValues.value();
-                    if (operandValue.upperBound() <= Zero()) {
-                        throw Error(new PlaceholderError());
-                    }
                     results *= (0.5 / opensolid::sqrt(operandValue));
                 }
             );

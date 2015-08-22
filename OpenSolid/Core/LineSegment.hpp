@@ -28,7 +28,6 @@
 
 #include <OpenSolid/Core/LineSegment.definitions.hpp>
 
-#include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/LineSegmentPlaneIntersection3d.hpp>
@@ -39,18 +38,58 @@
 namespace opensolid
 {
     inline
-    LineSegment2d::LineSegment() {
+    LineSegment2d::LineSegment() :
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     inline
     LineSegment2d::LineSegment(const Point2d& startVertex, const Point2d& endVertex) :
-        detail::LineSegmentBase<2>(startVertex, endVertex) {
+        detail::LineSegmentBase<2>(startVertex, endVertex),
+        _handedness(Handedness::RIGHT_HANDED()) {
+    }
+
+    inline
+    LineSegment2d::LineSegment(
+        const Point2d& startVertex,
+        const Point2d& endVertex,
+        Handedness handedness
+    ) : detail::LineSegmentBase<2>(startVertex, endVertex),
+        _handedness(handedness) {
+    }
+
+    inline
+    Handedness
+    LineSegment2d::handedness() const {
+        return _handedness;
+    }
+
+    inline
+    UnitVector2d
+    LineSegment2d::normalVector() const {
+        return handedness().sign() * vector().unitOrthogonal();
+    }
+
+    inline
+    Axis2d
+    LineSegment2d::axis() const {
+        return Axis2d(startVertex(), vector().normalized(), handedness());
+    }
+
+    template <class TTransformation>
+    inline
+    LineSegment2d
+    LineSegment2d::transformedBy(const TTransformation& transformation) const {
+        return LineSegment2d(
+            startVertex().transformedBy(transformation),
+            endVertex().transformedBy(transformation),
+            handedness().transformedBy(transformation)
+        );
     }
 
     inline
     LineSegment3d
-    LineSegment2d::toGlobalFrom(const Plane3d& plane) const {
-        return LineSegment3d(startVertex().toGlobalFrom(plane), endVertex().toGlobalFrom(plane));
+    LineSegment2d::placedOnto(const Plane3d& plane) const {
+        return LineSegment3d(startVertex().placedOnto(plane), endVertex().placedOnto(plane));
     }
 
     inline
@@ -63,15 +102,37 @@ namespace opensolid
     }
 
     inline
+    UnitVector3d
+    LineSegment3d::normalVector() const {
+        return vector().unitOrthogonal();
+    }
+
+    inline
+    Axis3d
+    LineSegment3d::axis() const {
+        return Axis3d(startVertex(), vector().normalized());
+    }
+
+    inline
     Intersection<LineSegment3d, Plane3d>
     LineSegment3d::intersection(const Plane3d& plane, double precision) const {
         return Intersection<LineSegment3d, Plane3d>(*this, plane, precision);
     }
 
+    template <class TTransformation>
+    inline
+    LineSegment3d
+    LineSegment3d::transformedBy(const TTransformation& transformation) const {
+        return LineSegment3d(
+            startVertex().transformedBy(transformation),
+            endVertex().transformedBy(transformation)
+        );
+    }
+
     inline
     LineSegment2d
-    LineSegment3d::toLocalIn(const Plane3d& plane) const {
-        return LineSegment2d(startVertex().toLocalIn(plane), endVertex().toLocalIn(plane));
+    LineSegment3d::projectedInto(const Plane3d& plane) const {
+        return LineSegment2d(startVertex().projectedInto(plane), endVertex().projectedInto(plane));
     }
 
     inline

@@ -49,11 +49,15 @@ namespace opensolid
                     results.setMap(
                         results,
                         [] (double value) {
-                            Interval domain(-1, 1);
-                            if (!domain.contains(value)) {
+                            if (-1.0 <= value && value <= 1.0) {
+                                return opensolid::acos(value);
+                            } else if (value + 1 == Zero()) {
+                                return M_PI;
+                            } else if (value - 1 == Zero()) {
+                                return 0.0;
+                            } else {
                                 throw Error(new PlaceholderError());
                             }
-                            return opensolid::acos(domain.clamp(value));
                         }
                     );
                 }
@@ -74,10 +78,7 @@ namespace opensolid
                         results,
                         [] (Interval value) {
                             Interval domain(-1, 1);
-                            if (!domain.overlaps(value)) {
-                                throw Error(new PlaceholderError());
-                            }
-                            return opensolid::acos(domain.clamp(value));
+                            return opensolid::acos(value.intersection(domain));
                         }
                     );
                 }
@@ -96,10 +97,12 @@ namespace opensolid
                 resultID,
                 [] (ConstMatrixViewXd operandValues, MatrixViewXd results) {
                     double operandValue = operandValues.value();
-                    if (!Interval(-1, 1).strictlyContains(operandValue)) {
+                    double temp = 1 - operandValue * operandValue;
+                    if (temp > 0.0) {
+                        results *= -1.0 / opensolid::sqrt(temp);
+                    } else {
                         throw Error(new PlaceholderError());
                     }
-                    results *= -1.0 / opensolid::sqrt(1 - operandValue * operandValue);
                 }
             );
         }
@@ -116,9 +119,6 @@ namespace opensolid
                 resultID,
                 [] (ConstIntervalMatrixViewXd operandValues, IntervalMatrixViewXd results) {
                     Interval operandValue = operandValues.value();
-                    if (!Interval(-1, 1).strictlyOverlaps(operandValue)) {
-                        throw Error(new PlaceholderError());
-                    }
                     results *= -1.0 / opensolid::sqrt(1 - operandValue.squared());
                 }
             );

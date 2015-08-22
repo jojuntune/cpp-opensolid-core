@@ -49,7 +49,7 @@ namespace opensolid
 
     class Plane3d :
         public Convertible<Plane3d>,
-        public Transformable<Plane3d, 3>,
+        public Transformable<Plane3d, Point<3>>,
         public FrameBase<3, 2>
     {
     private:
@@ -74,8 +74,24 @@ namespace opensolid
             const Point<3>& originPoint,
             const UnitVector<3>& xDirectionVector,
             const UnitVector<3>& yDirectionVector,
+            const UnitVector<3>& normalVector
+        );
+
+        OPENSOLID_CORE_EXPORT
+        Plane3d(
+            const Point<3>& originPoint,
+            const UnitVector<3>& xDirectionVector,
+            const UnitVector<3>& yDirectionVector,
+            Handedness handedness
+        );
+
+        OPENSOLID_CORE_EXPORT
+        Plane3d(
+            const Point<3>& originPoint,
+            const UnitVector<3>& xDirectionVector,
+            const UnitVector<3>& yDirectionVector,
             const UnitVector<3>& normalVector,
-            Handedness handedness = Handedness::rightHanded()
+            Handedness handedness
         );
 
         OPENSOLID_CORE_EXPORT
@@ -150,33 +166,9 @@ namespace opensolid
         Axis<3>
         normalAxis() const;
 
-        OPENSOLID_CORE_EXPORT
+        template <class TTransformation>
         Plane3d
-        scaledAbout(const Point<3>& point, double scale) const;
-
-        OPENSOLID_CORE_EXPORT
-        Plane3d
-        rotatedAbout(const Point<3>& point, const Matrix<double, 3, 3>& rotationMatrix) const;
-
-        using Transformable<Plane3d, 3>::rotatedAbout;
-
-        OPENSOLID_CORE_EXPORT
-        Plane3d
-        translatedBy(const Vector<double, 3>& vector) const;
-
-        OPENSOLID_CORE_EXPORT
-        Plane3d
-        toLocalIn(const Frame<3>& frame) const;
-
-        OPENSOLID_CORE_EXPORT
-        Plane3d
-        toGlobalFrom(const Frame<3>& frame) const;
-
-        OPENSOLID_CORE_EXPORT
-        Plane3d
-        mirroredAbout(const Point<3>& point, const UnitVector<3>& directionVector) const;
-
-        using Transformable<Plane3d, 3>::mirroredAbout;
+        transformedBy(const TTransformation& transformation) const;
 
         OPENSOLID_CORE_EXPORT
         ParametricExpression<Point<3>, Point<2>>

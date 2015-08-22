@@ -28,18 +28,21 @@
 
 namespace opensolid
 {
-    ParametricSurface3d::ParametricSurface3d() {
+    ParametricSurface3d::ParametricSurface3d() :
+        _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     ParametricSurface3d::ParametricSurface3d(const ParametricSurface3d& other) :
         _expression(other.expression()),
         _domain(other.domain()),
+        _handedness(other.handedness()),
         _bounds(other.bounds()) {
     }
 
     ParametricSurface3d::ParametricSurface3d(ParametricSurface3d&& other) :
         _expression(std::move(other.expression())),
         _domain(other.domain()),
+        _handedness(other.handedness()),
         _bounds(other.bounds()) {
     }
 
@@ -48,6 +51,17 @@ namespace opensolid
         const BoundedArea2d& domain
     ) : _expression(expression),
         _domain(domain),
+        _handedness(Handedness::RIGHT_HANDED()),
+        _bounds(expression.evaluate(domain.bounds())) {
+    }
+
+    ParametricSurface3d::ParametricSurface3d(
+        const ParametricExpression<Point3d, Point2d>& expression,
+        const BoundedArea2d& domain,
+        Handedness handedness
+    ) : _expression(expression),
+        _domain(domain),
+        _handedness(handedness),
         _bounds(expression.evaluate(domain.bounds())) {
     }
 
@@ -61,51 +75,21 @@ namespace opensolid
         return expression().evaluate(parameterBounds);
     }
 
-    ParametricExpression<Vector3d, Point2d>
+    ParametricExpression<UnitVector3d, Point2d>
     ParametricSurface3d::normalVector() const {
-        return expression().derivative(0).cross(expression().derivative(1)).normalized();
-    }
-
-    ParametricSurface3d
-    ParametricSurface3d::scaledAbout(const Point3d& point, double scale) const {
-        return ParametricSurface3d(expression().scaledAbout(point, scale), domain());
-    }
-
-    ParametricSurface3d
-    ParametricSurface3d::rotatedAbout(const Point3d& point, const Matrix3d& rotationMatrix) const {
-        return ParametricSurface3d(expression().rotatedAbout(point, rotationMatrix), domain());
-    }
-
-    ParametricSurface3d
-    ParametricSurface3d::translatedBy(const Vector3d& vector) const {
-        return ParametricSurface3d(expression().translatedBy(vector), domain());
-    }
-
-    ParametricSurface3d
-    ParametricSurface3d::toLocalIn(const Frame3d& frame) const {
-        return ParametricSurface3d(expression().toLocalIn(frame), domain());
-    }
-
-    ParametricSurface3d
-    ParametricSurface3d::toGlobalFrom(const Frame3d& frame) const {
-        return ParametricSurface3d(expression().toGlobalFrom(frame), domain());
+        return (
+            handedness().sign() *
+            expression().derivative(0).cross(expression().derivative(1)).normalized()
+        );
     }
 
     ParametricArea2d
-    ParametricSurface3d::toLocalIn(const Plane3d& plane) const {
-        return ParametricArea2d(expression().toLocalIn(plane), domain());
+    ParametricSurface3d::projectedInto(const Plane3d& plane) const {
+        return ParametricArea2d(expression().projectedInto(plane), domain(), handedness());
     }
 
     ParametricSurface3d
     ParametricSurface3d::projectedOnto(const Plane3d& plane) const {
-        return ParametricSurface3d(expression().projectedOnto(plane), domain());
-    }
-
-    ParametricSurface3d
-    ParametricSurface3d::mirroredAbout(
-        const Point3d& point,
-        const UnitVector3d& mirrorDirection
-    ) const {
-        return ParametricSurface3d(expression().mirroredAbout(point, mirrorDirection), domain());
+        return ParametricSurface3d(expression().projectedOnto(plane), domain(), handedness());
     }
 }

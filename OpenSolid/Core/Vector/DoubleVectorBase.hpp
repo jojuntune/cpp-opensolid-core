@@ -77,52 +77,11 @@ namespace opensolid
         UnitVector<iNumDimensions>
         DoubleVectorBase<iNumDimensions>::normalized() const {
             double norm = this->norm();
-            if (norm == opensolid::Zero()) {
-                assert(false);
+            if (norm == 0.0) {
                 return UnitVector<iNumDimensions>();
+            } else {
+                return UnitVector<iNumDimensions>(this->components() / norm);
             }
-            return UnitVector<iNumDimensions>((1.0 / norm) * this->components());
-        }
-
-        template <int iNumDimensions>
-        inline
-        Vector<double, iNumDimensions>
-        DoubleVectorBase<iNumDimensions>::rotatedBy(
-            const Matrix<double, iNumDimensions, iNumDimensions>& rotationMatrix
-        ) const {
-            return Vector<double, iNumDimensions>(rotationMatrix * this->components());
-        }
-
-        template <int iNumDimensions>
-        inline
-        Vector<double, iNumDimensions>
-        DoubleVectorBase<iNumDimensions>::toLocalIn(const Frame<iNumDimensions>& frame) const {
-            return Vector<double, iNumDimensions>(
-                frame.basisMatrix().transposeProduct(this->components())
-            );
-        }
-
-        template <int iNumDimensions>
-        inline
-        Vector<double, iNumDimensions>
-        DoubleVectorBase<iNumDimensions>::toGlobalFrom(const Frame<iNumDimensions>& frame) const {
-            return Vector<double, iNumDimensions>(frame.basisMatrix() * this->components());
-        }
-
-        template <int iNumDimensions>
-        inline
-        Vector<double, iNumDimensions>
-        DoubleVectorBase<iNumDimensions>::projectedOnto(const Axis<iNumDimensions>& axis) const {
-            return this->dot(axis.directionVector()) * axis.directionVector();
-        }
-
-        template <int iNumDimensions>
-        inline
-        Vector<double, iNumDimensions>
-        DoubleVectorBase<iNumDimensions>::mirroredAlong(
-            const UnitVector<iNumDimensions>& mirrorDirection
-        ) const {
-            return derived() - 2.0 * this->dot(mirrorDirection) * mirrorDirection;
         }
 
         template <int iNumDimensions>

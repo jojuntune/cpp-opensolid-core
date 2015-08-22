@@ -31,7 +31,6 @@
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
-#include <cassert>
 #include <cstdlib>
 #include <limits>
 #include <algorithm>
@@ -67,6 +66,12 @@ namespace opensolid
     Interval::upperBound() const {
         return _upperBound;
     }
+
+    inline
+    Interval
+    Interval::bounds() const {
+        return *this;
+    }
     
     inline
     double
@@ -84,24 +89,6 @@ namespace opensolid
     double
     Interval::width() const {
         return upperBound() - lowerBound();
-    }
-
-    inline
-    double
-    Interval::clamp(double value) const {
-        if (value <= lowerBound()) {
-            return lowerBound();
-        } else if (value <= upperBound()) {
-            return value;
-        } else {
-            return upperBound();
-        }
-    }
-
-    inline
-    Interval
-    Interval::clamp(Interval interval) const {
-        return Interval(clamp(interval.lowerBound()), clamp(interval.upperBound()));
     }
 
     inline
@@ -595,11 +582,5 @@ namespace opensolid
     Interval
     abs2(Interval interval) {
         return interval.squared();
-    }
-    
-    inline
-    Interval
-    BoundsFunction<Interval>::operator()(Interval interval) const {
-        return interval;
     }
 }

@@ -52,4 +52,18 @@ namespace opensolid
     BoundedVolume3d::bounds() const {
         return boundaries().bounds();
     }
+
+    template <class TTransformation>
+    BoundedVolume3d
+    BoundedVolume3d::transformedBy(const TTransformation& transformation) const {
+        return BoundedVolume3d(
+            SpatialSet<ParametricSurface3d>(
+                boundaries().map(
+                    [&transformation] (const ParametricSurface3d& boundarySurface) {
+                        return boundarySurface.transformedBy(transformation);
+                    }
+                )
+            )
+        );
+    }
 }

@@ -28,7 +28,6 @@
 
 #include <OpenSolid/Core/Triangle.declarations.hpp>
 
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
@@ -36,6 +35,7 @@
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Simplex/TriangleBase.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
 
 namespace opensolid
 {
@@ -65,17 +65,25 @@ namespace opensolid
             const Point<2>& thirdVertex
         );
 
+        Triangle(
+            const Point<2>& firstVertex,
+            const Point<2>& secondVertex,
+            const Point<2>& thirdVertex,
+            Handedness handedness
+        );
+
+        LineSegment<2>
+        edge(int oppositeIndex) const;
+
         OPENSOLID_CORE_EXPORT
         double
         area() const;
 
         bool
-        contains(const Point<2>& point, double tolerance = 1e-12) const;
+        contains(const Point<2>& point) const;
 
         Triangle<3>
-        toGlobalFrom(const Plane3d& plane) const;
-
-        using detail::TriangleBase<2>::toGlobalFrom;
+        placedOnto(const Plane3d& plane) const;
 
         OPENSOLID_CORE_EXPORT
         static Triangle<2>
@@ -98,6 +106,16 @@ namespace opensolid
             const Point<3>& thirdVertex
         );
 
+        Triangle(
+            const Point<3>& firstVertex,
+            const Point<3>& secondVertex,
+            const Point<3>& thirdVertex,
+            Handedness handedness
+        );
+
+        LineSegment<3>
+        edge(int oppositeIndex) const;
+
         double
         area() const;
 
@@ -110,9 +128,7 @@ namespace opensolid
         plane() const;
 
         Triangle<2>
-        toLocalIn(const Plane3d& plane) const;
-
-        using detail::TriangleBase<3>::toLocalIn;
+        projectedInto(const Plane3d& plane) const;
 
         Triangle<3>
         projectedOnto(const Plane3d& plane) const;

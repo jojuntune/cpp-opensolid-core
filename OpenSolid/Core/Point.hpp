@@ -70,8 +70,8 @@ namespace opensolid
 
     inline
     Point3d
-    Point2d::toGlobalFrom(const Plane3d& plane) const {
-        return plane.originPoint() + Vector2d(components()).toGlobalFrom(plane);
+    Point2d::placedOnto(const Plane3d& plane) const {
+        return plane.originPoint() + Vector2d(components()).placedOnto(plane);
     }
 
     inline
@@ -120,8 +120,8 @@ namespace opensolid
 
     inline
     Point2d
-    Point3d::toLocalIn(const Plane3d& plane) const {
-        return Point2d((*this - plane.originPoint()).toLocalIn(plane).components());
+    Point3d::projectedInto(const Plane3d& plane) const {
+        return Point2d((*this - plane.originPoint()).projectedInto(plane).components());
     }
 
     inline
@@ -161,18 +161,5 @@ namespace opensolid
         double precision
     ) const {
         return (firstPoint - secondPoint).isZero(precision);
-    }
-
-    template <int iNumDimensions>
-    inline
-    Box<iNumDimensions>
-    BoundsFunction<Point<iNumDimensions>>::operator()(const Point<iNumDimensions>& point) const {
-        return Box<iNumDimensions>(
-            point.components().map(
-                [] (double component) -> Interval {
-                    return Interval(component);
-                }
-            )
-        );
     }
 }
