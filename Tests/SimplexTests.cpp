@@ -232,21 +232,21 @@ namespace opensolid
 TEST_CASE("Localization") {
     Triangle3d triangle3d(Point3d(1, 1, 1), Point3d(3, 1, 2), Point3d(2, 2, 4));
 
-    Triangle2d xyComponents = triangle3d.projectedInto(Plane3d::xy());
+    Triangle2d xyComponents = triangle3d.projectedInto(Plane3d::XY());
     REQUIRE(xyComponents.vertex(0).isEqualTo(Point2d(1, 1)));
     REQUIRE(xyComponents.vertex(1).isEqualTo(Point2d(3, 1)));
     REQUIRE(xyComponents.vertex(2).isEqualTo(Point2d(2, 2)));
     double xyArea = xyComponents.area();
     REQUIRE(xyArea > 0.0);
 
-    Triangle2d yzComponents = triangle3d.projectedInto(Plane3d::yz());
+    Triangle2d yzComponents = triangle3d.projectedInto(Plane3d::YZ());
     REQUIRE(yzComponents.vertex(0).isEqualTo(Point2d(1, 1)));
     REQUIRE(yzComponents.vertex(1).isEqualTo(Point2d(1, 2)));
     REQUIRE(yzComponents.vertex(2).isEqualTo(Point2d(2, 4)));
     double yzArea = yzComponents.area();
     REQUIRE(yzArea < 0.0);
 
-    double xzArea = triangle3d.projectedInto(Plane3d::xz()).area();
+    double xzArea = triangle3d.projectedInto(Plane3d::XZ()).area();
 
     double areaFromComponents = sqrt(xyArea * xyArea + yzArea * yzArea + xzArea * xzArea);
     REQUIRE((triangle3d.area() - areaFromComponents) == Zero());

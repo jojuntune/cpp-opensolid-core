@@ -70,7 +70,7 @@ TEST_CASE("Mirroring") {
     }
     SECTION("3D") {
         Circle3d original(Point3d(1.0, 1.0, 1.0), Vector3d(1.0, 1.0, 1.0).normalized(), 1.0);
-        Circle3d mirrored = original.mirroredAbout(Plane3d::xy());
+        Circle3d mirrored = original.mirroredAbout(Plane3d::XY());
         REQUIRE((mirrored.centerPoint() - Point3d(1.0, 1.0, -1.0)).isZero());
         REQUIRE(mirrored.normalVector().equals(Vector3d(1.0, 1.0, -1.0).normalized()));
         REQUIRE((mirrored.radius() - original.radius()) == Zero());

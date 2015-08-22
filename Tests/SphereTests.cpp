@@ -30,7 +30,7 @@ using namespace opensolid;
 
 TEST_CASE("Projection onto plane") {
     Sphere3d sphere(Point3d(3.0, 3.0, 3.0), 1.0);
-    Circle3d circle = sphere.projectedOnto(Plane3d::xy());
+    Circle3d circle = sphere.projectedOnto(Plane3d::XY());
     REQUIRE((circle.centerPoint() - Point3d(3.0, 3.0, 0.0)).isZero());
     REQUIRE(circle.normalVector().equals(UnitVector3d::Z()));
     REQUIRE((circle.radius() - sphere.radius()) == Zero());

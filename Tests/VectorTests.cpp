@@ -208,7 +208,7 @@ TEST_CASE("Unit vector mirroring") {
 
 TEST_CASE("Unit vector projection") {
     UnitVector3d original = Vector3d(1, 0, 1).normalized();
-    Vector3d projected = original.projectedOnto(Plane3d::xy());
+    Vector3d projected = original.projectedOnto(Plane3d::XY());
     REQUIRE((projected - Vector3d(1.0 / sqrt(2.0), 0.0, 0.0)).isZero());
 }
 

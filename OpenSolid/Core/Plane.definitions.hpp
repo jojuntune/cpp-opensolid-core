@@ -120,27 +120,27 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        xy();
+        XY();
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        xz();
+        XZ();
         
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        yx();
+        YX();
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        yz();
+        YZ();
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        zx();
+        ZX();
         
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        zy();
+        ZY();
 
         UnitVector<3>
         xDirectionVector() const;

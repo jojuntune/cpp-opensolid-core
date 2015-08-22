@@ -36,7 +36,7 @@ TEST_CASE("Transformation") {
     Point3d point(3, 2, 1);
     REQUIRE((point.rotatedAbout(Axis3d::Z(), M_PI / 2) - Point3d(-2, 3, 1)).isZero());
     REQUIRE((point.rotatedAbout(Axis3d::X(), M_PI / 2) - Point3d(3, -1, 2)).isZero());
-    REQUIRE((point.mirroredAbout(Plane3d::yz()) - Point3d(-3, 2, 1)).isZero());
+    REQUIRE((point.mirroredAbout(Plane3d::YZ()) - Point3d(-3, 2, 1)).isZero());
 }
 
 TEST_CASE("Points") {

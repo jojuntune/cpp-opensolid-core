@@ -228,7 +228,7 @@ namespace opensolid
     }
 
     Plane3d
-    Plane3d::xy() {
+    Plane3d::XY() {
         return Plane3d(
             Point3d::origin(),
             UnitVector3d::X(),
@@ -239,7 +239,7 @@ namespace opensolid
     }
 
     Plane3d
-    Plane3d::xz() {
+    Plane3d::XZ() {
         return Plane3d(
             Point3d::origin(),
             UnitVector3d::X(),
@@ -250,7 +250,7 @@ namespace opensolid
     }
     
     Plane3d
-    Plane3d::yx() {
+    Plane3d::YX() {
         return Plane3d(
             Point3d::origin(),
             UnitVector3d::Y(),
@@ -261,7 +261,7 @@ namespace opensolid
     }
 
     Plane3d
-    Plane3d::yz() {
+    Plane3d::YZ() {
         return Plane3d(
             Point3d::origin(),
             UnitVector3d::Y(),
@@ -272,7 +272,7 @@ namespace opensolid
     }
 
     Plane3d
-    Plane3d::zx() {
+    Plane3d::ZX() {
         return Plane3d(
             Point3d::origin(),
             UnitVector3d::Z(),
@@ -283,7 +283,7 @@ namespace opensolid
     }
     
     Plane3d
-    Plane3d::zy() {
+    Plane3d::ZY() {
         return Plane3d(
             Point3d::origin(),
             UnitVector3d::Z(),
