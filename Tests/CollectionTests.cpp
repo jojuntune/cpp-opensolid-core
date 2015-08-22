@@ -147,14 +147,16 @@ TEST_CASE("Where") {
 }
 
 TEST_CASE("Conversion") {
-    std::vector<double> subset = valueSet().overlapping(Interval(3, 5)).where(
+    std::vector<Indexed<double>> subset = valueSet().overlapping(Interval(3, 5)).where(
         [] (double value) -> bool {
             return int(value) % 2 != 0;
         }
     );
     REQUIRE(subset.size() == 2);
     REQUIRE(subset[0] == 3.0);
+    REQUIRE(subset[0].index() == 2);
     REQUIRE(subset[1] == 5.0);
+    REQUIRE(subset[1].index() == 4);
 }
 
 TEST_CASE("Empty") {

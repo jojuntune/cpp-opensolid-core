@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/BoundsFunction.definitions.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Indexed.declarations.hpp>
 #include <OpenSolid/Core/LazyCollection.definitions.hpp>
 #include <OpenSolid/Core/LazyCollection/ContainPredicate.declarations.hpp>
 #include <OpenSolid/Core/LazyCollection/FilteredSpatialSet.declarations.hpp>
@@ -149,10 +150,10 @@ namespace opensolid
         bool
         contains(const TItem& item, double precision = 1e-12) const;
 
-        std::vector<TItem>
+        std::vector<Indexed<TItem>>
         uniqueItems(double precision = 1e-12) const;
 
-        std::vector<TItem>
+        std::vector<Indexed<TItem>>
         uniqueItems(std::vector<std::size_t>& mapping, double precision = 1e-12) const;
     };
     

@@ -79,13 +79,14 @@ TEST_CASE("Integer") {
     std::vector<double> expected(list);
     std::sort(expected.begin(), expected.end());
 
-    std::vector<double> actual = set.filtered(
+    std::vector<Indexed<double>> actual = set.filtered(
         [] (Interval bounds) -> bool {
             return true;
         }
     );
 
-    REQUIRE(actual == expected);
+    REQUIRE(actual.size() == expected.size());
+    REQUIRE(std::equal(actual.begin(), actual.end(), expected.begin()));
 }
 
 TEST_CASE("Interval") {
@@ -132,10 +133,12 @@ TEST_CASE("Double overlapping") {
     list[3] = 4;
     list[4] = 2;
     SpatialSet<double> set(list);
-    std::vector<double> overlapping = set.overlapping(Interval(2.5, 4.5));
+    std::vector<Indexed<double>> overlapping = set.overlapping(Interval(2.5, 4.5));
     REQUIRE(overlapping.size() == 2u);
     REQUIRE(overlapping.front() == 3);
+    REQUIRE(overlapping.front().index() == 1);
     REQUIRE(overlapping.back() == 4);
+    REQUIRE(overlapping.back().index() == 3);
 }
 
 TEST_CASE("2D vector overlapping") {
@@ -145,12 +148,14 @@ TEST_CASE("2D vector overlapping") {
     list[2] = Vector2d(1, 3);
     list[3] = Vector2d(5, 3);
     SpatialSet<Vector2d> set(list.begin(), list.end());
-    std::vector<Vector2d> check = set.overlapping(
+    std::vector<Indexed<Vector2d>> check = set.overlapping(
         IntervalVector2d(Interval(1, 5), Interval(2, 4))
     );
     REQUIRE(check.size() == 2u);
     REQUIRE(check[0] == Vector2d(1, 3));
+    REQUIRE(check[0].index() == 2);
     REQUIRE(check[1] == Vector2d(5, 3));
+    REQUIRE(check[1].index() == 3);
 }
 
 TEST_CASE("3D point") {
@@ -161,7 +166,7 @@ TEST_CASE("3D point") {
 
     SpatialSet<Point3d> pointSet(pointList);
     Box3d testBox(Interval(1, 3), Interval(1, 5), Interval(1, 7));
-    std::vector<Point3d> overlappingPoints = pointSet.overlapping(testBox);
+    std::vector<Indexed<Point3d>> overlappingPoints = pointSet.overlapping(testBox);
     std::sort(
         overlappingPoints.begin(),
         overlappingPoints.end(),
@@ -171,7 +176,9 @@ TEST_CASE("3D point") {
     );
     REQUIRE(overlappingPoints.size() == 2);
     REQUIRE(overlappingPoints[0] == Point3d(1, 2, 3));
+    REQUIRE(overlappingPoints[0].index() == 0);
     REQUIRE(overlappingPoints[1] == Point3d(2, 4, 6));
+    REQUIRE(overlappingPoints[1].index() == 2);
 }
 
 TEST_CASE("Point set transformation") {
@@ -293,13 +300,17 @@ TEST_CASE("Unique") {
     testPoints[6] = Point2d(2 + 1e-14, 2 + 1e-14);
     testPoints[7] = Point2d(0, 2);
 
-    std::vector<Point2d> uniquePointsTolerant = SpatialSet<Point2d>(testPoints).uniqueItems();
-    std::vector<Point2d> uniquePointsExact = SpatialSet<Point2d>(testPoints).uniqueItems(0.0);
+    std::vector<Indexed<Point2d>> uniquePointsTolerant = (
+        SpatialSet<Point2d>(testPoints).uniqueItems()
+    );
+    std::vector<Indexed<Point2d>> uniquePointsExact = (
+        SpatialSet<Point2d>(testPoints).uniqueItems(0.0)
+    );
 
     REQUIRE(uniquePointsTolerant.size() == 4);
     REQUIRE(uniquePointsTolerant.size() < uniquePointsExact.size());
 
-    std::vector<Point2d> sortedPoints = uniquePointsTolerant;
+    std::vector<Indexed<Point2d>> sortedPoints = uniquePointsTolerant;
     std::sort(
         sortedPoints.begin(),
         sortedPoints.end(),
@@ -312,6 +323,10 @@ TEST_CASE("Unique") {
     REQUIRE((sortedPoints[1] - Point2d(2, 2)).isZero());
     REQUIRE((sortedPoints[2] - Point2d(1, 2)).isZero());
     REQUIRE((sortedPoints[3] - Point2d(0, 2)).isZero());
+
+    for (const Indexed<Point2d>& indexedPoint: sortedPoints) {
+        REQUIRE(indexedPoint == testPoints[indexedPoint.index()]);
+    }
 }
 
 TEST_CASE("Unique mapping") {
@@ -323,7 +338,7 @@ TEST_CASE("Unique mapping") {
     values[4] = 3.0;
 
     std::vector<std::size_t> mapping;
-    std::vector<double> uniqueItems = SpatialSet<double>(values).uniqueItems(mapping);
+    std::vector<Indexed<double>> uniqueItems = SpatialSet<double>(values).uniqueItems(mapping);
 
     REQUIRE(mapping.size() == 5);
     REQUIRE(mapping[0] == 0);
@@ -331,6 +346,11 @@ TEST_CASE("Unique mapping") {
     REQUIRE(mapping[2] == 1);
     REQUIRE(mapping[3] == 2);
     REQUIRE(mapping[4] == 2);
+
+    REQUIRE(uniqueItems.size() == 3);
+    REQUIRE(uniqueItems[0].index() == 0);
+    REQUIRE(uniqueItems[1].index() == 1);
+    REQUIRE(uniqueItems[2].index() == 3);
 }
 
 TEST_CASE("Unique points") {
@@ -343,9 +363,13 @@ TEST_CASE("Unique points") {
     points[5] = Point3d(14.673119544983, 2, -17.180282592773);
 
     SpatialSet<Point3d> pointSet(points);
-    std::vector<Point3d> uniquePoints = pointSet.uniqueItems();
+    std::vector<Indexed<Point3d>> uniquePoints = pointSet.uniqueItems();
 
     REQUIRE(uniquePoints.size() == 4u);
+
+    for (const Indexed<Point3d>& indexedPoint: uniquePoints) {
+        REQUIRE(indexedPoint == points[indexedPoint.index()]);
+    }
 }
 
 TEST_CASE("Find") {

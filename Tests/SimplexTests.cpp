@@ -304,9 +304,10 @@ TEST_CASE("Set") {
 
     SpatialSet<Triangle3d> set(triangles);
 
-    std::vector<Triangle3d> overlapping = set.overlapping(triangles[0].bounds());
+    std::vector<Indexed<Triangle3d>> overlapping = set.overlapping(triangles[0].bounds());
     REQUIRE(overlapping.size() == 1u);
     REQUIRE(overlapping.front() == triangles[0]);
+    REQUIRE(overlapping.front().index() == 0);
 }
 
 TEST_CASE("Vector") {

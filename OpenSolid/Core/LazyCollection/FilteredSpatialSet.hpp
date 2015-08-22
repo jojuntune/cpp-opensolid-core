@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/LazyCollection/FilteredSpatialSet.definitions.hpp>
 
+#include <OpenSolid/Core/Indexed.hpp>
 #include <OpenSolid/Core/LazyCollection.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 
@@ -75,7 +76,8 @@ namespace opensolid
         FilteredSpatialSet<TItem, TBoundsPredicate>::begin() const {
             return FilteredSpatialSetIterator<TItem, TBoundsPredicate>(
                 _set.rootNode(),
-                &_boundsPredicate
+                &_boundsPredicate,
+                _set.isEmpty() ? nullptr : &_set[0]
             );
         }
 
@@ -85,7 +87,8 @@ namespace opensolid
         FilteredSpatialSet<TItem, TBoundsPredicate>::end() const {
             return FilteredSpatialSetIterator<TItem, TBoundsPredicate>(
                 nullptr,
-                &_boundsPredicate
+                &_boundsPredicate,
+                _set.isEmpty() ? nullptr : &_set[0]
             );
         }
 
@@ -139,29 +142,47 @@ namespace opensolid
 
         template <class TItem, class TBoundsPredicate>
         inline
-        const TItem&
+        Indexed<TItem>
         FilteredSpatialSetIterator<TItem, TBoundsPredicate>::dereference() const {
-            return *(_currentNodePtr->itemPtr);
+            const TItem* itemPtr = _currentNodePtr->itemPtr;
+            return Indexed<TItem>(*itemPtr, itemPtr - _firstItemPtr);
         }
 
         template <class TItem, class TBoundsPredicate>
         inline
         FilteredSpatialSetIterator<TItem, TBoundsPredicate>::FilteredSpatialSetIterator() :
             _currentNodePtr(nullptr),
-            _boundsPredicatePtr(nullptr) {
+            _boundsPredicatePtr(nullptr),
+            _firstItemPtr(nullptr) {
         }
 
         template <class TItem, class TBoundsPredicate>
         inline
         FilteredSpatialSetIterator<TItem, TBoundsPredicate>::FilteredSpatialSetIterator(
             const SpatialSetNode<TItem>* rootNodePtr,
-            const TBoundsPredicate* boundsPredicatePtr
+            const TBoundsPredicate* boundsPredicatePtr,
+            const TItem* firstItemPtr
         ) : _currentNodePtr(nullptr),
-            _boundsPredicatePtr(boundsPredicatePtr) {
+            _boundsPredicatePtr(boundsPredicatePtr),
+            _firstItemPtr(firstItemPtr) {
 
             if (rootNodePtr) {
                 descendFrom(rootNodePtr);
             }
+        }
+
+        template <class TItem, class TBoundsPredicate>
+        inline
+        const TItem&
+        FilteredSpatialSetIterator<TItem, TBoundsPredicate>::item() const {
+            return *(_currentNodePtr->itemPtr);
+        }
+
+        template <class TItem, class TBoundsPredicate>
+        inline
+        std::size_t
+        FilteredSpatialSetIterator<TItem, TBoundsPredicate>::index() const {
+            return _currentNodePtr->itemPtr - _firstItemPtr;
         }
     }
 }
