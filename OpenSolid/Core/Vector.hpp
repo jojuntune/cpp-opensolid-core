@@ -29,7 +29,6 @@
 #include <OpenSolid/Core/Vector.definitions.hpp>
 
 #include <OpenSolid/Core/Axis.hpp>
-#include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/BoundsType.hpp>
 #include <OpenSolid/Core/Cartesian/CartesianBase.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
