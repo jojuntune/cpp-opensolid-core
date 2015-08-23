@@ -110,13 +110,13 @@ namespace opensolid
             intersection(const Box<iNumDimensions>& other) const;
 
             static const Box<iNumDimensions>
-            unit();
+            UNIT();
 
             static const Box<iNumDimensions>
-            empty();
+            EMPTY();
 
             static const Box<iNumDimensions>
-            whole();
+            WHOLE();
         };
     }
 }

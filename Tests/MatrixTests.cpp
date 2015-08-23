@@ -158,8 +158,8 @@ TEST_CASE("2D Interval matrix inversion") {
             return testComponent.contains(identityComponent);
         };
 
-        REQUIRE((matrix * inverse).binaryAll(Matrix2d::identity(), containsFunction));
-        REQUIRE((inverse * matrix).binaryAll(Matrix2d::identity(), containsFunction));
+        REQUIRE((matrix * inverse).binaryAll(Matrix2d::IDENTITY(), containsFunction));
+        REQUIRE((inverse * matrix).binaryAll(Matrix2d::IDENTITY(), containsFunction));
     }
 }
 
@@ -172,8 +172,8 @@ TEST_CASE("3D Interval matrix inversion") {
             return testComponent.contains(identityComponent);
         };
 
-        REQUIRE((matrix * inverse).binaryAll(Matrix3d::identity(), containsFunction));
-        REQUIRE((inverse * matrix).binaryAll(Matrix3d::identity(), containsFunction));
+        REQUIRE((matrix * inverse).binaryAll(Matrix3d::IDENTITY(), containsFunction));
+        REQUIRE((inverse * matrix).binaryAll(Matrix3d::IDENTITY(), containsFunction));
     }
 }
 
@@ -509,7 +509,7 @@ TEST_CASE("Dynamic matrix product") {
 
 TEST_CASE("Block assignment") {
     Matrix3d matrix;
-    matrix.block<2, 2>(1, 1) = Matrix2d::ones();
+    matrix.block<2, 2>(1, 1) = Matrix2d::ONES();
     REQUIRE(matrix(0, 0) == 0);
     REQUIRE(matrix(1, 0) == 0);
     REQUIRE(matrix(2, 0) == 0);
@@ -537,7 +537,7 @@ TEST_CASE("Dynamic matrix block assignment") {
 
 TEST_CASE("Block-to-block assignment") {
     Matrix3d matrix;
-    matrix.block<2, 2>(0, 1) = Matrix3d::identity().block(1, 0, 2, 2);
+    matrix.block<2, 2>(0, 1) = Matrix3d::IDENTITY().block(1, 0, 2, 2);
     for (int columnIndex = 0; columnIndex < 3; ++columnIndex) {
         for (int rowIndex = 0; rowIndex < 3; ++rowIndex) {
             if (rowIndex == 0 && columnIndex == 2) {
@@ -550,7 +550,7 @@ TEST_CASE("Block-to-block assignment") {
 }
 
 TEST_CASE("Same-type view assignment") {
-    Matrix3d matrix = Matrix3d::identity();
+    Matrix3d matrix = Matrix3d::IDENTITY();
     auto column0 = matrix.column(0);
     auto column1 = matrix.column(1);
     auto column2 = matrix.column(2);
@@ -697,7 +697,7 @@ TEST_CASE("Construction from columns") {
         Matrix2xX matrix = Matrix2xX::fromColumns(
             ColumnMatrix2d(1.0, 0.0),
             ColumnMatrix2d(0.0, 1.0),
-            ColumnMatrix2d::zero()
+            ColumnMatrix2d::ZERO()
         );
         REQUIRE(matrix.numRows() == 2);
         REQUIRE(matrix.numColumns() == 3);

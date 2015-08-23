@@ -75,7 +75,7 @@ namespace opensolid
             if (norm == opensolid::Zero()) {
                 assert(false);
                 return Vector<Interval, iNumDimensions>(
-                    Matrix<Interval, iNumDimensions, 1>::constant(Interval::empty())
+                    Matrix<Interval, iNumDimensions, 1>::constant(Interval::EMPTY())
                 );
             }
             return Vector<Interval, iNumDimensions>((1.0 / norm) * this->components());
@@ -315,33 +315,6 @@ namespace opensolid
             const Vector<Interval, iNumDimensions>& other
         ) {
             this->components() -= other.components();
-        }
-
-        template <int iNumDimensions>
-        inline
-        Vector<Interval, iNumDimensions>
-        IntervalVectorBase<iNumDimensions>::unit() {
-            return Vector<Interval, iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::constant(Interval::unit())
-            );
-        }
-
-        template <int iNumDimensions>
-        inline
-        Vector<Interval, iNumDimensions>
-        IntervalVectorBase<iNumDimensions>::empty() {
-            return Vector<Interval, iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::constant(Interval::empty())
-            );
-        }
-
-        template <int iNumDimensions>
-        inline
-        Vector<Interval, iNumDimensions>
-        IntervalVectorBase<iNumDimensions>::whole() {
-            return Vector<Interval, iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::constant(Interval::whole())
-            );
         }
     }
 }

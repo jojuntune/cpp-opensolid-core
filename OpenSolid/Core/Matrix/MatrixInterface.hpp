@@ -1039,7 +1039,7 @@ namespace opensolid
             return (
                 firstComponent - secondComponent == Zero() ?
                 Interval(firstComponent + 0.5 * (secondComponent - firstComponent)) :
-                Interval::empty()
+                Interval::EMPTY()
             );
         }
 
@@ -1049,7 +1049,7 @@ namespace opensolid
             return (
                 secondComponent.contains(firstComponent) ?
                 Interval(firstComponent) :
-                Interval::empty()
+                Interval::EMPTY()
             );
         }
 
@@ -1059,7 +1059,7 @@ namespace opensolid
             return (
                 firstComponent.contains(secondComponent) ?
                 Interval(secondComponent) :
-                Interval::empty()
+                Interval::EMPTY()
             );
         }
 

@@ -125,6 +125,12 @@ namespace opensolid
     }
 
     inline
+    Vector2d
+    Vector2d::ZERO() {
+        return Vector2d(0.0, 0.0);
+    }
+
+    inline
     Vector3d::Vector() {
     }
 
@@ -225,6 +231,12 @@ namespace opensolid
     }
 
     inline
+    Vector3d
+    Vector3d::ZERO() {
+        return Vector3d(0.0, 0.0, 0.0);
+    }
+
+    inline
     IntervalVector2d::Vector() :
         detail::IntervalVectorBase<2>() {
     }
@@ -255,6 +267,24 @@ namespace opensolid
     const IntervalVector2d&
     IntervalVector2d::bounds() const {
         return *this;
+    }
+
+    inline
+    IntervalVector2d
+    IntervalVector2d::WHOLE() {
+        return IntervalVector2d(Interval::WHOLE(), Interval::WHOLE());
+    }
+
+    inline
+    IntervalVector2d
+    IntervalVector2d::EMPTY() {
+        return IntervalVector2d(Interval::EMPTY(), Interval::EMPTY());
+    }
+
+    inline
+    IntervalVector2d
+    IntervalVector2d::UNIT() {
+        return IntervalVector2d(Interval::UNIT(), Interval::UNIT());
     }
 
     inline
@@ -308,6 +338,24 @@ namespace opensolid
             z() * other.x() - x() * other.z(),
             x() * other.y() - y() * other.x()
         );
+    }
+
+    inline
+    IntervalVector3d
+    IntervalVector3d::WHOLE() {
+        return IntervalVector3d(Interval::WHOLE(), Interval::WHOLE(), Interval::WHOLE());
+    }
+
+    inline
+    IntervalVector3d
+    IntervalVector3d::EMPTY() {
+        return IntervalVector3d(Interval::EMPTY(), Interval::EMPTY(), Interval::EMPTY());
+    }
+
+    inline
+    IntervalVector3d
+    IntervalVector3d::UNIT() {
+        return IntervalVector3d(Interval::UNIT(), Interval::UNIT(), Interval::UNIT());
     }
 
     template <class TScalar, int iNumDimensions>

@@ -121,6 +121,12 @@ namespace opensolid
     Sphere3d::projectedInto(const Plane3d& plane) const {
         return Circle2d(centerPoint().projectedInto(plane), radius());
     }
+
+    inline
+    Sphere3d
+    Sphere3d::UNIT() {
+        return Sphere3d(Point3d::ORIGIN(), 1.0);
+    }
     
     inline
     bool

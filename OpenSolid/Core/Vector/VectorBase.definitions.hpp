@@ -75,7 +75,7 @@ namespace opensolid
             intersection(const Vector<TOtherScalar, iNumDimensions>& other) const;
 
             static Vector<TScalar, iNumDimensions>
-            zero();
+            ZERO();
 
             static Vector<TScalar, iNumDimensions>
             random();

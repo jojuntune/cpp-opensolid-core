@@ -74,5 +74,5 @@ TEST_CASE("2D") {
 
 TEST_CASE("Planes") {
     REQUIRE(Point2d(5, 6).placedOnto(Plane3d::XY()).isEqualTo(Point3d(5, 6, 0)));
-    REQUIRE(Point2d(1, 2).placedOnto(Plane3d::zy()).isEqualTo(Point3d(0, 2, 1)));
+    REQUIRE(Point2d(1, 2).placedOnto(Plane3d::ZY()).isEqualTo(Point3d(0, 2, 1)));
 }

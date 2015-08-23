@@ -320,7 +320,7 @@ TEST_CASE("Transformation") {
     frame = frame.rotatedAbout(frame.zAxis(), M_PI / 4);
 
     Parameter1d t;
-    ParametricExpression<Point3d, double> linear = Point3d::origin() + Vector3d(1.0, 1.0, 1.0) * t;
+    ParametricExpression<Point3d, double> linear = Point3d::ORIGIN() + Vector3d(1.0, 1.0, 1.0) * t;
     ParametricExpression<Point3d, double> product = linear.placedIn(frame);
     ParametricExpression<Point3d, double> quotient = linear.relativeTo(frame);
 
@@ -329,7 +329,7 @@ TEST_CASE("Transformation") {
     std::vector<Point3d> expectedQuotientValues(5);
     for (int i = 0; i < 5; ++i) {
         parameterValues[i] = i / 4.0;
-        Point3d expectedValue =  Point3d::origin() + Vector3d(1.0, 1.0, 1.0) * parameterValues[i];
+        Point3d expectedValue =  Point3d::ORIGIN() + Vector3d(1.0, 1.0, 1.0) * parameterValues[i];
         expectedProductValues[i] = expectedValue.placedIn(frame);
         expectedQuotientValues[i] = expectedValue.relativeTo(frame);
     }

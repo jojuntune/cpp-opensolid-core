@@ -70,7 +70,7 @@ TEST_CASE("Composite rotation 3D") {
     Quaternion3d quaternion = Quaternion3d(UnitVector3d::Z(), M_PI / 4) *
         Quaternion3d(UnitVector3d::Y(), -inclinationAngle);
     Frame3d frame(
-        Point3d::origin(),
+        Point3d::ORIGIN(),
         Vector3d(1, 1, 1).normalized(),
         Vector3d(-1, 1, 0).normalized(),
         Vector3d(-1, -1, 2).normalized()
@@ -125,14 +125,14 @@ TEST_CASE("Slerp 2D") {
 }
 
 TEST_CASE("Slerp 3D") {
-    Quaternion3d initial = Quaternion3d::identity();
+    Quaternion3d initial = Quaternion3d::IDENTITY();
     Quaternion3d final =
         Quaternion3d(UnitVector3d::Z(), M_PI / 2) * Quaternion3d(UnitVector3d::X(), -M_PI / 2);
     Quaternion3d relative = final * initial.inverse();
     UnitVector3d directionVector = relative.unitVector();
     CAPTURE(relative.unitVector())
     CAPTURE(relative.angle());
-    Axis3d axis(Point3d::origin(), directionVector);
+    Axis3d axis(Point3d::ORIGIN(), directionVector);
     double angle = relative.angle();
 
     SECTION("Initial") {
@@ -209,7 +209,7 @@ TEST_CASE("Slerp of equal quaternions 3D") {
 }
 
 TEST_CASE("Degenerate slerp 2D") {
-    Quaternion2d initial = Quaternion2d::identity();
+    Quaternion2d initial = Quaternion2d::IDENTITY();
     Quaternion2d final(M_PI);
     CAPTURE(initial.dot(final));
 

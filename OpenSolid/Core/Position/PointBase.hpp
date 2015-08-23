@@ -182,8 +182,8 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         Point<iNumDimensions>
-        PointBase<iNumDimensions>::origin() {
-            return Point<iNumDimensions>(Matrix<double, iNumDimensions, 1>::zero());
+        PointBase<iNumDimensions>::ORIGIN() {
+            return Point<iNumDimensions>(Matrix<double, iNumDimensions, 1>::ZERO());
         }
     }
 }

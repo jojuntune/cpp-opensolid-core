@@ -97,7 +97,7 @@ namespace opensolid
             operator!=(const Point<iNumDimensions>& other) const;
 
             static Point<iNumDimensions>
-            origin();
+            ORIGIN();
         };
     }
 }

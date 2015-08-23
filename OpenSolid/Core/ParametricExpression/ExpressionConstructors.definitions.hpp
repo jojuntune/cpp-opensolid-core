@@ -39,8 +39,8 @@ namespace opensolid
         class ZeroExpressionConstructor
         {
         public:
-            static ParametricExpression<TValue, TParameter>
-            zero();
+            static const ParametricExpression<TValue, TParameter>&
+            ZERO();
         };
 
         template <class TValue, class TParameter>
@@ -87,8 +87,8 @@ namespace opensolid
         class IdentityExpressionConstructor<TValue, TValue>
         {
         public:
-            static ParametricExpression<TValue, TValue>
-            identity();
+            static const ParametricExpression<TValue, TValue>&
+            IDENTITY();
         };
 
         template <class TValue, int iValueDimension, class TParameter>

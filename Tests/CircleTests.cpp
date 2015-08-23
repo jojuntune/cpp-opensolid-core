@@ -31,7 +31,7 @@ using namespace opensolid;
 TEST_CASE("Rotation") {
     SECTION("2D") {
         Circle2d original(Point2d(1, 1), 1.0);
-        Circle2d rotated = original.rotatedAbout(Point2d::origin(), M_PI / 4.0);
+        Circle2d rotated = original.rotatedAbout(Point2d::ORIGIN(), M_PI / 4.0);
         REQUIRE((rotated.centerPoint() - Point2d(0.0, sqrt(2.0))).isZero());
         REQUIRE((rotated.radius() - 1.0) == Zero());
     }
@@ -46,7 +46,7 @@ TEST_CASE("Rotation") {
 
 TEST_CASE("Scaling") {
     SECTION("2D") {
-        Circle2d original(Point2d::origin(), 1.0);
+        Circle2d original(Point2d::ORIGIN(), 1.0);
         Circle2d scaled = original.scaledAbout(Point2d(-1.0, -1.0), 2.0);
         REQUIRE((scaled.centerPoint() - Point2d(1.0, 1.0)).isZero());
         REQUIRE((scaled.radius() - 2.0) == Zero());
@@ -63,7 +63,7 @@ TEST_CASE("Scaling") {
 TEST_CASE("Mirroring") {
     SECTION("2D") {
         Circle2d original(Point2d(0.0, 3.0), 2.0);
-        Axis2d slopedAxis(Point2d::origin(), Vector2d(1.0, 1.0).normalized());
+        Axis2d slopedAxis(Point2d::ORIGIN(), Vector2d(1.0, 1.0).normalized());
         Circle2d mirrored = original.mirroredAbout(slopedAxis);
         REQUIRE((mirrored.centerPoint() - Point2d(3.0, 0.0)).isZero());
         REQUIRE((mirrored.radius() - original.radius()) == Zero());

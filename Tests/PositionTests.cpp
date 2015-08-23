@@ -43,7 +43,7 @@ TEST_CASE("Points") {
     Point3d point1(1, 2, 3);
     Point3d point2(Vector3d(1, 2, 3).components());
     Point3d point3(4, 5, 6);
-    Point3d origin = Point3d::origin();
+    Point3d origin = Point3d::ORIGIN();
     REQUIRE((point1 - point2).isZero());
     REQUIRE(origin.components().isZero());
     REQUIRE(origin.isOrigin());
@@ -104,7 +104,7 @@ TEST_CASE("Box interpolation") {
     Box3d box(Interval(1, 2), Interval(3, 4), Interval(5, 6));
     REQUIRE((box.interpolated(0.5, 0.5, 0.5) - Point3d(1.5, 3.5, 5.5)).isZero());
     REQUIRE((box.interpolated(0.0, 0.0, 0.0) - Point3d(1, 3, 5)).isZero());
-    Box3d wholeBox = box.interpolated(Interval::unit(), Interval::unit(), Interval::unit());
+    Box3d wholeBox = box.interpolated(Interval::UNIT(), Interval::UNIT(), Interval::UNIT());
     REQUIRE(wholeBox.contains(box));
     REQUIRE(box.contains(wholeBox));
 }
@@ -132,7 +132,7 @@ TEST_CASE("3D point predicates") {
     REQUIRE_FALSE(Point3d(2, 3, 5).isOn(axis));
 
     REQUIRE(Point3d(0, 0, 2).isOn(plane));
-    REQUIRE_FALSE(Point3d::origin().isOn(plane));
+    REQUIRE_FALSE(Point3d::ORIGIN().isOn(plane));
 
     REQUIRE(lineSegment.centroid().isOn(lineSegment));
     REQUIRE(lineSegment.endVertex().isOn(lineSegment));

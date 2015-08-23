@@ -99,6 +99,9 @@ namespace opensolid
         placedOnto(const Plane3d& plane) const;
 
         static Circle<2>
+        UNIT();
+
+        static Circle<2>
         circumcircle(const Triangle<2>& triangle);
     };
 

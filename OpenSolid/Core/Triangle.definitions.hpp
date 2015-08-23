@@ -86,8 +86,8 @@ namespace opensolid
         placedOnto(const Plane3d& plane) const;
 
         OPENSOLID_CORE_EXPORT
-        static Triangle<2>
-        unit();
+        static const Triangle<2>&
+        UNIT();
     };
 
     typedef Triangle<2> Triangle2d;

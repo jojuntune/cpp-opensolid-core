@@ -138,7 +138,7 @@ TEST_CASE("Curve operations") {
 
 TEST_CASE("Multi-evaluation") {
     ParametricCurve2d arc = ParametricCurve2d::arc(
-        Point2d::origin(),
+        Point2d::ORIGIN(),
         COUNTERCLOCKWISE,
         Point2d(1, 0),
         Point2d(0, 1)

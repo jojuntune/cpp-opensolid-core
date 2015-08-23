@@ -51,5 +51,5 @@ Interested in helping with OpenSolid development? Great! Once you have successfu
     LineSegment3d lineSegment(Point3d(1, 2, 3), Point3d(4, 5, 6));
     assert((lineSegment.vector() - Vector3d(3, 3, 3)).isZero());
     assert(lineSegment.length() - 3 * sqrt(3) == Zero());
-    Triangle3d triangle(Point3d::origin(), Point3d(1, 0, 0), Point3d(0, 1, 0));
+    Triangle3d triangle(Point3d::ORIGIN(), Point3d(1, 0, 0), Point3d(0, 1, 0));
     assert((triangle.centroid() - Point3d(1.0 / 3.0, 1.0 / 3.0, 0.0)).isZero());

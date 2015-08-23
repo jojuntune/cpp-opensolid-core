@@ -88,13 +88,15 @@ namespace opensolid
         return false;
     }
 
-    Tetrahedron3d
-    Tetrahedron3d::unit() {
-        return Tetrahedron3d(
-            Point3d::origin(),
+    const Tetrahedron3d&
+    Tetrahedron3d::UNIT() {
+        static Tetrahedron3d result(
+            Point3d::ORIGIN(),
             Point3d(1, 0, 0),
             Point3d(0, 1, 0),
-            Point3d(0, 0, 1)
+            Point3d(0, 0, 1),
+            Handedness::RIGHT_HANDED()
         );
+        return result;
     }
 }

@@ -63,7 +63,7 @@ namespace opensolid
 
             if (matrix.numRows() != 2 || matrix.numColumns() != 2) {
                 assert(false);
-                return Matrix<ScalarType, 2, 2>::zero();
+                return Matrix<ScalarType, 2, 2>::ZERO();
             }
 
             ScalarType component00 = matrix.component(0, 0);
@@ -74,7 +74,7 @@ namespace opensolid
             ScalarType determinant = component00 * component11 - component01 * component10;
             if (determinant == 0.0) {
                 assert(false);
-                return Matrix<ScalarType, 2, 2>::zero();
+                return Matrix<ScalarType, 2, 2>::ZERO();
             }
             ScalarType inverseDeterminant = 1.0 / determinant;
 
@@ -96,7 +96,7 @@ namespace opensolid
 
             if (matrix.numRows() != 3 || matrix.numColumns() != 3) {
                 assert(false);
-                return Matrix<ScalarType, 3, 3>::zero();
+                return Matrix<ScalarType, 3, 3>::ZERO();
             }
 
             ScalarType component00 = matrix.component(0, 0);
@@ -117,7 +117,7 @@ namespace opensolid
                 component02 * cofactor02;
             if (determinant == 0.0) {
                 assert(false);
-                return Matrix<ScalarType, 3, 3>::zero();
+                return Matrix<ScalarType, 3, 3>::ZERO();
             }
             ScalarType inverseDeterminant = 1.0 / determinant;
 

@@ -104,6 +104,9 @@ namespace opensolid
 
         ParametricExpression<Point<2>, Point<2>>
         expression() const;
+
+        static Frame<2>
+        XY();
     };
 
     typedef Frame<2> Frame2d;
@@ -186,6 +189,9 @@ namespace opensolid
 
         ParametricExpression<Point<3>, Point<3>>
         expression() const;
+
+        static Frame<3>
+        XYZ();
     };
 
     typedef Frame<3> Frame3d;

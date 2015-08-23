@@ -95,6 +95,9 @@ namespace opensolid
 
         Circle<2>
         projectedInto(const Plane3d& plane) const;
+
+        static Sphere3d
+        UNIT();
     };
     
     template <>

@@ -104,7 +104,7 @@ namespace opensolid
             ParametricExpression<Point3d, double> curveExpression = (
                 centerPoint + cos(theta) * xVector + sin(theta) * sidewaysVector + t * zVector
             );
-            return ParametricCurve3d(curveExpression, Interval::unit());
+            return ParametricCurve3d(curveExpression, Interval::UNIT());
         }
     }
 
@@ -157,7 +157,7 @@ namespace opensolid
         ParametricExpression<Point2d, double> curveExpression = (
             ParametricExpression<Point2d, double>::fromComponents(xExpression, yExpression)
         );
-        return ParametricCurve2d(curveExpression, Interval::unit());
+        return ParametricCurve2d(curveExpression, Interval::UNIT());
     }
     
     ParametricCurve2d
@@ -353,7 +353,7 @@ namespace opensolid
             normalVector
         );
         return ParametricCurve2d::arc(
-            Point2d::origin(),
+            Point2d::ORIGIN(),
             COUNTERCLOCKWISE,
             startPoint.projectedInto(plane),
             endPoint.projectedInto(plane)

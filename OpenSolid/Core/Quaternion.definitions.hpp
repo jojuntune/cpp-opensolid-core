@@ -76,7 +76,7 @@ namespace opensolid
         operator*(const Quaternion<2>& other) const;
 
         static Quaternion<2>
-        identity();
+        IDENTITY();
 
         OPENSOLID_CORE_EXPORT
         static Quaternion<2>
@@ -139,7 +139,7 @@ namespace opensolid
         operator*(const Quaternion<3>& other) const;
 
         static Quaternion<3>
-        identity();
+        IDENTITY();
 
         OPENSOLID_CORE_EXPORT
         static Quaternion<3>

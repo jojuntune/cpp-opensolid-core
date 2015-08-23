@@ -130,8 +130,8 @@ namespace opensolid
         template <class TScalar, int iNumDimensions>
         inline
         Vector<TScalar, iNumDimensions>
-        VectorBase<TScalar, iNumDimensions>::zero() {
-            return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::zero());
+        VectorBase<TScalar, iNumDimensions>::ZERO() {
+            return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::ZERO());
         }
 
         template <class TScalar, int iNumDimensions>

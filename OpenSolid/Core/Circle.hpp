@@ -98,6 +98,12 @@ namespace opensolid
 
     inline
     Circle2d
+    Circle2d::UNIT() {
+        return Circle2d(Point2d::ORIGIN(), 1.0);
+    }
+
+    inline
+    Circle2d
     Circle2d::circumcircle(const Triangle2d& triangle) {
         return Circle2d(triangle.vertex(0), triangle.vertex(1), triangle.vertex(2));
     }

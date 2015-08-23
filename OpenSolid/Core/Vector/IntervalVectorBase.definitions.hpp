@@ -138,15 +138,6 @@ namespace opensolid
 
             void
             operator-=(const Vector<Interval, iNumDimensions>& other);
-
-            static Vector<Interval, iNumDimensions>
-            unit();
-
-            static Vector<Interval, iNumDimensions>
-            empty();
-
-            static Vector<Interval, iNumDimensions>
-            whole();
         };
     }
 }

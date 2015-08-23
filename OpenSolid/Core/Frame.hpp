@@ -44,13 +44,13 @@ namespace opensolid
 {
     inline
     Frame2d::Frame() :
-        FrameBase<2, 2>(Point2d::origin(), Matrix2d::identity()),
+        FrameBase<2, 2>(Point2d::ORIGIN(), Matrix2d::IDENTITY()),
         _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     inline
     Frame2d::Frame(const Point2d& originPoint) :
-        FrameBase<2, 2>(originPoint, Matrix2d::identity()),
+        FrameBase<2, 2>(originPoint, Matrix2d::IDENTITY()),
         _handedness(Handedness::RIGHT_HANDED()) {
     }
 
@@ -151,14 +151,20 @@ namespace opensolid
     }
 
     inline
+    Frame2d
+    Frame2d::XY() {
+        return Frame2d(Point2d::ORIGIN(), UnitVector2d::X(), UnitVector2d::Y());
+    }
+
+    inline
     Frame3d::Frame() :
-        FrameBase<3, 3>(Point3d::origin(), Matrix3d::identity()),
+        FrameBase<3, 3>(Point3d::ORIGIN(), Matrix3d::IDENTITY()),
         _handedness(Handedness::RIGHT_HANDED()) {
     }
 
     inline
     Frame3d::Frame(const Point3d& originPoint) :
-        FrameBase<3, 3>(originPoint, Matrix3d::identity()),
+        FrameBase<3, 3>(originPoint, Matrix3d::IDENTITY()),
         _handedness(Handedness::RIGHT_HANDED()) {
     }
 
@@ -340,6 +346,18 @@ namespace opensolid
             yDirectionVector().transformedBy(transformation),
             zDirectionVector().transformedBy(transformation),
             handedness().transformedBy(transformation)
+        );
+    }
+
+    inline
+    Frame3d
+    Frame3d::XYZ() {
+        return Frame3d(
+            Point3d::ORIGIN(),
+            UnitVector3d::X(),
+            UnitVector3d::Y(),
+            UnitVector3d::Z(),
+            Handedness::RIGHT_HANDED()
         );
     }
 }

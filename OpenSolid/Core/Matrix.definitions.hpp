@@ -160,13 +160,13 @@ namespace opensolid
         constant(TScalar value);
 
         static Matrix<TScalar, iNumRows, iNumColumns>
-        zero();
+        ZERO();
 
         static Matrix<TScalar, iNumRows, iNumColumns>
-        ones();
+        ONES();
 
         static Matrix<TScalar, iNumRows, iNumColumns>
-        identity();
+        IDENTITY();
 
         static Matrix<TScalar, iNumRows, iNumColumns>
         random();
@@ -249,13 +249,13 @@ namespace opensolid
         constant(TScalar value);
 
         static Matrix<TScalar, 1, 1>
-        zero();
+        ZERO();
 
         static Matrix<TScalar, 1, 1>
-        ones();
+        ONES();
 
         static Matrix<TScalar, 1, 1>
-        identity();
+        IDENTITY();
 
         static Matrix<TScalar, 1, 1>
         random();

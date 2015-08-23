@@ -135,8 +135,8 @@ namespace opensolid
         transformedBy(const TTransformation& transformation) const;
 
         OPENSOLID_CORE_EXPORT
-        static Tetrahedron3d
-        unit();
+        static const Tetrahedron3d&
+        UNIT();
     };
     
     template <>

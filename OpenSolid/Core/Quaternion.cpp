@@ -56,7 +56,7 @@ namespace opensolid
                 endCoefficient * endQuaternion.components();
             double squaredNorm = slerpedComponents.cwiseSquared().sum();
             if (squaredNorm == Zero()) {
-                return Quaternion<iNumDimensions>::identity();
+                return Quaternion<iNumDimensions>::IDENTITY();
             } else {
                 slerpedComponents /= sqrt(squaredNorm);
                 return Quaternion<iNumDimensions>(slerpedComponents);

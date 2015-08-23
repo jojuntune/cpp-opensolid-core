@@ -302,14 +302,14 @@ namespace opensolid
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
     Matrix<TScalar, iNumRows, iNumColumns>
-    Matrix<TScalar, iNumRows, iNumColumns>::zero() {
+    Matrix<TScalar, iNumRows, iNumColumns>::ZERO() {
         return Matrix<TScalar, iNumRows, iNumColumns>();
     }
 
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
     Matrix<TScalar, iNumRows, iNumColumns>
-    Matrix<TScalar, iNumRows, iNumColumns>::ones() {
+    Matrix<TScalar, iNumRows, iNumColumns>::ONES() {
         Matrix<TScalar, iNumRows, iNumColumns> result(false);
         result.setOnes();
         return result;
@@ -318,7 +318,7 @@ namespace opensolid
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
     Matrix<TScalar, iNumRows, iNumColumns>
-    Matrix<TScalar, iNumRows, iNumColumns>::identity() {
+    Matrix<TScalar, iNumRows, iNumColumns>::IDENTITY() {
         Matrix<TScalar, iNumRows, iNumColumns> result(false);
         result.setIdentity();
         return result;
@@ -460,14 +460,14 @@ namespace opensolid
     template <class TScalar>
     inline
     Matrix<TScalar, 1, 1>
-    Matrix<TScalar, 1, 1>::zero() {
+    Matrix<TScalar, 1, 1>::ZERO() {
         return Matrix<TScalar, 1, 1>();
     }
 
     template <class TScalar>
     inline
     Matrix<TScalar, 1, 1>
-    Matrix<TScalar, 1, 1>::ones() {
+    Matrix<TScalar, 1, 1>::ONES() {
         Matrix<TScalar, 1, 1> result;
         result.setOnes();
         return result;
@@ -476,7 +476,7 @@ namespace opensolid
     template <class TScalar>
     inline
     Matrix<TScalar, 1, 1>
-    Matrix<TScalar, 1, 1>::identity() {
+    Matrix<TScalar, 1, 1>::IDENTITY() {
         Matrix<TScalar, 1, 1> result;
         result.setIdentity();
         return result;

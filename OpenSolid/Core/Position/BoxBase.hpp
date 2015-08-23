@@ -293,27 +293,27 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Box<iNumDimensions>
-        BoxBase<iNumDimensions>::unit() {
+        BoxBase<iNumDimensions>::UNIT() {
             return Box<iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::unit())
+                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::UNIT())
             );
         }
 
         template <int iNumDimensions>
         inline
         const Box<iNumDimensions>
-        BoxBase<iNumDimensions>::empty() {
+        BoxBase<iNumDimensions>::EMPTY() {
             return Box<iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::empty())
+                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::EMPTY())
             );
         }
 
         template <int iNumDimensions>
         inline
         const Box<iNumDimensions>
-        BoxBase<iNumDimensions>::whole() {
+        BoxBase<iNumDimensions>::WHOLE() {
             return Box<iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::whole())
+                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::WHOLE())
             );
         }
     }

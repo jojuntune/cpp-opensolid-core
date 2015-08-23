@@ -153,16 +153,16 @@ namespace opensolid
         operator/=(Interval interval);
         
         static Interval
-        unit();
+        UNIT();
         
         static Interval
         hull(double firstValue, double secondValue);
         
         static Interval
-        empty();
+        EMPTY();
         
         static Interval
-        whole();
+        WHOLE();
 
         static Interval
         random();

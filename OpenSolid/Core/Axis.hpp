@@ -48,8 +48,8 @@ namespace opensolid
         inline
         AxisBase<iNumDimensions>::AxisBase() :
             FrameBase<iNumDimensions, 1>(
-                Point<iNumDimensions>::origin(),
-                Matrix<double, iNumDimensions, 1>::zero()
+                Point<iNumDimensions>::ORIGIN(),
+                Matrix<double, iNumDimensions, 1>::ZERO()
             ) {
         }
 
@@ -152,13 +152,13 @@ namespace opensolid
     inline
     Axis2d
     Axis2d::X() {
-        return Axis2d(Point2d::origin(), UnitVector2d::X());
+        return Axis2d(Point2d::ORIGIN(), UnitVector2d::X());
     }
 
     inline
     Axis2d
     Axis2d::Y() {
-        return Axis2d(Point2d::origin(), UnitVector2d::Y());
+        return Axis2d(Point2d::ORIGIN(), UnitVector2d::Y());
     }
 
     inline
@@ -236,18 +236,18 @@ namespace opensolid
     inline
     Axis3d
     Axis3d::X() {
-        return Axis3d(Point3d::origin(), UnitVector3d::X());
+        return Axis3d(Point3d::ORIGIN(), UnitVector3d::X());
     }
 
     inline
     Axis3d
     Axis3d::Y() {
-        return Axis3d(Point3d::origin(), UnitVector3d::Y());
+        return Axis3d(Point3d::ORIGIN(), UnitVector3d::Y());
     }
 
     inline
     Axis3d
     Axis3d::Z() {
-        return Axis3d(Point3d::origin(), UnitVector3d::Z());
+        return Axis3d(Point3d::ORIGIN(), UnitVector3d::Z());
     }
 }

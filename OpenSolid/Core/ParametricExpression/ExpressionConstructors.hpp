@@ -40,12 +40,15 @@ namespace opensolid
     namespace detail
     {
         template <class TValue, class TParameter>
-        ParametricExpression<TValue, TParameter>
-        ZeroExpressionConstructor<TValue, TParameter>::zero() {
-            return new ConstantExpression(
-                ColumnMatrixXd::zero(NumDimensions<TValue>::Value),
-                NumDimensions<TParameter>::Value
+        const ParametricExpression<TValue, TParameter>&
+        ZeroExpressionConstructor<TValue, TParameter>::ZERO() {
+            static ParametricExpression<TValue, TParameter> result(
+                new ConstantExpression(
+                    ColumnMatrixXd::ZERO(NumDimensions<TValue>::Value),
+                    NumDimensions<TParameter>::Value
+                )
             );
+            return result;
         }
 
         template <class TParameter>
@@ -85,9 +88,12 @@ namespace opensolid
         }
 
         template <class TValue>
-        ParametricExpression<TValue, TValue>
-        IdentityExpressionConstructor<TValue, TValue>::identity() {
-            return new IdentityExpression(NumDimensions<TValue>::Value);
+        const ParametricExpression<TValue, TValue>&
+        IdentityExpressionConstructor<TValue, TValue>::IDENTITY() {
+            static ParametricExpression<TValue, TValue> result(
+                new IdentityExpression(NumDimensions<TValue>::Value)
+            );
+            return result;
         }
 
         template <class TValue, class TParameter>

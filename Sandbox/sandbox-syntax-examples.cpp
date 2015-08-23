@@ -44,7 +44,7 @@ void vectorExamples() {
     Vector3d v3 = v1.cross(v2);
     assert((v3 - Vector3d(-3, 6, -3)).isZero());
 
-    Matrix3d m = Matrix3d::identity();
+    Matrix3d m = Matrix3d::IDENTITY();
     assert((m * v1.components() - v1.components()).isZero());
     assert((m.inverse() - m).isZero());
 }
@@ -73,7 +73,7 @@ void boxExamples() {
     assert((maxVertex - Point2d(2, 2)).isZero());
 
     assert(box.contains(Point2d(2, 0)));
-    assert(!box.contains(Point2d::origin()));
+    assert(!box.contains(Point2d::ORIGIN()));
 
     for (int i = 0; i < 1000; ++i) {
         assert(box.contains(box.randomPoint()));
@@ -135,15 +135,15 @@ void triangleExamples() {
     double hypotenuseLength = triangle.edge(0).length();
     assert(hypotenuseLength - 2 * sqrt(2.0) == Zero());
 
-    Point3d projectedOrigin = Point3d::origin().projectedOnto(triangle.plane());
+    Point3d projectedOrigin = Point3d::ORIGIN().projectedOnto(triangle.plane());
     assert((projectedOrigin - Point3d(0, 0, 1)).isZero());
 }
 
 void tetrahedronExamples() {
-    Tetrahedron3d unitTetrahedron = Tetrahedron3d::unit();
+    Tetrahedron3d unitTetrahedron = Tetrahedron3d::UNIT();
 
     Point3d firstVertex = unitTetrahedron.vertex(0);
-    assert((firstVertex - Point3d::origin()).isZero());
+    assert((firstVertex - Point3d::ORIGIN()).isZero());
 
     Point3d secondVertex = unitTetrahedron.vertex(1);
     assert((secondVertex - Point3d(1, 0, 0)).isZero());
@@ -158,7 +158,7 @@ void tetrahedronExamples() {
 
 void spatialSetExamples() {
     std::vector<Point2d> pointList(5);
-    pointList[0] = Point2d::origin();
+    pointList[0] = Point2d::ORIGIN();
     pointList[1] = Point2d(1, 0);
     pointList[2] = Point2d(0, 1);
     pointList[3] = Point2d(2, 2);

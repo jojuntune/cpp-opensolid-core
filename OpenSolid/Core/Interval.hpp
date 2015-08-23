@@ -162,7 +162,7 @@ namespace opensolid
     Interval::intersection(Interval interval) const {
         double lowerBound = max(this->lowerBound(), interval.lowerBound());
         double upperBound = min(this->upperBound(), interval.upperBound());
-        return lowerBound <= upperBound ? Interval(lowerBound, upperBound) : Interval::empty();
+        return lowerBound <= upperBound ? Interval(lowerBound, upperBound) : Interval::EMPTY();
     }
         
     inline
@@ -275,7 +275,7 @@ namespace opensolid
 
     inline
     Interval
-    Interval::unit() {
+    Interval::UNIT() {
         return Interval(0, 1);
     }
     
@@ -287,7 +287,7 @@ namespace opensolid
 
     inline
     Interval
-    Interval::empty() {
+    Interval::EMPTY() {
         return Interval(
             std::numeric_limits<double>::infinity(),
             -std::numeric_limits<double>::infinity()
@@ -296,7 +296,7 @@ namespace opensolid
     
     inline
     Interval
-    Interval::whole() {
+    Interval::WHOLE() {
         return Interval(
             -std::numeric_limits<double>::infinity(),
             std::numeric_limits<double>::infinity()
@@ -551,7 +551,7 @@ namespace opensolid
     Interval
     sqrt(Interval interval) {
         if (interval < Zero()) {
-            return Interval::empty();
+            return Interval::EMPTY();
         } else {
             return Interval(
                 sqrt(max(0.0, interval.lowerBound())),

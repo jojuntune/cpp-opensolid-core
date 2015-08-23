@@ -118,7 +118,7 @@ namespace opensolid
 
     inline
     Quaternion2d
-    Quaternion2d::identity() {
+    Quaternion2d::IDENTITY() {
         return Quaternion2d(ColumnMatrix2d(1.0, 0.0));
     }
 
@@ -265,7 +265,7 @@ namespace opensolid
 
     inline
     Quaternion3d
-    Quaternion3d::identity() {
+    Quaternion3d::IDENTITY() {
         return Quaternion3d(Matrix<double, 4, 1>(0.0, 0.0, 0.0, 1.0));
     }
 }

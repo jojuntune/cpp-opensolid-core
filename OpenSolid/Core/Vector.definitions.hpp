@@ -96,6 +96,9 @@ namespace opensolid
 
         Vector<double, 3>
         placedOnto(const Plane3d& plane) const;
+
+        static Vector<double, 2>
+        ZERO();
     };
 
     typedef Vector<double, 2> Vector2d;
@@ -151,6 +154,9 @@ namespace opensolid
 
         Vector<double, 2>
         projectedInto(const Plane3d& plane) const;
+
+        static Vector<double, 3>
+        ZERO();
     };
 
     typedef Vector<double, 3> Vector3d;
@@ -176,6 +182,15 @@ namespace opensolid
 
         const Vector<Interval, 2>&
         bounds() const;
+
+        static Vector<Interval, 2>
+        WHOLE();
+
+        static Vector<Interval, 2>
+        EMPTY();
+
+        static Vector<Interval, 2>
+        UNIT();
     };
 
     typedef Vector<Interval, 2> IntervalVector2d;
@@ -207,6 +222,15 @@ namespace opensolid
 
         Vector<Interval, 3>
         cross(const Vector<Interval, 3>& other) const;
+
+        static Vector<Interval, 3>
+        WHOLE();
+
+        static Vector<Interval, 3>
+        EMPTY();
+
+        static Vector<Interval, 3>
+        UNIT();
     };
 
     typedef Vector<Interval, 3> IntervalVector3d;

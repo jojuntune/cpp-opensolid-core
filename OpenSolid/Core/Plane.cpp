@@ -31,7 +31,7 @@
 namespace opensolid
 {
     Plane3d::Plane3d() :
-        FrameBase<3, 2>(Point3d::origin(), Matrix<double, 3, 2>()),
+        FrameBase<3, 2>(Point3d::ORIGIN(), Matrix<double, 3, 2>()),
         _handedness(Handedness::RIGHT_HANDED()) {
     }
 
@@ -230,7 +230,7 @@ namespace opensolid
     Plane3d
     Plane3d::XY() {
         return Plane3d(
-            Point3d::origin(),
+            Point3d::ORIGIN(),
             UnitVector3d::X(),
             UnitVector3d::Y(),
             UnitVector3d::Z(),
@@ -241,7 +241,7 @@ namespace opensolid
     Plane3d
     Plane3d::XZ() {
         return Plane3d(
-            Point3d::origin(),
+            Point3d::ORIGIN(),
             UnitVector3d::X(),
             UnitVector3d::Z(),
             -UnitVector3d::Y(),
@@ -252,7 +252,7 @@ namespace opensolid
     Plane3d
     Plane3d::YX() {
         return Plane3d(
-            Point3d::origin(),
+            Point3d::ORIGIN(),
             UnitVector3d::Y(),
             UnitVector3d::X(),
             -UnitVector3d::Z(),
@@ -263,7 +263,7 @@ namespace opensolid
     Plane3d
     Plane3d::YZ() {
         return Plane3d(
-            Point3d::origin(),
+            Point3d::ORIGIN(),
             UnitVector3d::Y(),
             UnitVector3d::Z(),
             UnitVector3d::X(),
@@ -274,7 +274,7 @@ namespace opensolid
     Plane3d
     Plane3d::ZX() {
         return Plane3d(
-            Point3d::origin(),
+            Point3d::ORIGIN(),
             UnitVector3d::Z(),
             UnitVector3d::X(),
             UnitVector3d::Y(),
@@ -285,7 +285,7 @@ namespace opensolid
     Plane3d
     Plane3d::ZY() {
         return Plane3d(
-            Point3d::origin(),
+            Point3d::ORIGIN(),
             UnitVector3d::Z(),
             UnitVector3d::Y(),
             -UnitVector3d::X(),

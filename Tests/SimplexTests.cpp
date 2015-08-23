@@ -291,14 +291,14 @@ TEST_CASE("Triangle normal") {
 }
 
 TEST_CASE("Projection") {
-    Triangle3d triangle(Point3d::origin(), Point3d(2, 0, 0), Point3d(1, 2, 0));
+    Triangle3d triangle(Point3d::ORIGIN(), Point3d(2, 0, 0), Point3d(1, 2, 0));
     Point3d projection = Point3d(3, 4, 5).projectedOnto(triangle.plane());
     REQUIRE((projection - Point3d(3, 4, 0)).isZero());
 }
 
 TEST_CASE("Set") {
     std::vector<Triangle3d> triangles(3);
-    triangles[0] = Triangle3d(Point3d::origin(), Point3d(1, 0, 0), Point3d(0, 1, 0));
+    triangles[0] = Triangle3d(Point3d::ORIGIN(), Point3d(1, 0, 0), Point3d(0, 1, 0));
     triangles[1] = Triangle3d(Point3d(2, 1, 0), Point3d(3, 0, 0), Point3d(3, 1, 0));
     triangles[2] = Triangle3d(Point3d(0, 0, 1), Point3d(1, 0, 1), Point3d(1, 1, 1));
 
@@ -347,7 +347,7 @@ TEST_CASE("Triangle edges") {
     auto lengthAccumulator = [] (double lengthSoFar, const LineSegment2d& edge) {
         return lengthSoFar + edge.length();
     };
-    double circumference = Triangle2d::unit().edges().fold(0.0, lengthAccumulator);
+    double circumference = Triangle2d::UNIT().edges().fold(0.0, lengthAccumulator);
     REQUIRE((circumference - (2.0 + sqrt(2.0))) == Zero());
 }
 
@@ -355,11 +355,11 @@ TEST_CASE("Tetrahedron vertices") {
     auto pointIsOrigin = [] (const Point3d& point) {
         return point.isOrigin();
     };
-    REQUIRE(Tetrahedron3d::unit().vertices().where(pointIsOrigin).size() == 1);
+    REQUIRE(Tetrahedron3d::UNIT().vertices().where(pointIsOrigin).size() == 1);
 }
 
 TEST_CASE("Tetrahedron edges") {
-    double totalLength = Tetrahedron3d::unit().edges().fold(
+    double totalLength = Tetrahedron3d::UNIT().edges().fold(
         0.0,
         [] (double lengthSoFar, const LineSegment3d& edge) {
             return lengthSoFar + edge.length();
@@ -369,7 +369,7 @@ TEST_CASE("Tetrahedron edges") {
 }
 
 TEST_CASE("Tetrahedron faces") {
-    double totalArea = Tetrahedron3d::unit().faces().fold(
+    double totalArea = Tetrahedron3d::UNIT().faces().fold(
         0.0,
         [] (double areaSoFar, const Triangle3d& face) {
             return areaSoFar + face.area();
@@ -383,7 +383,7 @@ TEST_CASE("Line segment/plane intersection") {
 
     LineSegment3d firstSegment(Point3d(0, 0, 2), Point3d(2, 2, 2));
     LineSegment3d secondSegment(Point3d(0, 0, 1), Point3d(1, 1, 1));
-    LineSegment3d thirdSegment(Point3d::origin(), Point3d(2, 2, 2));
+    LineSegment3d thirdSegment(Point3d::ORIGIN(), Point3d(2, 2, 2));
 
     auto firstIntersection = firstSegment.intersection(plane);
     auto secondIntersection = secondSegment.intersection(plane);
@@ -406,7 +406,7 @@ TEST_CASE("Triangle containment") {
     REQUIRE(triangle.contains(triangle.vertex(2)));
     REQUIRE(triangle.contains(triangle.centroid()));
     REQUIRE(triangle.contains(triangle.centroid()));
-    REQUIRE_FALSE(triangle.contains(Point2d::origin()));
+    REQUIRE_FALSE(triangle.contains(Point2d::ORIGIN()));
 }
 
 // TEST_CASE("Tetrahedron containment") {
@@ -416,8 +416,8 @@ TEST_CASE("Triangle containment") {
 //     REQUIRE(tetrahedron.contains(tetrahedron.centroid()));
 //     REQUIRE(tetrahedron.contains(tetrahedron.centroid(), -1e-12));
 //     REQUIRE_FALSE(tetrahedron.contains(tetrahedron.vertex(2), -1e-12));
-//     REQUIRE(tetrahedron.contains(Point3d::origin()));
-//     REQUIRE_FALSE(tetrahedron.contains(Point3d::origin(), -1e-12));
+//     REQUIRE(tetrahedron.contains(Point3d::ORIGIN()));
+//     REQUIRE_FALSE(tetrahedron.contains(Point3d::ORIGIN(), -1e-12));
 // }
 
 TEST_CASE("Line segment conversion") {
@@ -439,7 +439,7 @@ TEST_CASE("Triangle conversion") {
 }
 
 TEST_CASE("Tetrahedron conversion") {
-    Tetrahedron3d initial = Tetrahedron3d::unit();
+    Tetrahedron3d initial = Tetrahedron3d::UNIT();
     MyTetrahedron3d converted = initial.to<MyTetrahedron3d>();
     MyTetrahedron3d expected = MyTetrahedron3d(
         MyPoint3d(0, 0, 0),
