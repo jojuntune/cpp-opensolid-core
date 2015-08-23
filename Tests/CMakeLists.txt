@@ -29,35 +29,36 @@
     
 ########## Core module tests ##########
 
+    add_simple_test(CircleTests CircleTests.cpp OpenSolidCore)
+    add_simple_test(CollectionTests CollectionTests.cpp OpenSolidCore)
+    add_simple_test(CoordinateSystemTests CoordinateSystemTests.cpp OpenSolidCore)
+    add_simple_test(CurveTests CurveTests.cpp OpenSolidCore)
+    add_simple_test(DatumTests DatumTests.cpp OpenSolidCore)
     add_simple_test(IntervalTests IntervalTests.cpp OpenSolidCore)
     add_simple_test(MatrixTests MatrixTests.cpp OpenSolidCore)
-    add_simple_test(VectorTests VectorTests.cpp OpenSolidCore)
+    add_simple_test(ParametricExpressionTests ParametricExpressionTests.cpp OpenSolidCore) 
     add_simple_test(PositionTests PositionTests.cpp OpenSolidCore)
     add_simple_test(QuaternionTests QuaternionTests.cpp OpenSolidCore)
-    add_simple_test(CoordinateSystemTests CoordinateSystemTests.cpp OpenSolidCore)
-    add_simple_test(DatumTests DatumTests.cpp OpenSolidCore)
-    add_simple_test(SimplexTests SimplexTests.cpp OpenSolidCore)
-    add_simple_test(CollectionTests CollectionTests.cpp OpenSolidCore)
-    add_simple_test(CurveTests CurveTests.cpp OpenSolidCore)
-    add_simple_test(ParametricExpressionTests ParametricExpressionTests.cpp OpenSolidCore) 
     add_simple_test(SetTests SetTests.cpp OpenSolidCore)
-    add_simple_test(CircleTests CircleTests.cpp OpenSolidCore)
+    add_simple_test(SimplexTests SimplexTests.cpp OpenSolidCore)
     add_simple_test(SphereTests SphereTests.cpp OpenSolidCore)
+    add_simple_test(VectorTests VectorTests.cpp OpenSolidCore)
     
     add_to_global_source_list(
+        CircleTests.cpp
+        CollectionTests.cpp
+        CoordinateSystemTests.cpp
+        CurveTests.cpp
+        DatumTests.cpp
         IntervalTests.cpp
         MatrixTests.cpp
-        VectorTests.cpp
-        PositionTests.cpp
-        CoordinateSystemTests.cpp
-        SimplexTests.cpp
-        SetTests.cpp
         ParametricExpressionTests.cpp
-        CurveTests.cpp
-        CollectionTests.cpp
-        DatumTests.cpp
-        CircleTests.cpp
+        PositionTests.cpp
+        QuaternionTests.cpp
+        SetTests.cpp
+        SimplexTests.cpp
         SphereTests.cpp
+        VectorTests.cpp
     )
 
 ########## Scripting module tests ##########
