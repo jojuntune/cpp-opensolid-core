@@ -10,13 +10,6 @@ singleLineTerms.append('OPENSOLID_IO_EXPORT')
 singleLineTerms.append('OPENSOLID_PYTHON_EXPORT')
 singleLineTerms.append('OPENSOLID_PYTHON_EXTENSION_EXPORT')
 
-def checkLineEnding(filePath, lineNumber, line):
-    global errorFound
-    # Check for carriage return characters
-    if b'\r' in line:
-        print('ERROR: Found carriage return on line {0} of file {1}'.format(lineNumber, filePath))
-        errorFound = True
-
 def checkLine(filePath, lineNumber, line):
     global errorFound
     global singleLineTerms
@@ -108,12 +101,7 @@ def checkIndentation(filePath, lineNumber, line, previousIndentation):
 
 def checkFile(filePath):
     global errorFound
-    isSource = filePath.endswith('.cpp') or filePath.endswith('.hpp')
-    isOtherText = filePath.endswith('.txt') or filePath.endswith('.py')
-    if isSource or isOtherText:
-        for i, line in enumerate(open(filePath, 'rb')):
-            checkLineEnding(filePath, i + 1, line)
-    if isSource:
+    if filePath.endswith('.cpp') or filePath.endswith('.hpp'):
         previousIndentation = None
         for i, line in enumerate(open(filePath, 'rt')):
             checkLine(filePath, i + 1, line)
