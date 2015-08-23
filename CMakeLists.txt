@@ -115,6 +115,9 @@
         
         # Add /MP flag for parallel compilation within projects
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+
+        # Change warning 4172 (returning address of local variable or temporary) into an error
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /we4172")
         
         # Disable incremental linking (seems to cause errors in debug builds)
         set(CMAKE_EXE_LINKER_FLAGS "/INCREMENTAL:NO")
