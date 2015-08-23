@@ -21,35 +21,36 @@ Interested in helping with OpenSolid development? Great! Once you have successfu
 
 # Examples
 
-    ::::c++
-    // Intervals and floating-point values
-    Interval a = Interval(2, 4);
-    Interval b = Interval(3, 5);
-    Interval c = a.intersection(b); // [3,4]
-    assert(c.lowerBound() - 3 == Zero()); // Tolerant comparison
-    assert(c.width() - 1 == Zero());
-    Interval d = a.hull(b); // [2,5]
-    assert(d.width() - 3 == Zero());
-    assert(d.contains(a));
-    assert(!d.strictlyContains(a));
+```cpp
+// Intervals and floating-point values
+Interval a = Interval(2, 4);
+Interval b = Interval(3, 5);
+Interval c = a.intersection(b); // [3,4]
+assert(c.lowerBound() - 3 == Zero()); // Tolerant comparison
+assert(c.width() - 1 == Zero());
+Interval d = a.hull(b); // [2,5]
+assert(d.width() - 3 == Zero());
+assert(d.contains(a));
+assert(!d.strictlyContains(a));
 
-    // Points and boxes
-    Point3d p1(1, 5, 3);
-    Box3d box = p1.hull(Point3d(4, 2, 6));
-    Point3d p2 = p1 + Vector3d(10, 0, 0);
+// Points and boxes
+Point3d p1(1, 5, 3);
+Box3d box = p1.hull(Point3d(4, 2, 6));
+Point3d p2 = p1 + Vector3d(10, 0, 0);
 
-    // Axes, planes, coordinate systems
-    Frame3d global;
-    Axis3d zAxis = global.zAxis();
-    Plane3d plane = global.xyPlane().offsetBy(5);
+// Axes, planes, coordinate systems
+Frame3d global;
+Axis3d zAxis = global.zAxis();
+Plane3d plane = global.xyPlane().offsetBy(5);
 
-    // Transformations
-    Point3d originalPoint(1.0, 2.0, 3.0);
-    Point3d newPoint = point.rotatedAbout(zAxis, M_PI / 4).translatedBy(Vector3d(20, 0, 0));
+// Transformations
+Point3d originalPoint(1.0, 2.0, 3.0);
+Point3d newPoint = point.rotatedAbout(zAxis, M_PI / 4).translatedBy(Vector3d(20, 0, 0));
 
-    // Line segments, triangles
-    LineSegment3d lineSegment(Point3d(1, 2, 3), Point3d(4, 5, 6));
-    assert((lineSegment.vector() - Vector3d(3, 3, 3)).isZero());
-    assert(lineSegment.length() - 3 * sqrt(3) == Zero());
-    Triangle3d triangle(Point3d::ORIGIN(), Point3d(1, 0, 0), Point3d(0, 1, 0));
-    assert((triangle.centroid() - Point3d(1.0 / 3.0, 1.0 / 3.0, 0.0)).isZero());
+// Line segments, triangles
+LineSegment3d lineSegment(Point3d(1, 2, 3), Point3d(4, 5, 6));
+assert((lineSegment.vector() - Vector3d(3, 3, 3)).isZero());
+assert(lineSegment.length() - 3 * sqrt(3) == Zero());
+Triangle3d triangle(Point3d::ORIGIN(), Point3d(1, 0, 0), Point3d(0, 1, 0));
+assert((triangle.centroid() - Point3d(1.0 / 3.0, 1.0 / 3.0, 0.0)).isZero());
+```
