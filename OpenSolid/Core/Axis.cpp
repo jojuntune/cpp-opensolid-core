@@ -35,7 +35,7 @@ namespace opensolid
         template <int iNumDimensions>
         ParametricExpression<Point<iNumDimensions>, double>
         AxisBase<iNumDimensions>::expression() const {
-            return originPoint() + Parameter1d() * directionVector();
+            return this->originPoint() + Parameter1d() * this->directionVector();
         }
 
         template ParametricExpression<Point2d, double> AxisBase<2>::expression() const;
