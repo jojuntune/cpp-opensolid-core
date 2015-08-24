@@ -80,7 +80,7 @@ namespace opensolid
     IntervalVector2d
     Vector2d::bounds() const {
         return IntervalVector2d(
-            components().map(
+            this->components().map(
                 [] (double component) {
                     return Interval(component);
                 }
@@ -166,7 +166,7 @@ namespace opensolid
     IntervalVector3d
     Vector3d::bounds() const {
         return IntervalVector3d(
-            components().map(
+            this->components().map(
                 [] (double component) {
                     return Interval(component);
                 }

@@ -65,14 +65,14 @@ namespace opensolid
         inline
         UnitVector<iNumDimensions>
         AxisBase<iNumDimensions>::directionVector() const {
-            return UnitVector<iNumDimensions>(basisMatrix());
+            return UnitVector<iNumDimensions>(this->basisMatrix());
         }
     
         template <int iNumDimensions>
         inline
         Point<iNumDimensions>
         AxisBase<iNumDimensions>::pointAt(double distance) const {
-            return originPoint() + distance * directionVector();
+            return this->originPoint() + distance * directionVector();
         }
     }
 

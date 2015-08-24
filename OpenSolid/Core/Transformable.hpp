@@ -76,7 +76,7 @@ namespace opensolid
     inline
     TDerived
     Transformable<TDerived, Vector2d>::relativeTo(const Frame2d& frame) const {
-        return derived().transformedBy(Localization2d(frame2d));
+        return derived().transformedBy(Localization2d(frame));
     }
 
     template <class TDerived>

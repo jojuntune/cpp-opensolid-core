@@ -77,7 +77,7 @@ namespace opensolid
         Box<iNumDimensions>
         PointBase<iNumDimensions>::bounds() const {
             return Box<iNumDimensions>(
-                components().map(
+                this->components().map(
                     [] (double component) -> Interval {
                         return Interval(component);
                     }

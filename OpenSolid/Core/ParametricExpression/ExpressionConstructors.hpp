@@ -44,7 +44,7 @@ namespace opensolid
         ZeroExpressionConstructor<TValue, TParameter>::ZERO() {
             static ParametricExpression<TValue, TParameter> result(
                 new ConstantExpression(
-                    ColumnMatrixXd::ZERO(NumDimensions<TValue>::Value),
+                    ColumnMatrixXd::zero(NumDimensions<TValue>::Value),
                     NumDimensions<TParameter>::Value
                 )
             );
