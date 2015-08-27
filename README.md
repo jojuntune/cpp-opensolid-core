@@ -11,15 +11,15 @@ OpenSolid is a free, open source (LGPL) C++ library for the representation and m
 
 Many more features are planned; for more details, see the [roadmap](https://bitbucket.org/ianmackenzie/opensolid/wiki/Roadmap).
 
-# Building
+## Building
 
 OpenSolid can be built on Linux, Windows and Mac OS X using CMake; see the [Building OpenSolid](https://bitbucket.org/ianmackenzie/opensolid/wiki/Building%20OpenSolid) page for details.
 
-# Development
+## Development
 
 Interested in helping with OpenSolid development? Great! Once you have successfully [built](https://bitbucket.org/ianmackenzie/opensolid/wiki/Building%20OpenSolid) OpenSolid, check out the [OpenSolid Style Guide](https://bitbucket.org/ianmackenzie/opensolid/wiki/OpenSolid%20Style%20Guide) for examples of indentation, naming, file/directory layout etc.
 
-# Examples
+## Examples
 
 ```cpp
 // Intervals and floating-point values
