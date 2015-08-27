@@ -1,3 +1,5 @@
+## Introduction
+
 OpenSolid is a free, open source (LGPL) C++ library for the representation and manipulation of geometric objects such as points, bounding boxes, triangles, axes, planes, curves, surfaces, and volumes. Key features include:
 
 - Modern object-oriented design
