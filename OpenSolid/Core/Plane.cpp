@@ -66,7 +66,7 @@ namespace opensolid
         ),
         _normalVector(normalVector),
         _handedness(
-            Handedness::fromSignOf(xDirectionVector.cross(yDirectionVector).dot(normalVector))
+            Handedness(Sign::of(xDirectionVector.cross(yDirectionVector).dot(normalVector)))
         ) {
 
         assert(xDirectionVector.dot(yDirectionVector) == Zero());
@@ -113,7 +113,7 @@ namespace opensolid
         assert(normalVector.dot(yDirectionVector) == Zero());
         assert(
             handedness ==
-            Handedness::fromSignOf(xDirectionVector.cross(yDirectionVector).dot(normalVector))
+            Handedness(Sign::of(xDirectionVector.cross(yDirectionVector).dot(normalVector)))
         );
     }
 

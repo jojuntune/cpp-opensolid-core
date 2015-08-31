@@ -59,8 +59,5 @@ namespace opensolid
 
         static Handedness
         LEFT_HANDED();
-
-        static Handedness
-        fromSignOf(double value);
     };
 }

@@ -57,7 +57,7 @@ namespace opensolid
     inline
     Frame2d::Frame(const Point2d& originPoint, const Matrix2d& basisMatrix) :
         FrameBase<2, 2>(originPoint, basisMatrix),
-        _handedness(Handedness::fromSignOf(basisMatrix.determinant())) {
+        _handedness(Handedness(Sign::of(basisMatrix.determinant()))) {
     }
 
     inline
@@ -76,7 +76,7 @@ namespace opensolid
             Matrix2d::fromColumns(xDirectionVector.components(), yDirectionVector.components())
         ),
         _handedness(
-            Handedness::fromSignOf(xDirectionVector.unitOrthogonal().dot(yDirectionVector))
+            Handedness(Sign::of(xDirectionVector.unitOrthogonal().dot(yDirectionVector)))
         ) {
     }
 
@@ -93,7 +93,7 @@ namespace opensolid
         _handedness(handedness) {
         assert(
             handedness ==
-            Handedness::fromSignOf(xDirectionVector.unitOrthogonal().dot(yDirectionVector))
+            Handedness(Sign::of(xDirectionVector.unitOrthogonal().dot(yDirectionVector)))
         );
     }
 
@@ -171,7 +171,7 @@ namespace opensolid
     inline
     Frame3d::Frame(const Point3d& originPoint, const Matrix3d& basisMatrix) :
         FrameBase<3, 3>(originPoint, basisMatrix),
-        _handedness(Handedness::fromSignOf(basisMatrix.determinant())) {
+        _handedness(Handedness(Sign::of(basisMatrix.determinant()))) {
     }
 
     inline
@@ -195,7 +195,7 @@ namespace opensolid
             )
         ),
         _handedness(
-            Handedness::fromSignOf(xDirectionVector.cross(yDirectionVector).dot(zDirectionVector))
+            Handedness(Sign::of(xDirectionVector.cross(yDirectionVector).dot(zDirectionVector)))
         ) {
     }
 
@@ -218,7 +218,7 @@ namespace opensolid
 
         assert(
             handedness ==
-            Handedness::fromSignOf(xDirectionVector.cross(yDirectionVector).dot(zDirectionVector))
+            Handedness(Sign::of(xDirectionVector.cross(yDirectionVector).dot(zDirectionVector)))
         );
     }
 

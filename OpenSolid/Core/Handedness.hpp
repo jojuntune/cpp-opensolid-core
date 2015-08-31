@@ -77,10 +77,4 @@ namespace opensolid
     Handedness::LEFT_HANDED() {
         return Handedness(Sign::NEGATIVE());
     }
-
-    inline
-    Handedness
-    Handedness::fromSignOf(double value) {
-        return Handedness(value >= 0.0 ? Sign::POSITIVE() : Sign::NEGATIVE());
-    }
 }

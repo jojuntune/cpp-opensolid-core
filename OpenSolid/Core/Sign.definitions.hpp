@@ -65,5 +65,8 @@ namespace opensolid
         
         static Sign
         NEGATIVE();
+
+        static Sign
+        of(double value);
     };
 }

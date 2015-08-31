@@ -94,4 +94,10 @@ namespace opensolid
     Sign::NEGATIVE() {
         return Sign(-1);
     }
+
+    inline
+    Sign
+    Sign::of(double value) {
+        return Sign(int(value > 0.0) - int(value < 0.0));
+    }
 }
