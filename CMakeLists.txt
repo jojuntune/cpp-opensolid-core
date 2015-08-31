@@ -10,9 +10,6 @@
     if(POLICY CMP0054)
         cmake_policy(SET CMP0054 NEW)
     endif()
-
-    # Include macros for generating Visual Studio source groups
-    include(CreateSourceGroups.cmake)
     
 ########## Set up user configuration options ##########
 
@@ -237,8 +234,3 @@
     
     install(FILES OpenSolid/config.hpp DESTINATION include/OpenSolid)
     install(FILES license.txt lgpl-2.1.txt gpl-2.txt DESTINATION "${CMAKE_INSTALL_PREFIX}")
-
-########## Set up source groups for Visual Studio ##########
-
-    add_to_global_source_list(* OpenSolid/*)
-    create_source_groups()

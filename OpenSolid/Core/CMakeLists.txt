@@ -37,17 +37,3 @@
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
     )
-    
-########## Add files to global source list ##########
-
-    add_to_global_source_list(
-        *
-        Intersection/*
-        LazyCollection/*
-        Matrix/*
-        ParametricCurve/*
-        ParametricExpression/*
-        Position/*
-        Simplex/*
-        Variant/*
-    )

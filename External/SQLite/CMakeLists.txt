@@ -37,7 +37,3 @@
     add_dependencies(sqlite_shell sqlite_sources)
     target_link_libraries(sqlite_shell sqlite_library)
     set_target_properties(sqlite_shell PROPERTIES COMPILE_FLAGS ${DISABLE_WARNINGS_FLAG})
-
-########## Add files to global source list ##########
-
-    add_to_global_source_list(*)

@@ -13,8 +13,6 @@
 
     # Configure all Catch test source files to define a main() function
     add_definitions(-DCATCH_CONFIG_MAIN)
-    
-    add_to_global_source_list(CMakeLists.txt Template.hpp)
 
 ########## Global source-checking test ##########
 
@@ -24,8 +22,6 @@
         "${CMAKE_CURRENT_SOURCE_DIR}/checker.py"
         "${OpenSolid_SOURCE_DIR}"
     )
-
-    add_to_global_source_list(checker.py)
     
 ########## Core module tests ##########
 
@@ -43,29 +39,11 @@
     add_simple_test(SimplexTests SimplexTests.cpp OpenSolidCore)
     add_simple_test(SphereTests SphereTests.cpp OpenSolidCore)
     add_simple_test(VectorTests VectorTests.cpp OpenSolidCore)
-    
-    add_to_global_source_list(
-        CircleTests.cpp
-        CollectionTests.cpp
-        CoordinateSystemTests.cpp
-        CurveTests.cpp
-        DatumTests.cpp
-        IntervalTests.cpp
-        MatrixTests.cpp
-        ParametricExpressionTests.cpp
-        PositionTests.cpp
-        QuaternionTests.cpp
-        SetTests.cpp
-        SimplexTests.cpp
-        SphereTests.cpp
-        VectorTests.cpp
-    )
 
 ########## Scripting module tests ##########
 
     if(${BUILD_SCRIPTING_MODULE})
         add_simple_test(ScriptingTests ScriptingTests.cpp OpenSolidCore OpenSolidScripting)
-        add_to_global_source_list(ScriptingTests.cpp)
     endif()
     
 ########## .NET binding tests ##########
@@ -102,6 +80,4 @@
         #ADD_EXECUTABLE( evalTests evalTests.cpp )
         #TARGET_LINK_LIBRARIES( evalTests opensolid_graph )
         #ADD_TEST( graph_eval_tests ${EXECUTABLE_OUTPUT_PATH}/evalTests )
-        
-        add_to_global_source_list(nodeTests.cpp)
     endif()

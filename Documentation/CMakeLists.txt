@@ -12,5 +12,3 @@ configure_file(Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
 # Generate Doxygen documentation
 add_custom_target(Documentation ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
-
-add_to_global_source_list(* images/*)

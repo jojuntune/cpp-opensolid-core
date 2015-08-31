@@ -119,7 +119,3 @@
     set_target_properties(protoc PROPERTIES COMPILE_FLAGS ${DISABLE_WARNINGS_FLAG})
     add_dependencies(protoc protoc_sources)
     target_link_libraries(protoc protobuf)
-    
-########## Add files to global source list ##########
-
-    add_to_global_source_list(*)
