@@ -451,15 +451,4 @@ namespace opensolid
     OPENSOLID_CORE_EXPORT
     std::ostream&
     operator<<(std::ostream& stream, const Vector<Interval, 3>& vector);
-
-    template <int iNumDimensions>
-    struct EqualityFunction<Vector<double, iNumDimensions>>
-    {
-        bool
-        operator()(
-            const Vector<double, iNumDimensions>& firstVector,
-            const Vector<double, iNumDimensions>& secondVector,
-            double precision
-        ) const;
-    };
 }

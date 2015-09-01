@@ -829,15 +829,4 @@ namespace opensolid
             firstVector.components() - secondVector.components()
         );
     }
-
-    template <int iNumDimensions>
-    inline
-    bool
-    EqualityFunction<Vector<double, iNumDimensions>>::operator()(
-        const Vector<double, iNumDimensions>& firstVector,
-        const Vector<double, iNumDimensions>& secondVector,
-        double precision
-    ) const {
-        return (firstVector - secondVector).isZero(precision);
-    }
 }
