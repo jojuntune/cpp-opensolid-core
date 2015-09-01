@@ -90,3 +90,8 @@ TEST_CASE("Random generation") {
         REQUIRE(random <= interval.upperBound());
     }
 }
+
+TEST_CASE("Tolerant equality") {
+    Interval squares(16.0, 81.0);
+    REQUIRE(sqrt(squares).equals(Interval(4.0, 9.0)));
+}

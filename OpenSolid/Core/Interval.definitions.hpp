@@ -125,6 +125,9 @@ namespace opensolid
         
         bool
         strictlyOverlaps(Interval interval, double tolerance = 1e-12) const;
+
+        bool
+        equals(const Interval& other, double precision = 1e-12);
         
         Interval&
         operator+=(double value);

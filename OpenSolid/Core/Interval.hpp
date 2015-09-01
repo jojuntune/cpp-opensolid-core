@@ -214,6 +214,15 @@ namespace opensolid
     }
 
     inline
+    bool
+    Interval::equals(const Interval& other, double precision) {
+        return (
+            lowerBound() - other.lowerBound() == Zero(precision) &&
+            upperBound() - other.upperBound() == Zero(precision)
+        );
+    }
+
+    inline
     Interval&
     Interval::operator+=(double value) {
         _lowerBound += value;
