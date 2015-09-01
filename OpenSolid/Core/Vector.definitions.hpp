@@ -30,19 +30,172 @@
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
-#include <OpenSolid/Core/Vector/IntervalVectorBase.definitions.hpp>
-#include <OpenSolid/Core/Vector/VectorBase.definitions.hpp>
+#include <OpenSolid/Core/Vector/IntervalVectorVertices.declarations.hpp>
 
 #include <ostream>
 
 namespace opensolid
 {
+    namespace detail
+    {
+        template <class TScalar, int iNumDimensions>
+        class VectorCommon :
+            public CartesianBase<TScalar, iNumDimensions>
+        {
+        private:
+            const Vector<TScalar, iNumDimensions>&
+            derived() const;
+        protected:
+            VectorCommon();
+
+            VectorCommon(TScalar x, TScalar y);
+
+            VectorCommon(TScalar x, TScalar y, TScalar z);
+
+            VectorCommon(const Matrix<TScalar, iNumDimensions, 1>& components);
+        public:
+            TScalar
+            squaredNorm() const;
+
+            TScalar
+            norm() const;
+
+            bool
+            isZero(double precision = 1e-12) const;
+
+            TScalar
+            dot(const Vector<double, iNumDimensions>& other) const;
+
+            Interval
+            dot(const Vector<Interval, iNumDimensions>& other) const;
+
+            template <class TOtherScalar>
+            Vector<Interval, iNumDimensions>
+            hull(const Vector<TOtherScalar, iNumDimensions>& other) const;
+
+            template <class TOtherScalar>
+            Vector<Interval, iNumDimensions>
+            intersection(const Vector<TOtherScalar, iNumDimensions>& other) const;
+
+            static Vector<TScalar, iNumDimensions>
+            ZERO();
+
+            static Vector<TScalar, iNumDimensions>
+            random();
+        };
+
+        template <int iNumDimensions>
+        class IntervalVectorCommon :
+            public VectorCommon<Interval, iNumDimensions>
+        {
+        private:
+            const Vector<Interval, iNumDimensions>&
+            derived() const;
+        protected:
+            IntervalVectorCommon();
+
+            IntervalVectorCommon(Interval x, Interval y);
+
+            IntervalVectorCommon(Interval x, Interval y, Interval z);
+
+            IntervalVectorCommon(const Matrix<Interval, iNumDimensions, 1>& components);
+        public:
+            Vector<Interval, iNumDimensions>
+            normalized() const;
+
+            bool
+            isEmpty() const;
+
+            Vector<double, iNumDimensions>
+            minVertex() const;
+            
+            Vector<double, iNumDimensions>
+            maxVertex() const;
+
+            Vector<double, iNumDimensions>
+            vertex(int index) const;
+
+            IntervalVectorVertices<iNumDimensions>
+            vertices() const;
+            
+            Vector<double, iNumDimensions>
+            centroid() const;
+            
+            Vector<double, iNumDimensions>
+            randomVector() const;
+
+            Vector<double, iNumDimensions>
+            diagonalVector() const;
+
+            bool
+            overlaps(
+                const Vector<Interval, iNumDimensions>& other,
+                double precision = 1e-12
+            ) const;
+
+            bool
+            strictlyOverlaps(
+                const Vector<Interval, iNumDimensions>& other,
+                double precision = 1e-12
+            ) const;
+
+            bool
+            contains(
+                const Vector<double, iNumDimensions>& other,
+                double precision = 1e-12
+            ) const;
+
+            bool
+            strictlyContains(
+                const Vector<double, iNumDimensions>& other,
+                double precision = 1e-12
+            ) const;
+
+            bool
+            contains(
+                const Vector<Interval, iNumDimensions>& other,
+                double precision = 1e-12
+            ) const;
+
+            bool
+            strictlyContains(
+                const Vector<Interval, iNumDimensions>& other,
+                double precision = 1e-12
+            ) const;
+
+            void
+            operator*=(double scale);
+
+            void
+            operator*=(Interval scale);
+
+            void
+            operator/=(double divisor);
+
+            void
+            operator/=(Interval divisor);
+
+            void
+            operator+=(const Vector<double, iNumDimensions>& other);
+
+            void
+            operator+=(const Vector<Interval, iNumDimensions>& other);
+
+            void
+            operator-=(const Vector<double, iNumDimensions>& other);
+
+            void
+            operator-=(const Vector<Interval, iNumDimensions>& other);
+        };
+    }
+
     template <class TScalar, int iNumDimensions>
     struct BoundsType<Vector<TScalar, iNumDimensions>>
     {
@@ -57,7 +210,7 @@ namespace opensolid
 
     template <>
     class Vector<double, 2> :
-        public detail::VectorBase<double, 2>,
+        public detail::VectorCommon<double, 2>,
         public Transformable<Vector<double, 2>, Vector<double, 2>>,
         public Convertible<Vector<double, 2>>
     {
@@ -105,7 +258,7 @@ namespace opensolid
 
     template <>
     class Vector<double, 3> :
-        public detail::VectorBase<double, 3>,
+        public detail::VectorCommon<double, 3>,
         public Transformable<Vector<double, 3>, Vector<double, 3>>,
         public Convertible<Vector<double, 3>>
     {
@@ -163,7 +316,7 @@ namespace opensolid
 
     template <>
     class Vector<Interval, 2> :
-        public detail::IntervalVectorBase<2>,
+        public detail::IntervalVectorCommon<2>,
         public Convertible<Vector<Interval, 2>>
     {
     public:
@@ -197,7 +350,7 @@ namespace opensolid
 
     template <>
     class Vector<Interval, 3> :
-        public detail::IntervalVectorBase<3>,
+        public detail::IntervalVectorCommon<3>,
         public Convertible<Vector<Interval, 3>>
     {
     public:

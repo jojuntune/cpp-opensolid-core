@@ -37,25 +37,417 @@
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/UnitVector.hpp>
-#include <OpenSolid/Core/Vector/IntervalVectorBase.hpp>
-#include <OpenSolid/Core/Vector/VectorBase.hpp>
+#include <OpenSolid/Core/Vector/IntervalVectorVertices.hpp>
 
 #include <cstdlib>
 
 namespace opensolid
 {
+    namespace detail
+    {
+        template <class TScalar, int iNumDimensions>
+        inline
+        const Vector<TScalar, iNumDimensions>&
+        VectorCommon<TScalar, iNumDimensions>::derived() const {
+            return static_cast<const Vector<TScalar, iNumDimensions>&>(*this);
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        VectorCommon<TScalar, iNumDimensions>::VectorCommon() {
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        VectorCommon<TScalar, iNumDimensions>::VectorCommon(TScalar x, TScalar y) :
+            CartesianBase<TScalar, iNumDimensions>(x, y) {
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        VectorCommon<TScalar, iNumDimensions>::VectorCommon(TScalar x, TScalar y, TScalar z) :
+            CartesianBase<TScalar, iNumDimensions>(x, y, z) {
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        VectorCommon<TScalar, iNumDimensions>::VectorCommon(
+            const Matrix<TScalar, iNumDimensions, 1>& components
+        ) : CartesianBase<TScalar, iNumDimensions>(components) {
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        TScalar
+        VectorCommon<TScalar, iNumDimensions>::squaredNorm() const {
+            return this->components().cwiseSquared().sum();
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        TScalar
+        VectorCommon<TScalar, iNumDimensions>::norm() const {
+            return opensolid::sqrt(squaredNorm());
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        bool
+        VectorCommon<TScalar, iNumDimensions>::isZero(double precision) const {
+            return squaredNorm() <= precision * precision;
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        TScalar
+        VectorCommon<TScalar, iNumDimensions>::dot(
+            const Vector<double, iNumDimensions>& other
+        ) const {
+            return this->components().cwiseProduct(other.components()).sum();
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        Interval
+        VectorCommon<TScalar, iNumDimensions>::dot(
+            const Vector<Interval, iNumDimensions>& other
+        ) const {
+            return this->components().cwiseProduct(other.components()).sum();
+        }
+
+        template <class TScalar, int iNumDimensions> template <class TOtherScalar>
+        inline
+        Vector<Interval, iNumDimensions>
+        VectorCommon<TScalar, iNumDimensions>::hull(
+            const Vector<TOtherScalar, iNumDimensions>& other
+        ) const {
+            return Vector<Interval, iNumDimensions>(
+                this->components().cwiseHull(other.components())
+            );
+        }
+
+        template <class TScalar, int iNumDimensions> template <class TOtherScalar>
+        inline
+        Vector<Interval, iNumDimensions>
+        VectorCommon<TScalar, iNumDimensions>::intersection(
+            const Vector<TOtherScalar, iNumDimensions>& other
+        ) const {
+            return Vector<Interval, iNumDimensions>(
+                this->components().cwiseIntersection(other.components())
+            );
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        Vector<TScalar, iNumDimensions>
+        VectorCommon<TScalar, iNumDimensions>::ZERO() {
+            return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::ZERO());
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        Vector<TScalar, iNumDimensions>
+        VectorCommon<TScalar, iNumDimensions>::random() {
+            return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::random());
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Vector<Interval, iNumDimensions>&
+        IntervalVectorCommon<iNumDimensions>::derived() const {
+            return static_cast<const Vector<Interval, iNumDimensions>&>(*this);
+        }
+
+        template <int iNumDimensions>
+        inline
+        IntervalVectorCommon<iNumDimensions>::IntervalVectorCommon() {
+        }
+
+        template <int iNumDimensions>
+        inline
+        IntervalVectorCommon<iNumDimensions>::IntervalVectorCommon(Interval x, Interval y) :
+            VectorCommon<Interval, iNumDimensions>(x, y) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        IntervalVectorCommon<iNumDimensions>::IntervalVectorCommon(
+            Interval x,
+            Interval y,
+            Interval z
+        ) : VectorCommon<Interval, iNumDimensions>(x, y, z) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        IntervalVectorCommon<iNumDimensions>::IntervalVectorCommon(
+            const Matrix<Interval, iNumDimensions, 1>& components
+        ) : VectorCommon<Interval, iNumDimensions>(components) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        Vector<Interval, iNumDimensions>
+        IntervalVectorCommon<iNumDimensions>::normalized() const {
+            Interval norm = this->norm();
+            if (norm == opensolid::Zero()) {
+                assert(false);
+                return Vector<Interval, iNumDimensions>(
+                    Matrix<Interval, iNumDimensions, 1>::constant(Interval::EMPTY())
+                );
+            }
+            return Vector<Interval, iNumDimensions>((1.0 / norm) * this->components());
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        IntervalVectorCommon<iNumDimensions>::isEmpty() const {
+            return this->components().any(
+                [] (Interval component) -> bool {
+                    return component.isEmpty();
+                }
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        Vector<double, iNumDimensions>
+        IntervalVectorCommon<iNumDimensions>::minVertex() const {
+            return Vector<double, iNumDimensions>(this->components().cwiseLowerBound());
+        }
+        
+        template <int iNumDimensions>
+        inline
+        Vector<double, iNumDimensions>
+        IntervalVectorCommon<iNumDimensions>::maxVertex() const {
+            return Vector<double, iNumDimensions>(this->components().cwiseUpperBound());
+        }
+
+        template <>
+        inline
+        Vector<double, 2>
+        IntervalVectorCommon<2>::vertex(int index) const {
+            assert(index >= 0 && index < 4);
+            return Vector<double, 2>(
+                index & 1 ? this->component(0).upperBound() : this->component(0).lowerBound(),
+                index & 2 ? this->component(1).upperBound() : this->component(1).lowerBound()
+            );
+        }
+
+        template <>
+        inline
+        Vector<double, 3>
+        IntervalVectorCommon<3>::vertex(int index) const {
+            assert(index >= 0 && index < 8);
+            return Vector<double, 3>(
+                index & 1 ? this->component(0).upperBound() : this->component(0).lowerBound(),
+                index & 2 ? this->component(1).upperBound() : this->component(1).lowerBound(),
+                index & 4 ? this->component(2).upperBound() : this->component(2).lowerBound()
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        IntervalVectorVertices<iNumDimensions>
+        IntervalVectorCommon<iNumDimensions>::vertices() const {
+            return IntervalVectorVertices<iNumDimensions>(derived());
+        }
+        
+        template <int iNumDimensions>
+        inline
+        Vector<double, iNumDimensions>
+        IntervalVectorCommon<iNumDimensions>::centroid() const {
+            return Vector<double, iNumDimensions>(this->components().cwiseMedian());
+        }
+        
+        template <int iNumDimensions>
+        inline
+        Vector<double, iNumDimensions>
+        IntervalVectorCommon<iNumDimensions>::randomVector() const {
+            return Vector<double, iNumDimensions>(
+                this->components().map(
+                    [] (Interval component) -> double {
+                        return component.randomValue();
+                    }
+                )
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        Vector<double, iNumDimensions>
+        IntervalVectorCommon<iNumDimensions>::diagonalVector() const {
+            return Vector<double, iNumDimensions>(this->components().cwiseWidth());
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        IntervalVectorCommon<iNumDimensions>::overlaps(
+            const Vector<Interval, iNumDimensions>& other,
+            double precision
+        ) const {
+            return this->components().binaryAll(
+                other.components(),
+                [precision] (Interval component, Interval otherComponent) -> bool {
+                    return component.overlaps(otherComponent, precision);
+                }
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        IntervalVectorCommon<iNumDimensions>::strictlyOverlaps(
+            const Vector<Interval, iNumDimensions>& other,
+            double precision
+        ) const {
+            return this->components().binaryAll(
+                other.components(),
+                [precision] (Interval component, Interval otherComponent) -> bool {
+                    return component.strictlyOverlaps(otherComponent, precision);
+                }
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        IntervalVectorCommon<iNumDimensions>::contains(
+            const Vector<double, iNumDimensions>& other,
+            double precision
+        ) const {
+            return this->components().binaryAll(
+                other.components(),
+                [precision] (Interval component, double otherComponent) -> bool {
+                    return component.contains(otherComponent, precision);
+                }
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        IntervalVectorCommon<iNumDimensions>::strictlyContains(
+            const Vector<double, iNumDimensions>& other,
+            double precision
+        ) const {
+            return this->components().binaryAll(
+                other.components(),
+                [precision] (Interval component, double otherComponent) -> bool {
+                    return component.strictlyContains(otherComponent, precision);
+                }
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        IntervalVectorCommon<iNumDimensions>::contains(
+            const Vector<Interval, iNumDimensions>& other,
+            double precision
+        ) const {
+            return this->components().binaryAll(
+                other.components(),
+                [precision] (Interval component, Interval otherComponent) -> bool {
+                    return component.contains(otherComponent, precision);
+                }
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        IntervalVectorCommon<iNumDimensions>::strictlyContains(
+            const Vector<Interval, iNumDimensions>& other,
+            double precision
+        ) const {
+            return this->components().binaryAll(
+                other.components(),
+                [precision] (Interval component, Interval otherComponent) -> bool {
+                    return component.strictlyContains(otherComponent, precision);
+                }
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        void
+        IntervalVectorCommon<iNumDimensions>::operator*=(double scale) {
+            this->components() *= scale;
+        }
+
+        template <int iNumDimensions>
+        inline
+        void
+        IntervalVectorCommon<iNumDimensions>::operator*=(Interval scale) {
+            this->components() *= scale;
+        }
+
+        template <int iNumDimensions>
+        inline
+        void
+        IntervalVectorCommon<iNumDimensions>::operator/=(double divisor) {
+            this->components() /= divisor;
+        }
+
+        template <int iNumDimensions>
+        inline
+        void
+        IntervalVectorCommon<iNumDimensions>::operator/=(Interval divisor) {
+            this->components() /= divisor;
+        }
+
+        template <int iNumDimensions>
+        inline
+        void
+        IntervalVectorCommon<iNumDimensions>::operator+=(
+            const Vector<double, iNumDimensions>& other
+        ) {
+            this->components() += other.components();
+        }
+
+        template <int iNumDimensions>
+        inline
+        void
+        IntervalVectorCommon<iNumDimensions>::operator+=(
+            const Vector<Interval, iNumDimensions>& other
+        ) {
+            this->components() += other.components();
+        }
+
+        template <int iNumDimensions>
+        inline
+        void
+        IntervalVectorCommon<iNumDimensions>::operator-=(
+            const Vector<double, iNumDimensions>& other
+        ) {
+            this->components() -= other.components();
+        }
+
+        template <int iNumDimensions>
+        inline
+        void
+        IntervalVectorCommon<iNumDimensions>::operator-=(
+            const Vector<Interval, iNumDimensions>& other
+        ) {
+            this->components() -= other.components();
+        }
+    }
+
     inline
     Vector2d::Vector() {
     }
 
     inline
     Vector2d::Vector(double x, double y) :
-        detail::VectorBase<double, 2>(x, y) {
+        detail::VectorCommon<double, 2>(x, y) {
     }
 
     inline
     Vector2d::Vector(const ColumnMatrix2d& components) :
-        detail::VectorBase<double, 2>(components) {
+        detail::VectorCommon<double, 2>(components) {
     }
 
     inline
@@ -136,12 +528,12 @@ namespace opensolid
 
     inline
     Vector3d::Vector(double x, double y, double z) :
-        detail::VectorBase<double, 3>(x, y, z) {
+        detail::VectorCommon<double, 3>(x, y, z) {
     }
 
     inline
     Vector3d::Vector(const ColumnMatrix3d& components) :
-        detail::VectorBase<double, 3>(components) {
+        detail::VectorCommon<double, 3>(components) {
     }
 
     inline
@@ -238,17 +630,17 @@ namespace opensolid
 
     inline
     IntervalVector2d::Vector() :
-        detail::IntervalVectorBase<2>() {
+        detail::IntervalVectorCommon<2>() {
     }
 
     inline
     IntervalVector2d::Vector(Interval x, Interval y) :
-        detail::IntervalVectorBase<2>(x, y) {
+        detail::IntervalVectorCommon<2>(x, y) {
     }
 
     inline
     IntervalVector2d::Vector(const IntervalColumnMatrix2d& components) :
-        detail::IntervalVectorBase<2>(components) {
+        detail::IntervalVectorCommon<2>(components) {
     }
 
     inline
@@ -289,17 +681,17 @@ namespace opensolid
 
     inline
     IntervalVector3d::Vector() :
-        detail::IntervalVectorBase<3>() {
+        detail::IntervalVectorCommon<3>() {
     }
 
     inline
     IntervalVector3d::Vector(Interval x, Interval y, Interval z) :
-        detail::IntervalVectorBase<3>(x, y, z) {
+        detail::IntervalVectorCommon<3>(x, y, z) {
     }
 
     inline
     IntervalVector3d::Vector(const IntervalColumnMatrix3d& components) :
-        detail::IntervalVectorBase<3>(components) {
+        detail::IntervalVectorCommon<3>(components) {
     }
 
     inline
