@@ -51,8 +51,8 @@ Point3d newPoint = point.rotatedAbout(zAxis, M_PI / 4).translatedBy(Vector3d(20,
 
 // Line segments, triangles
 LineSegment3d lineSegment(Point3d(1, 2, 3), Point3d(4, 5, 6));
-assert((lineSegment.vector() - Vector3d(3, 3, 3)).isZero());
+assert(lineSegment.vector().equals(Vector3d(3, 3, 3)));
 assert(lineSegment.length() - 3 * sqrt(3) == Zero());
 Triangle3d triangle(Point3d::ORIGIN(), Point3d(1, 0, 0), Point3d(0, 1, 0));
-assert((triangle.centroid() - Point3d(1.0 / 3.0, 1.0 / 3.0, 0.0)).isZero());
+assert(triangle.centroid().equals(Point3d(1.0 / 3.0, 1.0 / 3.0, 0.0)));
 ```
