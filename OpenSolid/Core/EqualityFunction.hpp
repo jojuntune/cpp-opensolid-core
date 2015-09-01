@@ -32,6 +32,17 @@
 
 namespace opensolid
 {
+    template <class TEquatable>
+    inline
+    bool
+    EqualityFunction<TEquatable>::operator()(
+        const TEquatable& firstArgument,
+        const TEquatable& secondArgument,
+        double precision
+    ) const {
+        return firstArgument.equals(secondArgument, precision);
+    }
+
     inline
     bool
     EqualityFunction<double>::operator()(

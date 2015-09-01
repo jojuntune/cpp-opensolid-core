@@ -30,6 +30,17 @@
 
 namespace opensolid
 {
+    template <class TEquatable>
+    struct EqualityFunction
+    {
+        bool
+        operator()(
+            const TEquatable& firstArgument,
+            const TEquatable& secondArgument,
+            double precision
+        ) const;
+    };
+
     template <>
     struct EqualityFunction<double>
     {
