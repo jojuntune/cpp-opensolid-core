@@ -233,16 +233,16 @@ TEST_CASE("Localization") {
     Triangle3d triangle3d(Point3d(1, 1, 1), Point3d(3, 1, 2), Point3d(2, 2, 4));
 
     Triangle2d xyComponents = triangle3d.projectedInto(Plane3d::XY());
-    REQUIRE(xyComponents.vertex(0).isEqualTo(Point2d(1, 1)));
-    REQUIRE(xyComponents.vertex(1).isEqualTo(Point2d(3, 1)));
-    REQUIRE(xyComponents.vertex(2).isEqualTo(Point2d(2, 2)));
+    REQUIRE(xyComponents.vertex(0).equals(Point2d(1, 1)));
+    REQUIRE(xyComponents.vertex(1).equals(Point2d(3, 1)));
+    REQUIRE(xyComponents.vertex(2).equals(Point2d(2, 2)));
     double xyArea = xyComponents.area();
     REQUIRE(xyArea > 0.0);
 
     Triangle2d yzComponents = triangle3d.projectedInto(Plane3d::YZ());
-    REQUIRE(yzComponents.vertex(0).isEqualTo(Point2d(1, 1)));
-    REQUIRE(yzComponents.vertex(1).isEqualTo(Point2d(1, 2)));
-    REQUIRE(yzComponents.vertex(2).isEqualTo(Point2d(2, 4)));
+    REQUIRE(yzComponents.vertex(0).equals(Point2d(1, 1)));
+    REQUIRE(yzComponents.vertex(1).equals(Point2d(1, 2)));
+    REQUIRE(yzComponents.vertex(2).equals(Point2d(2, 4)));
     double yzArea = yzComponents.area();
     REQUIRE(yzArea < 0.0);
 

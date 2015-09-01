@@ -41,7 +41,7 @@ TEST_CASE("Transformation") {
     CAPTURE(frame.directionVector(0));
     CAPTURE(frame.directionVector(1));
     CAPTURE(frame.directionVector(2));
-    REQUIRE(Point3d(1, 2, 3).placedIn(frame).isEqualTo(Point3d(2, 4, -3)));
+    REQUIRE(Point3d(1, 2, 3).placedIn(frame).equals(Point3d(2, 4, -3)));
 }
 
 TEST_CASE("Composition") {
@@ -55,7 +55,7 @@ TEST_CASE("Composition") {
     CAPTURE(globalized.zDirectionVector());
     Point3d expectedProductOrigin(1 + 1 / sqrt(2.0), 0, 1 / sqrt(2.0));
 
-    REQUIRE(globalized.originPoint().isEqualTo(expectedProductOrigin));
+    REQUIRE(globalized.originPoint().equals(expectedProductOrigin));
     REQUIRE(globalized.xAxis().directionVector().equals(Vector3d(0, 0, 1)));
     REQUIRE(globalized.yAxis().directionVector().equals(Vector3d(0, 1, 0)));
     REQUIRE(globalized.zAxis().directionVector().equals(Vector3d(-1, 0, 0)));
@@ -68,11 +68,11 @@ TEST_CASE("Composition") {
 TEST_CASE("2D") {
     Frame2d frame(Point2d(1, 0), Vector2d(1, 1).normalized(), Vector2d(1, 1).unitOrthogonal());
 
-    REQUIRE(Point2d(2, 2).placedIn(frame).isEqualTo(Point2d(1, 2 * sqrt(2.0))));
-    REQUIRE(Point2d(2, 1).relativeTo(frame).isEqualTo(Point2d(sqrt(2.0), 0)));
+    REQUIRE(Point2d(2, 2).placedIn(frame).equals(Point2d(1, 2 * sqrt(2.0))));
+    REQUIRE(Point2d(2, 1).relativeTo(frame).equals(Point2d(sqrt(2.0), 0)));
 }
 
 TEST_CASE("Planes") {
-    REQUIRE(Point2d(5, 6).placedOnto(Plane3d::XY()).isEqualTo(Point3d(5, 6, 0)));
-    REQUIRE(Point2d(1, 2).placedOnto(Plane3d::ZY()).isEqualTo(Point3d(0, 2, 1)));
+    REQUIRE(Point2d(5, 6).placedOnto(Plane3d::XY()).equals(Point3d(5, 6, 0)));
+    REQUIRE(Point2d(1, 2).placedOnto(Plane3d::ZY()).equals(Point3d(0, 2, 1)));
 }

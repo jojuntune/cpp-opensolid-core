@@ -31,15 +31,12 @@
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
-#include <OpenSolid/Core/EqualityFunction.declarations.hpp>
-#include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/NumDimensions.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
-#include <OpenSolid/Core/Position/PointBase.definitions.hpp>
-#include <OpenSolid/Core/Tetrahedron.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
@@ -49,6 +46,67 @@
 
 namespace opensolid
 {
+    namespace detail
+    {
+        template <int iNumDimensions>
+        class PointCommon :
+            public detail::CartesianBase<double, iNumDimensions>,
+            public Transformable<Point<iNumDimensions>, Point<iNumDimensions>>
+        {
+        private:
+            const Point<iNumDimensions>&
+            derived() const;
+        protected:
+            PointCommon();
+
+            PointCommon(double x, double y);
+
+            PointCommon(double x, double y, double z);
+
+            PointCommon(const Matrix<double, iNumDimensions, 1>& components);
+        public:
+            Box<iNumDimensions>
+            bounds() const;
+
+            double
+            squaredDistanceTo(const Point<iNumDimensions>& other) const;
+
+            double
+            distanceTo(const Point<iNumDimensions>& other) const;
+
+            bool
+            equals(const Point<iNumDimensions>& other, double precision = 1e-12) const;
+
+            bool
+            isOrigin(double precision = 1e-12) const;
+
+            double
+            distanceAlong(const Axis<iNumDimensions>& axis) const;
+
+            Box<iNumDimensions>
+            hull(const Point<iNumDimensions>& other) const;
+
+            Box<iNumDimensions>
+            hull(const Box<iNumDimensions>& box) const;
+
+            template <class TTransformation>
+            Point<iNumDimensions>
+            transformedBy(const TTransformation& transformation) const;
+
+            Point<iNumDimensions>
+            projectedOnto(const Axis<iNumDimensions>& axis) const;
+
+            bool
+            operator==(const Point<iNumDimensions>& other) const;
+
+            bool
+            operator!=(const Point<iNumDimensions>& other) const;
+
+            static Point<iNumDimensions>
+            ORIGIN();
+        };
+    }
+
     template <int iNumDimensions>
     struct BoundsType<Point<iNumDimensions>>
     {
@@ -63,7 +121,7 @@ namespace opensolid
 
     template <>
     class Point<2> :
-        public detail::PointBase<2>,
+        public detail::PointCommon<2>,
         public Convertible<Point<2>>
     {
     public:
@@ -77,7 +135,7 @@ namespace opensolid
         double
         distanceTo(const Axis<2>& axis) const;
 
-        using detail::PointBase<2>::distanceTo;
+        using detail::PointCommon<2>::distanceTo;
 
         bool
         isOn(const Axis<2>& axis, double precision = 1e-12) const;
@@ -98,7 +156,7 @@ namespace opensolid
 
     template <>
     class Point<3> :
-        public detail::PointBase<3>,
+        public detail::PointCommon<3>,
         public Convertible<Point<3>>
     {
     public:
@@ -112,7 +170,7 @@ namespace opensolid
         double
         squaredDistanceTo(const Axis<3>& axis) const;
 
-        using detail::PointBase<3>::squaredDistanceTo;
+        using detail::PointCommon<3>::squaredDistanceTo;
 
         double
         distanceTo(const Axis<3>& axis) const;
@@ -120,7 +178,7 @@ namespace opensolid
         double
         distanceTo(const Plane3d& plane) const;
 
-        using detail::PointBase<3>::distanceTo;
+        using detail::PointCommon<3>::distanceTo;
 
         bool
         isOn(const Axis<3>& axis, double precision = 1e-12) const;
@@ -142,7 +200,7 @@ namespace opensolid
         Point<3>
         projectedOnto(const Plane3d& plane) const;
 
-        using detail::PointBase<3>::projectedOnto;
+        using detail::PointCommon<3>::projectedOnto;
         
         OPENSOLID_CORE_EXPORT
         static Point<3>
@@ -174,15 +232,4 @@ namespace opensolid
     OPENSOLID_CORE_EXPORT
     std::ostream&
     operator<<(std::ostream& stream, const Point<3>& point);
-
-    template <int iNumDimensions>
-    struct EqualityFunction<Point<iNumDimensions>>
-    {
-        bool
-        operator()(
-            const Point<iNumDimensions>& firstPoint,
-            const Point<iNumDimensions>& secondPoint,
-            double precision
-        ) const;
-    };
 }
