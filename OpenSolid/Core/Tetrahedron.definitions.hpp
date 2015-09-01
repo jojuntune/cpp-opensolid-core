@@ -31,7 +31,6 @@
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
-#include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/Handedness.definitions.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
@@ -128,6 +127,9 @@ namespace opensolid
         bounds() const;
 
         bool
+        equals(const Tetrahedron3d& other, double precision = 1e-12) const;
+
+        bool
         operator==(const Tetrahedron3d& other) const;
 
         template <class TTransformation>
@@ -137,16 +139,5 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         static const Tetrahedron3d&
         UNIT();
-    };
-    
-    template <>
-    struct EqualityFunction<Tetrahedron3d>
-    {
-        bool
-        operator()(
-            const Tetrahedron3d& firstTetrahedron,
-            const Tetrahedron3d& secondTetrahedron,
-            double precision
-        ) const;
     };
 }

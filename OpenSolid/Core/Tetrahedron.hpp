@@ -128,6 +128,18 @@ namespace opensolid
 
     inline
     bool
+    Tetrahedron3d::equals(const Tetrahedron3d& other, double precision) const {
+        return (
+            vertex(0).equals(other.vertex(0), precision) &&
+            vertex(1).equals(other.vertex(1), precision) &&
+            vertex(2).equals(other.vertex(2), precision) &&
+            vertex(3).equals(other.vertex(3), precision) &&
+            handedness() == other.handedness()
+        );
+    }
+
+    inline
+    bool
     Tetrahedron3d::operator==(const Tetrahedron3d& other) const {
         return (
             vertex(0) == other.vertex(0) &&
@@ -147,22 +159,6 @@ namespace opensolid
             vertex(2).transformedBy(transformation),
             vertex(3).transformedBy(transformation),
             handedness().transformedBy(transformation)
-        );
-    }
-
-    inline
-    bool
-    EqualityFunction<Tetrahedron3d>::operator()(
-        const Tetrahedron3d& firstTetrahedron,
-        const Tetrahedron3d& secondTetrahedron,
-        double precision
-    ) const {
-        return (
-            equalityFunction(firstTetrahedron.vertex(0), secondTetrahedron.vertex(0), precision) &&
-            equalityFunction(firstTetrahedron.vertex(1), secondTetrahedron.vertex(1), precision) &&
-            equalityFunction(firstTetrahedron.vertex(2), secondTetrahedron.vertex(2), precision) &&
-            equalityFunction(firstTetrahedron.vertex(3), secondTetrahedron.vertex(3), precision) &&
-            firstTetrahedron.handedness() == secondTetrahedron.handedness()
         );
     }
 }
