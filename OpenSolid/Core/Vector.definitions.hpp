@@ -333,6 +333,9 @@ namespace opensolid
         bool
         operator!=(const Vector<Interval, 2>& other) const;
 
+        bool
+        equals(const Vector<Interval, 2>& other, double precision = 1e-12) const;
+
         const Vector<Interval, 2>&
         bounds() const;
 
@@ -366,6 +369,9 @@ namespace opensolid
 
         bool
         operator!=(const Vector<Interval, 3>& other) const;
+
+        bool
+        equals(const Vector<Interval, 3>& other, double precision = 1e-12) const;
 
         const Vector<Interval, 3>&
         bounds() const;

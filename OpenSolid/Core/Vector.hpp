@@ -656,6 +656,12 @@ namespace opensolid
     }
 
     inline
+    bool
+    IntervalVector2d::equals(const IntervalVector2d& other, double precision) const {
+        return x().equals(other.x(), precision) && y().equals(other.y(), precision);
+    }
+
+    inline
     const IntervalVector2d&
     IntervalVector2d::bounds() const {
         return *this;
@@ -704,6 +710,16 @@ namespace opensolid
     bool
     IntervalVector3d::operator!=(const IntervalVector3d& other) const {
         return x() != other.x() || y() != other.y() || z() != other.z();
+    }
+
+    inline
+    bool
+    IntervalVector3d::equals(const IntervalVector3d& other, double precision) const {
+        return (
+            x().equals(other.x(), precision) &&
+            y().equals(other.y(), precision) &&
+            z().equals(other.z(), precision)
+        );
     }
 
     inline
