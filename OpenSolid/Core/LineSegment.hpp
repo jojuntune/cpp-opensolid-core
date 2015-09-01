@@ -28,15 +28,109 @@
 
 #include <OpenSolid/Core/LineSegment.definitions.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/LineSegmentPlaneIntersection3d.hpp>
-#include <OpenSolid/Core/Simplex/LineSegmentBase.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Plane.hpp>
+#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Simplex/SimplexVertices.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 
 namespace opensolid
 {
+    namespace detail
+    {
+        template <int iNumDimensions>
+        inline
+        const LineSegment<iNumDimensions>&
+        LineSegmentCommon<iNumDimensions>::derived() const {
+            return static_cast<const LineSegment<iNumDimensions>&>(*this);
+        }
+
+        template <int iNumDimensions>
+        inline
+        LineSegmentCommon<iNumDimensions>::LineSegmentCommon() {
+        }
+
+        template <int iNumDimensions>
+        inline
+        LineSegmentCommon<iNumDimensions>::LineSegmentCommon(
+            const Point<iNumDimensions>& startVertex,
+            const Point<iNumDimensions>& endVertex
+        ) {
+            _vertices[0] = startVertex;
+            _vertices[1] = endVertex;
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Point<iNumDimensions>&
+        LineSegmentCommon<iNumDimensions>::startVertex() const {
+            return _vertices[0];
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Point<iNumDimensions>&
+        LineSegmentCommon<iNumDimensions>::endVertex() const {
+            return _vertices[1];
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Point<iNumDimensions>&
+        LineSegmentCommon<iNumDimensions>::vertex(int index) const {
+            assert(index == 0 || index == 1);
+            return _vertices[index];
+        }
+
+        template <int iNumDimensions>
+        inline
+        SimplexVertices<LineSegment<iNumDimensions>, 2>
+        LineSegmentCommon<iNumDimensions>::vertices() const {
+            return SimplexVertices<LineSegment<iNumDimensions>, 2>(derived());
+        }
+
+        template <int iNumDimensions>
+        inline
+        Point<iNumDimensions>
+        LineSegmentCommon<iNumDimensions>::centroid() const {
+            return startVertex() + 0.5 * vector();
+        }
+
+        template <int iNumDimensions>
+        inline
+        double
+        LineSegmentCommon<iNumDimensions>::length() const {
+            return vector().norm();
+        }
+
+        template <int iNumDimensions>
+        inline
+        double
+        LineSegmentCommon<iNumDimensions>::squaredLength() const {
+            return vector().squaredNorm();
+        }
+
+        template<int iNumDimensions>
+        inline
+        Vector<double, iNumDimensions>
+        LineSegmentCommon<iNumDimensions>::vector() const {
+            return endVertex() - startVertex();
+        }
+
+        template <int iNumDimensions>
+        inline
+        Box<iNumDimensions>
+        LineSegmentCommon<iNumDimensions>::bounds() const {
+            return startVertex().hull(endVertex());
+        }
+    }
+
     inline
     LineSegment2d::LineSegment() :
         _handedness(Handedness::RIGHT_HANDED()) {
@@ -44,7 +138,7 @@ namespace opensolid
 
     inline
     LineSegment2d::LineSegment(const Point2d& startVertex, const Point2d& endVertex) :
-        detail::LineSegmentBase<2>(startVertex, endVertex),
+        detail::LineSegmentCommon<2>(startVertex, endVertex),
         _handedness(Handedness::RIGHT_HANDED()) {
     }
 
@@ -53,7 +147,7 @@ namespace opensolid
         const Point2d& startVertex,
         const Point2d& endVertex,
         Handedness handedness
-    ) : detail::LineSegmentBase<2>(startVertex, endVertex),
+    ) : detail::LineSegmentCommon<2>(startVertex, endVertex),
         _handedness(handedness) {
     }
 
@@ -93,12 +187,32 @@ namespace opensolid
     }
 
     inline
+    bool
+    LineSegment2d::operator==(const LineSegment2d& other) const {
+        return (
+            startVertex() == other.startVertex() &&
+            endVertex() == other.endVertex() &&
+            handedness() == other.handedness()
+        );
+    }
+
+    inline
+    bool
+    LineSegment2d::equals(const LineSegment2d& other, double precision) const {
+        return (
+            startVertex().equals(other.startVertex(), precision) &&
+            endVertex().equals(other.endVertex(), precision) &&
+            handedness() == other.handedness()
+        );
+    }
+
+    inline
     LineSegment3d::LineSegment() {
     }
 
     inline
     LineSegment3d::LineSegment(const Point3d& startVertex, const Point3d& endVertex) :
-        detail::LineSegmentBase<3>(startVertex, endVertex) {
+        detail::LineSegmentCommon<3>(startVertex, endVertex) {
     }
 
     inline
@@ -141,22 +255,18 @@ namespace opensolid
         return LineSegment3d(startVertex().projectedOnto(plane), endVertex().projectedOnto(plane));
     }
 
-    template <int iNumDimensions>
     inline
     bool
-    EqualityFunction<LineSegment<iNumDimensions>>::operator()(
-        const LineSegment<iNumDimensions>& firstLineSegment,
-        const LineSegment<iNumDimensions>& secondLineSegment,
-        double precision
-    ) const {
-        return equalityFunction(
-            firstLineSegment.startVertex(),
-            secondLineSegment.startVertex(),
-            precision
-        ) && equalityFunction(
-            firstLineSegment.endVertex(),
-            secondLineSegment.endVertex(),
-            precision
+    LineSegment3d::operator==(const LineSegment3d& other) const {
+        return startVertex() == other.startVertex() && endVertex() == other.endVertex();
+    }
+
+    inline
+    bool
+    LineSegment3d::equals(const LineSegment3d& other, double precision) const {
+        return (
+            startVertex().equals(other.startVertex(), precision) &&
+            endVertex().equals(other.endVertex(), precision)
         );
     }
 }
