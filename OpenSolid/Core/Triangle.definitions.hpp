@@ -29,16 +29,69 @@
 #include <OpenSolid/Core/Triangle.declarations.hpp>
 
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
+#include <OpenSolid/Core/Handedness.definitions.hpp>
+#include <OpenSolid/Core/LineSegment.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
-#include <OpenSolid/Core/Point.declarations.hpp>
-#include <OpenSolid/Core/Simplex/TriangleBase.definitions.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Simplex/SimplexVertices.declarations.hpp>
+#include <OpenSolid/Core/Simplex/TriangleEdges.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
 
 namespace opensolid
 {
+    namespace detail
+    {
+        template <int iNumDimensions>
+        class TriangleCommon :
+            public Transformable<Triangle<iNumDimensions>, Point<iNumDimensions>>
+        {
+        private:
+            Point<iNumDimensions> _vertices[3];
+            Handedness _handedness;
+
+            const Triangle<iNumDimensions>&
+            derived() const;
+        protected:
+            TriangleCommon();
+
+            TriangleCommon(
+                const Point<iNumDimensions>& firstVertex,
+                const Point<iNumDimensions>& secondVertex,
+                const Point<iNumDimensions>& thirdVertex,
+                Handedness handedness
+            );
+        public:
+            const Point<iNumDimensions>&
+            vertex(int index) const;
+
+            Handedness
+            handedness() const;
+
+            SimplexVertices<Triangle<iNumDimensions>, 3>
+            vertices() const;
+
+            Point<iNumDimensions>
+            centroid() const;
+
+            TriangleEdges<iNumDimensions>
+            edges() const;
+
+            Box<iNumDimensions>
+            bounds() const;
+
+            template <class TTransformation>
+            Triangle<iNumDimensions>
+            transformedBy(const TTransformation& transformation) const;
+
+            bool
+            operator==(const Triangle<iNumDimensions>& other) const;
+        };
+    }
+
     template <int iNumDimensions>
     struct BoundsType<Triangle<iNumDimensions>>
     {
@@ -53,7 +106,7 @@ namespace opensolid
 
     template <>
     class Triangle<2> :
-        public detail::TriangleBase<2>,
+        public detail::TriangleCommon<2>,
         public Convertible<Triangle<2>>
     {
     public:
@@ -94,7 +147,7 @@ namespace opensolid
 
     template <>
     class Triangle<3> :
-        public detail::TriangleBase<3>,
+        public detail::TriangleCommon<3>,
         public Convertible<Triangle<3>>
     {
     public:

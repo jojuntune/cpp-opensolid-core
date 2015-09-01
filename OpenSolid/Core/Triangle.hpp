@@ -29,11 +29,15 @@
 #include <OpenSolid/Core/Triangle.definitions.hpp>
 
 #include <OpenSolid/Core/BoundsType.hpp>
+#include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
+#include <OpenSolid/Core/Handedness.hpp>
+#include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Simplex/TriangleBase.hpp>
+#include <OpenSolid/Core/Simplex/SimplexVertices.hpp>
+#include <OpenSolid/Core/Simplex/TriangleEdges.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/UnitVector.hpp>
 
@@ -43,6 +47,100 @@ namespace opensolid
 {
     namespace detail
     {
+        template <int iNumDimensions>
+        inline
+        const Triangle<iNumDimensions>&
+        TriangleCommon<iNumDimensions>::derived() const {
+            return static_cast<const Triangle<iNumDimensions>&>(*this);
+        }
+
+        template <int iNumDimensions>
+        inline
+        TriangleCommon<iNumDimensions>::TriangleCommon() :
+            _handedness(Handedness::RIGHT_HANDED()) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        TriangleCommon<iNumDimensions>::TriangleCommon(
+            const Point<iNumDimensions>& firstVertex,
+            const Point<iNumDimensions>& secondVertex,
+            const Point<iNumDimensions>& thirdVertex,
+            Handedness handedness
+        ) : _handedness(handedness) {
+
+            _vertices[0] = firstVertex;
+            _vertices[1] = secondVertex;
+            _vertices[2] = thirdVertex;
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Point<iNumDimensions>&
+        TriangleCommon<iNumDimensions>::vertex(int index) const {
+            assert(index >= 0 && index < 3);
+            return _vertices[index];
+        }
+
+        template <int iNumDimensions>
+        inline
+        Handedness
+        TriangleCommon<iNumDimensions>::handedness() const {
+            return _handedness;
+        }
+
+        template <int iNumDimensions>
+        inline
+        SimplexVertices<Triangle<iNumDimensions>, 3>
+        TriangleCommon<iNumDimensions>::vertices() const {
+            return SimplexVertices<Triangle<iNumDimensions>, 3>(derived());
+        }
+
+        template <int iNumDimensions>
+        inline
+        Point<iNumDimensions>
+        TriangleCommon<iNumDimensions>::centroid() const {
+            return vertex(0) + ((vertex(1) - vertex(0)) + (vertex(2) - vertex(0))) / 3.0;
+        }
+
+        template <int iNumDimensions>
+        inline
+        TriangleEdges<iNumDimensions>
+        TriangleCommon<iNumDimensions>::edges() const {
+            return TriangleEdges<iNumDimensions>(derived());
+        }
+
+        template <int iNumDimensions>
+        inline
+        Box<iNumDimensions>
+        TriangleCommon<iNumDimensions>::bounds() const {
+            return vertex(0).hull(vertex(1)).hull(vertex(2));
+        }
+
+        template <int iNumDimensions> template <class TTransformation>
+        inline
+        Triangle<iNumDimensions>
+        TriangleCommon<iNumDimensions>::transformedBy(const TTransformation& transformation) const {
+            return Triangle<iNumDimensions>(
+                vertex(0).transformedBy(transformation),
+                vertex(1).transformedBy(transformation),
+                vertex(2).transformedBy(transformation),
+                handedness().transformedBy(transformation)
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        TriangleCommon<iNumDimensions>::operator==(const Triangle<iNumDimensions>& other) const {
+            return (
+                vertex(0) == other.vertex(0) &&
+                vertex(1) == other.vertex(1) &&
+                vertex(2) == other.vertex(2) &&
+                handedness() == other.handedness()
+            );
+        }
+
         inline
         double
         crossProduct2d(const Point2d& p0, const Point2d& p1, const Point2d& p2) {
@@ -63,7 +161,7 @@ namespace opensolid
         const Point2d& firstVertex,
         const Point2d& secondVertex,
         const Point2d& thirdVertex
-    ) : detail::TriangleBase<2>(
+    ) : detail::TriangleCommon<2>(
             firstVertex,
             secondVertex,
             thirdVertex,
@@ -77,7 +175,7 @@ namespace opensolid
         const Point2d& secondVertex,
         const Point2d& thirdVertex,
         Handedness handedness
-    ) : detail::TriangleBase<2>(firstVertex, secondVertex, thirdVertex, handedness) {
+    ) : detail::TriangleCommon<2>(firstVertex, secondVertex, thirdVertex, handedness) {
     }
 
     inline
@@ -117,7 +215,7 @@ namespace opensolid
         const Point3d& firstVertex,
         const Point3d& secondVertex,
         const Point3d& thirdVertex
-    ) : detail::TriangleBase<3>(
+    ) : detail::TriangleCommon<3>(
             firstVertex,
             secondVertex,
             thirdVertex,
@@ -131,7 +229,7 @@ namespace opensolid
         const Point3d& secondVertex,
         const Point3d& thirdVertex,
         Handedness handedness
-    ) : detail::TriangleBase<3>(firstVertex, secondVertex, thirdVertex, handedness) {
+    ) : detail::TriangleCommon<3>(firstVertex, secondVertex, thirdVertex, handedness) {
     }
 
     inline
