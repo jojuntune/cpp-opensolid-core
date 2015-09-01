@@ -31,7 +31,6 @@
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
-#include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Handedness.definitions.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
@@ -86,6 +85,9 @@ namespace opensolid
             template <class TTransformation>
             Triangle<iNumDimensions>
             transformedBy(const TTransformation& transformation) const;
+
+            bool
+            equals(const Triangle<iNumDimensions>& other, double precision = 1e-12) const;
 
             bool
             operator==(const Triangle<iNumDimensions>& other) const;
@@ -188,15 +190,4 @@ namespace opensolid
     };
 
     typedef Triangle<3> Triangle3d;
-
-    template <int iNumDimensions>
-    struct EqualityFunction<Triangle<iNumDimensions>>
-    {
-        bool
-        operator()(
-            const Triangle<iNumDimensions>& firstTriangle,
-            const Triangle<iNumDimensions>& secondTriangle,
-            double precision
-        ) const;
-    };
 }

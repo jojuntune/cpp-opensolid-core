@@ -31,7 +31,6 @@
 #include <OpenSolid/Core/BoundsType.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/Handedness.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Plane.hpp>
@@ -137,6 +136,20 @@ namespace opensolid
                 vertex(0) == other.vertex(0) &&
                 vertex(1) == other.vertex(1) &&
                 vertex(2) == other.vertex(2) &&
+                handedness() == other.handedness()
+            );
+        }
+
+        template <int iNumDimensions>
+        bool
+        TriangleCommon<iNumDimensions>::equals(
+            const Triangle<iNumDimensions>& other,
+            double precision
+        ) const {
+            return (
+                vertex(0).equals(other.vertex(0), precision) &&
+                vertex(1).equals(other.vertex(1), precision) &&
+                vertex(2).equals(other.vertex(2), precision) &&
                 handedness() == other.handedness()
             );
         }
@@ -261,21 +274,6 @@ namespace opensolid
             vertex(1).projectedOnto(plane),
             vertex(2).projectedOnto(plane),
             handedness()
-        );
-    }
-
-    template <int iNumDimensions>
-    bool
-    EqualityFunction<Triangle<iNumDimensions>>::operator()(
-        const Triangle<iNumDimensions>& firstTriangle,
-        const Triangle<iNumDimensions>& secondTriangle,
-        double precision
-    ) const {
-        return (
-            equalityFunction(firstTriangle.vertex(0), secondTriangle.vertex(0), precision) &&
-            equalityFunction(firstTriangle.vertex(1), secondTriangle.vertex(1), precision) &&
-            equalityFunction(firstTriangle.vertex(2), secondTriangle.vertex(2), precision) &&
-            firstTriangle.handedness() == secondTriangle.handedness()
         );
     }
 }
