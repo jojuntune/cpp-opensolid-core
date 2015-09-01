@@ -90,6 +90,15 @@ namespace opensolid
         );
     }
 
+    inline
+    bool
+    Sphere3d::equals(const Sphere3d& other, double precision) const {
+        return (
+            centerPoint().equals(other.centerPoint(), precision) &&
+            radius() - other.radius() == Zero(precision)
+        );
+    }
+
     template <class TTransformation>
     inline
     Sphere3d
@@ -126,18 +135,5 @@ namespace opensolid
     Sphere3d
     Sphere3d::UNIT() {
         return Sphere3d(Point3d::ORIGIN(), 1.0);
-    }
-    
-    inline
-    bool
-    EqualityFunction<Sphere3d>::operator()(
-        const Sphere3d& firstSphere,
-        const Sphere3d& secondSphere,
-        double precision
-    ) const {
-        return (
-            equalityFunction(firstSphere.centerPoint(), secondSphere.centerPoint(), precision) &&
-            equalityFunction(firstSphere.radius(), secondSphere.radius(), precision)
-        );
     }
 }

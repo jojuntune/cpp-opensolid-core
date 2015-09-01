@@ -83,6 +83,9 @@ namespace opensolid
         Box<3>
         bounds() const;
 
+        bool
+        equals(const Sphere3d& other, double precision = 1e-12) const;
+
         template <class TTransformation>
         Sphere3d
         transformedBy(const TTransformation& transformation) const;
@@ -98,16 +101,5 @@ namespace opensolid
 
         static Sphere3d
         UNIT();
-    };
-    
-    template <>
-    struct EqualityFunction<Sphere3d>
-    {
-        bool
-        operator()(
-            const Sphere3d& firstSphere,
-            const Sphere3d& secondSphere,
-            double precision
-        ) const;
     };
 }
