@@ -28,8 +28,7 @@
 
 namespace opensolid
 {
-    ParametricArea2d::ParametricArea2d() :
-        _handedness(Handedness::RIGHT_HANDED()) {
+    ParametricArea2d::ParametricArea2d() {
     }
 
     ParametricArea2d::ParametricArea2d(const ParametricArea2d& other) :

@@ -35,6 +35,8 @@ namespace opensolid
     private:
         Sign _sign;
     public:
+        Handedness();
+
         explicit
         Handedness(Sign sign);
 

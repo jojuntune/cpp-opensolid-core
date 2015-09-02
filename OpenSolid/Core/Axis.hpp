@@ -77,8 +77,7 @@ namespace opensolid
     }
 
     inline
-    Axis2d::Axis() :
-        _handedness(Handedness::RIGHT_HANDED()) {
+    Axis2d::Axis() {
     }
 
     inline

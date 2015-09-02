@@ -31,8 +31,7 @@
 namespace opensolid
 {
     Plane3d::Plane3d() :
-        FrameBase<3, 2>(Point3d::ORIGIN(), Matrix<double, 3, 2>()),
-        _handedness(Handedness::RIGHT_HANDED()) {
+        FrameBase<3, 2>(Point3d::ORIGIN(), Matrix<double, 3, 2>()) {
     }
 
     Plane3d::Plane3d(

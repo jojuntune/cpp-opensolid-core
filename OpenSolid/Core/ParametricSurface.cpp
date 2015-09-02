@@ -28,8 +28,7 @@
 
 namespace opensolid
 {
-    ParametricSurface3d::ParametricSurface3d() :
-        _handedness(Handedness::RIGHT_HANDED()) {
+    ParametricSurface3d::ParametricSurface3d() {
     }
 
     ParametricSurface3d::ParametricSurface3d(const ParametricSurface3d& other) :

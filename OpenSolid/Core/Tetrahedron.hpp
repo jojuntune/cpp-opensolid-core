@@ -48,8 +48,7 @@
 namespace opensolid
 {
     inline
-    Tetrahedron3d::Tetrahedron3d() :
-    _handedness(Handedness::RIGHT_HANDED()) {
+    Tetrahedron3d::Tetrahedron3d() {
     }
 
     inline

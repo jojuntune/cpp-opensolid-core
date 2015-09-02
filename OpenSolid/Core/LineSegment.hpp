@@ -132,8 +132,7 @@ namespace opensolid
     }
 
     inline
-    LineSegment2d::LineSegment() :
-        _handedness(Handedness::RIGHT_HANDED()) {
+    LineSegment2d::LineSegment() {
     }
 
     inline

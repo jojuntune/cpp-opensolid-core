@@ -28,8 +28,7 @@
 
 namespace opensolid
 {
-    ParametricVolume3d::ParametricVolume3d() :
-        _handedness(Handedness::RIGHT_HANDED()) {
+    ParametricVolume3d::ParametricVolume3d() {
     }
 
     ParametricVolume3d::ParametricVolume3d(const ParametricVolume3d& other) :

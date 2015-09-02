@@ -42,8 +42,7 @@
 namespace opensolid
 {
     inline
-    ParametricCurve2d::ParametricCurve() :
-        _handedness(Handedness::RIGHT_HANDED()) {
+    ParametricCurve2d::ParametricCurve() {
     }
 
     inline

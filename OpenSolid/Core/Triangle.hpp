@@ -55,8 +55,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        TriangleCommon<iNumDimensions>::TriangleCommon() :
-            _handedness(Handedness::RIGHT_HANDED()) {
+        TriangleCommon<iNumDimensions>::TriangleCommon() {
         }
 
         template <int iNumDimensions>

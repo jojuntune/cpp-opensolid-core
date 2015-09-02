@@ -31,6 +31,10 @@
 namespace opensolid
 {
     inline
+    Handedness::Handedness() {
+    }
+
+    inline
     Handedness::Handedness(Sign sign) :
         _sign(sign) {
     }
