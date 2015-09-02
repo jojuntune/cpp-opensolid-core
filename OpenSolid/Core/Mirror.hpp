@@ -40,7 +40,7 @@ namespace opensolid
     {
         template <int iNumDimensions>
         inline
-        MirrorBase<iNumDimensions>::MirrorBase(
+        MirrorCommon<iNumDimensions>::MirrorCommon(
             const Point<iNumDimensions>& point,
             const UnitVector<iNumDimensions>& mirrorDirection
         ) : _point(point),
@@ -50,42 +50,42 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Point<iNumDimensions>&
-        MirrorBase<iNumDimensions>::point() const {
+        MirrorCommon<iNumDimensions>::point() const {
             return _point;
         }
 
         template <int iNumDimensions>
         inline
         const UnitVector<iNumDimensions>&
-        MirrorBase<iNumDimensions>::mirrorDirection() const {
+        MirrorCommon<iNumDimensions>::mirrorDirection() const {
             return _mirrorDirection;
         }
 
         template <int iNumDimensions>
         inline
         double
-        MirrorBase<iNumDimensions>::scale() const {
+        MirrorCommon<iNumDimensions>::scale() const {
             return 1.0;
         }
 
         template <int iNumDimensions>
         inline
         Handedness
-        MirrorBase<iNumDimensions>::transform(Handedness handedness) const {
+        MirrorCommon<iNumDimensions>::transform(Handedness handedness) const {
             return -handedness;
         }
 
         template <int iNumDimensions>
         inline
         Point<iNumDimensions>
-        MirrorBase<iNumDimensions>::transform(const Point<iNumDimensions>& point) const {
+        MirrorCommon<iNumDimensions>::transform(const Point<iNumDimensions>& point) const {
             return point - 2.0 * (point - this->point()).dot(mirrorDirection()) * mirrorDirection();
         }
 
         template <int iNumDimensions> template <class TParameter>
         inline
         ParametricExpression<Point<iNumDimensions>, TParameter>
-        MirrorBase<iNumDimensions>::transform(
+        MirrorCommon<iNumDimensions>::transform(
             const ParametricExpression<Point<iNumDimensions>, TParameter>& expression
         ) const {
             return (
@@ -97,14 +97,14 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         Vector<double, iNumDimensions>
-        MirrorBase<iNumDimensions>::transform(const Vector<double, iNumDimensions>& vector) const {
+        MirrorCommon<iNumDimensions>::transform(const Vector<double, iNumDimensions>& vector) const {
             return vector - 2.0 * vector.dot(mirrorDirection()) * mirrorDirection();
         }
 
         template <int iNumDimensions> template <class TParameter>
         inline
         ParametricExpression<Vector<double, iNumDimensions>, TParameter>
-        MirrorBase<iNumDimensions>::transform(
+        MirrorCommon<iNumDimensions>::transform(
             const ParametricExpression<Vector<double, iNumDimensions>, TParameter>& expression
         ) const {
             return expression - 2.0 * expression.dot(mirrorDirection()) * mirrorDirection();
@@ -113,7 +113,7 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         UnitVector<iNumDimensions>
-        MirrorBase<iNumDimensions>::transform(const UnitVector<iNumDimensions>& unitVector) const {
+        MirrorCommon<iNumDimensions>::transform(const UnitVector<iNumDimensions>& unitVector) const {
             double dotProduct = unitVector.dot(mirrorDirection());
             return UnitVector<iNumDimensions>(
                 unitVector.components() - 2.0 * dotProduct * mirrorDirection().components()
@@ -123,7 +123,7 @@ namespace opensolid
         template <int iNumDimensions> template <class TParameter>
         inline
         ParametricExpression<UnitVector<iNumDimensions>, TParameter>
-        MirrorBase<iNumDimensions>::transform(
+        MirrorCommon<iNumDimensions>::transform(
             const ParametricExpression<UnitVector<iNumDimensions>, TParameter>& expression
         ) const {
             return (
@@ -134,21 +134,21 @@ namespace opensolid
 
     inline
     Mirror2d::Mirror(const Point2d& point, const UnitVector2d& mirrorDirection) :
-        detail::MirrorBase<2>(point, mirrorDirection) {
+        detail::MirrorCommon<2>(point, mirrorDirection) {
     }
 
     inline
     Mirror2d::Mirror(const Axis2d& axis) :
-        detail::MirrorBase<2>(axis.originPoint(), axis.directionVector().unitOrthogonal()) {
+        detail::MirrorCommon<2>(axis.originPoint(), axis.directionVector().unitOrthogonal()) {
     }
 
     inline
     Mirror3d::Mirror(const Point3d& point, const UnitVector3d& mirrorDirection) :
-        detail::MirrorBase<3>(point, mirrorDirection) {
+        detail::MirrorCommon<3>(point, mirrorDirection) {
     }
 
     inline
     Mirror3d::Mirror(const Plane3d& plane) :
-        detail::MirrorBase<3>(plane.originPoint(), plane.normalVector()) {
+        detail::MirrorCommon<3>(plane.originPoint(), plane.normalVector()) {
     }
 }

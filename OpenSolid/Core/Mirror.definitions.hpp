@@ -39,14 +39,14 @@ namespace opensolid
     namespace detail
     {
         template <int iNumDimensions>
-        class MirrorBase :
+        class MirrorCommon :
             public Transformation<Mirror<iNumDimensions>>
         {
         private:
             Point<iNumDimensions> _point;
             UnitVector<iNumDimensions> _mirrorDirection;
         public:
-            MirrorBase(
+            MirrorCommon(
                 const Point<iNumDimensions>& point,
                 const UnitVector<iNumDimensions>& mirrorDirection
             );
@@ -94,7 +94,7 @@ namespace opensolid
 
     template <>
     class Mirror<2> :
-        public detail::MirrorBase<2>
+        public detail::MirrorCommon<2>
     {
     public:
         Mirror(const Point<2>& point, const UnitVector<2>& mirrorDirection);
@@ -106,7 +106,7 @@ namespace opensolid
 
     template <>
     class Mirror<3> :
-        public detail::MirrorBase<3>
+        public detail::MirrorCommon<3>
     {
     public:
         Mirror(const Point<3>& point, const UnitVector<3>& mirrorDirection);
