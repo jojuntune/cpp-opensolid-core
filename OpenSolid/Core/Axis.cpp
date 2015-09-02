@@ -34,11 +34,11 @@ namespace opensolid
     {
         template <int iNumDimensions>
         ParametricExpression<Point<iNumDimensions>, double>
-        AxisBase<iNumDimensions>::expression() const {
+        AxisCommon<iNumDimensions>::expression() const {
             return this->originPoint() + Parameter1d() * this->directionVector();
         }
 
-        template ParametricExpression<Point2d, double> AxisBase<2>::expression() const;
-        template ParametricExpression<Point3d, double> AxisBase<3>::expression() const;
+        template ParametricExpression<Point2d, double> AxisCommon<2>::expression() const;
+        template ParametricExpression<Point3d, double> AxisCommon<3>::expression() const;
     }
 }
