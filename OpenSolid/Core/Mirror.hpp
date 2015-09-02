@@ -97,7 +97,9 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         Vector<double, iNumDimensions>
-        MirrorCommon<iNumDimensions>::transform(const Vector<double, iNumDimensions>& vector) const {
+        MirrorCommon<iNumDimensions>::transform(
+            const Vector<double, iNumDimensions>& vector
+        ) const {
             return vector - 2.0 * vector.dot(mirrorDirection()) * mirrorDirection();
         }
 
@@ -113,7 +115,9 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         UnitVector<iNumDimensions>
-        MirrorCommon<iNumDimensions>::transform(const UnitVector<iNumDimensions>& unitVector) const {
+        MirrorCommon<iNumDimensions>::transform(
+            const UnitVector<iNumDimensions>& unitVector
+        ) const {
             double dotProduct = unitVector.dot(mirrorDirection());
             return UnitVector<iNumDimensions>(
                 unitVector.components() - 2.0 * dotProduct * mirrorDirection().components()
