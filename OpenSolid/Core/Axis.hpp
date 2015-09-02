@@ -46,7 +46,7 @@ namespace opensolid
     {
         template <int iNumDimensions>
         inline
-        AxisBase<iNumDimensions>::AxisBase() :
+        AxisCommon<iNumDimensions>::AxisCommon() :
             FrameBase<iNumDimensions, 1>(
                 Point<iNumDimensions>::ORIGIN(),
                 Matrix<double, iNumDimensions, 1>::ZERO()
@@ -55,7 +55,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        AxisBase<iNumDimensions>::AxisBase(
+        AxisCommon<iNumDimensions>::AxisCommon(
             const Point<iNumDimensions>& originPoint,
             const UnitVector<iNumDimensions>& directionVector
         ) : FrameBase<iNumDimensions, 1>(originPoint, directionVector.components()) {
@@ -64,14 +64,14 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         UnitVector<iNumDimensions>
-        AxisBase<iNumDimensions>::directionVector() const {
+        AxisCommon<iNumDimensions>::directionVector() const {
             return UnitVector<iNumDimensions>(this->basisMatrix());
         }
     
         template <int iNumDimensions>
         inline
         Point<iNumDimensions>
-        AxisBase<iNumDimensions>::pointAt(double distance) const {
+        AxisCommon<iNumDimensions>::pointAt(double distance) const {
             return this->originPoint() + distance * directionVector();
         }
     }
@@ -85,7 +85,7 @@ namespace opensolid
     Axis2d::Axis(
         const Point2d& originPoint,
         const UnitVector2d& directionVector
-    ) : detail::AxisBase<2>(originPoint, directionVector),
+    ) : detail::AxisCommon<2>(originPoint, directionVector),
         _handedness(Handedness::RIGHT_HANDED()) {
     }
 
@@ -94,7 +94,7 @@ namespace opensolid
         const Point2d& originPoint,
         const UnitVector2d& directionVector,
         Handedness handedness
-    ) : detail::AxisBase<2>(originPoint, directionVector),
+    ) : detail::AxisCommon<2>(originPoint, directionVector),
         _handedness(handedness) {
     }
 
@@ -169,7 +169,7 @@ namespace opensolid
     Axis3d::Axis(
         const Point3d& originPoint,
         const UnitVector3d& directionVector
-    ) : detail::AxisBase<3>(originPoint, directionVector) {
+    ) : detail::AxisCommon<3>(originPoint, directionVector) {
     }
 
     inline

@@ -47,15 +47,15 @@ namespace opensolid
     namespace detail
     {
         template <int iNumDimensions>
-        class AxisBase :
+        class AxisCommon :
             public FrameBase<iNumDimensions, 1>,
             public Convertible<Axis<iNumDimensions>>,
             public Transformable<Axis<iNumDimensions>, Point<iNumDimensions>>
         {
         protected:
-            AxisBase();
+            AxisCommon();
 
-            AxisBase(
+            AxisCommon(
                 const Point<iNumDimensions>& originPoint,
                 const UnitVector<iNumDimensions>& directionVector
             );
@@ -80,7 +80,7 @@ namespace opensolid
 
     template <>
     class Axis<2> :
-        public detail::AxisBase<2>
+        public detail::AxisCommon<2>
     {
     private:
         Handedness _handedness;
@@ -128,7 +128,7 @@ namespace opensolid
 
     template <>
     class Axis<3> :
-        public detail::AxisBase<3>
+        public detail::AxisCommon<3>
     {
     public:
         Axis();
