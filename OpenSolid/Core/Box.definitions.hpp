@@ -29,20 +29,150 @@
 #include <OpenSolid/Core/Box.declarations.hpp>
 
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection/IndexIterator.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
-#include <OpenSolid/Core/Position/BoxBase.definitions.hpp>
-#include <OpenSolid/Core/Position/BoxVertices.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
-#include <OpenSolid/Core/Vector.definitions.hpp>
+#include <OpenSolid/Core/Vector.declarations.hpp>
 
 #include <ostream>
 
 namespace opensolid
 {
+    namespace detail
+    {
+        template <int iNumDimensions>
+        class BoxVertices;
+    }
+
+    template <int iNumDimensions>
+    struct ItemType<detail::BoxVertices<iNumDimensions>>
+    {
+        typedef Point<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct ItemReferenceType<detail::BoxVertices<iNumDimensions>>
+    {
+        typedef Point<iNumDimensions> Type;
+    };
+
+    namespace detail
+    {
+        template <int iNumDimensions>
+        class BoxVertices :
+            public LazyCollection<BoxVertices<iNumDimensions>>
+        {
+        private:
+            Box<iNumDimensions> _box;
+        public:
+            BoxVertices(const Box<iNumDimensions>& box);
+
+            const Box<iNumDimensions>&
+            box() const;
+
+            IndexIterator<BoxVertices<iNumDimensions>>
+            begin() const;
+
+            IndexIterator<BoxVertices<iNumDimensions>>
+            end() const;
+
+            bool
+            isEmpty() const;
+
+            std::size_t
+            size() const;
+
+            const Point<iNumDimensions>
+            operator[](std::size_t index) const;
+        };
+
+        template <int iNumDimensions>
+        class BoxCommon :
+            public detail::CartesianBase<Interval, iNumDimensions>
+        {
+        private:
+            const Box<iNumDimensions>&
+            derived() const;
+        protected:
+            BoxCommon();
+
+            BoxCommon(Interval x, Interval y);
+
+            BoxCommon(Interval x, Interval y, Interval z);
+
+            BoxCommon(const Matrix<Interval, iNumDimensions, 1>& components);
+        public:
+            bool
+            isEmpty() const;
+
+            const Box<iNumDimensions>&
+            bounds() const;
+
+            const Point<iNumDimensions>
+            minVertex() const;
+            
+            const Point<iNumDimensions>
+            maxVertex() const;
+
+            const Point<iNumDimensions>
+            vertex(int index) const;
+
+            const BoxVertices<iNumDimensions>
+            vertices() const;
+            
+            const Point<iNumDimensions>
+            centroid() const;
+            
+            const Point<iNumDimensions>
+            randomPoint() const;
+
+            const Vector<double, iNumDimensions>
+            diagonalVector() const;
+
+            bool
+            overlaps(const Box<iNumDimensions>& other, double precision = 1e-12) const;
+
+            bool
+            strictlyOverlaps(const Box<iNumDimensions>& other, double precision = 1e-12) const;
+            
+            bool
+            contains(const Point<iNumDimensions>& point, double precision = 1e-12) const;
+            
+            bool
+            strictlyContains(const Point<iNumDimensions>& point, double precision = 1e-12) const;
+            
+            bool
+            contains(const Box<iNumDimensions>& other, double precision = 1e-12) const;
+            
+            bool
+            strictlyContains(const Box<iNumDimensions>& other, double precision = 1e-12) const;
+
+            const Box<iNumDimensions>
+            hull(const Point<iNumDimensions>& point) const;
+            
+            const Box<iNumDimensions>
+            hull(const Box<iNumDimensions>& other) const;
+
+            const Box<iNumDimensions>
+            intersection(const Box<iNumDimensions>& other) const;
+
+            static const Box<iNumDimensions>
+            UNIT();
+
+            static const Box<iNumDimensions>
+            EMPTY();
+
+            static const Box<iNumDimensions>
+            WHOLE();
+        };
+    }
+
     template <int iNumDimensions>
     struct BoundsType<Box<iNumDimensions>>
     {
@@ -57,7 +187,7 @@ namespace opensolid
 
     template <>
     class Box<2> :
-        public detail::BoxBase<2>,
+        public detail::BoxCommon<2>,
         public Convertible<Box<2>>
     {
     public:
@@ -88,7 +218,7 @@ namespace opensolid
 
     template <>
     class Box<3> :
-        public detail::BoxBase<3>,
+        public detail::BoxCommon<3>,
         public Convertible<Box<3>>
     {
     public:
