@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/Box.declarations.hpp>
 
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
+#include <OpenSolid/Core/Cartesian.definitions.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
@@ -94,7 +94,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         class BoxCommon :
-            public detail::CartesianBase<Interval, iNumDimensions>
+            public Cartesian<Interval, iNumDimensions>
         {
         private:
             const Box<iNumDimensions>&

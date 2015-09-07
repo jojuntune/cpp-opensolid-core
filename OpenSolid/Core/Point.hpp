@@ -30,7 +30,7 @@
 
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Box.hpp>
-#include <OpenSolid/Core/Cartesian/CartesianBase.hpp>
+#include <OpenSolid/Core/Cartesian.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
@@ -59,20 +59,20 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         PointCommon<iNumDimensions>::PointCommon(double x, double y) :
-            CartesianBase<double, iNumDimensions>(x, y) {
+            Cartesian<double, iNumDimensions>(x, y) {
         }
 
         template <int iNumDimensions>
         inline
         PointCommon<iNumDimensions>::PointCommon(double x, double y, double z) :
-            CartesianBase<double, iNumDimensions>(x, y, z) {
+            Cartesian<double, iNumDimensions>(x, y, z) {
         }
 
         template <int iNumDimensions>
         inline
         PointCommon<iNumDimensions>::PointCommon(
             const Matrix<double, iNumDimensions, 1>& components
-        ) : detail::CartesianBase<double, iNumDimensions>(components) {
+        ) : Cartesian<double, iNumDimensions>(components) {
         }
 
         template <int iNumDimensions>

@@ -30,7 +30,7 @@
 
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/BoundsType.hpp>
-#include <OpenSolid/Core/Cartesian/CartesianBase.hpp>
+#include <OpenSolid/Core/Cartesian.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/Error.hpp>
@@ -60,20 +60,20 @@ namespace opensolid
         template <class TScalar, int iNumDimensions>
         inline
         VectorCommon<TScalar, iNumDimensions>::VectorCommon(TScalar x, TScalar y) :
-            CartesianBase<TScalar, iNumDimensions>(x, y) {
+            Cartesian<TScalar, iNumDimensions>(x, y) {
         }
 
         template <class TScalar, int iNumDimensions>
         inline
         VectorCommon<TScalar, iNumDimensions>::VectorCommon(TScalar x, TScalar y, TScalar z) :
-            CartesianBase<TScalar, iNumDimensions>(x, y, z) {
+            Cartesian<TScalar, iNumDimensions>(x, y, z) {
         }
 
         template <class TScalar, int iNumDimensions>
         inline
         VectorCommon<TScalar, iNumDimensions>::VectorCommon(
             const Matrix<TScalar, iNumDimensions, 1>& components
-        ) : CartesianBase<TScalar, iNumDimensions>(components) {
+        ) : Cartesian<TScalar, iNumDimensions>(components) {
         }
 
         template <class TScalar, int iNumDimensions>

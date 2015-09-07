@@ -53,19 +53,19 @@ namespace opensolid
 
     inline
     UnitVector2d::UnitVector(int index) :
-        detail::CartesianBase<double, 2>(int(index == 0), int(index == 1)) {
+        Cartesian<double, 2>(int(index == 0), int(index == 1)) {
     }
 
     inline
     UnitVector2d::UnitVector(double x, double y) :
-        detail::CartesianBase<double, 2>(x, y) {
+        Cartesian<double, 2>(x, y) {
 
         assert(isZero() || sqrt(x * x + y * y) - 1.0 == opensolid::Zero());
     }
 
     inline
     UnitVector2d::UnitVector(const ColumnMatrix2d& components) :
-        detail::CartesianBase<double, 2>(components) {
+        Cartesian<double, 2>(components) {
 
         assert(isZero() || sqrt(x() * x() + y() * y()) - 1.0 == opensolid::Zero());
     }
@@ -164,19 +164,19 @@ namespace opensolid
 
     inline
     UnitVector3d::UnitVector(int index) :
-        detail::CartesianBase<double, 3>(int(index == 0), int(index == 1), int(index == 2)) {
+        Cartesian<double, 3>(int(index == 0), int(index == 1), int(index == 2)) {
     }
 
     inline
     UnitVector3d::UnitVector(double x, double y, double z) :
-        detail::CartesianBase<double, 3>(x, y, z) {
+        Cartesian<double, 3>(x, y, z) {
 
         assert(isZero() || sqrt(x * x + y * y + z * z) - 1.0 == opensolid::Zero());
     }
 
     inline
     UnitVector3d::UnitVector(const ColumnMatrix3d& components) :
-        detail::CartesianBase<double, 3>(components) {
+        Cartesian<double, 3>(components) {
 
         assert(isZero() || sqrt(x() * x() + y() * y() + z() * z()) - 1.0 == opensolid::Zero());
     }

@@ -30,7 +30,7 @@
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
+#include <OpenSolid/Core/Cartesian.definitions.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Sign.declarations.hpp>
@@ -53,7 +53,7 @@ namespace opensolid
 
     template <>
     class UnitVector<2> :
-        public detail::CartesianBase<double, 2>,
+        public Cartesian<double, 2>,
         public Transformable<UnitVector<2>, Vector<double, 2>>,
         public Convertible<UnitVector<2>>
     {
@@ -120,7 +120,7 @@ namespace opensolid
 
     template <>
     class UnitVector<3> :
-        public detail::CartesianBase<double, 3>,
+        public Cartesian<double, 3>,
         public Transformable<UnitVector<3>, Vector<double, 3>>,
         public Convertible<UnitVector<3>>
     {

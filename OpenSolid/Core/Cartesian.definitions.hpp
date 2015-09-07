@@ -26,69 +26,66 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Cartesian/CartesianBase.declarations.hpp>
+#include <OpenSolid/Core/Cartesian.declarations.hpp>
 
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 
 namespace opensolid
 {
-    namespace detail
+    template <class TScalar, int iNumDimensions>
+    class Cartesian
     {
-        template <class TScalar, int iNumDimensions>
-        class CartesianBase
-        {
-        private:
-            Matrix<TScalar, iNumDimensions, 1> _components;
-        protected:
-            CartesianBase();
+    private:
+        Matrix<TScalar, iNumDimensions, 1> _components;
+    protected:
+        Cartesian();
 
-            CartesianBase(TScalar x, TScalar y);
+        Cartesian(TScalar x, TScalar y);
 
-            CartesianBase(TScalar x, TScalar y, TScalar z);
+        Cartesian(TScalar x, TScalar y, TScalar z);
 
-            CartesianBase(const Matrix<TScalar, iNumDimensions, 1>& components);
-        public:
-            const Matrix<TScalar, iNumDimensions, 1>&
-            components() const;
+        Cartesian(const Matrix<TScalar, iNumDimensions, 1>& components);
+    public:
+        const Matrix<TScalar, iNumDimensions, 1>&
+        components() const;
 
-            Matrix<TScalar, iNumDimensions, 1>&
-            components();
+        Matrix<TScalar, iNumDimensions, 1>&
+        components();
 
-            const TScalar*
-            data() const;
+        const TScalar*
+        data() const;
 
-            TScalar*
-            data();
+        TScalar*
+        data();
 
-            TScalar
-            component(int index) const;
+        TScalar
+        component(int index) const;
 
-            TScalar&
-            component(int index);
+        TScalar&
+        component(int index);
 
-            TScalar
-            operator()(int index) const;
+        TScalar
+        operator()(int index) const;
 
-            TScalar&
-            operator()(int index);
+        TScalar&
+        operator()(int index);
 
-            TScalar
-            x() const;
+        TScalar
+        x() const;
 
-            TScalar&
-            x();
+        TScalar&
+        x();
 
-            TScalar
-            y() const;
+        TScalar
+        y() const;
 
-            TScalar&
-            y();
+        TScalar&
+        y();
 
-            TScalar
-            z() const;
+        TScalar
+        z() const;
 
-            TScalar&
-            z();
-        };
-    }
+        TScalar&
+        z();
+    };
 }

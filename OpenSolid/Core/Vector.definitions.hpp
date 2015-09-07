@@ -30,7 +30,7 @@
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
+#include <OpenSolid/Core/Cartesian.definitions.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Frame.declarations.hpp>
@@ -47,7 +47,7 @@ namespace opensolid
     {
         template <class TScalar, int iNumDimensions>
         class VectorCommon :
-            public CartesianBase<TScalar, iNumDimensions>
+            public Cartesian<TScalar, iNumDimensions>
         {
         private:
             const Vector<TScalar, iNumDimensions>&

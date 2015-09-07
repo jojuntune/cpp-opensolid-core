@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/Box.definitions.hpp>
 
-#include <OpenSolid/Core/Cartesian/CartesianBase.hpp>
+#include <OpenSolid/Core/Cartesian.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/Interval.hpp>
@@ -106,20 +106,20 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         BoxCommon<iNumDimensions>::BoxCommon(Interval x, Interval y) :
-            CartesianBase<Interval, iNumDimensions>(x, y) {
+            Cartesian<Interval, iNumDimensions>(x, y) {
         }
 
         template <int iNumDimensions>
         inline
         BoxCommon<iNumDimensions>::BoxCommon(Interval x, Interval y, Interval z) :
-            CartesianBase<Interval, iNumDimensions>(x, y, z) {
+            Cartesian<Interval, iNumDimensions>(x, y, z) {
         }
 
         template <int iNumDimensions>
         inline
         BoxCommon<iNumDimensions>::BoxCommon(
             const Matrix<Interval, iNumDimensions, 1>& components
-        ) : CartesianBase<Interval, iNumDimensions>(components) {
+        ) : Cartesian<Interval, iNumDimensions>(components) {
         }
 
         template <int iNumDimensions>

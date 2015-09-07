@@ -26,9 +26,6 @@
 
 namespace opensolid
 {
-    namespace detail
-    {
-        template <class TScalar, int iNumDimensions>
-        class CartesianBase;
-    }
+    template <class TScalar, int iNumDimensions>
+    class Cartesian;
 }

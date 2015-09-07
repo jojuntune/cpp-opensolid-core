@@ -31,7 +31,7 @@
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
+#include <OpenSolid/Core/Cartesian.definitions.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
@@ -50,7 +50,7 @@ namespace opensolid
     {
         template <int iNumDimensions>
         class PointCommon :
-            public detail::CartesianBase<double, iNumDimensions>,
+            public Cartesian<double, iNumDimensions>,
             public Transformable<Point<iNumDimensions>, Point<iNumDimensions>>
         {
         private:
