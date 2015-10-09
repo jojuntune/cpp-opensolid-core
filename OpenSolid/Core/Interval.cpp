@@ -24,110 +24,76 @@
 
 #include <OpenSolid/Core/Interval.hpp>
 
-#include <boost/numeric/interval.hpp>
-
 #include <cmath>
 
 namespace opensolid
 {
-    using namespace boost::numeric::interval_lib;
-
-    typedef boost::numeric::interval<
-        double,
-        policies<
-            save_state_nothing<rounded_transc_exact<double, rounded_arith_exact<double>>>,
-            checking_base<double>
-        >
-    > BoostInterval;
-
-    template <>
-    struct ConversionFunction<Interval, BoostInterval>
-    {
-        inline
-        BoostInterval
-        operator()(Interval interval) {
-            return BoostInterval(interval.lowerBound(), interval.upperBound());
-        }
-    };
-
-    template <>
-    struct ConversionFunction<BoostInterval, Interval>
-    {
-        inline
-        Interval
-        operator()(BoostInterval boostInterval) {
-            return Interval(boostInterval.lower(), boostInterval.upper());
-        }
-    };
-    
-    Interval&
-    Interval::operator*=(Interval interval) {
-        BoostInterval self = this->to<BoostInterval>();
-        BoostInterval other = interval.to<BoostInterval>();
-        *this = Interval::from(self * other);
-        return *this;
-    }
-    
-    Interval&
-    Interval::operator/=(Interval interval) {
-        BoostInterval self = this->to<BoostInterval>();
-        BoostInterval other = interval.to<BoostInterval>();
-        *this = Interval::from(self / other);
-        return *this;
-    }
-    
-    Interval
-    operator*(Interval firstInterval, Interval secondInterval) {
-        return Interval::from(
-            firstInterval.to<BoostInterval>() * secondInterval.to<BoostInterval>()
-        );
-    }
-
-    Interval
-    operator/(double value, Interval interval) {
-        return Interval::from(value / interval.to<BoostInterval>());
-    }
-
-    Interval
-    operator/(Interval firstInterval, Interval secondInterval) {
-        return Interval::from(
-            firstInterval.to<BoostInterval>() / secondInterval.to<BoostInterval>()
-        );
-    }
-
     Interval
     sin(Interval interval) {
-        return Interval::from(boost::numeric::sin(interval.to<BoostInterval>()));
+        return cos(interval - M_PI / 2.0);
     }
 
     Interval
-    cos(Interval interval) {
-        return Interval::from(boost::numeric::cos(interval.to<BoostInterval>()));
+    cos(Interval interval) { 
+        Interval absolute = abs(interval);
+        double width = absolute.width();
+        bool hasMin = std::fmod(absolute.upperBound() + M_PI, 2 * M_PI) <= width;
+        bool hasMax = std::fmod(absolute.upperBound(), 2 * M_PI) <= width;
+        if (hasMin && hasMax) {
+            return Interval(-1.0, 1.0);
+        } else {
+            double cosLower = std::cos(absolute.lowerBound());
+            double cosUpper = std::cos(absolute.upperBound());
+            auto sorted = std::minmax(cosLower, cosUpper);
+            return Interval(hasMin ? -1.0 : sorted.first, hasMax ? 1.0 : sorted.second);
+        }
     }
 
     Interval
     tan(Interval interval) {
-        return Interval::from(boost::numeric::tan(interval.to<BoostInterval>()));
+        Interval absolute = abs(interval);
+        bool hasSingularity = std::fmod(absolute.upperBound() + M_PI / 2, M_PI) <= absolute.width();
+        if (hasSingularity) {
+            return Interval::WHOLE();
+        } else {
+            return Interval(std::tan(interval.lowerBound()), std::tan(interval.upperBound()));
+        }
     }
 
     Interval
     asin(Interval interval) {
-        return Interval::from(boost::numeric::asin(interval.to<BoostInterval>()));
+        if (interval.isEmpty() || interval.lowerBound() > 1.0 || interval.upperBound() < -1.0) {
+            return Interval::EMPTY();
+        } else {
+            return Interval(
+                asin(max(interval.lowerBound(), -1.0)),
+                asin(min(interval.upperBound(), 1.0))
+            );
+        }
     }
 
     Interval
     acos(Interval interval) {
-        return Interval::from(boost::numeric::acos(interval.to<BoostInterval>()));
+        if (interval.isEmpty() || interval.lowerBound() > 1.0 || interval.upperBound() < -1.0) {
+            return Interval::EMPTY();
+        } else {
+            return Interval(
+                acos(min(interval.upperBound(), 1.0)),
+                acos(max(interval.lowerBound(), -1.0))
+            );
+        }
     }
 
     Interval
     atan(Interval interval) {
-        return Interval::from(boost::numeric::atan(interval.to<BoostInterval>()));
+        return Interval(atan(interval.lowerBound()), atan(interval.upperBound()));
     }
 
     Interval
     atan2(Interval yInterval, Interval xInterval) {
-        if (xInterval.lowerBound() > 0.0) {
+        if (yInterval.isEmpty() || xInterval.isEmpty()) {
+            return Interval::EMPTY();
+        } else if (xInterval.lowerBound() > 0.0) {
             return atan(yInterval / xInterval);
         } else if (yInterval.lowerBound() > 0.0) {
             return atan(-xInterval / yInterval) + M_PI / 2;
@@ -140,19 +106,24 @@ namespace opensolid
 
     Interval
     exp(Interval interval) {
-        return Interval::from(boost::numeric::exp(interval.to<BoostInterval>()));
+        if (interval.isEmpty()) {
+            return Interval::EMPTY();
+        } else {
+            return Interval(exp(interval.lowerBound()), exp(interval.upperBound()));
+        }
     }
 
     Interval
     log(Interval interval) {
-        return Interval::from(boost::numeric::log(interval.to<BoostInterval>()));
-    }
-
-    Interval
-    pow(Interval baseInterval, int exponentValue) {
-        return Interval::from(
-            boost::numeric::pow(baseInterval.to<BoostInterval>(), exponentValue)
-        );
+        if (interval.isEmpty() || interval.upperBound() < 0.0) {
+            return Interval::EMPTY();
+        } else if (interval.lowerBound() > 0.0) {
+            return Interval(log(interval.lowerBound()), log(interval.upperBound()));
+        } else if (interval.upperBound() > 0.0) {
+            return Interval(-std::numeric_limits<double>::infinity(), log(interval.upperBound()));
+        } else {
+            return -std::numeric_limits<double>::infinity();
+        }
     }
     
     Interval

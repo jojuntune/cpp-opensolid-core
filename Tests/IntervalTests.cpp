@@ -26,6 +26,8 @@
 
 #include <catch/catch.hpp>
 
+#include <cmath>
+
 using namespace opensolid;
 
 TEST_CASE("Basic functionality") {
@@ -94,4 +96,81 @@ TEST_CASE("Random generation") {
 TEST_CASE("Tolerant equality") {
     Interval squares(16.0, 81.0);
     REQUIRE(sqrt(squares).equals(Interval(4.0, 9.0)));
+}
+
+TEST_CASE("Sine") {
+    auto test = [] (double xLower, double xUpper, double yLower, double yUpper) {
+        CAPTURE(xLower);
+        CAPTURE(xUpper);
+        CAPTURE(yLower);
+        CAPTURE(yUpper);
+        Interval x(xLower, xUpper);
+        Interval y = sin(x);
+        CAPTURE(y);
+        REQUIRE((y.lowerBound() - yLower) == Zero());
+        REQUIRE((y.upperBound() - yUpper) == Zero());
+    };
+
+    test(-0.5, 0.5, sin(-0.5), sin(0.5));
+    test(1.25, 2.5, sin(2.5), 1.0);
+    test(4.0, 4.1, sin(4.1), sin(4.0));
+    test(4.0, 6.0, -1.0, sin(6.0));
+    test(4.0, 8.0, -1.0, 1.0);
+    test(-6.0, -4.0, sin(-6.0), 1.0);
+    test(-1.0, 3.5, sin(-1.0), 1.0);
+}
+
+TEST_CASE("Cosine") {
+    auto test = [] (double xLower, double xUpper, double yLower, double yUpper) {
+        CAPTURE(xLower);
+        CAPTURE(xUpper);
+        CAPTURE(yLower);
+        CAPTURE(yUpper);
+        Interval x(xLower, xUpper);
+        Interval y = cos(x);
+        CAPTURE(y);
+        REQUIRE((y.lowerBound() - yLower) == Zero());
+        REQUIRE((y.upperBound() - yUpper) == Zero());
+    };
+
+    test(-0.5, 0.5, cos(0.5), 1.0);
+    test(1.25, 2.5, cos(2.5), cos(1.25));
+    test(4.0, 4.1, cos(4.0), cos(4.1));
+    test(4.0, 6.0, cos(4.0), cos(6.0));
+    test(4.0, 8.0, cos(4.0), 1.0);
+    test(-6.0, -4.0, cos(-4.0), cos(-6.0));
+    test(-1.0, 3.5, -1.0, 1.0);
+
+}
+
+TEST_CASE("Tangent") {
+    auto test = [] (double xLower, double xUpper, double yLower, double yUpper) {
+        CAPTURE(xLower);
+        CAPTURE(xUpper);
+        CAPTURE(yLower);
+        CAPTURE(yUpper);
+        Interval x(xLower, xUpper);
+        Interval y = tan(x);
+        CAPTURE(y);
+        REQUIRE((y.lowerBound() - yLower) == Zero());
+        REQUIRE((y.upperBound() - yUpper) == Zero());
+    };
+
+    auto testInfinite = [] (double xLower, double xUpper) {
+        CAPTURE(xLower);
+        CAPTURE(xUpper);
+        Interval x(xLower, xUpper);
+        Interval y = tan(x);
+        CAPTURE(y);
+        REQUIRE(y.lowerBound() < -DBL_MAX);
+        REQUIRE(y.upperBound() > DBL_MAX);
+    };
+
+    test(-0.5, 0.5, tan(-0.5), tan(0.5));
+    testInfinite(1.25, 2.5);
+    test(4.0, 4.1, tan(4.0), tan(4.1));
+    testInfinite(4.0, 6.0);
+    testInfinite(4.0, 8.0);
+    testInfinite(-6.0, -4.0);
+    testInfinite(-1.0, 3.5); 
 }

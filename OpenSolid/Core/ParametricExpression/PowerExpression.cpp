@@ -266,7 +266,7 @@ namespace opensolid
                         IntervalMatrixViewXd results
                     ) {
                         Interval baseValue = baseValues.value();
-                        if (baseValue <= Zero()) {
+                        if (baseValue.upperBound() <= Zero()) {
                             throw Error(new PlaceholderError());
                         }
                         results *= (

@@ -31,16 +31,22 @@
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
+#include <cmath>
 #include <cstdlib>
 #include <limits>
 #include <algorithm>
+
+// Temporary hack to allow use of _isnan() until Visual Studio supports std::isnan()
+#ifdef _MSC_VER
+#include <float.h>
+#endif
 
 namespace opensolid
 {
     inline
     Interval::Interval() :
-        _lowerBound(std::numeric_limits<double>::infinity()),
-        _upperBound(-std::numeric_limits<double>::infinity()) {
+        _lowerBound(std::numeric_limits<double>::quiet_NaN()),
+        _upperBound(std::numeric_limits<double>::quiet_NaN()) {
     }
     
     inline
@@ -53,6 +59,8 @@ namespace opensolid
     Interval::Interval(double lowerBound, double upperBound) :
         _lowerBound(lowerBound),
         _upperBound(upperBound) {
+
+        assert(!(lowerBound > upperBound));
     }
     
     inline
@@ -106,21 +114,30 @@ namespace opensolid
     inline
     Interval
     Interval::squared() const {
-        if (lowerBound() > 0.0) {
-            return Interval(lowerBound() * lowerBound(), upperBound() * upperBound());
-        } else if (upperBound() < 0.0) {
-            return Interval(upperBound() * upperBound(), lowerBound() * lowerBound());
-        } else if (-lowerBound() < upperBound()) {
-            return Interval(0.0, upperBound() * upperBound());
+        if (isEmpty()) {
+            return Interval::EMPTY();
         } else {
-            return Interval(0.0, lowerBound() * lowerBound());
+            if (lowerBound() > 0.0) {
+                return Interval(lowerBound() * lowerBound(), upperBound() * upperBound());
+            } else if (upperBound() < 0.0) {
+                return Interval(upperBound() * upperBound(), lowerBound() * lowerBound());
+            } else if (-lowerBound() < upperBound()) {
+                return Interval(0.0, upperBound() * upperBound());
+            } else {
+                return Interval(0.0, lowerBound() * lowerBound());
+            }
         }
     }
     
     inline
     bool
     Interval::isEmpty() const {
-        return lowerBound() > upperBound();
+        // Temporary hack until Visual Studio supports std::isnan()
+        #ifdef _MSC_VER
+        return _isnan(lowerBound()) && _isnan(upperBound());
+        #else
+        return std::isnan(lowerBound()) && std::isnan(upperBound());
+        #endif
     }
     
     inline
@@ -132,37 +149,51 @@ namespace opensolid
     inline
     std::pair<Interval, Interval>
     Interval::bisected() const {
-        double mid = median();
+        double median = this->median();
         return std::pair<Interval, Interval>(
-            Interval(lowerBound(), mid),
-            Interval(mid, upperBound())
+            Interval(lowerBound(), median),
+            Interval(median, upperBound())
         );
     }
 
     inline
     Interval
     Interval::hull(double value) const {
-        return Interval(
-            min(lowerBound(), value),
-            max(upperBound(), value)
-        );
+        if (isEmpty()) {
+            return value;
+        } else {
+            return Interval(
+                min(lowerBound(), value),
+                max(upperBound(), value)
+            );
+        }
     }
     
     inline
     Interval
-    Interval::hull(Interval interval) const {
-        return Interval(
-            min(lowerBound(), interval.lowerBound()),
-            max(upperBound(), interval.upperBound())
-        );
+    Interval::hull(Interval other) const {
+        if (isEmpty()) {
+            return other;
+        } else if (other.isEmpty()) {
+            return *this;
+        } else {
+            return Interval(
+                min(lowerBound(), other.lowerBound()),
+                max(upperBound(), other.upperBound())
+            );
+        }
     }
 
     inline
     Interval
-    Interval::intersection(Interval interval) const {
-        double lowerBound = max(this->lowerBound(), interval.lowerBound());
-        double upperBound = min(this->upperBound(), interval.upperBound());
-        return lowerBound <= upperBound ? Interval(lowerBound, upperBound) : Interval::EMPTY();
+    Interval::intersection(Interval other) const {
+        if (isEmpty() || other.isEmpty()) {
+            return Interval::EMPTY();
+        } else {
+            double lowerBound = max(this->lowerBound(), other.lowerBound());
+            double upperBound = min(this->upperBound(), other.upperBound());
+            return lowerBound <= upperBound ? Interval(lowerBound, upperBound) : Interval::EMPTY();
+        }
     }
         
     inline
@@ -225,81 +256,65 @@ namespace opensolid
     inline
     Interval&
     Interval::operator+=(double value) {
-        _lowerBound += value;
-        _upperBound += value;
+        *this = *this + value;
         return *this;
     }
 
     inline
     Interval&
-    Interval::operator+=(Interval interval) {
-        _lowerBound += interval.lowerBound();
-        _upperBound += interval.upperBound();
+    Interval::operator+=(Interval other) {
+        *this = *this + other;
         return *this;
     }
 
     inline
     Interval&
     Interval::operator-=(double value) {
-        _lowerBound -= value;
-        _upperBound -= value;
+        *this = *this - value;
         return *this;
     }
 
     inline
     Interval&
-    Interval::operator-=(Interval interval) {
-        _lowerBound -= interval.upperBound();
-        _upperBound -= interval.lowerBound();
+    Interval::operator-=(Interval other) {
+        *this = *this - other;
         return *this;
     }
 
     inline
     Interval&
     Interval::operator*=(double value) {
-        if (value < 0.0) {
-            std::swap(_lowerBound, _upperBound);
-        }
-        _lowerBound *= value;
-        _upperBound *= value;
+        *this = *this * value;
+        return *this;
+    }
+
+    inline
+    Interval&
+    Interval::operator*=(Interval other) {
+        *this = *this * other;
         return *this;
     }
 
     inline
     Interval&
     Interval::operator/=(double value) {
-        if (value > Zero()) {
-            _lowerBound /= value;
-            _upperBound /= value;
-        } else if (value < Zero()) {
-            std::swap(_lowerBound, _upperBound);
-            _lowerBound /= value;
-            _upperBound /= value;
-        } else {
-            _lowerBound = -std::numeric_limits<double>::infinity();
-            _upperBound = std::numeric_limits<double>::infinity();
-        }
+        *this = *this / value;
         return *this;
     }
 
     inline
-    Interval
-    Interval::UNIT() {
-        return Interval(0, 1);
-    }
-    
-    inline
-    Interval
-    Interval::hull(double firstValue, double secondValue) {
-        return Interval(min(firstValue, secondValue), max(firstValue, secondValue));
+    Interval&
+    Interval::operator/=(Interval other) {
+        *this = *this / other;
+        return *this;
     }
 
     inline
     Interval
     Interval::EMPTY() {
         return Interval(
-            std::numeric_limits<double>::infinity(),
-            -std::numeric_limits<double>::infinity()
+            std::numeric_limits<double>::quiet_NaN(),
+            std::numeric_limits<double>::quiet_NaN()
         );
     }
     
@@ -310,6 +325,22 @@ namespace opensolid
             -std::numeric_limits<double>::infinity(),
             std::numeric_limits<double>::infinity()
         );
+    }
+
+    inline
+    Interval
+    Interval::UNIT() {
+        return Interval(0.0, 1.0);
+    }
+    
+    inline
+    Interval
+    Interval::hull(double firstValue, double secondValue) {
+        if (firstValue <= secondValue) {
+            return Interval(firstValue, secondValue);
+        } else {
+            return Interval(secondValue, firstValue);
+        }
     }
 
     inline
@@ -342,94 +373,22 @@ namespace opensolid
     inline
     bool
     operator!=(double value, Interval interval) {
-        return value < interval.lowerBound() || value > interval.upperBound();
+        return value != interval.lowerBound() || value != interval.upperBound();
     }
 
     inline
     bool
     operator!=(Interval interval, double value) {
-        return interval.lowerBound() > value || interval.upperBound() < value;
+        return interval.lowerBound() != value || interval.upperBound() != value;
     }
 
     inline
     bool
     operator!=(Interval firstInterval, Interval secondInterval) {
         return (
-            firstInterval.lowerBound() > secondInterval.upperBound() ||
-            firstInterval.upperBound() < secondInterval.lowerBound()
+            firstInterval.lowerBound() != secondInterval.lowerBound() ||
+            firstInterval.upperBound() != secondInterval.upperBound()
         );
-    }
-
-    inline
-    bool
-    operator<(double value, Interval interval) {
-        return value < interval.lowerBound();
-    }
-
-    inline
-    bool
-    operator<(Interval interval, double value) {
-        return interval.upperBound() < value;
-    }
-
-    inline
-    bool
-    operator<(Interval firstInterval, Interval secondInterval) {
-        return firstInterval.upperBound() < secondInterval.lowerBound();
-    }
-
-    inline
-    bool
-    operator>(double value, Interval interval) {
-        return value > interval.upperBound();
-    }
-
-    inline
-    bool
-    operator>(Interval interval, double value) {
-        return interval.lowerBound() > value;
-    }
-
-    inline
-    bool
-    operator>(Interval firstInterval, Interval secondInterval) {
-        return firstInterval.lowerBound() > secondInterval.upperBound();
-    }
-
-    inline
-    bool
-    operator<=(double value, Interval interval) {
-        return value <= interval.lowerBound();
-    }
-
-    inline
-    bool
-    operator<=(Interval interval, double value) {
-        return interval.upperBound() <= value;
-    }
-
-    inline
-    bool
-    operator<=(Interval firstInterval, Interval secondInterval) {
-        return firstInterval.upperBound() <= secondInterval.lowerBound();
-    }
-
-    inline
-    bool
-    operator>=(double value, Interval interval) {
-        return value >= interval.upperBound();
-    }
-
-    inline
-    bool
-    operator>=(Interval interval, double value) {
-        return interval.lowerBound() >= value;
-    }
-
-    inline
-    bool
-    operator>=(Interval firstInterval, Interval secondInterval) {
-        return firstInterval.lowerBound() >= secondInterval.upperBound();
     }
 
     inline
@@ -445,33 +404,9 @@ namespace opensolid
     bool
     operator!=(Interval interval, Zero zero) {
         return (
-            interval.lowerBound() > zero.precision() ||
-            interval.upperBound() < -zero.precision()
+            !(interval.lowerBound() <= zero.precision()) ||
+            !(interval.upperBound() >= -zero.precision())
         );
-    }
-
-    inline
-    bool
-    operator<(Interval interval, Zero zero) {
-        return interval.upperBound() < -zero.precision();
-    }
-
-    inline
-    bool
-    operator>(Interval interval, Zero zero) {
-        return interval.lowerBound() > zero.precision();
-    }
-
-    inline
-    bool
-    operator<=(Interval interval, Zero zero) {
-        return interval.upperBound() <= zero.precision();
-    }
-
-    inline
-    bool
-    operator>=(Interval interval, Zero zero) {
-        return interval.lowerBound() >= -zero.precision();
     }
 
     inline
@@ -483,22 +418,22 @@ namespace opensolid
     inline
     Interval
     operator+(double value, Interval interval) {
-        interval += value;
-        return interval;
+        return Interval(value + interval.lowerBound(), value + interval.upperBound());
     }
 
     inline
     Interval
     operator+(Interval interval, double value) {
-        interval += value;
-        return interval;
+        return Interval(interval.lowerBound() + value, interval.upperBound() + value);
     }
 
     inline
     Interval
     operator+(Interval firstInterval, Interval secondInterval) {
-        firstInterval += secondInterval;
-        return firstInterval;
+        return Interval(
+            firstInterval.lowerBound() + secondInterval.lowerBound(),
+            firstInterval.upperBound() + secondInterval.upperBound()
+        );
     }
 
     inline
@@ -510,42 +445,110 @@ namespace opensolid
     inline
     Interval
     operator-(Interval interval, double value) {
-        interval -= value;
-        return interval;
+        return Interval(interval.lowerBound() - value, interval.upperBound() - value);
     }
 
     inline
     Interval
     operator-(Interval firstInterval, Interval secondInterval) {
-        firstInterval -= secondInterval;
-        return firstInterval;
+        return Interval(
+            firstInterval.lowerBound() - secondInterval.upperBound(),
+            firstInterval.upperBound() - secondInterval.lowerBound()
+        );
     }
 
     inline
     Interval
     operator*(double value, Interval interval) {
-        interval *= value;
-        return interval;
+        if (value >= 0.0) {
+            return Interval(value * interval.lowerBound(), value * interval.upperBound());
+        } else {
+            return Interval(value * interval.upperBound(), value * interval.lowerBound());
+        }
     }
 
     inline
     Interval
     operator*(Interval interval, double value) {
-        interval *= value;
-        return interval;
+        if (value >= 0.0) {
+            return Interval(interval.lowerBound() * value, interval.upperBound() * value);
+        } else {
+            return Interval(interval.upperBound() * value, interval.lowerBound() * value);
+        }
+    }
+
+    inline
+    Interval
+    operator*(Interval firstInterval, Interval secondInterval) {
+        double ll = firstInterval.lowerBound() * secondInterval.lowerBound();
+        double lu = firstInterval.lowerBound() * secondInterval.upperBound();
+        double ul = firstInterval.upperBound() * secondInterval.lowerBound();
+        double uu = firstInterval.upperBound() * secondInterval.upperBound();
+        auto lPair = std::minmax(ll, lu);
+        auto uPair = std::minmax(ul, uu);
+        return Interval(std::min(lPair.first, uPair.first), std::max(lPair.second, uPair.second));
+    }
+
+    inline
+    Interval
+    operator/(double value, Interval interval) {
+        if (interval.lowerBound() >= 0.0 || interval.upperBound() <= 0.0) {
+            if (value > 0.0) {
+                return Interval(value / interval.upperBound(), value / interval.lowerBound());
+            } else if (value < 0.0) {
+                return Interval(value / interval.lowerBound(), value / interval.upperBound());
+            } else {
+                return 0.0;
+            }
+        } else if (interval.isEmpty()) {
+            return Interval::EMPTY();
+        } else if (value == 0.0) {
+            return 0.0;
+        } else {
+            return Interval::WHOLE();
+        }
     }
 
     inline
     Interval
     operator/(Interval interval, double value) {
-        interval /= value;
-        return interval;
+        if (value > 0.0) {
+            double reciprocal = 1.0 / value;
+            return Interval(interval.lowerBound() * reciprocal, interval.upperBound() * reciprocal);
+        } else if (value < 0.0) {
+            double reciprocal = 1.0 / value;
+            return Interval(interval.upperBound() * reciprocal, interval.lowerBound() * reciprocal);
+        } else if (interval.isEmpty()) {
+            return Interval::EMPTY();
+        } else {
+            return Interval::WHOLE();
+        }
+    }
+
+    inline
+    Interval
+    operator/(Interval firstInterval, Interval secondInterval) {
+        if (secondInterval.lowerBound() >= 0.0 || secondInterval.upperBound() <= 0.0) {
+            Interval reciprocal(
+                1.0 / secondInterval.upperBound(),
+                1.0 / secondInterval.lowerBound()
+            );
+            return firstInterval * reciprocal;
+        } else if (firstInterval.isEmpty() || secondInterval.isEmpty()) {
+            return Interval::EMPTY();
+        } else if (firstInterval == 0.0) {
+            return 0.0;
+        } else {
+            return Interval::WHOLE();
+        }
     }
 
     inline
     Interval
     abs(Interval interval) {
-        if (interval.lowerBound() >= 0.0) {
+        if (interval.isEmpty()) {
+            return Interval::EMPTY();
+        } else if (interval.lowerBound() >= 0.0) {
             return interval;
         } else if (interval.upperBound() <= 0.0) {
             return -interval;
@@ -559,7 +562,7 @@ namespace opensolid
     inline
     Interval
     sqrt(Interval interval) {
-        if (interval < Zero()) {
+        if (interval.isEmpty() || interval.upperBound() < 0.0) {
             return Interval::EMPTY();
         } else {
             return Interval(
@@ -567,29 +570,5 @@ namespace opensolid
                 sqrt(interval.upperBound())
             );
         }
-    }
-    
-    inline
-    Interval
-    conj(Interval interval) {
-        return interval;
-    }
-    
-    inline
-    Interval
-    real(Interval interval) {
-        return interval;
-    }
-    
-    inline
-    Interval
-    imag(Interval interval) {
-        return 0.0;
-    }
-    
-    inline
-    Interval
-    abs2(Interval interval) {
-        return interval.squared();
     }
 }

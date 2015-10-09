@@ -128,44 +128,42 @@ namespace opensolid
 
         bool
         equals(const Interval& other, double precision = 1e-12);
-        
+
         Interval&
         operator+=(double value);
-        
+
         Interval&
-        operator+=(Interval interval);
-        
+        operator+=(Interval other);
+
         Interval&
         operator-=(double value);
-        
+
         Interval&
-        operator-=(Interval interval);
-        
+        operator-=(Interval other);
+
         Interval&
         operator*=(double value);
-        
+
+        Interval&
+        operator*=(Interval other);
+
         Interval&
         operator/=(double value);
-        
-        OPENSOLID_CORE_EXPORT
+
         Interval&
-        operator*=(Interval interval);
-        
-        OPENSOLID_CORE_EXPORT
-        Interval&
-        operator/=(Interval interval);
-        
-        static Interval
-        UNIT();
-        
-        static Interval
-        hull(double firstValue, double secondValue);
+        operator/=(Interval other);
         
         static Interval
         EMPTY();
         
         static Interval
         WHOLE();
+        
+        static Interval
+        UNIT();
+        
+        static Interval
+        hull(double firstValue, double secondValue);
 
         static Interval
         random();
@@ -190,58 +188,10 @@ namespace opensolid
     operator!=(Interval firstInterval, Interval secondInterval);
 
     bool
-    operator<(double value, Interval interval);
-    
-    bool
-    operator<(Interval interval, double value);
-    
-    bool
-    operator<(Interval firstInterval, Interval secondInterval);
-
-    bool
-    operator>(double value, Interval interval);
-    
-    bool
-    operator>(Interval interval, double value);
-    
-    bool
-    operator>(Interval firstInterval, Interval secondInterval);
-
-    bool
-    operator<=(double value, Interval interval);
-    
-    bool
-    operator<=(Interval interval, double value);
-    
-    bool
-    operator<=(Interval firstInterval, Interval secondInterval);
-
-    bool
-    operator>=(double value, Interval interval);
-    
-    bool
-    operator>=(Interval interval, double value);
-    
-    bool
-    operator>=(Interval firstInterval, Interval secondInterval);
-    
-    bool
     operator==(Interval interval, Zero zero);
     
     bool
     operator!=(Interval interval, Zero zero);
-    
-    bool
-    operator<(Interval interval, Zero zero);
-    
-    bool
-    operator>(Interval interval, Zero zero);
-    
-    bool
-    operator<=(Interval interval, Zero zero);
-    
-    bool
-    operator>=(Interval interval, Zero zero);
         
     Interval
     operator-(Interval argument);
@@ -270,18 +220,15 @@ namespace opensolid
     Interval
     operator*(Interval interval, double value);
     
-    OPENSOLID_CORE_EXPORT
     Interval
     operator*(Interval firstInterval, Interval secondInterval);
 
     Interval
     operator/(Interval interval, double value);
 
-    OPENSOLID_CORE_EXPORT
     Interval
     operator/(double value, Interval interval);
 
-    OPENSOLID_CORE_EXPORT
     Interval
     operator/(Interval firstInterval, Interval secondInterval);
 
@@ -329,27 +276,11 @@ namespace opensolid
     
     OPENSOLID_CORE_EXPORT
     Interval
-    pow(Interval baseInterval, int exponentValue);
-    
-    OPENSOLID_CORE_EXPORT
-    Interval
     pow(Interval baseInterval, double exponentValue);
     
     OPENSOLID_CORE_EXPORT
     Interval
     pow(Interval baseInterval, Interval exponentInterval);
-
-    Interval
-    conj(Interval interval);
-    
-    Interval
-    real(Interval interval);
-    
-    Interval
-    imag(Interval interval);
-    
-    Interval
-    abs2(Interval interval);
 
     OPENSOLID_CORE_EXPORT
     std::ostream&
