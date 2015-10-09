@@ -27,6 +27,7 @@
 #include <catch/catch.hpp>
 
 #include <cmath>
+#include <cfloat>
 
 using namespace opensolid;
 
