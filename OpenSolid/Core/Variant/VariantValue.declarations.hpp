@@ -24,11 +24,11 @@
 
 #pragma once
 
-#include <boost/intrusive_ptr.hpp>
+#include <memory>
 
 namespace opensolid
 {
     class VariantValue;
 
-    typedef boost::intrusive_ptr<VariantValue> VariantValuePtr;
+    typedef std::shared_ptr<VariantValue> VariantValuePtr;
 }

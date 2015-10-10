@@ -72,7 +72,7 @@ def checkLine(filePath, lineNumber, line):
         # Make sure *.declarations.hpp only include <OpenSolid/config.hpp> and possibly
         # <boost/intrusive_ptr.hpp> (for forward declaration of *Ptr types)
         if '.declarations.hpp' in filePath:
-            allowedHeaders = ['<boost/intrusive_ptr.hpp>']
+            allowedHeaders = ['<memory>']
             if '#include' in line and not any(header in line for header in allowedHeaders):
                 print('ERROR: {0} has illegal include: {1}'.format(filePath, line.rstrip()))
                 errorFound = True

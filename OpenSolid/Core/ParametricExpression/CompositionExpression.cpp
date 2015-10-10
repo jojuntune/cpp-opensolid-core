@@ -135,11 +135,12 @@ namespace opensolid
 
         bool
         CompositionExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-            ExpressionImplementationPtr otherOuterExpression =
-                other->cast<CompositionExpression>()->outerExpression();
-            ExpressionImplementationPtr otherInnerExpression =
-                other->cast<CompositionExpression>()->innerExpression();
-
+            ExpressionImplementationPtr otherOuterExpression = (
+                other->cast<CompositionExpression>()->outerExpression()
+            );
+            ExpressionImplementationPtr otherInnerExpression = (
+                other->cast<CompositionExpression>()->innerExpression()
+            );
             return (
                 outerExpression()->isDuplicateOf(otherOuterExpression) &&
                 innerExpression()->isDuplicateOf(otherInnerExpression)
@@ -148,12 +149,15 @@ namespace opensolid
 
         ExpressionImplementationPtr
         CompositionExpression::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-            ExpressionImplementationPtr deduplicatedOuterExpression =
-                outerExpression()->deduplicated(deduplicationCache);
-            ExpressionImplementationPtr deduplicatedInnerExpression =
-                innerExpression()->deduplicated(deduplicationCache);
-            return new CompositionExpression(
-                deduplicatedOuterExpression, deduplicatedInnerExpression
+            ExpressionImplementationPtr deduplicatedOuterExpression = (
+                outerExpression()->deduplicated(deduplicationCache)
+            );
+            ExpressionImplementationPtr deduplicatedInnerExpression = (
+                innerExpression()->deduplicated(deduplicationCache)
+            );
+            return std::make_shared<CompositionExpression>(
+                deduplicatedOuterExpression,
+                deduplicatedInnerExpression
             );
         }
             

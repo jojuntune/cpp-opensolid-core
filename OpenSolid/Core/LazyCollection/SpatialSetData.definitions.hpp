@@ -29,15 +29,13 @@
 #include <OpenSolid/Core/LazyCollection/SpatialSetData.declarations.hpp>
 
 #include <OpenSolid/Core/LazyCollection/SpatialSetNode.declarations.hpp>
-#include <OpenSolid/Core/ReferenceCounted.hpp>
 
 namespace opensolid
 {
     namespace detail
     {
         template <class TItem>
-        struct SpatialSetData :
-            public ReferenceCounted
+        struct SpatialSetData
         {
             std::vector<SpatialSetNode<TItem>> nodes;
             std::vector<TItem> items;

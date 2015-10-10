@@ -43,7 +43,7 @@ namespace opensolid
         const ParametricExpression<TValue, TParameter>&
         ZeroExpressionConstructor<TValue, TParameter>::ZERO() {
             static ParametricExpression<TValue, TParameter> result(
-                new ConstantExpression(
+                std::make_shared<ConstantExpression>(
                     ColumnMatrixXd::zero(NumDimensions<TValue>::Value),
                     NumDimensions<TParameter>::Value
                 )
@@ -54,7 +54,7 @@ namespace opensolid
         template <class TParameter>
         ParametricExpression<double, TParameter>
         ConstantExpressionConstructor<double, TParameter>::constant(double value) {
-            return new ConstantExpression(
+            return std::make_shared<ConstantExpression>(
                 ColumnMatrixXd::constant(1, value),
                 NumDimensions<TParameter>::Value
             );
@@ -65,7 +65,10 @@ namespace opensolid
         ConstantExpressionConstructor<Vector<double, iNumDimensions>, TParameter>::constant(
             const Vector<double, iNumDimensions>& vector
         ) {
-            return new ConstantExpression(vector.components(), NumDimensions<TParameter>::Value);
+            return std::make_shared<ConstantExpression>(
+                vector.components(),
+                NumDimensions<TParameter>::Value
+            );
         }
 
         template <int iNumDimensions, class TParameter>
@@ -73,7 +76,7 @@ namespace opensolid
         ConstantExpressionConstructor<UnitVector<iNumDimensions>, TParameter>::constant(
             const UnitVector<iNumDimensions>& unitVector
         ) {
-            return new ConstantExpression(
+            return std::make_shared<ConstantExpression>(
                 unitVector.components(),
                 NumDimensions<TParameter>::Value
             );
@@ -84,14 +87,17 @@ namespace opensolid
         ConstantExpressionConstructor<Point<iNumDimensions>, TParameter>::constant(
             const Point<iNumDimensions>& point
         ) {
-            return new ConstantExpression(point.components(), NumDimensions<TParameter>::Value);
+            return std::make_shared<ConstantExpression>(
+                point.components(),
+                NumDimensions<TParameter>::Value
+            );
         }
 
         template <class TValue>
         const ParametricExpression<TValue, TValue>&
         IdentityExpressionConstructor<TValue, TValue>::IDENTITY() {
             static ParametricExpression<TValue, TValue> result(
-                new IdentityExpression(NumDimensions<TValue>::Value)
+                std::make_shared<IdentityExpression>(NumDimensions<TValue>::Value)
             );
             return result;
         }
@@ -111,8 +117,9 @@ namespace opensolid
             const ParametricExpression<double, TParameter>& x,
             double y
         ) {
-            ExpressionImplementationPtr yImplementation(
-                new ConstantExpression(y, NumDimensions<TParameter>::Value)
+            ExpressionImplementationPtr yImplementation = std::make_shared<ConstantExpression>(
+                y,
+                NumDimensions<TParameter>::Value
             );
             return x.implementation()->concatenated(yImplementation);
         }
@@ -123,8 +130,9 @@ namespace opensolid
             double x,
             const ParametricExpression<double, TParameter>& y
         ) {
-            ExpressionImplementationPtr xImplementation(
-                new ConstantExpression(x, NumDimensions<TParameter>::Value)
+            ExpressionImplementationPtr xImplementation = std::make_shared<ConstantExpression>(
+                x,
+                NumDimensions<TParameter>::Value
             );
             return xImplementation->concatenated(y.implementation());
         }
@@ -148,8 +156,9 @@ namespace opensolid
             const ParametricExpression<double, TParameter>& y,
             double z
         ) {
-            ExpressionImplementationPtr zImplementation(
-                new ConstantExpression(z, NumDimensions<TParameter>::Value)
+            ExpressionImplementationPtr zImplementation = std::make_shared<ConstantExpression>(
+                z,
+                NumDimensions<TParameter>::Value
             );
             return x.implementation()->concatenated(y.implementation())->concatenated(
                 zImplementation
@@ -163,8 +172,9 @@ namespace opensolid
             double y,
             const ParametricExpression<double, TParameter>& z
         ) {
-            ExpressionImplementationPtr yImplementation(
-                new ConstantExpression(y, NumDimensions<TParameter>::Value)
+            ExpressionImplementationPtr yImplementation = std::make_shared<ConstantExpression>(
+                y,
+                NumDimensions<TParameter>::Value
             );
             return x.implementation()->concatenated(yImplementation)->concatenated(
                 z.implementation()
@@ -178,8 +188,9 @@ namespace opensolid
             const ParametricExpression<double, TParameter>& y,
             const ParametricExpression<double, TParameter>& z
         ) {
-            ExpressionImplementationPtr xImplementation(
-                new ConstantExpression(x, NumDimensions<TParameter>::Value)
+            ExpressionImplementationPtr xImplementation = std::make_shared<ConstantExpression>(
+                x,
+                NumDimensions<TParameter>::Value
             );
             return xImplementation->concatenated(y.implementation())->concatenated(
                 z.implementation()
@@ -193,11 +204,13 @@ namespace opensolid
             double y,
             double z
         ) {
-            ExpressionImplementationPtr yImplementation(
-                new ConstantExpression(y, NumDimensions<TParameter>::Value)
+            ExpressionImplementationPtr yImplementation = std::make_shared<ConstantExpression>(
+                y,
+                NumDimensions<TParameter>::Value
             );
-            ExpressionImplementationPtr zImplementation(
-                new ConstantExpression(z, NumDimensions<TParameter>::Value)
+            ExpressionImplementationPtr zImplementation = std::make_shared<ConstantExpression>(
+                z,
+                NumDimensions<TParameter>::Value
             );
             return x.implementation()->concatenated(yImplementation)->concatenated(zImplementation);
         }
@@ -209,11 +222,13 @@ namespace opensolid
             const ParametricExpression<double, TParameter>& y,
             double z
         ) {
-            ExpressionImplementationPtr xImplementation(
-                new ConstantExpression(x, NumDimensions<TParameter>::Value)
+            ExpressionImplementationPtr xImplementation = std::make_shared<ConstantExpression>(
+                x,
+                NumDimensions<TParameter>::Value
             );
-            ExpressionImplementationPtr zImplementation(
-                new ConstantExpression(z, NumDimensions<TParameter>::Value)
+            ExpressionImplementationPtr zImplementation = std::make_shared<ConstantExpression>(
+                z,
+                NumDimensions<TParameter>::Value
             );
             return xImplementation->concatenated(y.implementation())->concatenated(zImplementation);
         }
@@ -225,11 +240,13 @@ namespace opensolid
             double y,
             const ParametricExpression<double, TParameter>& z
         ) {
-            ExpressionImplementationPtr xImplementation(
-                new ConstantExpression(x, NumDimensions<TParameter>::Value)
+            ExpressionImplementationPtr xImplementation = std::make_shared<ConstantExpression>(
+                x,
+                NumDimensions<TParameter>::Value
             );
-            ExpressionImplementationPtr yImplementation(
-                new ConstantExpression(y, NumDimensions<TParameter>::Value)
+            ExpressionImplementationPtr yImplementation = std::make_shared<ConstantExpression>(
+                y,
+                NumDimensions<TParameter>::Value
             );
             return xImplementation->concatenated(yImplementation)->concatenated(z.implementation());
         }

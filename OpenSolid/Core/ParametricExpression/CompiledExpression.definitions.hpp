@@ -32,14 +32,12 @@
 #include <OpenSolid/Core/MatrixView.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression/EvaluationSequence.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.declarations.hpp>
-#include <OpenSolid/Core/ReferenceCounted.hpp>
 
 namespace opensolid
 {
     namespace detail
     {
-        class CompiledExpression :
-            public ReferenceCounted
+        class CompiledExpression
         {
         private:
             ExpressionImplementationPtr _implementationPtr;

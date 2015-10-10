@@ -152,7 +152,7 @@ namespace opensolid
 
         ExpressionImplementationPtr
         NormExpression::normImpl() const {
-            return this;
+            return self();
         }
         
         void

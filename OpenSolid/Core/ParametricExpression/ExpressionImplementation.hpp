@@ -44,7 +44,7 @@ namespace opensolid
         inline
         ExpressionImplementationPtr
         ExpressionImplementation::self() const {
-            return this;
+            return shared_from_this();
         }
 
         inline

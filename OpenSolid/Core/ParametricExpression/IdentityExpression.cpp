@@ -102,7 +102,7 @@ namespace opensolid
         IdentityExpression::derivativeImpl(int parameterIndex) const {
             ColumnMatrixXd result(numDimensions());
             result(parameterIndex) = 1.0;
-            return new ConstantExpression(result, numDimensions());
+            return std::make_shared<ConstantExpression>(result, numDimensions());
         }
 
         bool
@@ -113,7 +113,7 @@ namespace opensolid
 
         ExpressionImplementationPtr
         IdentityExpression::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-            return this;
+            return self();
         }
         
         ExpressionImplementationPtr

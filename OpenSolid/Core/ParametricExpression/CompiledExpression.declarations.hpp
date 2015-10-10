@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include <boost/intrusive_ptr.hpp>
+#include <memory>
 
 namespace opensolid
 {
@@ -32,6 +32,6 @@ namespace opensolid
     {
         class CompiledExpression;
 
-        typedef boost::intrusive_ptr<const CompiledExpression> CompiledExpressionPtr;
+        typedef std::shared_ptr<const CompiledExpression> CompiledExpressionPtr;
     }
 }

@@ -34,16 +34,16 @@
 #include <OpenSolid/Core/ParametricExpression/DeduplicationCache.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionCompiler.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression/MatrixID.declarations.hpp>
-#include <OpenSolid/Core/ReferenceCounted.hpp>
 
 #include <vector>
+#include <memory>
 
 namespace opensolid
 {
     namespace detail
     {
         class ExpressionImplementation :
-            public ReferenceCounted
+            public std::enable_shared_from_this<ExpressionImplementation>
         {
         private:
             OPENSOLID_CORE_EXPORT

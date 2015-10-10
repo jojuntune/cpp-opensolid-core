@@ -24,14 +24,14 @@
 
 #pragma once
 
-#include <boost/intrusive_ptr.hpp>
+#include <memory>
 
 namespace opensolid
 {
     namespace detail
     {
         class ExpressionImplementation;
-        
-        typedef boost::intrusive_ptr<const ExpressionImplementation> ExpressionImplementationPtr;
+
+        typedef std::shared_ptr<const ExpressionImplementation> ExpressionImplementationPtr;
     }
 }

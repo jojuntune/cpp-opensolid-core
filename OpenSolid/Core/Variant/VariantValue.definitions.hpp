@@ -36,7 +36,6 @@
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
-#include <OpenSolid/Core/ReferenceCounted.hpp>
 #include <OpenSolid/Core/Tetrahedron.declarations.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
 #include <OpenSolid/Core/Variant.declarations.hpp>
@@ -47,8 +46,7 @@
 
 namespace opensolid
 {
-    class VariantValue :
-        public ReferenceCounted
+    class VariantValue
     {
     public:
         OPENSOLID_CORE_EXPORT

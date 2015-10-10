@@ -41,14 +41,10 @@ namespace opensolid
         ExpressionImplementationPtr
         parameterExpression(int numParameters, int parameterIndex) {
             if (parameterIndex >= 0 && parameterIndex < numParameters) {
-                return ExpressionImplementationPtr(
-                    new ParameterExpression(numParameters, parameterIndex)
-                );
+                return std::make_shared<ParameterExpression>(numParameters, parameterIndex);
             } else {
                 assert(false);
-                return ExpressionImplementationPtr(
-                    new ConstantExpression(0.0, numParameters)
-                );
+                return std::make_shared<ConstantExpression>(0.0, numParameters);
             }
         }
     }
@@ -71,7 +67,7 @@ namespace opensolid
 
     inline
     Parameter<double>::Parameter() :
-        ParametricExpression<double, double>(new detail::ParameterExpression(1, 0)) {
+        ParametricExpression<double, double>(std::make_shared<detail::ParameterExpression>(1, 0)) {
     }
 
     inline

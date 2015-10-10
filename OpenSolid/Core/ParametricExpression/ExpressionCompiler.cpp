@@ -233,7 +233,7 @@ namespace opensolid
             } else if (expressionPtr->isComponentsExpression()) {
                 // Components expression: return block of operand results
                 return evaluate(
-                    expressionPtr->cast<ComponentsExpression>()->operand().get(),
+                    expressionPtr->cast<ComponentsExpression>()->operand(),
                     parameterID
                 ).block(
                     expressionPtr->cast<ComponentsExpression>()->startIndex(),
@@ -321,7 +321,7 @@ namespace opensolid
             } else if (expressionPtr->isComponentsExpression()) {
                 // Components expression: return block of operand results
                 MatrixID<const TScalar> componentsID = evaluate(
-                    expressionPtr->cast<ComponentsExpression>()->operand().get(),
+                    expressionPtr->cast<ComponentsExpression>()->operand(),
                     parameterID
                 ).block(
                     expressionPtr->cast<ComponentsExpression>()->startIndex(),

@@ -52,11 +52,9 @@ namespace opensolid
         template <class TValue, class TParameter>
         ExpressionImplementationPtr
         zeroExpression() {
-            return ExpressionImplementationPtr(
-                new ConstantExpression(
-                    ColumnMatrixXd::zero(NumDimensions<TValue>::Value),
-                    NumDimensions<TParameter>::Value
-                )
+            return std::make_shared<ConstantExpression>(
+                ColumnMatrixXd::zero(NumDimensions<TValue>::Value),
+                NumDimensions<TParameter>::Value
             );
         }
 
@@ -391,29 +389,18 @@ namespace opensolid
     template <class TValue, class TParameter>
     ParametricExpression<TValue, TParameter>::ParametricExpression() :
         _compiledExpressionPtr(
-            new detail::CompiledExpression(detail::zeroExpression<TValue, TParameter>())
+            std::make_shared<detail::CompiledExpression>(
+                detail::zeroExpression<TValue, TParameter>()
+            )
         ) {
     }
     
     template <class TValue, class TParameter>
     ParametricExpression<TValue, TParameter>::ParametricExpression(
-        const detail::ExpressionImplementation* implementationPtr
-    ) : _compiledExpressionPtr(new detail::CompiledExpression(implementationPtr)) {
-        if (!implementation()) {
-            throw Error(new PlaceholderError());
-        }
-        if (implementation()->numDimensions() != NumDimensions<TValue>::Value) {
-            throw Error(new PlaceholderError());
-        }
-        if (implementation()->numParameters() != NumDimensions<TParameter>::Value) {
-            throw Error(new PlaceholderError());
-        }
-    }
-    
-    template <class TValue, class TParameter>
-    ParametricExpression<TValue, TParameter>::ParametricExpression(
         detail::ExpressionImplementationPtr implementationPtr
-    ) : _compiledExpressionPtr(new detail::CompiledExpression(std::move(implementationPtr))) {
+    ) : _compiledExpressionPtr(
+            std::make_shared<detail::CompiledExpression>(std::move(implementationPtr))
+        ) {
         if (!implementation()) {
             throw Error(new PlaceholderError());
         }
@@ -664,7 +651,10 @@ namespace opensolid
 
         detail::DeduplicationCache deduplicationCache;
         return implementation()->dot(
-            new detail::ConstantExpression(vector.components(), NumDimensions<TParameter>::Value)
+            std::make_shared<detail::ConstantExpression>(
+                vector.components(),
+                NumDimensions<TParameter>::Value
+            )
         )->deduplicated(deduplicationCache);
     }
     
@@ -692,7 +682,10 @@ namespace opensolid
 
         detail::DeduplicationCache deduplicationCache;
         return implementation()->cross(
-            new detail::ConstantExpression(vector.components(), NumDimensions<TParameter>::Value)
+            std::make_shared<detail::ConstantExpression>(
+                vector.components(),
+                NumDimensions<TParameter>::Value
+            )
         )->deduplicated(deduplicationCache);
     }
     

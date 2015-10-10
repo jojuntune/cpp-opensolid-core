@@ -66,8 +66,6 @@ namespace opensolid
         detail::CompiledExpressionPtr _compiledExpressionPtr;
     public:
         ParametricExpression();
-
-        ParametricExpression(const detail::ExpressionImplementation* implementationPtr);
         
         ParametricExpression(detail::ExpressionImplementationPtr implementationPtr);
         

@@ -112,7 +112,7 @@ namespace opensolid
 
         ExpressionImplementationPtr
         ParameterExpression::derivativeImpl(int parameterIndex) const {
-            return new ConstantExpression(
+            return std::make_shared<ConstantExpression>(
                 parameterIndex == this->parameterIndex() ? 1.0 : 0.0,
                 numParameters()
             );
@@ -125,7 +125,7 @@ namespace opensolid
 
         ExpressionImplementationPtr
         ParameterExpression::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-            return this;
+            return self();
         }
         
         ExpressionImplementationPtr

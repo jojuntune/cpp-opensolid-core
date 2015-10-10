@@ -109,7 +109,10 @@ namespace opensolid
         
         ExpressionImplementationPtr
         ConstantExpression::derivativeImpl(int) const {
-            return new ConstantExpression(ColumnMatrixXd::zero(numDimensions()), numParameters());
+            return std::make_shared<ConstantExpression>(
+                ColumnMatrixXd::zero(numDimensions()),
+                numParameters()
+            );
         }
         
         bool
@@ -119,17 +122,17 @@ namespace opensolid
 
         ExpressionImplementationPtr
         ConstantExpression::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-            return this;
+            return self();
         }
         
         ExpressionImplementationPtr
         ConstantExpression::composedImpl(const ExpressionImplementationPtr& innerExpression) const {
-            return this;
+            return self();
         }
         
         ExpressionImplementationPtr
         ConstantExpression::componentsImpl(int startIndex, int numComponents) const {
-            return new ConstantExpression(
+            return std::make_shared<ConstantExpression>(
                 columnMatrix().block(startIndex, 0, numComponents, 1),
                 numParameters()
             );
@@ -137,23 +140,27 @@ namespace opensolid
         
         ExpressionImplementationPtr
         ConstantExpression::scalingImpl(double scale) const {
-            return new ConstantExpression(scale * columnMatrix(), numParameters());
+            return std::make_shared<ConstantExpression>(scale * columnMatrix(), numParameters());
         }
         
         ExpressionImplementationPtr
         ConstantExpression::translationImpl(const ColumnMatrixXd& columnMatrix) const {
-            return new ConstantExpression(this->columnMatrix() + columnMatrix, numParameters());
+            return std::make_shared<ConstantExpression>(
+                this->columnMatrix() + columnMatrix,
+                numParameters()
+            );
         }
         
         ExpressionImplementationPtr
         ConstantExpression::transformationImpl(const MatrixXd& matrix) const {
-            return new ConstantExpression(matrix * columnMatrix(), numParameters());
+            return std::make_shared<ConstantExpression>(matrix * columnMatrix(), numParameters());
         }
         
         ExpressionImplementationPtr
         ConstantExpression::normImpl() const {
-            return new ConstantExpression(
-                opensolid::sqrt(columnMatrix().cwiseSquared().sum()), numParameters()
+            return std::make_shared<ConstantExpression>(
+                opensolid::sqrt(columnMatrix().cwiseSquared().sum()),
+                numParameters()
             );
         }
         
@@ -163,20 +170,26 @@ namespace opensolid
             if (norm == Zero()) {
                 throw Error(new PlaceholderError());
             }
-            return new ConstantExpression(columnMatrix() / norm, numParameters());
+            return std::make_shared<ConstantExpression>(columnMatrix() / norm, numParameters());
         }
         
         ExpressionImplementationPtr
         ConstantExpression::squaredNormImpl() const {
-            return new ConstantExpression(columnMatrix().cwiseSquared().sum(), numParameters());
+            return std::make_shared<ConstantExpression>(
+                columnMatrix().cwiseSquared().sum(),
+                numParameters()
+            );
         }
 
         ExpressionImplementationPtr
         ConstantExpression::sqrtImpl() const {
             if (value() >= 0.0) {
-                return new ConstantExpression(opensolid::sqrt(value()), numParameters());
+                return std::make_shared<ConstantExpression>(
+                    opensolid::sqrt(value()),
+                    numParameters()
+                );
             } else if (value() == Zero()) {
-                return new ConstantExpression(0.0, numParameters());
+                return std::make_shared<ConstantExpression>(0.0, numParameters());
             } else {
                 throw Error(new PlaceholderError());
             }
@@ -184,12 +197,12 @@ namespace opensolid
 
         ExpressionImplementationPtr
         ConstantExpression::sinImpl() const {
-            return new ConstantExpression(opensolid::sin(value()), numParameters());
+            return std::make_shared<ConstantExpression>(opensolid::sin(value()), numParameters());
         }
 
         ExpressionImplementationPtr
         ConstantExpression::cosImpl() const {
-            return new ConstantExpression(opensolid::cos(value()), numParameters());
+            return std::make_shared<ConstantExpression>(opensolid::cos(value()), numParameters());
         }
 
         ExpressionImplementationPtr
@@ -197,17 +210,20 @@ namespace opensolid
             if (std::fmod(value() - M_PI / 2, M_PI) == Zero()) {
                 throw Error(new PlaceholderError());
             }
-            return new ConstantExpression(opensolid::tan(value()), numParameters());
+            return std::make_shared<ConstantExpression>(opensolid::tan(value()), numParameters());
         }
 
         ExpressionImplementationPtr
         ConstantExpression::acosImpl() const {
             if (-1.0 <= value() && value() <= 1.0) {
-                return new ConstantExpression(opensolid::acos(value()), numParameters());
+                return std::make_shared<ConstantExpression>(
+                    opensolid::acos(value()),
+                    numParameters()
+                );
             } else if (value() + 1.0 == Zero()) {
-                return new ConstantExpression(M_PI, numParameters());
+                return std::make_shared<ConstantExpression>(M_PI, numParameters());
             } else if (value() - 1.0 == Zero()) {
-                return new ConstantExpression(0.0, numParameters());
+                return std::make_shared<ConstantExpression>(0.0, numParameters());
             } else {
                 throw Error(new PlaceholderError());
             }
@@ -216,11 +232,14 @@ namespace opensolid
         ExpressionImplementationPtr
         ConstantExpression::asinImpl() const {
             if (-1.0 <= value() && value() <= 1.0) {
-                return new ConstantExpression(opensolid::asin(value()), numParameters());
+                return std::make_shared<ConstantExpression>(
+                    opensolid::asin(value()),
+                    numParameters()
+                );
             } else if (value() + 1.0 == Zero()) {
-                return new ConstantExpression(-M_PI / 2.0, numParameters());
+                return std::make_shared<ConstantExpression>(-M_PI / 2.0, numParameters());
             } else if (value() - 1.0 == Zero()) {
-                return new ConstantExpression(M_PI / 2.0, numParameters());
+                return std::make_shared<ConstantExpression>(M_PI / 2.0, numParameters());
             } else {
                 throw Error(new PlaceholderError());
             }
@@ -228,7 +247,7 @@ namespace opensolid
 
         ExpressionImplementationPtr
         ConstantExpression::expImpl() const {
-            return new ConstantExpression(opensolid::exp(value()), numParameters());
+            return std::make_shared<ConstantExpression>(opensolid::exp(value()), numParameters());
         }
 
         ExpressionImplementationPtr
@@ -236,7 +255,7 @@ namespace opensolid
             if (value() <= Zero()) {
                 throw Error(new PlaceholderError());
             }
-            return new ConstantExpression(opensolid::log(value()), numParameters());
+            return std::make_shared<ConstantExpression>(opensolid::log(value()), numParameters());
         }
 
         void

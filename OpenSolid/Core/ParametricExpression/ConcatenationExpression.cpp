@@ -161,7 +161,7 @@ namespace opensolid
             } else if (startIndex >= firstDimensions) {
                 return secondOperand()->components(startIndex - firstDimensions, numComponents);
             } else {
-                return new ConcatenationExpression(
+                return std::make_shared<ConcatenationExpression>(
                     firstOperand()->components(startIndex, firstDimensions - startIndex),
                     secondOperand()->components(0, startIndex + numComponents - firstDimensions)
                 );

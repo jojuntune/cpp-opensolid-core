@@ -179,17 +179,17 @@ namespace opensolid
         
         ExpressionImplementationPtr
         NormalizedExpression::normImpl() const {
-            return new ConstantExpression(1.0, numParameters());
+            return std::make_shared<ConstantExpression>(1.0, numParameters());
         }
         
         ExpressionImplementationPtr
         NormalizedExpression::normalizedImpl() const {
-            return this;
+            return self();
         }
         
         ExpressionImplementationPtr
         NormalizedExpression::squaredNormImpl() const {
-            return new ConstantExpression(1.0, numParameters());
+            return std::make_shared<ConstantExpression>(1.0, numParameters());
         }
         
         void
