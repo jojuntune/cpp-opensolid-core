@@ -226,7 +226,7 @@ namespace opensolid
     template <class TItem>
     inline
     SpatialSet<TItem>::SpatialSet(const std::vector<TItem>& items) :
-        _dataPtr(new detail::SpatialSetData<TItem>()) {
+        _dataPtr(std::make_shared<detail::SpatialSetData<TItem>>()) {
 
         _dataPtr->items = items;
         init();
@@ -235,7 +235,7 @@ namespace opensolid
     template <class TItem>
     inline
     SpatialSet<TItem>::SpatialSet(std::vector<TItem>&& items) :
-        _dataPtr(new detail::SpatialSetData<TItem>()) {
+        _dataPtr(std::make_shared<detail::SpatialSetData<TItem>>()) {
 
         _dataPtr->items = std::move(items);
         init();
@@ -244,7 +244,7 @@ namespace opensolid
     template <class TItem> template <class TDerived>
     inline
     SpatialSet<TItem>::SpatialSet(const LazyCollection<TDerived>& collection) :
-        _dataPtr(new detail::SpatialSetData<TItem>()) {
+        _dataPtr(std::make_shared<detail::SpatialSetData<TItem>>()) {
 
         _dataPtr->items = std::vector<TItem>(collection.begin(), collection.end());
         init();        
@@ -253,7 +253,7 @@ namespace opensolid
     template <class TItem> template <class TIterator>
     inline
     SpatialSet<TItem>::SpatialSet(TIterator begin, TIterator end) :
-        _dataPtr(new detail::SpatialSetData<TItem>()) {
+        _dataPtr(std::make_shared<detail::SpatialSetData<TItem>>()) {
 
         _dataPtr->items = std::vector<TItem>(begin, end);
         init();

@@ -38,9 +38,8 @@
 #include <OpenSolid/Core/LazyCollection/SpatialSetData.declarations.hpp>
 #include <OpenSolid/Core/LazyCollection/SpatialSetNode.declarations.hpp>
 
-#include <boost/intrusive_ptr.hpp>
-
 #include <vector>
+#include <memory>
 
 namespace opensolid
 {
@@ -55,7 +54,7 @@ namespace opensolid
         public LazyCollection<SpatialSet<TItem>>
     {
     private:
-        boost::intrusive_ptr<detail::SpatialSetData<TItem>> _dataPtr;
+        std::shared_ptr<detail::SpatialSetData<TItem>> _dataPtr;
         std::vector<TItem> _emptyVector;
 
         struct BoundsData
