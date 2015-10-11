@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.definitions.hpp>
 
 #include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/ParametricExpression.hpp>
+#include <OpenSolid/Core/ParametricExpression.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression/ConstantExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/IdentityExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ParameterExpression.hpp>
