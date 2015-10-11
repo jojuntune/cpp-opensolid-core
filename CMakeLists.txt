@@ -32,10 +32,6 @@
     # Enable M_PI, M_PI_2, M_E, M_SQRT2 macros
     add_definitions(-D_USE_MATH_DEFINES)
 
-    # Eigen configuration: ensure only MPL2-licensed portions are used, and disable all
-    # alignment/vectorization to avoid weird access violation errors on 32-bit Windows
-    add_definitions(-DEIGEN_MPL2_ONLY -DEIGEN_DONT_ALIGN)
-
     # Add preprocessor definition for dynamic libraries to enable propery setup
     # of dllimport/dllexport in MSVC builds
     if(${BUILD_STATIC_LIBS})
@@ -81,8 +77,6 @@
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
         # Disable warnings about unused parameters and variables
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-unused-variable")
-        # Disable warning about deprecated 'register' specifier (used by Eigen)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-register")
 
         # Enable dynamic loading
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ldl")
@@ -106,9 +100,8 @@
         set(DISABLE_WARNINGS_FLAG "-w")
     elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         # Make sure min/max macros are not defined by windows.h (conflicts with
-        # interval min/max and Eigen code), and avoid warning about boost
-        # string algorithms
-        add_definitions(-DNOMINMAX -D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
+        # interval min/max), and avoid warning about Boost string algorithms
+        add_definitions(-DNOMINMAX)
         
         # Add /MP flag for parallel compilation within projects
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
@@ -152,9 +145,6 @@
 
     # Set up external dependencies
     add_subdirectory(External)
-
-    # Include Eigen root directory to allow inclusion of Eigen headers
-    include_directories(${EIGEN_ROOT})
     
     # Add root directory to include path to allow for #include <OpenSolid/...>
     include_directories(.)
