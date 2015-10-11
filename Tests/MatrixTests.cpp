@@ -592,62 +592,6 @@ TEST_CASE("Stream output") {
     }
 }
 
-TEST_CASE("2D Eigen decomposition") {
-    for (int i = 0; i < 100; ++i) {
-        Matrix2d randomMatrix = Matrix2d::random();
-        Matrix2d symmetricMatrix = 0.5 * (randomMatrix + randomMatrix.transpose());
-
-        CAPTURE(symmetricMatrix);
-
-        auto decomposition = symmetricMatrix.eigenDecomposition();
-        REQUIRE(decomposition.exists());
-   
-        ColumnMatrix2d eigenvalues = decomposition.eigenvalues();
-        Matrix2d eigenvectors = decomposition.eigenvectors();
-        CAPTURE(eigenvalues);
-        CAPTURE(eigenvectors);
-
-        for (int j = 0; j < 2; ++j) {
-            double eigenvalue = eigenvalues(j);
-            ColumnMatrix2d eigenvector = eigenvectors.column(j);
-            CAPTURE(eigenvalue);
-            CAPTURE(eigenvector);
-            CAPTURE(symmetricMatrix * eigenvector);
-            CAPTURE(eigenvalue * eigenvector);
-            CAPTURE(symmetricMatrix * eigenvector - eigenvalue * eigenvector);
-            REQUIRE((symmetricMatrix * eigenvector - eigenvalue * eigenvector).isZero());
-        }
-    }
-}
-
-TEST_CASE("3D Eigen decomposition") {
-    for (int i = 0; i < 100; ++i) {
-        Matrix3d randomMatrix = Matrix3d::random();
-        Matrix3d symmetricMatrix = 0.5 * (randomMatrix + randomMatrix.transpose());
-
-        CAPTURE(symmetricMatrix);
-
-        auto decomposition = symmetricMatrix.eigenDecomposition();
-        REQUIRE(decomposition.exists());
-   
-        ColumnMatrix3d eigenvalues = decomposition.eigenvalues();
-        Matrix3d eigenvectors = decomposition.eigenvectors();
-        CAPTURE(eigenvalues);
-        CAPTURE(eigenvectors);
-
-        for (int j = 0; j < 3; ++j) {
-            double eigenvalue = eigenvalues(j);
-            ColumnMatrix3d eigenvector = eigenvectors.column(j);
-            CAPTURE(eigenvalue);
-            CAPTURE(eigenvector);
-            CAPTURE(symmetricMatrix * eigenvector);
-            CAPTURE(eigenvalue * eigenvector);
-            CAPTURE(symmetricMatrix * eigenvector - eigenvalue * eigenvector);
-            REQUIRE((symmetricMatrix * eigenvector - eigenvalue * eigenvector).isZero());
-        }
-    }
-}
-
 TEST_CASE("Conversion") {
     Matrix2d initial(1.0, 3.0, 2.0, 4.0);
     Matrix2d inverse = initial.inverse();

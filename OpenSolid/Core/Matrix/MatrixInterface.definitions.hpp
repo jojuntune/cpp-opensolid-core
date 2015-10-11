@@ -29,7 +29,6 @@
 #include <OpenSolid/Core/Matrix/MatrixInterface.declarations.hpp>
 
 #include <OpenSolid/Core/Convertible.definitions.hpp>
-#include <OpenSolid/Core/EigenDecomposition.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/MatrixView.declarations.hpp>
@@ -220,9 +219,6 @@ namespace opensolid
                 MatrixTraits<TDerived>::NumColumns
             >
             inverse() const;
-
-            EigenDecomposition<MatrixTraits<TDerived>::NumRows>
-            eigenDecomposition() const;
 
             typename MatrixTraits<TDerived>::PlainScalar
             minComponent() const;

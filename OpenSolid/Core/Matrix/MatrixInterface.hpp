@@ -29,7 +29,6 @@
 #include <OpenSolid/Core/Matrix/MatrixInterface.definitions.hpp>
 
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/EigenDecomposition.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/Matrix/MatrixDeterminantFunction.hpp>
@@ -473,20 +472,6 @@ namespace opensolid
                 >::Value
             >()(derived());
         }
-
-        template <class TDerived>
-        inline
-        EigenDecomposition<MatrixTraits<TDerived>::NumRows>
-        MatrixInterface<TDerived>::eigenDecomposition() const {
-            assert(numRows() == numColumns());
-            return EigenDecomposition<
-                CommonSize<
-                    MatrixTraits<TDerived>::NumRows,
-                    MatrixTraits<TDerived>::NumColumns
-                >::Value
-            >(derived());
-        }
-
 
         template <class TDerived>
         inline
