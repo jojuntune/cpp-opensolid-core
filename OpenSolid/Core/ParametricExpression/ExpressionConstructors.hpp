@@ -54,9 +54,11 @@ namespace opensolid
         template <class TParameter>
         ParametricExpression<double, TParameter>
         ConstantExpressionConstructor<double, TParameter>::constant(double value) {
-            return std::make_shared<ConstantExpression>(
-                ColumnMatrixXd::constant(1, value),
-                NumDimensions<TParameter>::Value
+            return ParametricExpression<double, TParameter>(
+                std::make_shared<ConstantExpression>(
+                    ColumnMatrixXd::constant(1, value),
+                    NumDimensions<TParameter>::Value
+                )
             );
         }
 
@@ -65,9 +67,11 @@ namespace opensolid
         ConstantExpressionConstructor<Vector<double, iNumDimensions>, TParameter>::constant(
             const Vector<double, iNumDimensions>& vector
         ) {
-            return std::make_shared<ConstantExpression>(
-                vector.components(),
-                NumDimensions<TParameter>::Value
+            return ParametricExpression<Vector<double, iNumDimensions>, TParameter>(
+                std::make_shared<ConstantExpression>(
+                    vector.components(),
+                    NumDimensions<TParameter>::Value
+                )
             );
         }
 
@@ -76,9 +80,11 @@ namespace opensolid
         ConstantExpressionConstructor<UnitVector<iNumDimensions>, TParameter>::constant(
             const UnitVector<iNumDimensions>& unitVector
         ) {
-            return std::make_shared<ConstantExpression>(
-                unitVector.components(),
-                NumDimensions<TParameter>::Value
+            return ParametricExpression<UnitVector<iNumDimensions>, TParameter>(
+                std::make_shared<ConstantExpression>(
+                    unitVector.components(),
+                    NumDimensions<TParameter>::Value
+                )
             );
         }
 
@@ -87,9 +93,11 @@ namespace opensolid
         ConstantExpressionConstructor<Point<iNumDimensions>, TParameter>::constant(
             const Point<iNumDimensions>& point
         ) {
-            return std::make_shared<ConstantExpression>(
-                point.components(),
-                NumDimensions<TParameter>::Value
+            return ParametricExpression<Point<iNumDimensions>, TParameter>(
+                std::make_shared<ConstantExpression>(
+                    point.components(),
+                    NumDimensions<TParameter>::Value
+                )
             );
         }
 
