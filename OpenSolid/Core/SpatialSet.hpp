@@ -451,7 +451,7 @@ namespace opensolid
         ) {
             const SpatialSetNode<TItem>* candidateNodePtr = anchorNodePtr->nextPtr;
             while (candidateNodePtr) {
-                if (candidateNodePtr->bounds.overlaps(anchorNodePtr->bounds)) {
+                if (candidateNodePtr->bounds.overlaps(anchorNodePtr->bounds, precision)) {
                     const SpatialSetNode<TItem>* leftChildPtr = candidateNodePtr->leftChildPtr;
                     if (leftChildPtr) {
                         // Internal node: descend into left child
