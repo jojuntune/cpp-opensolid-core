@@ -21,7 +21,6 @@
         add_library(OpenSolidCore SHARED ${CORE_SOURCES})
     endif()
     set_target_properties(OpenSolidCore PROPERTIES DEBUG_POSTFIX Debug)
-    add_dependencies(OpenSolidCore eigen_sources)
     
 ########## Install OpenSolidCore headers and library ##########
 
